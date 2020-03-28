@@ -1,0 +1,34 @@
+{
+  "name": "anagrind",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "NODE_ENV=development nodemon server/index.js"
+  },
+  "nodemonConfig": {
+    "watch": "server/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rjkat/anagrind.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rjkat/anagrind/issues"
+  },
+  "homepage": "https://github.com/rjkat/anagrind#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "nodemon": "^2.0.2",
+    "parcel-bundler": "^1.12.4",
+    "jest": "^25.2.3"
+  }
+}
