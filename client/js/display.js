@@ -1,8 +1,9 @@
-
+import * as KeyCode from 'keycode-js';
 
 export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
+        this.inputAcross = true;
         const self = this;
         parent.onclick = function (e) {
             self.onClick(e);
@@ -18,15 +19,12 @@ export class CrosswordDisplay {
 
     onClick(e) {
         const target = e.target;
-        let input = this.gridInput;
-        if (target.nodeName == 'TD' && !target.hasAttribute('data-empty')) {
-            input.style.display = '';
-            input.style.left = target.offsetLeft + 'px';
-            input.style.top = target.offsetTop + 'px';
-
-            input.focus();
-            input.select();
+        if (target.nodeName != 'TD') {
+            return;
         }
+        const row = parseInt(target.getAttribute('data-row'), 10);
+        const col = parseInt(target.getAttribute('data-col'), 10);
+        this.moveInput(row, col);
     }
 
     createInput() {
@@ -34,16 +32,98 @@ export class CrosswordDisplay {
         input.classList.add('crossword-grid-input');
         input.style.display = 'none';
         input.type = 'text';
+        const self = this;
+        input.onkeydown = function(e) {
+            self.handleKeydown(e, true);
+        }
+        input.onkeypress = function(e) {
+            self.handleKeypress(e, true);
+        }
+        input.setAttribute('maxlength', 1);
         this.gridWrapper.appendChild(input);
-        this.gridInput = input;
+        this.gridInput = {
+            el: input,
+            row: 0,
+            col: 0,
+        };
     }
 
-    storeInput() {
-        const tds = this.gridWrapper.querySelectorAll('td .accepting-input');
-        tds.forEach(function (td) {
-            td.textContent = this.gridInput.value;
-            td.classList.remove('accepting-input');
-        });
+    moveInput(row, col) {
+        let cells = this.crossword.grid.cells;
+        let input = this.gridInput;
+
+        let cell = cells[input.row][input.col];
+        cell.td.textContent = cell.contents;
+
+        if (   row < 0 || row >= cells.length
+            || col < 0 || col >= cells[row].length
+            || cells[row][col].empty) {
+            input.el.blur();
+            return;
+        }
+        cell = cells[row][col];
+        let td = cell.td;
+        td.textContent = '';
+
+        let el = input.el;
+        el.value = cell.contents;
+        el.style.display = '';
+        el.style.left = td.offsetLeft + 'px';
+        el.style.top = td.offsetTop + 'px';
+        el.focus();
+        el.select();
+        input.row = row;
+        input.col = col;
+    }
+
+    advanceInput(rev) {
+        let input = this.gridInput;
+        if (this.inputAcross) {
+            this.moveInput(input.row, input.col + (rev ? -1 : 1));
+        } else {
+            this.moveInput(input.row + (rev ? -1 : 1), input.col);
+        }
+    }
+
+    handleKeydown(e, isGrid) {
+
+        let input = this.gridInput;
+        let cells = this.crossword.grid.cells;
+        switch (e.keyCode) {
+            case KeyCode.KEY_SPACE:
+            case KeyCode.KEY_RIGHT:
+            case KeyCode.KEY_DOWN:
+                this.advanceInput();
+                break;
+            case KeyCode.KEY_BACK_SPACE:
+                e.preventDefault();
+                if (isGrid) {
+                    cells[input.row][input.col].contents = '';
+                    cells[input.row][input.col].td.textContent = '';
+                    input.el.value = '';
+                }
+            case KeyCode.KEY_LEFT:
+            case KeyCode.KEY_UP:
+                this.advanceInput(true);
+                break;
+        }
+    }
+
+    storeInput(val, isGrid) {
+        if (isGrid) {
+            let input = this.gridInput;
+            let cell = this.crossword.grid.cells[input.row][input.col];
+            input.el.value = '';
+            cell.contents = val;
+            cell.td.textContent = val;
+        }
+    }
+
+    handleKeypress(e, isGrid) {
+        let input = this.gridInput;
+        e.preventDefault();
+        this.storeInput(e.key, isGrid);
+        this.advanceInput();
     }
 
     drawGrid(crossword) {
@@ -66,6 +146,7 @@ export class CrosswordDisplay {
                 if (cell.number) {
                     td.setAttribute('data-number', cell.number);
                 }
+                cell.td = td;
                 tr.appendChild(td);
             }
             table.appendChild(tr);

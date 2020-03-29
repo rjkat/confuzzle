@@ -38,7 +38,8 @@ function buildGrid(cw) {
     let rowCells = [];
     for (let col = 1; col <= grid.width; col++) {
       rowCells.push({
-        empty: true
+        empty: true,
+        contents: ''
       });
     }
     grid.cells.push(rowCells);
