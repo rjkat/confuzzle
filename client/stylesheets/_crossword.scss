@@ -1,0 +1,59 @@
+.crossword-display {
+    max-width: 100%;
+    padding: 18px;
+    display: block;
+
+    .crossword-grid-wrapper {
+        text-transform: uppercase;
+
+        .crossword-grid {
+            border: $gridBorderWidth solid;
+            border-collapse: collapse;
+
+            td {
+                font-size: $gridFontSize;
+                font-family: $answerFontFamily;
+                padding: 0;
+                border: $gridBorderWidth solid;
+                border-color: $gridBgColor;
+                min-width: $gridCellSize;
+                max-width: $gridCellSize;
+                height: $gridCellSize;
+                line-height: $gridCellSize;
+                position: relative;
+                text-align: center;
+                vertical-align: middle;
+
+                &[data-number]:before {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    content: attr(data-number);
+                    font-size: .5em;
+                    line-height: 1em;
+                }
+
+                &[data-empty] {
+                    background: $gridBgColor;
+                }
+            }
+        }
+
+        .crossword-grid-input {
+            font-size: $gridFontSize;
+            font-family: $answerFontFamily;
+            padding: 0 0 0 $gridBorderWidth;
+            border: 0;
+            background: none;
+            outline: none;
+            min-width: $gridCellSize;
+            max-width: $gridCellSize;
+            height: $gridCellSize;
+            line-height: $gridCellSize;
+            position: absolute;
+            text-align: center;
+            vertical-align: middle;
+            text-transform: inherit;
+        }
+    }
+}

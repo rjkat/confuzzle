@@ -3,8 +3,51 @@ const enotype = require('enotype');
 
 enolib.register(enotype);
 
-function parseClue(doc, clue) {
-  const k = clue.stringKey();
+function populateCells(cells, clues) {
+  let errors = []
+  for (let [clueid, clue] of Object.entries(clues)) {
+    cells[clue.row - 1][clue.col - 1].number = clue.number;
+    if (clue.isAcross) {
+      for (let col = clue.col - 1; col < clue.col + clue.totalLength - 1; col++) {
+        let r = cells[clue.row - 1];
+        if (r && r[col]) {
+          r[col].empty = false;
+        } else {
+          errors.push("clue " + clueid + " outside grid");
+        }
+      }
+    } else {
+      for (let row = clue.row - 1; row < clue.row + clue.totalLength - 1; row++) {
+        let r = cells[row];
+        if (r && r[clue.col - 1]) {
+          r[clue.col - 1].empty = false;
+        } else {
+          errors.push("clue " + clueid + " outside grid");
+        }
+      }
+    }
+  }
+  return errors;
+}
+
+function buildGrid(cw) {
+  let clues = cw.clues;
+  let grid = cw.grid;
+  grid.cells = []
+  for (let row = 1; row <= grid.height; row++) {
+    let rowCells = [];
+    for (let col = 1; col <= grid.width; col++) {
+      rowCells.push({
+        empty: true
+      });
+    }
+    grid.cells.push(rowCells);
+  }
+  return populateCells(grid.cells, clues);
+}
+
+function parseClue(cw, clue) {
+  const clueid = clue.stringKey();
   const x = clue.toSection();
   const lengths = x.requiredList('lengths').requiredIntegerValues();
   const nwords = lengths.length;
@@ -14,42 +57,41 @@ function parseClue(doc, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
-  doc.clues[k] = {
+  cw.clues[clueid] = {
+    isAcross: clueid.slice(-1) == 'A',
+    number: parseInt(clueid.slice(0, -1), 10),
     text: x.requiredField('text').requiredStringValue(),
+    separators: sep,
     lengths: lengths,
+    totalLength: lengths.reduce((acc, x) => acc + x),
     row: x.requiredField('row').requiredIntegerValue(),
-    col: x.requiredField('col').requiredIntegerValue(),
-    separators: sep
+    col: x.requiredField('col').requiredIntegerValue()
   };
 }
 
 export function parse(input, options) {
-  const _doc = enolib.parse(input, options);
+  const cw = {
+    meta: {},
+    grid: {},
+    clues: {}
+  };
+  const doc = enolib.parse(input, options);
+  const meta = doc.requiredSection('meta');
+  ['name', 'author', 'pubdate', 'copyright'].forEach(field =>
+    cw.meta[field] = meta.requiredField(field).requiredStringValue()
+  );
+  
+  const grid = doc.requiredSection('grid');
+  ['width', 'height'].forEach(field =>
+    cw.grid[field] = grid.requiredField(field).requiredIntegerValue()
+  );
 
-  const doc = {};
-  {
-    doc.meta = {};
-    const _meta = _doc.requiredSection('meta');
-    const meta = doc.meta;
-    meta.name = _meta.requiredField('name').requiredStringValue();
-    meta.author = _meta.requiredField('author').requiredStringValue();
-    meta.pubdate = _meta.requiredField('pubdate').requiredStringValue();
-    meta.copyright = _meta.requiredField('copyright').requiredStringValue();
-  }
-  {
-    doc.grid = {};
-    const _grid = _doc.requiredSection('grid');
-    const grid = doc.grid;
-    grid.width = _grid.requiredField('width').requiredIntegerValue();
-    grid.height = _grid.requiredField('height').requiredIntegerValue();
-  }
-  {
-    doc.clues = {};
-    const _clues = _doc.requiredSection('clues').elements();
-    _clues.forEach(clue => parseClue(doc, clue));
-  }
+  const clues = doc.requiredSection('clues').elements();
+  clues.forEach(clue => parseClue(cw, clue));
+  
+  let errors = buildGrid(cw);
 
-  return doc;
+  return cw;
 };
 
 export function sampleCrossword() {
@@ -131,25 +173,19 @@ col: 9
 text: Some mimic a Nastase game
 lengths:
     - 7
-    
-## 20A
-row: 9
-col: 13
-text: Dozer rail beam
-lengths:
-    - 7
+
     
 ## 21A
 text: Rage therapy bloke discovered language adds years to blokes, given time
-row: 1
-col: 11
+row: 11
+col: 1
 lengths:
     - 5
     - 10
     
 ## 25A
-row: 1
-col: 13
+row: 13
+col: 1
 text: Analgesia helping to lessen my ultimate pain
 lengths:
     - 5
@@ -259,6 +295,13 @@ lengths:
 row: 9
 col: 3
 text: Chauvinist accepts turn of sasquatch 
+lengths:
+    - 7
+    
+## 20D
+row: 9
+col: 13
+text: Dozer rail beam
 lengths:
     - 7
 

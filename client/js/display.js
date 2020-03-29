@@ -1,45 +1,77 @@
-function getCellNumber(row, col, clues) {
-    for (let [clueid, clue] of Object.entries(clues)) {
-        if (clue.col == col && clue.row == row) {
-            return clueid.slice(0, -1);
-        }
-    }
-    return undefined;
-}
+
 
 export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
+        const self = this;
+        parent.onclick = function (e) {
+            self.onClick(e);
+        };
     }
 
     setCrossword(crossword) {
         this.crossword = crossword;
-        this.parent.innerHTML = ""
-        this.buildGrid(crossword);
+        this.parent.innerHTML = "";
+        this.drawGrid(crossword);
+        this.createInput();
     }
 
-    buildGrid(crossword) {
-        let clues = crossword.clues;
-        let grid = crossword.grid;
+    onClick(e) {
+        const target = e.target;
+        let input = this.gridInput;
+        if (target.nodeName == 'TD' && !target.hasAttribute('data-empty')) {
+            input.style.display = '';
+            input.style.left = target.offsetLeft + 'px';
+            input.style.top = target.offsetTop + 'px';
+
+            input.focus();
+            input.select();
+        }
+    }
+
+    createInput() {
+        let input = document.createElement('input');
+        input.classList.add('crossword-grid-input');
+        input.style.display = 'none';
+        input.type = 'text';
+        this.gridWrapper.appendChild(input);
+        this.gridInput = input;
+    }
+
+    storeInput() {
+        const tds = this.gridWrapper.querySelectorAll('td .accepting-input');
+        tds.forEach(function (td) {
+            td.textContent = this.gridInput.value;
+            td.classList.remove('accepting-input');
+        });
+    }
+
+    drawGrid(crossword) {
+        const cells = crossword.grid.cells;
+        let wrapper = document.createElement('div');
+        wrapper.classList.add('crossword-grid-wrapper');
         let table = document.createElement('table');
-        table.classList.add('crossword-grid-table');
+        table.classList.add('crossword-grid');
         table.setAttribute('cellSpacing', 0);
-        for (let row = 1; row <= grid.height; row++) {
+        for (let row = 0; row < cells.length; row++) {
             const tr = document.createElement('tr');
-            for (let col = 1; col <= grid.width; col++) {
-                const num = getCellNumber(row, col, clues);
+            for (let col = 0; col < cells[row].length; col++) {
                 const td = document.createElement('td');
+                const cell = cells[row][col];
                 td.setAttribute('data-row', row);
                 td.setAttribute('data-col', col);
-                if (num) {
-                    td.setAttribute('data-number', num);
+                if (cell.empty) {
+                    td.setAttribute('data-empty', '');
                 }
-                td.textContent = num ? num : "";
+                if (cell.number) {
+                    td.setAttribute('data-number', cell.number);
+                }
                 tr.appendChild(td);
             }
             table.appendChild(tr);
         }
-        this.parent.appendChild(table);
-        this.gridTable = table;
+        wrapper.appendChild(table);
+        this.parent.appendChild(wrapper);
+        this.gridWrapper = wrapper;
     }
 }
