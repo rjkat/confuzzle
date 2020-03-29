@@ -3,6 +3,20 @@ const enotype = require('enotype');
 
 enolib.register(enotype);
 
+function parseClue(clue) {
+  console.log("clue: " + clue.stringKey());
+  const x = clue.toSection();
+  const sep = x.optionalList('separators');
+  const parsed = {
+    text: x.requiredField('text').requiredStringValue(),
+    lengths: x.requiredList('lengths').requiredIntegerValues(),
+    coords: x.requiredList('coords').requiredIntegerValues(),
+    separators: (sep ? sep.requiredStringValues() : [])
+  };
+  console.log(JSON.stringify(parsed));
+  return parsed;
+}
+
 export function parse(input, options) {
   const _document = enolib.parse(input, options);
 
@@ -27,8 +41,8 @@ export function parse(input, options) {
     document.clues = {};
     const _clues = _document.requiredSection('clues');
     const clues = document.clues;
-    clues.across = _clues.requiredList('across').requiredStringValues();
-    clues.down = _clues.requiredList('down').requiredStringValues();
+    const _across = _clues.requiredSection('across').elements();
+    _across.forEach(parseClue);
   }
 
   return document;
