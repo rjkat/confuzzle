@@ -1,4 +1,4 @@
-import {AnagrindClient} from './anagrind-client.js'
+import {AnagrindClient} from './client.js'
 
 var client = new AnagrindClient(window.location.host, window.location.pathname);
 
