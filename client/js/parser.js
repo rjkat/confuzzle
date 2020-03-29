@@ -3,47 +3,51 @@ const enotype = require('enotype');
 
 enolib.register(enotype);
 
-function parseClue(clue) {
-  console.log("clue: " + clue.stringKey());
+function parseClue(doc, clue) {
+  const k = clue.stringKey();
   const x = clue.toSection();
-  const sep = x.optionalList('separators');
-  const parsed = {
+  const lengths = x.requiredList('lengths').requiredIntegerValues();
+  const nwords = lengths.length;
+  var sep = x.optionalList('separators');
+  if (sep) {
+    sep = sep.requiredStringValues();
+  } else {
+    sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
+  }
+  doc.clues[k] = {
     text: x.requiredField('text').requiredStringValue(),
-    lengths: x.requiredList('lengths').requiredIntegerValues(),
+    lengths: lengths,
     coords: x.requiredList('coords').requiredIntegerValues(),
-    separators: (sep ? sep.requiredStringValues() : [])
+    separators: sep
   };
-  console.log(JSON.stringify(parsed));
-  return parsed;
+  console.log(k + ': ' + JSON.stringify(doc.clues[k]));
 }
 
 export function parse(input, options) {
-  const _document = enolib.parse(input, options);
+  const _doc = enolib.parse(input, options);
 
-  const document = {};
+  const doc = {};
   {
-    document.meta = {};
-    const _meta = _document.requiredSection('meta');
-    const meta = document.meta;
+    doc.meta = {};
+    const _meta = _doc.requiredSection('meta');
+    const meta = doc.meta;
     meta.name = _meta.requiredField('name').requiredStringValue();
     meta.author = _meta.requiredField('author').requiredStringValue();
     meta.pubdate = _meta.requiredField('pubdate').requiredStringValue();
     meta.copyright = _meta.requiredField('copyright').requiredStringValue();
   }
   {
-    document.grid = {};
-    const _grid = _document.requiredSection('grid');
-    const grid = document.grid;
+    doc.grid = {};
+    const _grid = _doc.requiredSection('grid');
+    const grid = doc.grid;
     grid.width = _grid.requiredField('width').requiredIntegerValue();
     grid.height = _grid.requiredField('height').requiredIntegerValue();
   }
   {
-    document.clues = {};
-    const _clues = _document.requiredSection('clues');
-    const clues = document.clues;
-    const _across = _clues.requiredSection('across').elements();
-    _across.forEach(parseClue);
+    doc.clues = {};
+    const _clues = _doc.requiredSection('clues').elements();
+    _clues.forEach(clue => parseClue(doc, clue));
   }
 
-  return document;
+  return doc;
 };
