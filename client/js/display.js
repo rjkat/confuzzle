@@ -15,15 +15,15 @@ export class CrosswordDisplay {
     setCrossword(crossword) {
         this.crossword = crossword;
         this.parent.innerHTML = ""
-        this.buildGrid();
+        this.buildGrid(crossword);
     }
 
-    buildGrid() {
-        let parent = this.parent;
-        let clues = this.crossword.clues;
-        let grid = this.crossword.grid;
+    buildGrid(crossword) {
+        let clues = crossword.clues;
+        let grid = crossword.grid;
         let table = document.createElement('table');
         table.classList.add('crossword-grid-table');
+        table.setAttribute('cellSpacing', 0);
         for (let row = 1; row <= grid.height; row++) {
             const tr = document.createElement('tr');
             for (let col = 1; col <= grid.width; col++) {
@@ -34,12 +34,12 @@ export class CrosswordDisplay {
                 if (num) {
                     td.setAttribute('data-number', num);
                 }
-                td.textContent = num ? num : ".";
+                td.textContent = num ? num : "";
                 tr.appendChild(td);
             }
             table.appendChild(tr);
         }
-        parent.appendChild(table);
+        this.parent.appendChild(table);
         this.gridTable = table;
     }
 }
