@@ -1,8 +1,17 @@
+# meta
+
 name: SMH Cryptic, October 10, 2003
 author: DA
 pubdate: 2003/10/10
 copyright: The Sydney Morning Herald
-size: 15x15
+
+# grid
+
+width: 15
+height: 15
+
+# clues
+
 across:
 - (1,1) 1. Big in East London, say, since radical birth control (8)
 - (10,1) 5. It's hard hiding gun during curtailed diplomacy (6)
@@ -19,6 +28,7 @@ across:
 - (7,13) 26. Fruit linked to cancer? (4,5)
 - (1,15) 27. Slur Berlin parent (6)
 - (8,15) 28. Political sister suffering Me-Factor (8)
+
 down:
 - (1,1) 1. Shows most of hypothermia (5)
 - (3,1) 2. Explorer guy gutless to accept radio confirmation going north (7)

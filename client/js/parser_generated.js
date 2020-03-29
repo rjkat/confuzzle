@@ -1,20 +1,22 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
+const fs = require('fs');
 
 enolib.register(enotype);
 
-export function parse(input, options) {
-  const _document = enolib.parse(input, options);
+exports.parse = path => {
+  const input = fs.readFileSync(path, 'utf-8');
+  const _document = enolib.parse(input, { source: path });
 
   const document = {};
   {
-    document.meta = {};
-    const _meta = _document.requiredSection('meta');
-    const meta = document.meta;
-    meta.name = _meta.requiredField('name').requiredStringValue();
-    meta.author = _meta.requiredField('author').requiredStringValue();
-    meta.pubdate = _meta.requiredField('pubdate').requiredStringValue();
-    meta.copyright = _meta.requiredField('copyright').requiredStringValue();
+    document.metadata = {};
+    const _metadata = _document.requiredSection('metadata');
+    const metadata = document.metadata;
+    metadata.name = _metadata.requiredField('name').requiredStringValue();
+    metadata.author = _metadata.requiredField('author').requiredStringValue();
+    metadata.pubdate = _metadata.requiredField('pubdate').requiredStringValue();
+    metadata.copyright = _metadata.requiredField('copyright').requiredStringValue();
   }
   {
     document.grid = {};
