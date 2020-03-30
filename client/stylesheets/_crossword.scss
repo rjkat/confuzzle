@@ -1,9 +1,9 @@
 .crossword-display {
     max-width: 100%;
-    padding: 18px;
-    display: block;
+    padding: $displayPadding;
+    display: inline-block;
 
-    .crossword-grid-wrapper {
+    .crossword-grid-container {
         text-transform: uppercase;
 
         .crossword-grid {
@@ -58,6 +58,29 @@
             text-align: center;
             vertical-align: middle;
             text-transform: inherit;
+            box-sizing: border-box;
         }
     }
+
+    @media screen and (min-width: $fullSizeMinWidth) {
+        .crossword-clue-container {
+            position: absolute;
+            margin-left: $displayPadding;
+            margin-right: $displayPadding;
+            border: $gridBorderWidth solid;
+            box-sizing: border-box;
+            overflow-y: scroll;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .crossword-clues {
+            flex: 50%;
+            min-width: 10em;
+        }
+    }
+}
+
+.crossword-input {
+    display: block;
 }
