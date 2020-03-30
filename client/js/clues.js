@@ -19,7 +19,18 @@ export class ClueDisplay {
         for (let [clueid, clue] of Object.entries(clues)) {
             if (clue.isAcross == isAcross) {
                 const li = document.createElement('li');
-                li.textContent = clue.text;
+                li.innerHTML = '<span class="clue-id">' + clueid + '</span>';
+                li.innerHTML += ' ' + '<span class="clue-text">' + clue.text + '</span>';
+                li.dataset.clueid = clueid;
+
+                const answer = document.createElement('div');
+                answer.classList.add('crossword-answer-container');
+                for (let i = 0; i < clue.totalLength; i++) {
+                    const input = document.createElement('input');
+                    input.setAttribute('maxlength', 1);
+                    answer.appendChild(input);
+                }
+                li.appendChild(answer);
                 list.appendChild(li);
             }
         }
@@ -29,12 +40,13 @@ export class ClueDisplay {
     setCrossword(crossword, gridTable) {
         this.crossword = crossword;
         const el = this.clueContainer;
+        el.innerHTML = '';
         el.style.left = gridTable.offsetLeft + gridTable.clientWidth + 'px';
         el.style.top = gridTable.offsetTop + 'px';
         el.style.height = gridTable.offsetHeight + 'px';
 
         const self = this;
-        [false, true].forEach(function(isAcross) {
+        [true, false].forEach(function(isAcross) {
             const div = document.createElement('div');
             div.classList.add('crossword-clues');
             if (isAcross) {
