@@ -1,5 +1,7 @@
 import * as KeyCode from 'keycode-js';
 
+import * as parser from './parser.js';
+
 export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
@@ -18,13 +20,28 @@ export class CrosswordDisplay {
     }
 
     onClick(e) {
+        e.preventDefault();
         const target = e.target;
+        const input = this.inputCell;
+        // switch directions
+        if (target.nodeName == 'INPUT' && target.classList.contains('crossword-grid-input')) {
+            const cell = this.currentCell();
+            if (cell.clues.across && cell.clues.down) {
+                this.inputAcross = !this.inputAcross;
+                this.highlightCurrentClue();
+            }
+            input.el.focus();
+            input.el.select();
+            return;
+        }
+
+        // select cell
         if (target.nodeName != 'TD') {
             return;
         }
-        const row = parseInt(target.getAttribute('data-row'), 10);
-        const col = parseInt(target.getAttribute('data-col'), 10);
-        this.moveInput(row, col);
+        const row = parseInt(target.dataset.row, 10);
+        const col = parseInt(target.dataset.col, 10);
+        this.setInputCell(row, col);
     }
 
     createInput() {
@@ -39,80 +56,123 @@ export class CrosswordDisplay {
         input.onkeypress = function(e) {
             self.handleKeypress(e, true);
         }
+        input.onmousedown = function(e){
+            e.preventDefault();
+        }
         input.setAttribute('maxlength', 1);
         this.gridWrapper.appendChild(input);
-        this.gridInput = {
+        this.inputCell = {
             el: input,
             row: 0,
             col: 0,
         };
     }
 
-    moveInput(row, col) {
-        let cells = this.crossword.grid.cells;
-        let input = this.gridInput;
+    currentCell() {
+        const cells = this.crossword.grid.cells;
+        const input = this.inputCell;
+        return cells[input.row][input.col];
+    }
 
+    currentClue() {
+        const cell = this.currentCell();
+        return this.inputAcross ? cell.clues.across : cell.clues.down;
+    }
+
+    moveInputCell(direction) {
+        const input = this.inputCell;
+        let row, col;
+        if (this.inputAcross) {
+            row = input.row;
+            col = input.col + direction;
+        } else {
+            row = input.row + direction;
+            col = input.col;
+        }
+        this.setInputCell(row, col, direction);
+    }
+
+    clearHighlight() {
+        this.gridWrapper.querySelectorAll('.highlighted').forEach(
+            el => el.classList.remove('highlighted')
+        );
+    }
+
+    highlightCurrentClue() {
+        this.clearHighlight();
+        const cells = this.crossword.grid.cells;
+        const clue = this.currentClue();
+        parser.forEachCell(clue, cells, function (cell) {
+            cell.td.classList.add('highlighted');
+        });
+    }
+
+    setInputCell(row, col, moveDirection) {
+        const cells = this.crossword.grid.cells;
+        const input = this.inputCell;
+        const el = input.el;
         let cell = cells[input.row][input.col];
         cell.td.textContent = cell.contents;
 
         if (   row < 0 || row >= cells.length
             || col < 0 || col >= cells[row].length
             || cells[row][col].empty) {
-            input.el.blur();
+            // make it so that backspace doesn't hide the input
+            if (moveDirection != -1) {
+                el.value = '';
+                el.style.display = 'none';
+                this.clearHighlight();
+            }
             return;
         }
-        cell = cells[row][col];
-        let td = cell.td;
+        input.row = row;
+        input.col = col;
+        cell = this.currentCell();
+        if (!(cell.clues.across && cell.clues.down)) {
+            this.inputAcross = Boolean(cell.clues.across);
+        }
+        
+        const td = cell.td;
         td.textContent = '';
 
-        let el = input.el;
         el.value = cell.contents;
         el.style.display = '';
         el.style.left = td.offsetLeft + 'px';
         el.style.top = td.offsetTop + 'px';
         el.focus();
         el.select();
-        input.row = row;
-        input.col = col;
-    }
 
-    advanceInput(rev) {
-        let input = this.gridInput;
-        if (this.inputAcross) {
-            this.moveInput(input.row, input.col + (rev ? -1 : 1));
-        } else {
-            this.moveInput(input.row + (rev ? -1 : 1), input.col);
-        }
+        this.highlightCurrentClue();
     }
 
     handleKeydown(e, isGrid) {
-
-        let input = this.gridInput;
-        let cells = this.crossword.grid.cells;
+        const input = this.inputCell;
+        const cells = this.crossword.grid.cells;
+        const cell = cells[input.row][input.col];
         switch (e.keyCode) {
             case KeyCode.KEY_SPACE:
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
-                this.advanceInput();
+                this.moveInputCell(1);
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 e.preventDefault();
                 if (isGrid) {
-                    cells[input.row][input.col].contents = '';
-                    cells[input.row][input.col].td.textContent = '';
+                    cell.contents = '';
+                    cell.td.textContent = '';
                     input.el.value = '';
                 }
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
-                this.advanceInput(true);
+                this.moveInputCell(-1);
                 break;
         }
     }
 
     storeInput(val, isGrid) {
         if (isGrid) {
-            let input = this.gridInput;
-            let cell = this.crossword.grid.cells[input.row][input.col];
+            const input = this.inputCell;
+            const cell = this.crossword.grid.cells[input.row][input.col];
             input.el.value = '';
             cell.contents = val;
             cell.td.textContent = val;
@@ -120,10 +180,9 @@ export class CrosswordDisplay {
     }
 
     handleKeypress(e, isGrid) {
-        let input = this.gridInput;
         e.preventDefault();
         this.storeInput(e.key, isGrid);
-        this.advanceInput();
+        this.moveInputCell(1);
     }
 
     drawGrid(crossword) {
@@ -138,13 +197,13 @@ export class CrosswordDisplay {
             for (let col = 0; col < cells[row].length; col++) {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
-                td.setAttribute('data-row', row);
-                td.setAttribute('data-col', col);
+                td.dataset.row = row;
+                td.dataset.col = col;
                 if (cell.empty) {
-                    td.setAttribute('data-empty', '');
+                    td.dataset.empty = '';
                 }
                 if (cell.number) {
-                    td.setAttribute('data-number', cell.number);
+                    td.dataset.number = cell.number;
                 }
                 cell.td = td;
                 tr.appendChild(td);

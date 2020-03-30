@@ -36,13 +36,17 @@
                 &[data-empty] {
                     background: $gridBgColor;
                 }
+
+                &.highlighted {
+                    background-color: $gridHighlightColor;
+                }
             }
         }
 
         .crossword-grid-input {
             font-size: $gridFontSize;
             font-family: $answerFontFamily;
-            padding: 0 0 0 $gridBorderWidth;
+            padding: $gridBorderWidth 0 0 $gridBorderWidth;
             border: 0;
             background: none;
             outline: none;

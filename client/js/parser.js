@@ -3,29 +3,40 @@ const enotype = require('enotype');
 
 enolib.register(enotype);
 
+export function forEachCell(clue, cells, cellFn) {
+  if (clue.isAcross) {
+    for (let col = clue.col - 1; col < clue.col + clue.totalLength - 1; col++) {
+      let r = cells[clue.row - 1];
+      if (r && r[col]) {
+        cellFn(r[col]);
+      }
+    }
+  } else {
+    for (let row = clue.row - 1; row < clue.row + clue.totalLength - 1; row++) {
+      let r = cells[row];
+      let col = clue.col - 1;
+      if (r && r[col]) {
+        cellFn(r[col]);
+      }
+    }
+  }
+}
+
 function populateCells(cells, clues) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
     cells[clue.row - 1][clue.col - 1].number = clue.number;
-    if (clue.isAcross) {
-      for (let col = clue.col - 1; col < clue.col + clue.totalLength - 1; col++) {
-        let r = cells[clue.row - 1];
-        if (r && r[col]) {
-          r[col].empty = false;
-        } else {
-          errors.push("clue " + clueid + " outside grid");
-        }
+    forEachCell(clue, cells, function (cell) {
+      if (cell.empty) {
+        cell.clues = {};
       }
-    } else {
-      for (let row = clue.row - 1; row < clue.row + clue.totalLength - 1; row++) {
-        let r = cells[row];
-        if (r && r[clue.col - 1]) {
-          r[clue.col - 1].empty = false;
-        } else {
-          errors.push("clue " + clueid + " outside grid");
-        }
+      if (clue.isAcross) {
+        cell.clues.across = clue;
+      } else {
+        cell.clues.down = clue;
       }
-    }
+      cell.empty = false;
+    });
   }
   return errors;
 }
