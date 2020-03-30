@@ -113,13 +113,16 @@ export class GridDisplay {
         this.clearHighlight();
     }
 
-    highlightCurrentClue() {
+    highlightClue(clue) {
         this.clearHighlight();
         const cells = this.crossword.grid.cells;
-        const clue = this.currentClue();
         parser.forEachCell(clue, cells, function (cell) {
             cell.td.classList.add('highlighted');
         });
+    }
+
+    highlightCurrentClue() {
+        this.highlightClue(this.currentClue());
     }
 
     setInputCell(row, col, backspace) {

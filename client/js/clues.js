@@ -1,7 +1,8 @@
 
 export class ClueDisplay {
-    constructor(parent) {
+    constructor(parent, grid) {
         this.parent = parent;
+        this.grid = grid;
         const self = this;
         const container = document.createElement('div');
         container.classList.add('crossword-clue-container');
@@ -21,6 +22,13 @@ export class ClueDisplay {
                 const li = document.createElement('li');
                 li.innerHTML = '<span class="clue-id">' + clueid + '</span>';
                 li.innerHTML += ' ' + '<span class="clue-text">' + clue.text + '</span>';
+                const grid = this.grid;
+                li.onmouseover = function (e) {
+                    grid.highlightClue(clue);
+                };
+                li.onmouseout = function (e) {
+                    grid.clearHighlight();
+                };
                 li.dataset.clueid = clueid;
 
                 const answer = document.createElement('div');

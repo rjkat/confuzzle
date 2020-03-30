@@ -100,6 +100,7 @@
                 li {
                     line-height: 1.5em;
                     padding-bottom: .5em;
+                    cursor: pointer;
                 }
             }
 
@@ -108,7 +109,7 @@
                 font-family: $answerFontFamily;
                 padding: $gridBorderWidth 0 0 $gridBorderWidth;
                 border: 0;
-                border-bottom: 1px solid #000;
+                border-bottom: 1px solid $gridBgColor;
                 margin-right: 2px;
                 background: none;
                 outline: none;

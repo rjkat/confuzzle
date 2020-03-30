@@ -9,11 +9,13 @@ export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
         this.grid = new GridDisplay(parent);
-        this.clues = new ClueDisplay(parent);
+        this.clues = new ClueDisplay(parent, this.grid);
+        this.grid.clueDisplay = this.clues;
     }
 
     setCrossword(crossword) {
-        this.grid.setCrossword(crossword);
-        this.clues.setCrossword(crossword, this.grid.gridTable);
+        const grid = this.grid;
+        grid.setCrossword(crossword);
+        this.clues.setCrossword(crossword, grid.gridTable);
     }
 }
