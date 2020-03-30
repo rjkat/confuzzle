@@ -38,7 +38,7 @@ export class ClueDisplay {
                     self.cwDisplay.highlightClue(clue);
                 };
                 li.onmouseout = function (e) {
-                    self.cwDisplay.clearHighlight();
+                    self.cwDisplay.unhighlightClue();
                 };
                 li.dataset.clueid = clueid;
 

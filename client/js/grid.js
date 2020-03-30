@@ -31,10 +31,10 @@ export class GridDisplay {
             const cell = this.currentCell();
             if (cell.clues.across && cell.clues.down) {
                 this.inputAcross = !this.inputAcross;
-                this.highlightCurrentClue();
             }
             input.el.focus();
             input.el.select();
+            this.selectCurrentClue();
             return;
         }
 
@@ -80,9 +80,11 @@ export class GridDisplay {
         return cells[input.row][input.col];
     }
 
-    currentClue() {
+    selectCurrentClue() {
         const cell = this.currentCell();
-        return this.inputAcross ? cell.clues.across : cell.clues.down;
+        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
+        const scroll = true;
+        this.cwDisplay.selectClue(clue, scroll);
     }
 
     moveInputCell(direction) {
@@ -99,14 +101,13 @@ export class GridDisplay {
         this.setInputCell(row, col, backspace);
     }
 
-
     hideInputCell() {
         const el = this.inputCell.el;
         const cell = this.currentCell();
         cell.td.textContent = cell.contents;
         el.value = '';
         el.style.display = 'none';
-        this.cwDisplay.clearHighlight();
+        this.cwDisplay.deselectClue();
     }
 
     highlightClue(clue) {
@@ -114,10 +115,6 @@ export class GridDisplay {
         parser.forEachCell(clue, cells, function (cell) {
             cell.td.classList.add('highlighted');
         });
-    }
-
-    highlightCurrentClue() {
-        this.cwDisplay.highlightClue(this.currentClue(), true);
     }
 
     setInputCell(row, col, backspace) {
@@ -156,7 +153,7 @@ export class GridDisplay {
         el.focus();
         el.select();
 
-        this.highlightCurrentClue();
+        this.selectCurrentClue();
     }
 
     handleKeydown(e) {
@@ -207,6 +204,7 @@ export class GridDisplay {
             for (let col = 0; col < cells[row].length; col++) {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
+
                 td.dataset.row = row;
                 td.dataset.col = col;
                 if (cell.empty) {
@@ -214,6 +212,17 @@ export class GridDisplay {
                 }
                 if (cell.number) {
                     td.dataset.number = cell.number;
+                }
+                if (cell.clues) {
+                    if (cell.clues.across) {
+                        td.dataset.clueid = cell.clues.across.id;
+                        if (cell.clues.down) {
+                            td.dataset.clueid += ',';
+                        }
+                    }
+                    if (cell.clues.down) {
+                        td.dataset.clueid += cell.clues.down.id;
+                    }
                 }
                 cell.td = td;
                 tr.appendChild(td);
