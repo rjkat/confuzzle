@@ -2,7 +2,8 @@ import * as KeyCode from 'keycode-js';
 import * as parser from './parser.js';
 
 export class GridDisplay {
-    constructor(parent) {
+    constructor(cwDisplay) {
+        this.cwDisplay = cwDisplay;
         this.inputAcross = true;
         const self = this;
         const container = document.createElement('div');
@@ -10,7 +11,7 @@ export class GridDisplay {
         container.onclick = function (e) {
             self.onClick(e);
         };
-        parent.appendChild(container);
+        cwDisplay.parent.appendChild(container);
         this.gridContainer = container;
     }
 
@@ -98,11 +99,6 @@ export class GridDisplay {
         this.setInputCell(row, col, backspace);
     }
 
-    clearHighlight() {
-        this.gridContainer.querySelectorAll('.highlighted').forEach(
-            el => el.classList.remove('highlighted')
-        );
-    }
 
     hideInputCell() {
         const el = this.inputCell.el;
@@ -110,11 +106,10 @@ export class GridDisplay {
         cell.td.textContent = cell.contents;
         el.value = '';
         el.style.display = 'none';
-        this.clearHighlight();
+        this.cwDisplay.clearHighlight();
     }
 
     highlightClue(clue) {
-        this.clearHighlight();
         const cells = this.crossword.grid.cells;
         parser.forEachCell(clue, cells, function (cell) {
             cell.td.classList.add('highlighted');
@@ -122,7 +117,7 @@ export class GridDisplay {
     }
 
     highlightCurrentClue() {
-        this.highlightClue(this.currentClue());
+        this.cwDisplay.highlightClue(this.currentClue(), true);
     }
 
     setInputCell(row, col, backspace) {

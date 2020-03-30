@@ -101,6 +101,9 @@
                     line-height: 1.5em;
                     padding-bottom: .5em;
                     cursor: pointer;
+                    &.highlighted {
+                        color: $gridHighlightColor;
+                    }
                 }
             }
 
@@ -122,6 +125,11 @@
                 text-transform: uppercase;
                 box-sizing: border-box;
             }
+
+            .highlighted input {
+                border-bottom: 2px solid $gridHighlightColor;
+            }
+
             .clue-id {
                 font-weight: bold;
             }

@@ -1,16 +1,27 @@
 
 export class ClueDisplay {
-    constructor(parent, grid) {
-        this.parent = parent;
-        this.grid = grid;
+    constructor(cwDisplay) {
+        this.cwDisplay = cwDisplay;
         const self = this;
         const container = document.createElement('div');
         container.classList.add('crossword-clue-container');
-        container.onclick = function (e) {
-            self.onClick(e);
-        };
-        parent.appendChild(container);
+        cwDisplay.parent.appendChild(container);
         this.clueContainer = container;
+    }
+
+    getClueElement(clueid) {
+        return this.clueContainer.querySelector('li[data-clueid="'+ clueid +'"]');
+    }
+
+    highlightClue(clue, scroll) {
+        const el = this.getClueElement(clue.id);
+        if (scroll) {
+            this.clueContainer.scrollTo({
+              top: el.offsetTop,
+              behavior: 'smooth'
+            });
+        }
+        el.classList.add('highlighted');
     }
 
     addClueList(container, isAcross) {
@@ -22,12 +33,12 @@ export class ClueDisplay {
                 const li = document.createElement('li');
                 li.innerHTML = '<span class="clue-id">' + clueid + '</span>';
                 li.innerHTML += ' ' + '<span class="clue-text">' + clue.text + '</span>';
-                const grid = this.grid;
+                const self = this;
                 li.onmouseover = function (e) {
-                    grid.highlightClue(clue);
+                    self.cwDisplay.highlightClue(clue);
                 };
                 li.onmouseout = function (e) {
-                    grid.clearHighlight();
+                    self.cwDisplay.clearHighlight();
                 };
                 li.dataset.clueid = clueid;
 

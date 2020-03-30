@@ -8,9 +8,20 @@ import {ClueDisplay} from './clues.js'
 export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
-        this.grid = new GridDisplay(parent);
-        this.clues = new ClueDisplay(parent, this.grid);
-        this.grid.clueDisplay = this.clues;
+        this.grid = new GridDisplay(this);
+        this.clues = new ClueDisplay(this);
+    }
+
+    highlightClue(clue, scroll) {
+        this.clearHighlight();
+        this.clues.highlightClue(clue, scroll);
+        this.grid.highlightClue(clue);
+    }
+
+    clearHighlight() {
+        this.parent.querySelectorAll('.highlighted').forEach(
+            el => el.classList.remove('highlighted')
+        );
     }
 
     setCrossword(crossword) {

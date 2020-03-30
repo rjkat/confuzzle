@@ -70,6 +70,7 @@ function parseClue(cw, clue) {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
   cw.clues[clueid] = {
+    id: clueid,
     isAcross: clueid.slice(-1) == 'A',
     number: parseInt(clueid.slice(0, -1), 10),
     text: x.requiredField('text').requiredStringValue(),
