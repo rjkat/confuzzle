@@ -1,3 +1,42 @@
+#crossword-title {
+    padding-left: 1em;
+    background-position: $displayPadding 0;
+    height: 40px;
+    background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 400,0 440,20, 400,40 0,40' fill='%23003264'/></svg>");
+
+}
+
+.crossword-details {
+    color: #fff;
+    height: 40px;
+    width: 400px;
+    line-height: 40px;
+    margin-top: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#crossword-type {
+    font-family: 'Bree Serif';
+    font-size: 36px;
+    padding-left: 10px;
+    font-weight: bold;
+}
+#crossword-author {
+    font-family: $clueFontFamily; 
+    margin-left: -1.5em;
+    font-size: 20px;
+}
+#crossword-pubdate {
+    font-family: 'Bree Serif';
+    font-size: 30px;
+}
+
+.crossword-collaborators {
+    float: right;
+    display: flex;
+}
+
 .crossword-display {
     max-width: 100%;
     padding: $displayPadding;

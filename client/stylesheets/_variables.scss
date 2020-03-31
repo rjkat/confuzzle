@@ -2,7 +2,7 @@ $answerFontFamily: "notcouriersansregular", monospace;
 $clueFontFamily: "aurulent_sansregular", sans-serif;
 
 $gridBgColor: #000;
-$gridHighlightColor: #e73;
+$gridHighlightColor: #e86;
 $gridFontSize: 24px; 
 $gridCellSize: 2ch;
 $gridBorderWidth: 1px;
@@ -11,3 +11,10 @@ $displayPadding: 18px;
 
 // minimum screen size for full size UI
 $fullSizeMinWidth: 46.25em;
+
+$collabColor0: $gridHighlightColor;
+$collabColor1: #7ad;
+$collabColor2: #ed8;
+$collabColor3: #fab;
+$collabColor4: #4b9;
+$collabColor5: #aa0;

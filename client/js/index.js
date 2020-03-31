@@ -10,6 +10,13 @@ const renderButton = document.getElementById('render-button');
 
 renderButton.onclick = function() {
     const crossword = parser.parse(sourceEl.value);
+
+    ['author', 'pubdate'].forEach(x => {
+        let el = document.getElementById('crossword-' + x);
+        el.textContent = x == 'author' ? 'by ' : '';
+        el.textContent += crossword.meta[x];
+    });
+
     display.setCrossword(crossword);
 }
 
