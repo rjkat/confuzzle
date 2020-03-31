@@ -31,6 +31,7 @@
                     content: attr(data-number);
                     font-size: .5em;
                     line-height: 1em;
+                    background-color: rgba(240, 240, 240, 0.7);
                 }
 
                 &[data-empty] {
@@ -62,77 +63,82 @@
         }
     }
 
-    @media screen and (min-width: $fullSizeMinWidth) {
-        .crossword-clue-container {
-            position: absolute;
-            margin-left: $displayPadding;
-            margin-right: $displayPadding;
-            border: $gridBorderWidth solid;
-            box-sizing: border-box;
-            overflow-y: scroll;
-            display: flex;
-            flex-wrap: wrap;
+    /* @media screen and (min-width: $fullSizeMinWidth) { */
+    .crossword-clue-container {
+        position: absolute;
+        margin-left: $displayPadding;
+        margin-right: $displayPadding;
+        border: $gridBorderWidth solid;
+        box-sizing: border-box;
+        overflow-y: scroll;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .crossword-clues {
+        flex: 50%;
+        min-width: 15em;
+        font-family: $clueFontFamily;
+        padding-top: .5em;
+
+        &[data-across]:before {
+            content: 'ACROSS';
+            font-weight: bold;
+            padding: .5em;
         }
 
-        .crossword-clues {
-            flex: 50%;
-            min-width: 15em;
-            font-family: $clueFontFamily;
-            padding-top: .5em;
+        &[data-down]:before {
+            content: 'DOWN';
+            font-weight: bold;
+            padding: .5em;
+        }
 
-            &[data-across]:before {
-                content: 'ACROSS';
-                font-weight: bold;
-                padding: .5em;
-            }
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 1em .5em 1em .5em;
 
-            &[data-down]:before {
-                content: 'DOWN';
-                font-weight: bold;
-                padding: .5em;
-            }
-
-            ul {
-                list-style: none;
-                margin: 0;
-                padding: 1em .5em 1em .5em;
-
-                li {
-                    line-height: 1.5em;
-                    padding-bottom: .5em;
+            li {
+                line-height: 1.5em;
+                padding-bottom: .5em;
+                .clue-directions {
                     cursor: pointer;
-                    &.highlighted {
-                        color: $gridHighlightColor;
-                    }
+                }
+                .highlighted {
+                    color: $gridHighlightColor;
                 }
             }
+        }
 
-            input {
-                font-size: $gridFontSize;
-                font-family: $answerFontFamily;
-                padding: $gridBorderWidth 0 0 $gridBorderWidth;
-                border: 0;
-                border-bottom: 1px solid $gridBgColor;
-                margin-right: 2px;
-                background: none;
-                outline: none;
-                min-width: $gridCellSize;
-                max-width: $gridCellSize;
-                height: $gridCellSize;
-                line-height: $gridCellSize;
-                text-align: center;
-                vertical-align: middle;
-                text-transform: uppercase;
-                box-sizing: border-box;
-            }
+        .highlighted .clue-directions {
+            color: $gridHighlightColor;
+        }
 
-            .highlighted input {
-                border-bottom: 2px solid $gridHighlightColor;
-            }
+        input {
+            font-size: $gridFontSize;
+            font-family: $answerFontFamily;
+            padding: $gridBorderWidth 0 0 $gridBorderWidth;
+            border: 0;
+            border-bottom: 1px solid $gridBgColor;
+            margin-right: 2px;
+            background: none;
+            outline: none;
+            min-width: $gridCellSize;
+            max-width: $gridCellSize;
+            height: $gridCellSize;
+            line-height: $gridCellSize;
+            text-align: center;
+            vertical-align: middle;
+            text-transform: uppercase;
+            box-sizing: border-box;
+        }
 
-            .clue-id {
-                font-weight: bold;
-            }
+        .highlighted input {
+            border-bottom: 2px solid $gridHighlightColor;
+        }
+
+        .clue-id {
+            font-weight: bold;
         }
     }
 }

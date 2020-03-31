@@ -1,5 +1,5 @@
 import * as KeyCode from 'keycode-js';
-import * as parser from './parser.js';
+const uniqid = require('uniqid');
 
 export class GridDisplay {
     constructor(cwDisplay) {
@@ -13,6 +13,7 @@ export class GridDisplay {
         };
         cwDisplay.parent.appendChild(container);
         this.gridContainer = container;
+        this.id = uniqid();
     }
 
     setCrossword(crossword) {
@@ -42,8 +43,24 @@ export class GridDisplay {
         if (target.nodeName != 'TD') {
             return;
         }
+        if (target.dataset.empty !== undefined) {
+            return;
+        }
         const row = parseInt(target.dataset.row, 10);
         const col = parseInt(target.dataset.col, 10);
+
+        const offsets = target.dataset.offset.split(',');
+        // if it's both a down and across clue, and they've
+        // clicked on a first letter, change direction to match
+        // the clue with the first letter
+        if (offsets.length > 1) {
+            for (let i = 0; i < offsets.length; i++) {
+                if (parseInt(offsets[i], 10) == 0) {
+                    this.inputAcross = (i == 0);
+                    break;
+                }
+            }
+        }
         this.setInputCell(row, col);
     }
 
@@ -53,16 +70,11 @@ export class GridDisplay {
         input.style.display = 'none';
         input.type = 'text';
         const self = this;
-        input.onkeydown = function(e) {
-            self.handleKeydown(e);
-        }
-        input.onkeypress = function(e) {
-            self.handleKeypress(e);
-        }
-        input.onmousedown = function(e) {
+        input.onkeydown = e => self.handleKeydown(e);
+        input.onkeypress = e => self.handleKeypress(e);
+        input.onmousedown = e => e.preventDefault();
+        input.onblur = e => {
             e.preventDefault();
-        }
-        input.onblur = function(e) {
             self.hideInputCell();
         }
         input.setAttribute('maxlength', 1);
@@ -80,11 +92,14 @@ export class GridDisplay {
         return cells[input.row][input.col];
     }
 
-    selectCurrentClue() {
+    currentClue() {
         const cell = this.currentCell();
-        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
+        return this.inputAcross ? cell.clues.across : cell.clues.down;
+    }
+
+    selectCurrentClue() {
         const scroll = true;
-        this.cwDisplay.selectClue(clue, scroll);
+        this.cwDisplay.selectClue(this.currentClue().id, scroll);
     }
 
     moveInputCell(direction) {
@@ -107,14 +122,12 @@ export class GridDisplay {
         cell.td.textContent = cell.contents;
         el.value = '';
         el.style.display = 'none';
-        this.cwDisplay.deselectClue();
+        this.cwDisplay.clearHighlight(this.currentClue().id);
     }
 
-    highlightClue(clue) {
-        const cells = this.crossword.grid.cells;
-        parser.forEachCell(clue, cells, function (cell) {
-            cell.td.classList.add('highlighted');
-        });
+    highlightClue(clueid) {
+        const clue = this.crossword.clues[clueid];
+        clue.cells.forEach(cell => cell.td.classList.add('highlighted'));
     }
 
     setInputCell(row, col, backspace) {
@@ -142,7 +155,7 @@ export class GridDisplay {
         if (!(cell.clues.across && cell.clues.down)) {
             this.inputAcross = Boolean(cell.clues.across);
         }
-        
+
         const td = cell.td;
         td.textContent = '';
 
@@ -167,9 +180,8 @@ export class GridDisplay {
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 e.preventDefault();
-                cell.contents = '';
-                cell.td.textContent = '';
                 input.el.value = '';
+                this.fillCurrentCell('');
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInputCell(-1);
@@ -180,12 +192,17 @@ export class GridDisplay {
         }
     }
 
-    storeInput(val) {
-        const input = this.inputCell;
+    fillCurrentCell(val) {
         const cell = this.currentCell();
-        input.el.value = '';
+        const clue = this.currentClue();
+        const offset = clue.isAcross ? cell.offsets.across : cell.offsets.down;
+        this.cwDisplay.fillCell(clue.id, offset, val);
         cell.contents = val;
-        cell.td.textContent = val;
+    }
+
+    storeInput(val) {
+        this.inputCell.el.value = '';
+        this.fillCurrentCell(val);
     }
 
     handleKeypress(e) {
@@ -214,14 +231,21 @@ export class GridDisplay {
                     td.dataset.number = cell.number;
                 }
                 if (cell.clues) {
-                    if (cell.clues.across) {
-                        td.dataset.clueid = cell.clues.across.id;
-                        if (cell.clues.down) {
+                    const across = cell.clues.across;
+                    const down = cell.clues.down;
+                    td.dataset.clueid = '';
+                    td.dataset.offset = '';
+                    if (across) {
+                        td.dataset.clueid = across.id;
+                        td.dataset.offset = cell.offsets.across;
+                        if (down) {
                             td.dataset.clueid += ',';
+                            td.dataset.offset += ',';
                         }
                     }
-                    if (cell.clues.down) {
+                    if (down) {
                         td.dataset.clueid += cell.clues.down.id;
+                        td.dataset.offset += cell.offsets.down;
                     }
                 }
                 cell.td = td;
@@ -229,6 +253,7 @@ export class GridDisplay {
             }
             table.appendChild(tr);
         }
+
         this.gridTable = table;
         this.gridContainer.appendChild(table);
     }

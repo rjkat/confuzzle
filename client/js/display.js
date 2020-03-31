@@ -5,6 +5,20 @@ import * as parser from './parser.js';
 import {GridDisplay} from './grid.js'
 import {ClueDisplay} from './clues.js'
 
+function matchesClueId(el, clueid, offset) {
+    const idparts = el.dataset.clueid.split(',');
+    let offsetparts;
+    if (offset !== undefined) {
+        offsetparts = el.dataset.offset.split(',');
+    }
+    for (let i = 0; i < idparts.length; i++) {
+        if ((offset === undefined || offsetparts[i] == offset) && idparts[i] == clueid) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export class CrosswordDisplay {
     constructor(parent) {
         this.parent = parent;
@@ -12,26 +26,27 @@ export class CrosswordDisplay {
         this.clues = new ClueDisplay(this);
         // to avoid flickering when clearing highlight state
         this.highlightDebounceMs = 50;
+        this.highlightCount = {};
     }
 
-    clearHighlight(clue) {
-        if (!clue) {
+    clearHighlight(clueid) {
+        if (!clueid) {
             return;
         }
         const self = this;
+        if (this.highlightCount[clueid]) {
+            this.highlightCount[clueid]--;
+        }
         setTimeout(() => {
-            const selected = self.selectedClue;
-            const highlighted = self.highlightedClue;
-            if (clue == selected || clue == highlighted) {
-                console.log("ignore clearHighlight " + clue.id);
+            const selected = self.selectedId;
+            if (clueid == selected) {
                 return;
             }
-            console.log("clearHighlight " + clue.id);
-            self.parent.querySelectorAll('.highlighted[data-clueid*="'+ clue.id +'"]').forEach(
+            self.parent.querySelectorAll('.highlighted[data-clueid*="'+ clueid +'"]').forEach(
                 function (el) {
                     let clueid = el.dataset.clueid;
-                    if (!(selected && clueid.includes(selected.id)
-                           || highlighted && clueid.includes(highlighted.id))) {
+                    let count = self.highlightCount[clueid];
+                    if (!(selected && matchesClueId(el, selected) || count)) {
                         el.classList.remove('highlighted');
                     }
                 }
@@ -40,44 +55,61 @@ export class CrosswordDisplay {
     }
 
     drawHighlight(scroll) {
-        if (this.highlightedClue) {
-            this.clues.highlightClue(this.highlightedClue, false);
-            this.grid.highlightClue(this.highlightedClue);
+        for (let [clueid, count] of Object.entries(this.highlightCount)) {
+            if (count) {
+                this.clues.highlightClue(clueid, false);
+                this.grid.highlightClue(clueid);
+            }
         }
-        if (this.selectedClue) {
-            this.clues.highlightClue(this.selectedClue, scroll);
-            this.grid.highlightClue(this.selectedClue);
+        if (this.selectedId) {
+            this.clues.highlightClue(this.selectedId, scroll);
+            this.grid.highlightClue(this.selectedId);
         }
     }
 
-    selectClue(clue, scroll) {
-        if (clue == this.selectedClue) {
-            return;
+    fillCell(clueid, offset, value) {
+        const self = this;
+        function fill(clueid, offset) {
+            let els = self.parent.querySelectorAll(
+                '[data-clueid*="'+ clueid +'"][data-offset*="' + offset + '"]'
+            );
+            els.forEach(function (el) {
+                if (!matchesClueId(el, clueid, offset)) {
+                    return;
+                }
+                if (el.nodeName == 'INPUT') {
+                    el.value = value;
+                } else if (el.nodeName == 'TD') {
+                    el.textContent = value;
+                }
+            });
         }
-        this.deselectClue();
-        this.selectedClue = clue;
+        const clue = this.crossword.clues[clueid];
+        clue.cells[offset].contents = value;
+        fill(clueid, offset);
+        const intersection = clue.intersections[offset];
+        if (intersection) {
+            fill(intersection.clueid, intersection.offset);
+        }
+    }
+
+    selectClue(clueid, scroll) {
+        this.clearHighlight(this.selectedId);
+        this.selectedId = clueid;
         this.drawHighlight(scroll);
     }
 
-    deselectClue() {
-        this.clearHighlight(this.selectedClue);
-        this.selectedClue = undefined;
-    }
-
-    highlightClue(clue) {
-        if (clue == this.highlightedClue) {
-            return;
+    highlightClue(clueid) {
+        if (this.highlightCount[clueid]) {
+            this.highlightCount[clueid]++;
+        } else {
+            this.highlightCount[clueid] = 0;
         }
-        this.highlightedClue = clue;
         this.drawHighlight();
     }
 
-    unhighlightClue() {
-        this.clearHighlight(this.highlightedClue);
-        this.highlightedClue = undefined;
-    }
-
     setCrossword(crossword) {
+        this.crossword = crossword;
         const grid = this.grid;
         grid.setCrossword(crossword);
         this.clues.setCrossword(crossword, grid.gridTable);

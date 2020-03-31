@@ -3,21 +3,24 @@ const enotype = require('enotype');
 
 enolib.register(enotype);
 
-export function forEachCell(clue, cells, cellFn) {
+function forEachCell(clue, cells, cellFn) {
+  let offset = 0;
   if (clue.isAcross) {
     for (let col = clue.col - 1; col < clue.col + clue.totalLength - 1; col++) {
       let r = cells[clue.row - 1];
       if (r && r[col]) {
-        cellFn(r[col]);
+        cellFn(r[col], offset);
       }
+      offset++;
     }
   } else {
     for (let row = clue.row - 1; row < clue.row + clue.totalLength - 1; row++) {
       let r = cells[row];
       let col = clue.col - 1;
       if (r && r[col]) {
-        cellFn(r[col]);
+        cellFn(r[col], offset);
       }
+      offset++;
     }
   }
 }
@@ -26,16 +29,35 @@ function populateCells(cells, clues) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
     cells[clue.row - 1][clue.col - 1].number = clue.number;
-    forEachCell(clue, cells, function (cell) {
+    forEachCell(clue, cells, function (cell, offset) {
       if (cell.empty) {
         cell.clues = {};
+        cell.offsets = {};
+      } else {
+        const other = cell.clues.across || cell.clues.down;
+        const otheroffset = (cell.offsets.across !== undefined ?
+                             cell.offsets.across : cell.offsets.down);
+        if (!clue.intersections) {
+            clue.intersections = {};
+        }
+        if (!other.intersections) {
+            other.intersections = {};
+        }
+        clue.intersections[offset] = {clueid: other.id, offset: otheroffset};
+        other.intersections[otheroffset] = {clueid: clue.id, offset: offset};
       }
       if (clue.isAcross) {
         cell.clues.across = clue;
+        cell.offsets.across = offset;
       } else {
         cell.clues.down = clue;
+        cell.offsets.down = offset;
       }
       cell.empty = false;
+      if (offset == 0) {
+        clue.cells = [];
+      }
+      clue.cells.push(cell);
     });
   }
   return errors;
