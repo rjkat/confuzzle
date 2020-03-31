@@ -20,13 +20,14 @@ function matchesClueId(el, clueid, offset) {
 }
 
 export class CrosswordDisplay {
-    constructor(parent) {
+    constructor(parent, onfillcell) {
         this.parent = parent;
         this.grid = new GridDisplay(this);
         this.clues = new ClueDisplay(this);
         // to avoid flickering when clearing highlight state
         this.highlightDebounceMs = 50;
         this.highlightCount = {};
+        this.onfillcell = onfillcell;
     }
 
     clearHighlight(clueid) {
@@ -44,7 +45,6 @@ export class CrosswordDisplay {
             }
             self.parent.querySelectorAll('.highlighted[data-clueid*="'+ clueid +'"]').forEach(
                 function (el) {
-                    let clueid = el.dataset.clueid;
                     let count = self.highlightCount[clueid];
                     if (!(selected && matchesClueId(el, selected) || count)) {
                         el.classList.remove('highlighted');
@@ -67,7 +67,7 @@ export class CrosswordDisplay {
         }
     }
 
-    fillCell(clueid, offset, value) {
+    fillCell(clueid, offset, value, forced) {
         const self = this;
         function fill(clueid, offset) {
             let els = self.parent.querySelectorAll(
@@ -83,13 +83,18 @@ export class CrosswordDisplay {
                     el.textContent = value;
                 }
             });
+
         }
         const clue = this.crossword.clues[clueid];
-        clue.cells[offset].contents = value;
+        const cell = clue.cells[offset];
+        cell.contents = value;
         fill(clueid, offset);
         const intersection = clue.intersections[offset];
         if (intersection) {
             fill(intersection.clueid, intersection.offset);
+        }
+        if (self.onfillcell && !forced) {
+            self.onfillcell(clueid, offset, value);
         }
     }
 
@@ -103,7 +108,7 @@ export class CrosswordDisplay {
         if (this.highlightCount[clueid]) {
             this.highlightCount[clueid]++;
         } else {
-            this.highlightCount[clueid] = 0;
+            this.highlightCount[clueid] = 1;
         }
         this.drawHighlight();
     }
