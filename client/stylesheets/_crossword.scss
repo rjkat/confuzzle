@@ -1,9 +1,23 @@
+body {
+    margin: 0;
+    background-color: $pageBgColor;
+}
+
 #crossword-title {
     padding-left: 1em;
     background-position: $displayPadding 0;
-    height: 40px;
-    background-image: url("data:image/svg+xml;utf8,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 400,0 440,20, 400,40 0,40' fill='%23003264'/></svg>");
+    height: 100%;
+    width: 450px;
+    display: inline-block;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 400,0 440,20, 400,40 0,40' fill='%23003264'/></svg>");
+}
 
+#crossword-header {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    margin-top: $topMargin;
+    padding-bottom: $displayPadding;
 }
 
 .crossword-details {
@@ -32,19 +46,80 @@
     font-size: 30px;
 }
 
-.crossword-collaborators {
-    float: right;
-    display: flex;
+.crossword-solvers {
+    position: absolute;
+    top: 0;
+    right: 0;
+    flex: 1;
+    font-family: $answerFontFamily;
+    border: $gridBorderWidth solid;
+    margin-top: $topMargin;
+    margin-right: $displayPadding;
+    overflow: hidden;
+    min-width: $clueMinWidth;
+    background-color: $gridBlankColor;
+
+    ul {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+        &:before {
+            content: "SOLVERS";
+            margin-left: 0.5em;
+            margin-right: 2em;
+            font-family: $clueFontFamily;
+            font-weight: bold;
+        }
+    }
+
+    .solver {
+        // display: block;
+        height: 40px;
+        line-height: 40px;
+        padding-right: 2em;
+        list-style-type: none;
+        text-transform: uppercase;
+        white-space:nowrap;
+
+        &::first-letter {
+            float: left;
+            font-size: 48px;
+        }
+        &[data-solverid="0"] {
+            &:before {
+                content: $youIcon;
+                color: $solverColor0;
+            }
+        }
+        &[data-solverid="1"] {
+            &:before {
+                content: $otherSolverIcon;
+                color: $solverColor1;
+                transform: scale(2);
+            }
+        }
+
+        &[data-solverid="2"] {
+            &:before {
+                content: $otherSolverIcon;
+                color: $solverColor2;
+            }
+        }
+    }
 }
+
 
 .crossword-display {
     max-width: 100%;
-    padding: $displayPadding;
+    padding-left: $displayPadding;
+    padding-right: $displayPadding;
     display: inline-block;
 
     .crossword-grid-container {
         text-transform: uppercase;
-
+        background-color: $gridBlankColor;
         .crossword-grid {
             border: $gridBorderWidth solid;
             border-collapse: collapse;
@@ -112,11 +187,12 @@
         overflow-y: scroll;
         display: flex;
         flex-wrap: wrap;
+        background-color: $gridBlankColor;
     }
 
     .crossword-clues {
         flex: 50%;
-        min-width: 15em;
+        min-width: $clueMinWidth;
         font-family: $clueFontFamily;
         padding-top: .5em;
 
@@ -150,7 +226,7 @@
         }
 
         .highlighted .clue-directions {
-            color: $gridHighlightColor;
+            color: $textHighlightColor;
         }
 
         input {

@@ -18,6 +18,9 @@ renderButton.onclick = function() {
     });
 
     display.setCrossword(crossword);
+
+    // yuck
+    document.querySelector('.crossword-solvers').style.left = display.clues.clueContainer.offsetLeft + 'px';
 }
 
 document.getElementById('send-message-button').onclick = function() {

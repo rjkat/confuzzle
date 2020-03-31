@@ -1,20 +1,26 @@
 $answerFontFamily: "notcouriersansregular", monospace;
 $clueFontFamily: "aurulent_sansregular", sans-serif;
 
+$pageBgColor: #F0F8FF;
 $gridBgColor: #000;
+$gridBlankColor: #fff;
 $gridHighlightColor: #e86;
+$textHighlightColor: #d51;
 $gridFontSize: 24px; 
 $gridCellSize: 2ch;
 $gridBorderWidth: 1px;
 
+$topMargin: 8px;
 $displayPadding: 18px;
 
-// minimum screen size for full size UI
-$fullSizeMinWidth: 46.25em;
+$clueMinWidth: 15em;
 
-$collabColor0: $gridHighlightColor;
-$collabColor1: #7ad;
-$collabColor2: #ed8;
-$collabColor3: #fab;
-$collabColor4: #4b9;
-$collabColor5: #aa0;
+$youIcon: "\25CF\00a0";
+$otherSolverIcon: "\25a0\00a0";
+
+$solverColor0: $gridHighlightColor;
+$solverColor1: #7ad;
+$solverColor2: #ed8;
+$solverColor3: #fab;
+$solverColor4: #4b9;
+$solverColor5: #aa0;
