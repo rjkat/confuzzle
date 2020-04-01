@@ -301,7 +301,7 @@ body {
 }
 #select-solve:checked ~ .crossword-panels #solve-panel,
 #select-compile:checked ~ .crossword-panels #compile-panel,
-#select-invite:checked ~ .crossword-panels #invite-panel{
+#select-collude:checked ~ .crossword-panels #collude-panel{
   display:block
 }
 
@@ -318,7 +318,7 @@ body {
 
 #select-solve:checked ~ .crossword-panels .tabs #solve-tab,
 #select-compile:checked ~ .crossword-panels .tabs #compile-tab,
-#select-invite:checked ~ .crossword-panels .tabs #invite-tab{
+#select-collude:checked ~ .crossword-panels .tabs #collude-tab{
   background:#fff;
   color:#000;
   border-left: 1px solid #000;
