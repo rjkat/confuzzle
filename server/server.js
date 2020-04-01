@@ -76,7 +76,7 @@ io.on('connection', function(socket) {
         const gridId = rooms[1];
         console.log('grid ' + gridId);
         grids[gridId].eventLog.push(event);
-        socket.to(grid).emit('fillCell', event);
+        socket.to(gridId).emit('fillCell', event);
     });
 });
 
