@@ -268,7 +268,8 @@ body {
 //   flex-direction: column;
 // }
 
-.crossword-input {
+.hidden {
+    display: none;
 }
 
 .tabs {
@@ -329,10 +330,11 @@ body {
 .crossword-input {
     display: flex;
     position: absolute;
-    height: 85%;
     left: .5em;
     top: .5em;
     right: .5em;
+    bottom: 5em;
+
     .crossword-compilearea {
         font-family: $answerFontFamily;
         font-size: 14px;
@@ -352,19 +354,52 @@ body {
     border-radius: 3px;
     outline: none;
     color: #fff;
+    border: 1px solid $gridBgColor;
     background-color: #003264;
-
+    width: 5em;
+   
     &:hover {
         background-color: #7ad;
+    }
+
+    &:disabled {
+        background-color: #aaa;
     }
 }
 
 #compile-panel {
     .action-button {
         position: absolute;
-        bottom: .5em;
+        bottom: 1.5em;
         right: 3em;
     }
 }
 
+.crossword-join-panel {
+    font-family: $clueFontFamily;
+    position: absolute;
+    top: 33%;
+    left: 3em;
+    width: 50%;
+    .action-button {
+        margin-top: 1em;
+    }
+}
+
+.crossword-name-input {
+    font-size: $gridFontSize;
+    font-family: $answerFontFamily;
+    padding: $gridBorderWidth 0 0 $gridBorderWidth;
+    border: 0;
+    border-bottom: 1px solid $gridBgColor;
+    margin-right: 2px;
+    background: none;
+    outline: none;
+    height: $gridCellSize;
+    line-height: $gridCellSize;
+    vertical-align: middle;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    width: 10em;
+}
 

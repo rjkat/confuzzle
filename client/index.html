@@ -19,7 +19,7 @@
         </span>
     </div>
 
-    <div class="crossword-solvers">
+    <div class="crossword-solvers hidden">
         <ul>
             <li class="solver" data-solverid="0">Rowan</li>
             <li class="solver" data-solverid="1">Stef</li>
@@ -29,21 +29,27 @@
 </div>
 
 <div class="crossword-display">
-    <input class="radio" id="select-solve" name="tab-selection" type="radio" checked>
+    <input class="radio" id="select-solve" name="tab-selection" type="radio">
     <input class="radio" id="select-compile" name="tab-selection" type="radio">
-    <input class="radio" id="select-collude" name="tab-selection" type="radio">
+    <input class="radio" id="select-collude" name="tab-selection" type="radio" checked>
     <div class="crossword-panels">
         <div class="panel" id="solve-panel">
             <div class="crossword-clue-panel"></div>
         </div>
         <div class="panel" id="compile-panel">
             <div class="crossword-input">
-                <textarea cols="80" class="crossword-compilearea" id="crossword-source"></textarea>
+                <textarea class="crossword-compilearea" id="crossword-source"></textarea>
             </div>
             <button type="button" class="action-button" id="render-button">Render</button>
         </div>
         <div class="panel" id="collude-panel">
-            <div id="codemirror"></div>
+            <div class="crossword-join-panel">
+                <form autocomplete="off">
+                    <label for="name"><b>0A Your name</b></label><br>
+                    <input class="crossword-name-input" name="name"><br>
+                    <input class="action-button" type="submit" value="Submit" disabled>
+                </form>
+            </div>
         </div>
         <div class="tabs">
           <label class="tab" id="solve-tab" for="select-solve">Solve</label>
