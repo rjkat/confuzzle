@@ -2,7 +2,7 @@ import * as KeyCode from 'keycode-js';
 const uniqid = require('uniqid');
 
 export class GridDisplay {
-    constructor(cwDisplay) {
+    constructor(cwDisplay, parent) {
         this.cwDisplay = cwDisplay;
         this.inputAcross = true;
         const self = this;
@@ -11,7 +11,7 @@ export class GridDisplay {
         container.onclick = function (e) {
             self.onClick(e);
         };
-        cwDisplay.parent.appendChild(container);
+        parent.appendChild(container);
         this.gridContainer = container;
         this.id = uniqid();
     }

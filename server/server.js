@@ -10,10 +10,13 @@ const path = require('path')
 const keyFile = path.join(__dirname, 'server.key')
 const certFile = path.join(__dirname, 'server.cert')
 
-const server = https.createServer({
-    key: fs.readFileSync(keyFile),
-    cert: fs.readFileSync(certFile)
-}, app);
+// const server = https.createServer({
+//     key: fs.readFileSync(keyFile),
+//     cert: fs.readFileSync(certFile)
+// }, app);
+
+const http = require('http')
+const server = http.createServer(app);
 
 app.use(bundler.middleware())
 

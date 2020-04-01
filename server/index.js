@@ -1,4 +1,4 @@
 const server = require('./server')
 
 // Start server listening
-server.listen(3000, () => console.log('listening on port: 3000'))
+server.listen(5775, () => console.log('listening on port: 5775'))

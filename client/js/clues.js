@@ -2,13 +2,14 @@ import * as KeyCode from 'keycode-js';
 const uniqid = require('uniqid');
 
 export class ClueDisplay {
-    constructor(cwDisplay) {
+    constructor(cwDisplay, panel) {
         this.cwDisplay = cwDisplay;
         const self = this;
         const container = document.createElement('div');
         container.classList.add('crossword-clue-container');
-        cwDisplay.parent.appendChild(container);
-        this.clueContainer = container;
+        panel.appendChild(container);
+        this.clueContainer = panel;
+        this.scrollContainer = panel.parentNode;
     }
 
     getClueElement(clueid) {
@@ -18,7 +19,7 @@ export class ClueDisplay {
     highlightClue(clueid, scroll) {
         const el = this.getClueElement(clueid);
         if (scroll) {
-            this.clueContainer.scrollTo({
+            this.scrollContainer.scrollTo({
               top: el.offsetTop,
               behavior: 'smooth'
             });
@@ -151,14 +152,10 @@ export class ClueDisplay {
         container.appendChild(list);
     }
 
-    setCrossword(crossword, gridTable) {
+    setCrossword(crossword) {
         this.crossword = crossword;
         const el = this.clueContainer;
         el.innerHTML = '';
-        el.style.left = gridTable.offsetLeft + gridTable.clientWidth + 'px';
-        el.style.top = gridTable.offsetTop + 'px';
-        el.style.height = gridTable.offsetHeight + 'px';
-
         const self = this;
         [true, false].forEach(function(isAcross) {
             const div = document.createElement('div');

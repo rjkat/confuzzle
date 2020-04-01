@@ -10,7 +10,10 @@ function onfillcell(clueid, offset, value) {
     client.sendUpdate({action: 'fillCell', clueid: clueid, offset: offset, value: value});
 }
 
-const display = new CrosswordDisplay(document.getElementsByClassName('crossword-display')[0], onfillcell);
+const gridContainer = document.querySelector('.crossword-display');
+const panelContainer = document.querySelector('.crossword-panels');
+const cluePanel = document.querySelector('.crossword-clue-panel');
+const display = new CrosswordDisplay(panelContainer, gridContainer, cluePanel, onfillcell);
 client.display = display;
 
 const sourceEl = document.getElementById('crossword-source');
@@ -28,8 +31,9 @@ renderButton.onclick = function() {
     display.setCrossword(crossword);
 
     // yuck
-    document.querySelector('.crossword-solvers').style.left = display.clues.clueContainer.offsetLeft + 'px';
+    document.querySelector('.crossword-solvers').style.left = panelContainer.offsetLeft + 'px';
 }
+
 
 document.getElementById('crossword-source').value = parser.sampleCrossword();
 

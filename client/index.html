@@ -28,11 +28,29 @@
     </div>
 </div>
 
-<div class="crossword-display"></div>
-
-<div class="crossword-input">
-    <textarea rows="20" cols="60" id="crossword-source"></textarea>
-    <button type="button" id="render-button">Render</button>
+<div class="crossword-display">
+    <input class="radio" id="select-solve" name="tab-selection" type="radio" checked>
+    <input class="radio" id="select-compile" name="tab-selection" type="radio">
+    <input class="radio" id="select-invite" name="tab-selection" type="radio">
+    <div class="crossword-panels">
+        <div class="panel" id="solve-panel">
+            <div class="crossword-clue-panel"></div>
+        </div>
+        <div class="panel" id="compile-panel">
+            <div class="crossword-input">
+                <textarea cols="80" class="crossword-compilearea" id="crossword-source"></textarea>
+            </div>
+            <button type="button" class="action-button" id="render-button">Render</button>
+        </div>
+        <div class="panel" id="invite-panel">
+            <div id="codemirror"></div>
+        </div>
+        <div class="tabs">
+          <label class="tab" id="solve-tab" for="select-solve">Solve</label>
+          <label class="tab" id="compile-tab" for="select-compile">Compile</label>
+          <label class="tab" id="invite-tab" for="select-invite">Invite</label>
+        </div>
+    </div>
 </div>
 
 <script src="./js/index.js"></script>

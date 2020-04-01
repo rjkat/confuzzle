@@ -20,10 +20,11 @@ function matchesClueId(el, clueid, offset) {
 }
 
 export class CrosswordDisplay {
-    constructor(parent, onfillcell) {
-        this.parent = parent;
-        this.grid = new GridDisplay(this);
-        this.clues = new ClueDisplay(this);
+    constructor(panelContainer, gridContainer, clueContainer, onfillcell) {
+        this.parent = gridContainer;
+        this.panelContainer = panelContainer;
+        this.grid = new GridDisplay(this, gridContainer);
+        this.clues = new ClueDisplay(this, clueContainer);
         // to avoid flickering when clearing highlight state
         this.highlightDebounceMs = 50;
         this.highlightCount = {};
@@ -117,6 +118,12 @@ export class CrosswordDisplay {
         this.crossword = crossword;
         const grid = this.grid;
         grid.setCrossword(crossword);
-        this.clues.setCrossword(crossword, grid.gridTable);
+
+        const gridTable = grid.gridTable;
+        const panels = this.panelContainer;
+        panels.style.left = gridTable.offsetLeft + gridTable.clientWidth + 'px';
+        panels.style.top = gridTable.offsetTop + 'px';
+        panels.style.height = gridTable.offsetHeight + 'px';
+        this.clues.setCrossword(crossword);
     }
 }
