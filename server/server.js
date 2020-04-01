@@ -1,11 +1,19 @@
 const express = require('express')
-const http = require('http')
+const https = require('https')
 const app = express()
 
 const Bundler = require('parcel-bundler')
 const bundler = new Bundler('client/index.html')
 
-const server = http.createServer(app);
+const fs = require('fs')
+const path = require('path')
+const keyFile = path.join(__dirname, 'server.key')
+const certFile = path.join(__dirname, 'server.cert')
+
+const server = https.createServer({
+    key: fs.readFileSync(keyFile),
+    cert: fs.readFileSync(certFile)
+}, app);
 
 app.use(bundler.middleware())
 
