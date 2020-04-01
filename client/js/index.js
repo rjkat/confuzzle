@@ -31,10 +31,6 @@ renderButton.onclick = function() {
     document.querySelector('.crossword-solvers').style.left = display.clues.clueContainer.offsetLeft + 'px';
 }
 
-document.getElementById('send-message-button').onclick = function() {
-    
-}
-
 document.getElementById('crossword-source').value = parser.sampleCrossword();
 
 renderButton.click();
