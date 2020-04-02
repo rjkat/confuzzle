@@ -28,19 +28,20 @@ app.get("/grid/:name", function(res, req) {
 
 const io = require('socket.io')(server);
 const grids = {};
+const socketGrids = {};
 
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
         const gridId = shortid.generate();
-        const solvers = [];
-        solvers.push({socketId: socket.id, id: 0, name: args.name});
+        const solvers = {};
+        solvers[socket.id] = {name: args.name, color: 0};
         grids[gridId] = {
             crossword: args.crossword,
             solvers: solvers,
             eventLog: []
         };
         socket.join(gridId, function() {
-            socket.emit('crosswordShared', gridId);
+            socket.emit('crosswordShared', {gridId: gridId, solvers: solvers, color: 0});
         });
     });
     socket.on('joinGrid', function(args) {
@@ -50,22 +51,32 @@ io.on('connection', function(socket) {
             return;
         }
         socket.join(args.gridId, function() {
-            console.log('join ' + args.name + 'to grid: ' + args.gridId);
-            const solverId = grid.solvers.length;
+            console.log('join ' + args.name + ' to grid: ' + args.gridId);
+            const grid = grids[args.gridId];
+            const color = Object.keys(grid.solvers).length;
+            grid.solvers[socket.id] = {
+                name: args.name,
+                color: color
+            };
             // hack: just replay all the packets to everyone who joins
             socket.emit('gridJoined', {
                 gridId: args.gridId,
-                solverId: solverId,
+                color: color,
                 solvers: grid.solvers,
                 crossword: grid.crossword,
                 events: grid.eventLog
             });
-            grid.solvers.push({
-                id: solverId,
-                socketId: socket.id,
-                name: args.name
-            });
+            socketGrids[socket.id] = args.gridId;
+            socket.to(args.gridId).emit('solversChanged', grid.solvers);
         });
+    });
+    socket.on('disconnect', (reason) => {
+        const gridId = socketGrids[socket.id];
+        const grid = grids[gridId];
+        if (grid && grid.solvers) {
+            delete grid.solvers[socket.id];
+            socket.to(gridId).emit('solversChanged', grid.solvers);
+        }
     });
     socket.on('fillCell', function(event) {
         console.log('fillCell event: ' + JSON.stringify(event));

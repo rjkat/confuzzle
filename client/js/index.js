@@ -4,83 +4,124 @@ import {SolverDisplay} from './solvers.js'
 
 const parser = require('./parser.js');
 
-const client = new AnagrindClient(window.location.host);
-function onfillcell(clueid, offset, value) {
-    client.sendUpdate({action: 'fillCell', clueid: clueid, offset: offset, value: value});
-}
+class AnagrindApp {
+    constructor() {
+        const self = this;
 
-const gridContainer = document.querySelector('.crossword-display');
-const panelContainer = document.querySelector('.crossword-panels');
-const cluePanel = document.querySelector('.crossword-clue-panel');
-const sourceEl = document.getElementById('crossword-source');
+        this.client = new AnagrindClient(this, window.location.host);
+        this.gridContainer = document.querySelector('.crossword-display');
+        this.panelContainer = document.querySelector('.crossword-panels');
+        this.cluePanel = document.querySelector('.crossword-clue-panel');
+        this.sourceEl = document.getElementById('crossword-source');
+        
+        this.display = new CrosswordDisplay(
+            this.panelContainer,
+            this.gridContainer,
+            this.cluePanel,
+            this.sourceEl,
+            (clueid, offset, value) => this.cellFilled(clueid, offset, value)
+        );
+        this.solvers = new SolverDisplay(document.querySelector('.crossword-solvers'));
+        this.renderButton = document.getElementById('render-button');
+        this.sourceEl.value = parser.sampleCrossword();
 
-const display = new CrosswordDisplay(panelContainer, gridContainer, cluePanel, sourceEl, onfillcell);
-client.display = display;
+        this.renderButton.onclick = () => self.renderCrossword();
 
-const solvers = new SolverDisplay(document.querySelector('.crossword-solvers'));
+        const pathParts = window.location.pathname.split("/");
+        if (pathParts.length > 2 && pathParts[1] == "grid") {
+            this.gridId = pathParts[2];
+        }
 
-const renderButton = document.getElementById('render-button');
-renderButton.onclick = function() {
-    const crossword = parser.parse(sourceEl.value);
+        if (!this.gridId) {
+            this.selectTab('compile');
+        }
+        this.nameDiv = document.querySelector('.crossword-enter-name');
+        this.nameInput = document.querySelector('.crossword-name-input');
+        this.nameInput.onkeyup = () => self.nameEntered();
 
-    ['author', 'pubdate'].forEach(x => {
-        let el = document.getElementById('crossword-' + x);
-        el.textContent = x == 'author' ? 'by ' : '';
-        el.textContent += crossword.meta[x];
-    });
+        this.shareDiv = document.querySelector('.crossword-share-link');
+        this.linkText = document.querySelector('.crossword-link-text');
+        this.colludeButton = document.querySelector('#collude-button');
+        this.colludeButton.value = this.gridId ? 'Join' : 'Share';
+        this.colludeButton.onclick = () => self.colludeClicked();
 
-    display.setCrossword(crossword);
+        const copyButton = document.querySelector('#copy-link-button');
+        copyButton.onclick = () => {
+            console.log("button clicked " + self.linkText.textContent);
+            navigator.clipboard.writeText(self.linkText.textContent);
+        }
+        this.renderCrossword();
+    }
 
-    // yuck
-    document.querySelector('.crossword-solvers').style.left = panelContainer.offsetLeft + 'px';
-}
-document.getElementById('crossword-source').value = parser.sampleCrossword();
+    solversChanged(msg) {
+        this.solvers.solversChanged(msg);
+    }
 
-function renderSource() {
-    renderButton.click();
-}
+    gridJoined(msg) {
+        this.selectTab('solve');
+        this.gridContainer.dataset.solverid = msg.color;
+        this.panelContainer.dataset.solverid = msg.color;
+        this.solvers.solversChanged(msg.solvers);
+        this.solvers.show();
+    }
 
-function gridJoined(msg) {
-    document.getElementById('solve-tab').click();
-    solvers.show();
-}
+    shareSucceeded(msg) {
+        console.log("share success: " + msg.gridId);
+        this.linkText.textContent = window.location.host + '/grid/' + msg.gridId;
+        this.nameDiv.classList.add('hidden');
+        this.shareDiv.classList.remove('hidden');
+        this.renderCrossword();
+        this.gridContainer.dataset.solverid = msg.color;
+        this.panelContainer.dataset.solverid = msg.color;
+        this.solvers.solversChanged(msg.solvers);
+        this.solvers.show();
+    }
 
-function shareSuccess(gridId) {
-    console.log("share success: " + gridId);
-    solvers.show();
-}
+    nameEntered() {
+        document.querySelector('#name-length').textContent = this.nameInput.value.length;
+        this.colludeButton.disabled = !this.nameInput.value.length;
+    }
 
-renderSource();
+    selectTab(tabName) {
+        document.getElementById(tabName + '-tab').click();
+    }
 
-const pathParts = window.location.pathname.split("/");
-let gridId;
-if (pathParts.length > 2 && pathParts[1] == "grid") {
-    gridId = pathParts[2];
-}
-const colludeButton = document.querySelector('#collude-button');
+    cellFilled(clueid, offset, value) {
+        this.client.sendUpdate({action: 'fillCell', clueid: clueid, offset: offset, value: value});
+    }
 
-colludeButton.value = gridId ? 'Join' : 'Share';
+    renderCrossword() {
+        const crossword = parser.parse(this.sourceEl.value);
 
-const nameInput = document.querySelector('.crossword-name-input');
-nameInput.onkeyup = function () {
-    document.querySelector('#name-length').textContent = nameInput.value.length;
-    colludeButton.disabled = !nameInput.value.length;
-}
-
-
-
-colludeButton.onclick = function () {
-    if (gridId) {
-        client.joinGrid(gridId, nameInput.value, function (msg) {
-            gridJoined(msg);
+        ['author', 'pubdate'].forEach(x => {
+            let el = document.getElementById('crossword-' + x);
+            el.textContent = x == 'author' ? 'by ' : '';
+            el.textContent += crossword.meta[x];
         });
-    } else {
-        renderSource();
-        client.shareCrossword(sourceEl.value, nameInput.value, function (gridId) {
-            shareSuccess(gridId);
-        });
+
+        this.display.setCrossword(crossword);
+
+        // yuck
+        document.querySelector('.crossword-solvers').style.left = this.panelContainer.offsetLeft + 'px';
+    }
+
+    colludeClicked() {
+        const self = this;
+        if (this.gridId) {
+            this.nameDiv.disabled = true;
+            this.client.joinGrid(this.gridId, this.nameInput.value, function (msg) {
+                self.gridJoined(msg);
+            });
+        } else {
+            this.client.shareCrossword(this.sourceEl.value, this.nameInput.value, function (msg) {
+                self.shareSucceeded(msg);
+            });
+        }
     }
 }
+
+const app = new AnagrindApp();
+
 
 
 

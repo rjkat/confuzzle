@@ -58,6 +58,8 @@ body {
     overflow: hidden;
     min-width: $clueMinWidth;
     background-color: $gridBlankColor;
+    overflow-x: scroll;
+    animation: fadein .8s;
 
     ul {
         height: 40px;
@@ -97,7 +99,6 @@ body {
             &:before {
                 content: $otherSolverIcon;
                 color: $solverColor1;
-                transform: scale(2);
             }
         }
 
@@ -107,9 +108,48 @@ body {
                 color: $solverColor2;
             }
         }
+
+        &[data-solverid="3"] {
+            &:before {
+                content: $otherSolverIcon;
+                color: $solverColor3;
+            }
+        }
+
+        &[data-solverid="4"] {
+            &:before {
+                content: $otherSolverIcon;
+                color: $solverColor4;
+            }
+        }
+
+        &[data-solverid="5"] {
+            &:before {
+                content: $otherSolverIcon;
+                color: $solverColor5;
+            }
+        }
     }
 }
 
+[data-solverid="0"] td.highlighted {
+    background-color: $solverColor0;
+}
+[data-solverid="1"] td.highlighted {
+    background-color: $solverColor1;
+}
+[data-solverid="2"] td.highlighted {
+    background-color: $solverColor2;
+}
+[data-solverid="3"] td.highlighted {
+    background-color: $solverColor3;
+}
+[data-solverid="4"] td.highlighted {
+    background-color: $solverColor4;
+}
+[data-solverid="5"] td.highlighted {
+    background-color: $solverColor5;
+}
 
 .crossword-display {
     max-width: 100%;
@@ -150,10 +190,6 @@ body {
 
                 &[data-empty] {
                     background: $gridBgColor;
-                }
-
-                &.highlighted {
-                    background-color: $gridHighlightColor;
                 }
             }
         }
@@ -197,6 +233,45 @@ body {
     flex-wrap: wrap;
 }
 
+
+[data-solverid="0"] li.highlighted {
+    color: $solverColor0;
+}
+[data-solverid="1"] li.highlighted {
+    color: $solverColor1;
+}
+[data-solverid="2"] li.highlighted {
+    color: $solverColor2;
+}
+[data-solverid="3"] li.highlighted {
+    color: $solverColor3;
+}
+[data-solverid="4"] li.highlighted {
+    color: $solverColor4;
+}
+[data-solverid="5"] li.highlighted {
+    color: $solverColor5;
+}
+
+[data-solverid="0"] .highlighted input {
+    border-bottom: 2px solid $solverColor0;
+}
+[data-solverid="1"] .highlighted input {
+    border-bottom: 2px solid $solverColor1;
+}
+[data-solverid="2"] .highlighted input {
+    border-bottom: 2px solid $solverColor2;
+}
+[data-solverid="3"] .highlighted input {
+    border-bottom: 2px solid $solverColor3;
+}
+[data-solverid="4"] .highlighted input {
+    border-bottom: 2px solid $solverColor4;
+}
+[data-solverid="5"] .highlighted input {
+    border-bottom: 2px solid $solverColor5;
+}
+
 .crossword-clues {
     flex: 50%;
     min-width: $clueMinWidth;
@@ -225,14 +300,7 @@ body {
             .clue-directions {
                 cursor: pointer;
             }
-            .highlighted {
-                color: $gridHighlightColor;
-            }
         }
-    }
-
-    .highlighted .clue-directions {
-        color: $textHighlightColor;
     }
 
     input {
@@ -252,10 +320,6 @@ body {
         vertical-align: middle;
         text-transform: uppercase;
         box-sizing: border-box;
-    }
-
-    .highlighted input {
-        border-bottom: 2px solid $gridHighlightColor;
     }
 
     .clue-id {
@@ -344,7 +408,6 @@ body {
         resize: none;
         outline: none;
     }
-
 }
 
 .action-button {
@@ -356,7 +419,9 @@ body {
     color: #fff;
     border: 1px solid $gridBgColor;
     background-color: #003264;
+    padding: 0;
     width: 5em;
+    text-align: center;
    
     &:hover {
         background-color: #7ad;
@@ -371,16 +436,15 @@ body {
     .action-button {
         position: absolute;
         bottom: 1.5em;
-        right: 3em;
     }
 }
 
 .crossword-join-panel {
     font-family: $clueFontFamily;
     position: absolute;
-    top: 33%;
+    top: 5em;
     left: 3em;
-    width: 50%;
+    width: 80%;
     .action-button {
         margin-top: 1em;
     }
@@ -403,3 +467,13 @@ body {
     width: 10em;
 }
 
+.crossword-link-text {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 1em;
+    overflow-x: scroll;
+    max-width: 18em;
+    border-radius: 3px;
+    border: 1px solid $gridBgColor;
+    font-family: $answerFontFamily;
+}

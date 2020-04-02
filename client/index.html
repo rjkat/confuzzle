@@ -44,9 +44,19 @@
         </div>
         <div class="panel" id="collude-panel">
             <div class="crossword-join-panel">
-                <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
-                <input class="crossword-name-input" name="name" autocomplete="off"><br>
-                <input class="action-button" type="submit" value="Submit" id="collude-button" disabled>
+                <div class="crossword-enter-name">
+                    <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
+                    <input class="crossword-name-input" name="name" autocomplete="off"><br>
+                    <input class="action-button" type="submit" value="Submit" id="collude-button" disabled>
+                </div>
+                <div class="crossword-share-link hidden">
+                    <p>Share this link to solve with others:</p>
+                    <div class="crossword-link-text">
+                        anagrind.com/grid/foo
+                    </div>
+                    <button class="action-button" id="copy-link-button">Copy</button>
+                    <p>It will remain available whilst there is at least one active solver.</p>
+                </div>
             </div>
         </div>
         <div class="tabs">
