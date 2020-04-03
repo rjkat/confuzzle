@@ -1,4 +1,5 @@
 const express = require('express')
+const http = require('http')
 const https = require('https')
 const app = express()
 
@@ -11,13 +12,20 @@ const keyFile = path.join(__dirname, 'server.key')
 const certFile = path.join(__dirname, 'server.cert')
 const shortid = require('shortid')
 
-const server = https.createServer({
-     key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
-     cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
-}, app);
+let server;
 
-// const http = require('http')
-// const server = http.createServer(app);
+var env = process.argv[2] || 'dev';
+switch (env) {
+    case 'dev':
+	server = http.createServer(app);
+        break;
+    case 'production':
+	server = https.createServer({
+	     key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
+	     cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
+	}, app);
+        break;
+}
 
 app.use(bundler.middleware())
 
