@@ -40,6 +40,13 @@
             <div class="crossword-input">
                 <textarea class="crossword-compilearea" id="crossword-source"></textarea>
             </div>
+            <div id="drop-area" class="entry-piece">
+              <form class="upload-form">
+                Drag and drop .puz file here, or 
+                <input type="file" id="selected-puz-file" accept="application/x-crossword">
+                <label class="upload-button" for="selected-puz-file">select .puz file</label>
+              </form>
+            </div>
             <button type="button" class="action-button" id="render-button">Render</button>
         </div>
         <div class="panel" id="collude-panel">
@@ -47,7 +54,7 @@
                 <div class="crossword-enter-name">
                     <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
                     <input class="crossword-name-input" name="name" autocomplete="off"><br>
-                    <input class="action-button" type="submit" value="Submit" id="collude-button" disabled>
+                    <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
                 </div>
                 <div class="crossword-share-link hidden">
                     <p>Share this link to solve with others:</p>

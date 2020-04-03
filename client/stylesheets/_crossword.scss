@@ -377,13 +377,6 @@ body {
     }
 }
 
-#compile-panel {
-    .action-button {
-        position: absolute;
-        bottom: 1.5em;
-    }
-}
-
 .crossword-join-panel {
     font-family: $clueFontFamily;
     position: absolute;
@@ -421,4 +414,48 @@ body {
     border-radius: 3px;
     border: 1px solid $gridBgColor;
     font-family: $answerFontFamily;
+}
+
+
+#compile-panel {
+    .action-button {
+        position: absolute;
+        bottom: 1.25em;
+        left: 3em;
+    }
+}
+
+#drop-area {
+  font-family: $clueFontFamily;
+  position: absolute;
+  bottom: .5em;
+  left: 10em;
+  text-align: center;
+  right: .5em;
+  height: 3em;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+  padding: 5px;
+}
+.upload-button {
+  display: inline-block;
+  padding: 10px;
+  background: #ccc;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+.upload-button:hover {
+  background: #ddd;
+}
+#drop-area.highlight {
+  border-color: #003264;
+}
+
+.upload-form {
+  margin-bottom: 10px;
+}
+
+#selected-puz-file {
+  display: none;
 }

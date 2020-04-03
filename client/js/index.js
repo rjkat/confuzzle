@@ -1,6 +1,8 @@
 import {AnagrindClient} from './client.js'
 import {CrosswordDisplay} from './display.js'
 import {SolverDisplay} from './solvers.js'
+import * as DragDrop from './dragdrop.js'
+import * as LibPuz from './libpuz.js'
 
 const parser = require('./parser.js');
 
@@ -50,6 +52,18 @@ class AnagrindApp {
             console.log("button clicked " + self.linkText.textContent);
             navigator.clipboard.writeText(self.linkText.textContent);
         }
+
+
+        const dropArea = document.getElementById("drop-area");
+        const puzFile = document.getElementById('selected-puz-file');
+
+        DragDrop.setupDropArea(dropArea, puzFile, buffer => self.puzFileUploaded(buffer));
+        this.renderCrossword();
+    }
+
+    puzFileUploaded(buffer) {
+        const eno = LibPuz.loadPuzBuffer(buffer);
+        this.sourceEl.value = eno;
         this.renderCrossword();
     }
 
