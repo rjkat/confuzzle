@@ -1,0 +1,13 @@
+$solverIcon: "\25a0\00a0";
+$solverColors: #e73, #07b, #3be, #e37, #c31, #098;
+
+$maxSolvers: length($solverColors);
+
+@mixin each-solver {
+    @for $i from 1 through $maxSolvers {
+        $dataSelector: "[data-solverid=\"#{$i - 1}\"]";
+        $solverColor: nth($solverColors, $i);
+        @content($solverColor, $dataSelector);
+    }
+}
+

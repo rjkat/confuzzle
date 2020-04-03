@@ -89,66 +89,37 @@ body {
             float: left;
             font-size: 48px;
         }
-        &[data-solverid="0"] {
-            &:before {
-                content: $youIcon;
-                color: $solverColor0;
-            }
-        }
-        &[data-solverid="1"] {
-            &:before {
-                content: $otherSolverIcon;
-                color: $solverColor1;
-            }
-        }
 
-        &[data-solverid="2"] {
-            &:before {
-                content: $otherSolverIcon;
-                color: $solverColor2;
-            }
-        }
-
-        &[data-solverid="3"] {
-            &:before {
-                content: $otherSolverIcon;
-                color: $solverColor3;
-            }
-        }
-
-        &[data-solverid="4"] {
-            &:before {
-                content: $otherSolverIcon;
-                color: $solverColor4;
-            }
-        }
-
-        &[data-solverid="5"] {
-            &:before {
-                content: $otherSolverIcon;
-                color: $solverColor5;
+        @include each-solver using ($color, $sel) {
+            &#{$sel}:before {
+                content: $solverIcon;
+                color: $color;
             }
         }
     }
 }
 
-[data-solverid="0"] td.highlighted {
-    background-color: $solverColor0;
-}
-[data-solverid="1"] td.highlighted {
-    background-color: $solverColor1;
-}
-[data-solverid="2"] td.highlighted {
-    background-color: $solverColor2;
-}
-[data-solverid="3"] td.highlighted {
-    background-color: $solverColor3;
-}
-[data-solverid="4"] td.highlighted {
-    background-color: $solverColor4;
-}
-[data-solverid="5"] td.highlighted {
-    background-color: $solverColor5;
+// td.highlighted {
+//     // background-color: $solverColor0;
+//     background: repeating-linear-gradient(
+//       45deg,
+//       $solverColor0,
+//       $solverColor0 10px,
+//       $solverColor1 10px,
+//       $solverColor1 20px,
+//       $solverColor2 20px,
+//       $solverColor2 30px,
+//       $solverColor3 30px,
+//       $solverColor3 40px
+//     );
+//     opacity: 0.8;
+//     border-color: rgba(0, 0, 0, 0.5) !important;
+// }
+
+@include each-solver using ($color, $sel) {
+    #{$sel} td.highlighted {
+        background-color: $color;
+    }
 }
 
 .crossword-display {
@@ -168,6 +139,7 @@ body {
                 font-size: $gridFontSize;
                 font-family: $answerFontFamily;
                 padding: 0;
+                box-sizing: border-box;
                 border: $gridBorderWidth solid;
                 border-color: $gridBgColor;
                 min-width: $gridCellSize;
@@ -233,43 +205,16 @@ body {
     flex-wrap: wrap;
 }
 
-
-[data-solverid="0"] li.highlighted {
-    color: $solverColor0;
-}
-[data-solverid="1"] li.highlighted {
-    color: $solverColor1;
-}
-[data-solverid="2"] li.highlighted {
-    color: $solverColor2;
-}
-[data-solverid="3"] li.highlighted {
-    color: $solverColor3;
-}
-[data-solverid="4"] li.highlighted {
-    color: $solverColor4;
-}
-[data-solverid="5"] li.highlighted {
-    color: $solverColor5;
+@include each-solver using ($color, $sel) {
+    #{$sel} li.highlighted {
+        color: $color;
+    }
 }
 
-[data-solverid="0"] .highlighted input {
-    border-bottom: 2px solid $solverColor0;
-}
-[data-solverid="1"] .highlighted input {
-    border-bottom: 2px solid $solverColor1;
-}
-[data-solverid="2"] .highlighted input {
-    border-bottom: 2px solid $solverColor2;
-}
-[data-solverid="3"] .highlighted input {
-    border-bottom: 2px solid $solverColor3;
-}
-[data-solverid="4"] .highlighted input {
-    border-bottom: 2px solid $solverColor4;
-}
-[data-solverid="5"] .highlighted input {
-    border-bottom: 2px solid $solverColor5;
+@include each-solver using ($color, $sel) {
+    #{$sel} .highlighted input {
+        border-bottom: 2px solid $color;
+    }
 }
 
 .crossword-clues {
