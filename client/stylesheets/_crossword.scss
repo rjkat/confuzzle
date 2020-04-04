@@ -99,22 +99,7 @@ body {
     }
 }
 
-// td.highlighted {
-//     // background-color: $solverColor0;
-//     background: repeating-linear-gradient(
-//       45deg,
-//       $solverColor0,
-//       $solverColor0 10px,
-//       $solverColor1 10px,
-//       $solverColor1 20px,
-//       $solverColor2 20px,
-//       $solverColor2 30px,
-//       $solverColor3 30px,
-//       $solverColor3 40px
-//     );
-//     opacity: 0.8;
-//     border-color: rgba(0, 0, 0, 0.5) !important;
-// }
+
 
 @include each-solver using ($color, $sel) {
     #{$sel} td.highlighted {
@@ -355,19 +340,28 @@ body {
     }
 }
 
-.action-button {
+@mixin crossword-button {
     height: 40px;
+    line-height: 40px;
+    text-align: center;
+    vertical-align: middle;
     font-family: $clueFontFamily;
     font-size: 14px;
     border-radius: 3px;
     outline: none;
-    color: #fff;
     border: 1px solid $gridBgColor;
-    background-color: #003264;
     padding: 0;
-    width: 5em;
-    text-align: center;
-   
+    min-width: 5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    cursor: pointer;
+}
+
+.action-button {
+    @include crossword-button;
+    color: #fff;
+    background-color: #003264;
+
     &:hover {
         background-color: #7ad;
     }
@@ -416,7 +410,6 @@ body {
     font-family: $answerFontFamily;
 }
 
-
 #compile-panel {
     .action-button {
         position: absolute;
@@ -430,30 +423,24 @@ body {
   position: absolute;
   bottom: .5em;
   left: 10em;
+  line-height: 100%;
   text-align: center;
   right: .5em;
-  height: 3em;
+  padding-top: .5em;
+  padding-bottom: .5em;
   border: 1px dashed #ccc;
   border-radius: 3px;
-  padding: 5px;
 }
 .upload-button {
+  @include crossword-button;
   display: inline-block;
-  padding: 10px;
   background: #ccc;
-  cursor: pointer;
-  border-radius: 5px;
-  border: 1px solid #ccc;
 }
 .upload-button:hover {
   background: #ddd;
 }
 #drop-area.highlight {
   border-color: #003264;
-}
-
-.upload-form {
-  margin-bottom: 10px;
 }
 
 #selected-puz-file {

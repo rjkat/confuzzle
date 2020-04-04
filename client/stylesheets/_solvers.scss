@@ -11,3 +11,75 @@ $maxSolvers: length($solverColors);
     }
 }
 
+// bit-packed powerset combinations
+@function powerset($n) {
+    @if $n == 0 {
+        @return [];
+    }
+    $prev: [0, 1, 3];
+    @for $i from 2 through $n {
+        $cur: [[0]];
+        @for $nbits from 1 through $i - 1 {
+            $curj: [];
+            @each $s in nth($prev, $nbits + 1) {
+                $curj: append($curj, $s);
+            }
+            @each $s in nth($prev, $nbits) {
+                $curj: append($curj, bw-or(bw-shift-left(1, $i - 1), $s));
+            }
+            $cur: append($cur, $curj);
+        }
+        $prev: append($cur, bw-shift-left(1, $i) - 1);
+    }
+    @return $prev;   
+}
+
+// n choose k
+@function combinations($list, $k: length($list)) {
+    $n: length($list);
+    @if $n == 0 {
+        @return [];
+    }
+    $result: [];
+    $combos: nth(powerset($n), $k + 1);
+    @for $i from 1 through length($combos) {
+        $r: [];
+        @for $j from 1 through $n {
+            $combo: nth($combos, $i);
+            $mask: bw-shift-left(1, $j - 1);
+            @if bw-and($combo, $mask) > 0 {
+                $r: append($r, nth($list, $j));
+            }
+        }
+        $result: append($result, $r);
+    }
+    @return $result;
+}
+
+@function gradient($combo) {
+    $g: ();
+    @for $i from 1 through length($combo) {
+        $g: append($g, nth($combo, $i) #{($i - 1) * 10} + 'px', $separator: comma);
+        $g: append($g, nth($combo, $i) #{$i * 10} + 'px', $separator: comma);
+    }
+    @return $g;
+}
+
+// maximum number of solvers to highlight simultaneously
+$maxSimultaneousHighlight: 2;
+
+$combos: combinations($solverColors, $maxSimultaneousHighlight);
+
+// @each $combo in $combos {
+//     @debug gradient($combo);
+//     td.highlighted {
+//         // background-color: $solverColor0;
+//         background: repeating-linear-gradient(
+//           45deg,
+//           #{gradient($combo)}
+//         );
+//         opacity: 0.8;
+//         border-color: rgba(0, 0, 0, 0.5) !important;
+//     }
+// }
+
