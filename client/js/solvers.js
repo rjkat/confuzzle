@@ -16,7 +16,7 @@ export class SolverDisplay {
         for (let [solverid, props] of Object.entries(solvers)) {
             const li = document.createElement('li');
             li.classList.add('solver');
-            li.dataset.solverid = props.color;
+            li.dataset.solverMask = 1 << props.solverid;
             li.textContent = props.name;
             items.push(li);
         }

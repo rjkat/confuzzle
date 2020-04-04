@@ -1,3 +1,5 @@
+@use "sass:color";
+
 body {
     margin: 0;
     background-color: $pageBgColor;
@@ -192,7 +194,7 @@ body {
 
 @include each-solver using ($color, $sel) {
     li.highlighted#{$sel} {
-        color: $color;
+        color: color.adjust($color, $lightness: -20%);
     }
 }
 

@@ -11,19 +11,19 @@ class AnagrindApp {
         const self = this;
 
         this.client = new AnagrindClient(this, window.location.host);
-        const gridContainer = document.querySelector('.crossword-display');
-        const clueContainer = document.querySelector('.crossword-clue-panel');
+        this.gridContainer = document.querySelector('.crossword-display');
+        this.clueContainer = document.querySelector('.crossword-clue-panel');
 
         this.panelContainer = document.querySelector('.crossword-panels');
         this.sourceTextArea = document.getElementById('crossword-source');
         
         this.display = new CrosswordDisplay(
             {panelContainer: this.panelContainer,
-             gridContainer: gridContainer,
-             clueContainer: clueContainer,
+             gridContainer: this.gridContainer,
+             clueContainer: this.clueContainer,
              sourceTextArea: this.sourceTextArea},
-            {onFillCell: self.onFillCell,
-             onSelectionChanged: self.selectionChanged}
+            {onFillCell: (...args) => self.cellFilled(...args),
+             onSelectionChanged: (...args) => self.selectionChanged(...args)}
         );
         this.solvers = new SolverDisplay(document.querySelector('.crossword-solvers'));
         this.renderButton = document.getElementById('render-button');
@@ -110,6 +110,9 @@ class AnagrindApp {
     }
 
     selectionChanged(selected, solverid, clueid) {
+        if (!clueid) {
+            return;
+        }
         this.client.sendUpdate({
             action: 'selectionChanged',
             selected: selected,

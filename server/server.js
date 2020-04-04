@@ -86,17 +86,21 @@ io.on('connection', function(socket) {
             socket.to(gridid).emit('solversChanged', grid.solvers);
         }
     });
-    socket.on('fillCell', function(event) {
-        console.log('fillCell event: ' + JSON.stringify(event));
-        const rooms = Object.keys(socket.rooms);
-        if (rooms.length <= 1) {
-            return;
-        }
-        const gridid = rooms[1];
-        console.log('grid ' + gridid);
-        grids[gridid].eventLog.push(event);
-        socket.to(gridid).emit('fillCell', event);
-    });
+
+    function makeBroadcastEventHandler(socket, name) {
+        socket.on(name, function(event) {
+            console.log(name + ' event: ' + JSON.stringify(event));
+            const rooms = Object.keys(socket.rooms);
+            if (rooms.length <= 1) {
+                return;
+            }
+            const gridid = rooms[1];
+            console.log('grid ' + gridid);
+            grids[gridid].eventLog.push(event);
+            socket.to(gridid).emit(name, event);
+        });
+    }
+    ['fillCell', 'selectionChanged'].forEach(name => makeBroadcastEventHandler(socket, name));
 });
 
 module.exports = server

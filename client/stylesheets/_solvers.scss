@@ -2,7 +2,7 @@
 @use "sass:color";
 
 $solverIcon: "\25a0\00a0";
-$solverColors: #e73, #07b, #3be, #e37, #c31, #098;
+$solverColors: #7ad, #e86, #fab, #e53, #4b9, #bc3, #aa0, #ddd;
 
 $maxSolvers: length($solverColors);
 
@@ -64,9 +64,8 @@ $maxSolvers: length($solverColors);
     $stripeWidth: 10px;
     @for $i from 1 through length($values) {
         $c: nth($values, $i);
-        $l: color.scale($c, $lightness: 30%);
-        $g: append($g, $l #{($i - 1) * $stripeWidth}, $separator: comma);
-        $g: append($g, $l #{$i * $stripeWidth}, $separator: comma);
+        $g: append($g, $c #{($i - 1) * $stripeWidth}, $separator: comma);
+        $g: append($g, $c #{$i * $stripeWidth}, $separator: comma);
     }
     @return $g;
 }

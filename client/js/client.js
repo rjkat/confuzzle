@@ -5,21 +5,22 @@ export class AnagrindClient {
         const self = this;
         const socket = io(hostname);
         this.app = app;
-        socket.on('noSuchGrid', gridId => {
-            console.log('no such grid: ' + gridId);
+        socket.on('noSuchGrid', gridid => {
+            console.log('no such grid: ' + gridid);
         });
 
         socket.on('crosswordShared', msg => self.onShareSuccess(msg));
         socket.on('fillCell', msg => self.fillCell(msg));
+        socket.on('selectionChanged', msg => self.selectionChanged(msg));
         socket.on('gridJoined', msg => self.gridJoined(msg));
         socket.on('solversChanged', msg => self.solversChanged(msg));
 
         this.socket = socket;
     }
 
-    joinGrid(gridId, name, onJoinSuccess) {
+    joinGrid(gridid, name, onJoinSuccess) {
         this.onJoinSuccess = onJoinSuccess;
-        this.socket.emit('joinGrid', {gridId: gridId, name: name});
+        this.socket.emit('joinGrid', {gridid: gridid, name: name});
     }
 
     shareCrossword(crossword, name, onShareSuccess) {
@@ -29,9 +30,16 @@ export class AnagrindClient {
 
     gridJoined(msg) {
         console.log('joined grid: ' + JSON.stringify(msg));
-        this.app.display.setCrosswordSource(msg.crossword);
         this.app.solverid = msg.solverId;
-        msg.events.forEach(event => this.fillCell(event));
+        this.app.display.solverid = msg.solverid; 
+        this.app.display.setCrosswordSource(msg.crossword);
+        msg.events.forEach(event => {
+            if (event.action == 'fillCell') {
+                this.fillCell(event);
+            } else if (event.action == 'selectionChanged') {
+                this.selectionChanged(event);
+            }
+        });
         this.onJoinSuccess(msg);
     }
 

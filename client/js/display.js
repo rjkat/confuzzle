@@ -52,7 +52,7 @@ export class CrosswordDisplay {
     fillCell(clueid, offset, value, forced) {
         const self = this;
         function fill(clueid, offset) {
-            let els = self.els.parent.querySelectorAll(
+            let els = self.els.gridContainer.querySelectorAll(
                 '[data-clueid*="'+ clueid +'"][data-offset*="' + offset + '"]'
             );
             els.forEach(function (el) {
@@ -75,21 +75,27 @@ export class CrosswordDisplay {
         if (intersection) {
             fill(intersection.clueid, intersection.offset);
         }
-        if (self.callbacks.onFillCell && !forced) {
-            self.callbacks.onFillCell(self.solverid, clueid, offset, value);
+        if (this.callbacks.onFillCell && !forced) {
+            this.callbacks.onFillCell(this.solverid, clueid, offset, value);
         }
     }
 
     // remote solver has changed their selection
     selectionChanged(msg) {
-        self.grid.clearHighlightClue(msg.clueid, msg.solverid);
+        if (msg.selected) {
+            this.grid.highlightClue(msg.clueid, msg.solverid);
+        } else {
+            this.grid.clearHighlightClue(msg.clueid, msg.solverid);
+        }
     }
 
     // local solver has changed their selection
     selectClue(clueid, scroll) {
+        this.callbacks.onSelectionChanged(false, this.solverid, this.selectedid);
         this.clearOwnHighlight(this.selectedid, true);
         this.selectedid = clueid;
         this.drawOwnHighlight(this.selectedid, scroll);
+        this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     }
 
     setCrosswordSource(source) {
