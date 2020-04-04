@@ -122,12 +122,38 @@ export class GridDisplay {
         cell.td.textContent = cell.contents;
         el.value = '';
         el.style.display = 'none';
-        this.cwDisplay.clearHighlight(this.currentClue().id);
+        this.cwDisplay.clearOwnHighlight(this.currentClue().id);
     }
 
-    highlightClue(clueid) {
+    highlightClue(clueid, solverid) {
+        console.log("highlightClue: " + clueid + ", " + solverid);
+        if (solverid === undefined) {
+            return;
+        }
         const clue = this.crossword.clues[clueid];
-        clue.cells.forEach(cell => cell.td.classList.add('highlighted'));
+        clue.cells.forEach(cell => {
+            if (clue.isAcross) {
+                cell.td.dataset.acrossMask |= (1 << solverid);
+            } else {
+                cell.td.dataset.downMask |= (1 << solverid);
+            }
+            cell.td.dataset.solverMask = cell.td.dataset.acrossMask | cell.td.dataset.downMask;
+        });
+    }
+
+    clearHighlightClue(clueid, solverid) {
+        if (solverid === undefined) {
+            return;
+        }
+        const clue = this.crossword.clues[clueid];
+        clue.cells.forEach(cell => {
+            if (clue.isAcross) {
+                cell.td.dataset.acrossMask &= ~(1 << solverid);
+            } else {
+                cell.td.dataset.downMask &= ~(1 << solverid);
+            }
+            cell.td.dataset.solverMask = cell.td.dataset.acrossMask | cell.td.dataset.downMask;
+        });
     }
 
     setInputCell(row, col, backspace) {
@@ -224,6 +250,7 @@ export class GridDisplay {
 
                 td.dataset.row = row;
                 td.dataset.col = col;
+                td.dataset.solverMask = 0;
                 if (cell.empty) {
                     td.dataset.empty = '';
                 }

@@ -16,6 +16,10 @@ export class ClueDisplay {
         return this.clueContainer.querySelector('li[data-clueid="'+ clueid +'"]');
     }
 
+    clearHighlightClue(clueid) {
+        this.getClueElement(clueid).classList.remove('highlighted');
+    }
+
     highlightClue(clueid, scroll) {
         const el = this.getClueElement(clueid);
         if (scroll) {
@@ -39,7 +43,7 @@ export class ClueDisplay {
         } else if (nextoffset >= 0) {
             // only blur when going off the end
             input.blur();
-            this.cwDisplay.clearHighlight();
+            this.cwDisplay.clearOwnHighlight(input.dataset.clueid);
         }
     }
 
@@ -79,7 +83,7 @@ export class ClueDisplay {
                 break;
             case KeyCode.KEY_ESCAPE:
                 input.blur();
-                this.cwDisplay.clearHighlight(input.dataset.clueid);
+                this.cwDisplay.clearOwnHighlight(input.dataset.clueid);
                 e.preventDefault();
                 break;
         }
@@ -118,9 +122,10 @@ export class ClueDisplay {
                 directions.innerHTML += ' ' + '<span class="clue-length">' + lengthstr + '</span>';
                 li.appendChild(directions);
                 const self = this;
-                li.onmouseover = () => self.cwDisplay.highlightClue(clueid);
-                li.onmouseout = () => self.cwDisplay.clearHighlight(clueid);
+                li.onmouseover = () => self.cwDisplay.drawOwnHighlight(clueid);
+                li.onmouseout = () => self.cwDisplay.clearOwnHighlight(clueid);
                 li.dataset.clueid = clueid;
+                li.dataset.solverMask = (1 << self.cwDisplay.solverid);
 
                 const answer = document.createElement('div');
                 answer.classList.add('crossword-answer-container');
@@ -134,7 +139,7 @@ export class ClueDisplay {
                     input.onkeydown = e => self.handleKeydown(e);
                     input.onmousedown = e => e.preventDefault();
                     input.onblur = function () {
-                        self.cwDisplay.clearHighlight(clueid);
+                        self.cwDisplay.clearOwnHighlight(clueid);
                     };
 
                     // clicking on directions is equivalent to clicking first input

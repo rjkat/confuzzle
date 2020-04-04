@@ -40,50 +40,50 @@ const socketGrids = {};
 
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
-        const gridId = shortid.generate();
+        const gridid = shortid.generate();
         const solvers = {};
-        solvers[socket.id] = {name: args.name, color: 0};
-        grids[gridId] = {
+        solvers[socket.id] = {name: args.name, solverid: 0};
+        grids[gridid] = {
             crossword: args.crossword,
             solvers: solvers,
             eventLog: []
         };
-        socket.join(gridId, function() {
-            socket.emit('crosswordShared', {gridId: gridId, solvers: solvers, color: 0});
+        socket.join(gridid, function() {
+            socket.emit('crosswordShared', {gridid: gridid, solvers: solvers, solverid: 0});
         });
     });
     socket.on('joinGrid', function(args) {
-        const grid = grids[args.gridId];
+        const grid = grids[args.gridid];
         if (!grid) {
-            socket.emit('noSuchGrid', args.gridId);
+            socket.emit('noSuchGrid', args.gridid);
             return;
         }
-        socket.join(args.gridId, function() {
-            console.log('join ' + args.name + ' to grid: ' + args.gridId);
-            const grid = grids[args.gridId];
-            const color = Object.keys(grid.solvers).length;
+        socket.join(args.gridid, function() {
+            console.log('join ' + args.name + ' to grid: ' + args.gridid);
+            const grid = grids[args.gridid];
+            const solverid = Object.keys(grid.solvers).length;
             grid.solvers[socket.id] = {
                 name: args.name,
-                color: color
+                solverid: solverid
             };
             // hack: just replay all the packets to everyone who joins
             socket.emit('gridJoined', {
-                gridId: args.gridId,
-                color: color,
+                gridid: args.gridid,
+                solverid: solverid,
                 solvers: grid.solvers,
                 crossword: grid.crossword,
                 events: grid.eventLog
             });
-            socketGrids[socket.id] = args.gridId;
-            socket.to(args.gridId).emit('solversChanged', grid.solvers);
+            socketGrids[socket.id] = args.gridid;
+            socket.to(args.gridid).emit('solversChanged', grid.solvers);
         });
     });
     socket.on('disconnect', (reason) => {
-        const gridId = socketGrids[socket.id];
-        const grid = grids[gridId];
+        const gridid = socketGrids[socket.id];
+        const grid = grids[gridid];
         if (grid && grid.solvers) {
             delete grid.solvers[socket.id];
-            socket.to(gridId).emit('solversChanged', grid.solvers);
+            socket.to(gridid).emit('solversChanged', grid.solvers);
         }
     });
     socket.on('fillCell', function(event) {
@@ -92,10 +92,10 @@ io.on('connection', function(socket) {
         if (rooms.length <= 1) {
             return;
         }
-        const gridId = rooms[1];
-        console.log('grid ' + gridId);
-        grids[gridId].eventLog.push(event);
-        socket.to(gridId).emit('fillCell', event);
+        const gridid = rooms[1];
+        console.log('grid ' + gridid);
+        grids[gridid].eventLog.push(event);
+        socket.to(gridid).emit('fillCell', event);
     });
 });
 

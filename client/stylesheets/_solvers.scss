@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "sass:color";
+
 $solverIcon: "\25a0\00a0";
 $solverColors: #e73, #07b, #3be, #e37, #c31, #098;
 
@@ -5,7 +8,8 @@ $maxSolvers: length($solverColors);
 
 @mixin each-solver {
     @for $i from 1 through $maxSolvers {
-        $dataSelector: "[data-solverid=\"#{$i - 1}\"]";
+        $mask: bw-shift-left(1, $i - 1);
+        $dataSelector: "[data-solver-mask=\"#{$mask}\"]";
         $solverColor: nth($solverColors, $i);
         @content($solverColor, $dataSelector);
     }
@@ -38,48 +42,44 @@ $maxSolvers: length($solverColors);
 @function combinations($list, $k: length($list)) {
     $n: length($list);
     @if $n == 0 {
-        @return [];
+        @return ();
     }
-    $result: [];
+    $result: ();
     $combos: nth(powerset($n), $k + 1);
     @for $i from 1 through length($combos) {
-        $r: [];
+        $values: [];
+        $mask: nth($combos, $i);
         @for $j from 1 through $n {
-            $combo: nth($combos, $i);
-            $mask: bw-shift-left(1, $j - 1);
-            @if bw-and($combo, $mask) > 0 {
-                $r: append($r, nth($list, $j));
+            @if bw-and($mask, bw-shift-left(1, $j - 1)) > 0 {
+                $values: append($values, nth($list, $j));
             }
         }
-        $result: append($result, $r);
+        $result: map.merge($result, ($mask : $values));
     }
     @return $result;
 }
 
-@function gradient($combo) {
+@function gradient($values, $n) {
     $g: ();
-    @for $i from 1 through length($combo) {
-        $g: append($g, nth($combo, $i) #{($i - 1) * 10} + 'px', $separator: comma);
-        $g: append($g, nth($combo, $i) #{$i * 10} + 'px', $separator: comma);
+    $stripeWidth: 10px;
+    @for $i from 1 through length($values) {
+        $c: nth($values, $i);
+        $l: color.scale($c, $lightness: 30%);
+        $g: append($g, $l #{($i - 1) * $stripeWidth}, $separator: comma);
+        $g: append($g, $l #{$i * $stripeWidth}, $separator: comma);
     }
     @return $g;
 }
 
-// maximum number of solvers to highlight simultaneously
-$maxSimultaneousHighlight: 2;
-
-$combos: combinations($solverColors, $maxSimultaneousHighlight);
-
-// @each $combo in $combos {
-//     @debug gradient($combo);
-//     td.highlighted {
-//         // background-color: $solverColor0;
-//         background: repeating-linear-gradient(
-//           45deg,
-//           #{gradient($combo)}
-//         );
-//         opacity: 0.8;
-//         border-color: rgba(0, 0, 0, 0.5) !important;
-//     }
-// }
-
+// number of solvers to highlight simultaneously
+@for $nMask from 1 through 4 {
+    $combos: combinations($solverColors, $nMask);
+    @each $mask, $values in $combos {
+        td#{"[data-solver-mask=\"#{$mask}\"]"} {
+            background: repeating-linear-gradient(
+              45deg,
+              gradient($values, $nMask),
+            ) !important;
+        }
+    }
+}

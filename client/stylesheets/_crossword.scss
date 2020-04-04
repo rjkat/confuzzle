@@ -191,13 +191,13 @@ body {
 }
 
 @include each-solver using ($color, $sel) {
-    #{$sel} li.highlighted {
+    li.highlighted#{$sel} {
         color: $color;
     }
 }
 
 @include each-solver using ($color, $sel) {
-    #{$sel} .highlighted input {
+    .highlighted#{$sel} input {
         border-bottom: 2px solid $color;
     }
 }

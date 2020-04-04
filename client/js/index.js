@@ -11,30 +11,32 @@ class AnagrindApp {
         const self = this;
 
         this.client = new AnagrindClient(this, window.location.host);
-        this.gridContainer = document.querySelector('.crossword-display');
+        const gridContainer = document.querySelector('.crossword-display');
+        const clueContainer = document.querySelector('.crossword-clue-panel');
+
         this.panelContainer = document.querySelector('.crossword-panels');
-        this.cluePanel = document.querySelector('.crossword-clue-panel');
-        this.sourceEl = document.getElementById('crossword-source');
+        this.sourceTextArea = document.getElementById('crossword-source');
         
         this.display = new CrosswordDisplay(
-            this.panelContainer,
-            this.gridContainer,
-            this.cluePanel,
-            this.sourceEl,
-            (clueid, offset, value) => this.cellFilled(clueid, offset, value)
+            {panelContainer: this.panelContainer,
+             gridContainer: gridContainer,
+             clueContainer: clueContainer,
+             sourceTextArea: this.sourceTextArea},
+            {onFillCell: self.onFillCell,
+             onSelectionChanged: self.selectionChanged}
         );
         this.solvers = new SolverDisplay(document.querySelector('.crossword-solvers'));
         this.renderButton = document.getElementById('render-button');
-        this.sourceEl.value = parser.sampleCrossword();
+        this.sourceTextArea.value = parser.sampleCrossword();
 
         this.renderButton.onclick = () => self.renderCrossword();
 
-        const pathParts = window.location.pathname.split("/");
-        if (pathParts.length > 2 && pathParts[1] == "grid") {
-            this.gridId = pathParts[2];
+        const pathParts = window.location.pathname.split('/');
+        if (pathParts.length > 2 && pathParts[1] == 'grid') {
+            this.gridid = pathParts[2];
         }
 
-        if (!this.gridId) {
+        if (!this.gridid) {
             this.selectTab('compile');
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
@@ -44,17 +46,15 @@ class AnagrindApp {
         this.shareDiv = document.querySelector('.crossword-share-link');
         this.linkText = document.querySelector('.crossword-link-text');
         this.colludeButton = document.querySelector('#collude-button');
-        this.colludeButton.value = this.gridId ? 'Join' : 'Share';
+        this.colludeButton.value = this.gridid ? 'Join' : 'Share';
         this.colludeButton.onclick = () => self.colludeClicked();
 
         const copyButton = document.querySelector('#copy-link-button');
         copyButton.onclick = () => {
-            console.log("button clicked " + self.linkText.textContent);
             navigator.clipboard.writeText(self.linkText.textContent);
         }
 
-
-        const dropArea = document.getElementById("drop-area");
+        const dropArea = document.getElementById('drop-area');
         const puzFile = document.getElementById('selected-puz-file');
 
         DragDrop.setupDropArea(dropArea, puzFile, buffer => self.puzFileUploaded(buffer));
@@ -63,7 +63,7 @@ class AnagrindApp {
 
     puzFileUploaded(buffer) {
         const eno = LibPuz.loadPuzBuffer(buffer);
-        this.sourceEl.value = eno;
+        this.sourceTextArea.value = eno;
         this.renderCrossword();
     }
 
@@ -73,20 +73,19 @@ class AnagrindApp {
 
     gridJoined(msg) {
         this.selectTab('solve');
-        this.gridContainer.dataset.solverid = msg.color;
-        this.panelContainer.dataset.solverid = msg.color;
+        this.display.solverid = msg.solverid;
+        this.panelContainer.dataset.solverid = msg.solverid;
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }
 
     shareSucceeded(msg) {
-        console.log("share success: " + msg.gridId);
-        this.linkText.textContent = window.location.host + '/grid/' + msg.gridId;
+        console.log('share success: ' + msg.gridid);
+        this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
         this.renderCrossword();
-        this.gridContainer.dataset.solverid = msg.color;
-        this.panelContainer.dataset.solverid = msg.color;
+        
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }
@@ -100,12 +99,27 @@ class AnagrindApp {
         document.getElementById(tabName + '-tab').click();
     }
 
-    cellFilled(clueid, offset, value) {
-        this.client.sendUpdate({action: 'fillCell', clueid: clueid, offset: offset, value: value});
+    cellFilled(solverid, clueid, offset, value) {
+        this.client.sendUpdate({
+            action: 'fillCell',
+            solverid: solverid,
+            clueid: clueid,
+            offset: offset,
+            value: value
+        });
+    }
+
+    selectionChanged(selected, solverid, clueid) {
+        this.client.sendUpdate({
+            action: 'selectionChanged',
+            selected: selected,
+            solverid: solverid,
+            clueid: clueid
+        });
     }
 
     renderCrossword() {
-        const crossword = parser.parse(this.sourceEl.value);
+        const crossword = parser.parse(this.sourceTextArea.value);
 
         ['author', 'pubdate'].forEach(x => {
             let el = document.getElementById('crossword-' + x);
@@ -121,13 +135,13 @@ class AnagrindApp {
 
     colludeClicked() {
         const self = this;
-        if (this.gridId) {
+        if (this.gridid) {
             this.nameDiv.disabled = true;
-            this.client.joinGrid(this.gridId, this.nameInput.value, function (msg) {
+            this.client.joinGrid(this.gridid, this.nameInput.value, function (msg) {
                 self.gridJoined(msg);
             });
         } else {
-            this.client.shareCrossword(this.sourceEl.value, this.nameInput.value, function (msg) {
+            this.client.shareCrossword(this.sourceTextArea.value, this.nameInput.value, function (msg) {
                 self.shareSucceeded(msg);
             });
         }
