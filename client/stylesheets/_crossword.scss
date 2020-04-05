@@ -200,6 +200,7 @@ body {
 
 @include each-solver using ($color, $sel) {
     .highlighted#{$sel} input {
+        padding-bottom: 0px;
         border-bottom: 2px solid $color;
     }
 }
@@ -240,6 +241,7 @@ body {
         font-family: $answerFontFamily;
         padding: $gridBorderWidth 0 0 $gridBorderWidth;
         border: 0;
+        padding-bottom: 1px;
         border-bottom: 1px solid $gridBgColor;
         margin-right: 2px;
         background: none;
@@ -252,6 +254,16 @@ body {
         vertical-align: middle;
         text-transform: uppercase;
         box-sizing: border-box;
+    }
+
+    [data-separator=","]:after {
+        font-family: $answerFontFamily;
+        content: "\00A0";
+    }
+
+    [data-separator="-"]:after {
+        font-family: $answerFontFamily;
+        content: "-";
     }
 
     .clue-id {
