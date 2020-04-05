@@ -109,9 +109,20 @@ export class ClueDisplay {
                 const li = document.createElement('li');
                 const directions = document.createElement('div');
                 directions.classList.add('clue-directions');
-                directions.innerHTML = '<span class="clue-id">' + clueid + '</span>';
-                directions.innerHTML += ' ' + '<span class="clue-text">' + clue.text + '</span>';
-                let lengthstr = '(';
+
+                const idEl = document.createElement('span');
+                idEl.classList.add('clue-id');
+                idEl.textContent = clueid + ' ';
+                directions.appendChild(idEl);
+
+                const textEl = document.createElement('span');
+                textEl.classList.add('clue-text');
+                textEl.textContent = clue.text;
+                directions.appendChild(textEl);
+
+                const lengthEl = document.createElement('span');
+                lengthEl.classList.add('clue-length');
+                let lengthstr = ' (';
                 for (let i = 0; i < clue.lengths.length; i++) {
                     if (i > 0) {
                         lengthstr += clue.separators[i - 1];
@@ -119,7 +130,9 @@ export class ClueDisplay {
                     lengthstr += clue.lengths[i];
                 }
                 lengthstr += ')';
-                directions.innerHTML += ' ' + '<span class="clue-length">' + lengthstr + '</span>';
+                lengthEl.textContent = lengthstr;
+                directions.appendChild(lengthEl);
+
                 li.appendChild(directions);
                 const self = this;
                 li.onmouseover = () => self.cwDisplay.drawOwnHighlight(clueid);

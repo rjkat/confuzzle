@@ -98,11 +98,6 @@ export class CrosswordDisplay {
         this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     }
 
-    setCrosswordSource(source) {
-        this.sourceTextArea.value = source;
-        this.setCrossword(parser.parse(source));
-    }
-
     setCrossword(crossword) {
         this.crossword = crossword;
         const grid = this.grid;

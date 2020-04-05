@@ -25,7 +25,10 @@ class AnagrindApp {
             {onFillCell: (...args) => self.cellFilled(...args),
              onSelectionChanged: (...args) => self.selectionChanged(...args)}
         );
-        this.solvers = new SolverDisplay(document.querySelector('.crossword-solvers'));
+        this.solvers = new SolverDisplay(
+            document.querySelector('.crossword-solvers'),
+            this.display.grid
+        );
         this.renderButton = document.getElementById('render-button');
         this.sourceTextArea.value = parser.sampleCrossword();
 
@@ -73,7 +76,6 @@ class AnagrindApp {
 
     gridJoined(msg) {
         this.selectTab('solve');
-        this.display.solverid = msg.solverid;
         this.panelContainer.dataset.solverid = msg.solverid;
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
@@ -121,8 +123,16 @@ class AnagrindApp {
         });
     }
 
-    renderCrossword() {
-        const crossword = parser.parse(this.sourceTextArea.value);
+    setCrosswordSource(source) {
+        this.sourceTextArea.value = source;
+        this.renderCrossword(source);
+    }
+
+    renderCrossword(source) {
+        if (!source){
+            source = this.sourceTextArea.value;
+        }
+        const crossword = parser.parse(source);
 
         ['author', 'pubdate'].forEach(x => {
             let el = document.getElementById('crossword-' + x);
@@ -133,6 +143,7 @@ class AnagrindApp {
         this.display.setCrossword(crossword);
 
         // yuck
+        this.solvers.grid = this.display.grid;
         document.querySelector('.crossword-solvers').style.left = this.panelContainer.offsetLeft + 'px';
     }
 

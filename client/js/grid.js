@@ -1,6 +1,29 @@
 import * as KeyCode from 'keycode-js';
 const uniqid = require('uniqid');
 
+// https://graphics.stanford.edu/~seander/bithacks.html
+function nBitsSet(v) {
+    let n = 0;
+    while (v) {
+        n++;
+        v &= v - 1; // clear the least significant bit set
+    }
+    return n;
+}
+
+function clearSolverMask(td, solverid, clearAcross, clearDown) {
+    if (!td) {
+        return;
+    }
+    if (clearAcross) {
+        td.dataset.acrossMask &= ~(1 << solverid);
+    }
+    if (clearDown) {
+        td.dataset.downMask &= ~(1 << solverid);
+    }
+    td.dataset.solverMask = (td.dataset.acrossMask | td.dataset.downMask);
+}
+
 export class GridDisplay {
     constructor(cwDisplay, parent) {
         this.cwDisplay = cwDisplay;
@@ -137,7 +160,26 @@ export class GridDisplay {
             } else {
                 cell.td.dataset.downMask |= (1 << solverid);
             }
-            cell.td.dataset.solverMask = cell.td.dataset.acrossMask | cell.td.dataset.downMask;
+            let v = (cell.td.dataset.acrossMask | cell.td.dataset.downMask);
+            // can only show 4 overlapping solvers...
+            while (nBitsSet(v) > 4) {
+                v &= v - 1; // clear the least significant bit set
+            }
+            cell.td.dataset.solverMask = v;
+        });
+    }
+
+    clearAllClues(solverid) {
+        console.log("clear all clues: " + solverid);
+        if (solverid === undefined) {
+            return;
+        }
+        const cells = this.crossword.grid.cells;
+        cells.forEach(row => {
+            row.forEach(cell => {
+                console.log("clear clue: " + cell.td);
+                clearSolverMask(cell.td, solverid, true, true);
+            });
         });
     }
 
@@ -146,14 +188,7 @@ export class GridDisplay {
             return;
         }
         const clue = this.crossword.clues[clueid];
-        clue.cells.forEach(cell => {
-            if (clue.isAcross) {
-                cell.td.dataset.acrossMask &= ~(1 << solverid);
-            } else {
-                cell.td.dataset.downMask &= ~(1 << solverid);
-            }
-            cell.td.dataset.solverMask = cell.td.dataset.acrossMask | cell.td.dataset.downMask;
-        });
+        clue.cells.forEach(cell => clearSolverMask(cell.td, solverid, clue.isAcross, !clue.isAcross));
     }
 
     setInputCell(row, col, backspace) {
@@ -276,6 +311,7 @@ export class GridDisplay {
                     }
                 }
                 cell.td = td;
+                cells[row][col] = cell;
                 tr.appendChild(td);
             }
             table.appendChild(tr);

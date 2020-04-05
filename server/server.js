@@ -38,6 +38,21 @@ const io = require('socket.io')(server);
 const grids = {};
 const socketGrids = {};
 
+function firstSolverId(mask) {
+    let i = 1;
+    let n = 0;
+    while (mask & i) {
+        i <<= 1;
+        n++;
+    }
+    return n;
+}
+
+function clearSolverId(mask, solverid) {
+    mask &= ~(1 << solverid);
+    return mask;
+}
+
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
         const gridid = shortid.generate();
@@ -46,7 +61,8 @@ io.on('connection', function(socket) {
         grids[gridid] = {
             crossword: args.crossword,
             solvers: solvers,
-            eventLog: []
+            eventLog: [],
+            solverMask: 1
         };
         socket.join(gridid, function() {
             socket.emit('crosswordShared', {gridid: gridid, solvers: solvers, solverid: 0});
@@ -61,7 +77,9 @@ io.on('connection', function(socket) {
         socket.join(args.gridid, function() {
             console.log('join ' + args.name + ' to grid: ' + args.gridid);
             const grid = grids[args.gridid];
-            const solverid = Object.keys(grid.solvers).length;
+            // find an empty slot in the solver id table
+            const solverid = firstSolverId(grid.solverMask);
+            grid.solverMask |= (1 << solverid);
             grid.solvers[socket.id] = {
                 name: args.name,
                 solverid: solverid
@@ -75,15 +93,19 @@ io.on('connection', function(socket) {
                 events: grid.eventLog
             });
             socketGrids[socket.id] = args.gridid;
-            socket.to(args.gridid).emit('solversChanged', grid.solvers);
+            event = {action: 'solversChanged', solvers: grid.solvers};
+            socket.to(args.gridid).emit(event.action, event);
         });
     });
     socket.on('disconnect', (reason) => {
         const gridid = socketGrids[socket.id];
         const grid = grids[gridid];
         if (grid && grid.solvers) {
+            const solverid = grid.solvers[socket.id].solverid;
+            grid.solverMask = clearSolverId(grid.solverMask, solverid);
             delete grid.solvers[socket.id];
-            socket.to(gridid).emit('solversChanged', grid.solvers);
+            event = {action: 'solversChanged', solvers: grid.solvers};
+            socket.to(gridid).emit(event.action, event);
         }
     });
 
