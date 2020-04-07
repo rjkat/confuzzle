@@ -82,6 +82,7 @@ export class ClueDisplay {
                 e.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:
+            case KeyCode.KEY_RETURN:
                 input.blur();
                 this.cwDisplay.clearOwnHighlight(input.dataset.clueid);
                 e.preventDefault();

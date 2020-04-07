@@ -149,7 +149,6 @@ export class GridDisplay {
     }
 
     highlightClue(clueid, solverid) {
-        console.log("highlightClue: " + clueid + ", " + solverid);
         if (solverid === undefined) {
             return;
         }
@@ -170,14 +169,12 @@ export class GridDisplay {
     }
 
     clearAllClues(solverid) {
-        console.log("clear all clues: " + solverid);
         if (solverid === undefined) {
             return;
         }
         const cells = this.crossword.grid.cells;
         cells.forEach(row => {
             row.forEach(cell => {
-                console.log("clear clue: " + cell.td);
                 clearSolverMask(cell.td, solverid, true, true);
             });
         });
@@ -248,6 +245,7 @@ export class GridDisplay {
                 this.moveInputCell(-1);
                 break;
             case KeyCode.KEY_ESCAPE:
+            case KeyCode.KEY_RETURN:
                 this.hideInputCell();
                 break;
         }

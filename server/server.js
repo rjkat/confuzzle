@@ -93,8 +93,9 @@ io.on('connection', function(socket) {
                 events: grid.eventLog
             });
             socketGrids[socket.id] = args.gridid;
-            event = {action: 'solversChanged', solvers: grid.solvers};
+            event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
             socket.to(args.gridid).emit(event.action, event);
+            grid.eventLog.push(event);
         });
     });
     socket.on('disconnect', (reason) => {
@@ -104,8 +105,9 @@ io.on('connection', function(socket) {
             const solverid = grid.solvers[socket.id].solverid;
             grid.solverMask = clearSolverId(grid.solverMask, solverid);
             delete grid.solvers[socket.id];
-            event = {action: 'solversChanged', solvers: grid.solvers};
+            event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
             socket.to(gridid).emit(event.action, event);
+            grid.eventLog.push(event);
         }
     });
 

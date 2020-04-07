@@ -71,9 +71,11 @@ export class CrosswordDisplay {
         const cell = clue.cells[offset];
         cell.contents = value;
         fill(clueid, offset);
-        const intersection = clue.intersections[offset];
-        if (intersection) {
-            fill(intersection.clueid, intersection.offset);
+        if (clue.intersections) {
+            const intersection = clue.intersections[offset];
+            if (intersection) {
+                fill(intersection.clueid, intersection.offset);
+            }
         }
         if (this.callbacks.onFillCell && !forced) {
             this.callbacks.onFillCell(this.solverid, clueid, offset, value);
