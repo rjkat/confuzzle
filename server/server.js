@@ -2,6 +2,7 @@ const express = require('express')
 const http = require('http')
 const https = require('https')
 const app = express()
+const robots = require('express-robots-txt')
 
 const Bundler = require('parcel-bundler')
 const bundler = new Bundler('client/index.html')
@@ -34,6 +35,8 @@ app.get("/grid/:name", function(res, req) {
     next('route');
 });
 
+app.use(robots({UserAgent: '*', Disallow: '/'}))
+
 const io = require('socket.io')(server);
 const grids = {};
 const socketGrids = {};
@@ -53,46 +56,67 @@ function clearSolverId(mask, solverid) {
     return mask;
 }
 
+function createGrid(crossword, gridid) {
+    const grid = {
+        crossword: crossword,
+        solvers: {},
+        eventLog: [],
+        solverMask: 0
+    };
+    grids[gridid] = grid;
+    return grid;
+}
+
+function joinGrid(socketid, name, gridid) {
+    const grid = grids[gridid];
+    // find an empty slot in the solver id table
+    const solverid = firstSolverId(grid.solverMask);
+    grid.solverMask |= (1 << solverid);
+    grid.solvers[socketid] = {
+        name: name,
+        solverid: solverid
+    };
+    socketGrids[socketid] = gridid;
+    return grid;
+}
+
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
         const gridid = shortid.generate();
-        const solvers = {};
-        solvers[socket.id] = {name: args.name, solverid: 0};
-        grids[gridid] = {
-            crossword: args.crossword,
-            solvers: solvers,
-            eventLog: [],
-            solverMask: 1
-        };
+        const grid = createGrid(args.crossword, gridid);
+        joinGrid(socket.id, args.name, gridid);
         socket.join(gridid, function() {
-            socket.emit('crosswordShared', {gridid: gridid, solvers: solvers, solverid: 0});
+            socket.emit('crosswordShared', {gridid: gridid, solvers: grid.solvers, solverid: 0});
         });
     });
     socket.on('joinGrid', function(args) {
-        const grid = grids[args.gridid];
+        let grid = grids[args.gridid];
         if (!grid) {
-            socket.emit('noSuchGrid', args.gridid);
-            return;
+            let success = true;
+            let crossword;
+            try {
+                crossword = fs.readFileSync(path.join(__dirname, 'crosswords', args.gridid + '.eno'), 'utf8');
+            } catch {
+                success = false;                
+            }
+            if (!crossword || !success) {
+                socket.emit('noSuchGrid', args.gridid);
+                return;
+            } else {
+                grid = createGrid(crossword, args.gridid);
+            }
         }
         socket.join(args.gridid, function() {
             console.log('join ' + args.name + ' to grid: ' + args.gridid);
-            const grid = grids[args.gridid];
-            // find an empty slot in the solver id table
-            const solverid = firstSolverId(grid.solverMask);
-            grid.solverMask |= (1 << solverid);
-            grid.solvers[socket.id] = {
-                name: args.name,
-                solverid: solverid
-            };
+            const grid = joinGrid(socket.id, args.name, args.gridid);
             // hack: just replay all the packets to everyone who joins
             socket.emit('gridJoined', {
                 gridid: args.gridid,
-                solverid: solverid,
+                solverid: grid.solvers[socket.id].solverid,
                 solvers: grid.solvers,
                 crossword: grid.crossword,
                 events: grid.eventLog
             });
-            socketGrids[socket.id] = args.gridid;
             event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
             socket.to(args.gridid).emit(event.action, event);
             grid.eventLog.push(event);
