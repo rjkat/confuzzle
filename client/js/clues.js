@@ -102,9 +102,9 @@ export class ClueDisplay {
 
     addClueList(container, isAcross) {
         const clues = this.crossword.clues;
-        const list = document.createElement('ul');
-        const self = this;
 
+        const self = this;
+        const list = document.createElement('ul');
         for (let [clueid, clue] of Object.entries(clues)) {
             if (clue.isAcross == isAcross) {
                 const li = document.createElement('li');
@@ -191,6 +191,15 @@ export class ClueDisplay {
         const el = this.clueContainer;
         el.innerHTML = '';
         const self = this;
+        
+        const meta = crossword.meta;
+        if (meta.note) {
+            const note = document.createElement('div');
+            note.classList.add('author-note');
+            note.textContent = meta.note;
+            el.appendChild(note);
+        }
+
         [true, false].forEach(function(isAcross) {
             const div = document.createElement('div');
             div.classList.add('crossword-clues');

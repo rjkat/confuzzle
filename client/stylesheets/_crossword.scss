@@ -205,6 +205,13 @@ body {
     }
 }
 
+.author-note {
+    text-align: center;
+    width: 100%;
+    font-family: $clueFontFamily;
+    padding-bottom: .5em;
+}
+
 .crossword-clues {
     flex: 50%;
     min-width: $clueMinWidth;

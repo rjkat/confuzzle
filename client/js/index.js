@@ -44,7 +44,7 @@ class AnagrindApp {
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
         this.nameInput = document.querySelector('.crossword-name-input');
-        this.nameInput.onkeyup = () => self.nameEntered();
+        this.nameInput.onkeyup = e => self.nameEntered(e);
 
         this.shareDiv = document.querySelector('.crossword-share-link');
         this.linkText = document.querySelector('.crossword-link-text');
@@ -92,7 +92,7 @@ class AnagrindApp {
         this.solvers.show();
     }
 
-    nameEntered() {
+    nameEntered(e) {    
         document.querySelector('#name-length').textContent = this.nameInput.value.length;
         this.colludeButton.disabled = !this.nameInput.value.length;
     }

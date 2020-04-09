@@ -298,18 +298,48 @@ export class GridDisplay {
                     if (across) {
                         td.dataset.clueid = across.id;
                         td.dataset.offset = cell.offsets.across;
+                        if (across.shadingColor) {
+                            td.style.backgroundColor = across.shadingColor;
+                        }
                         if (down) {
                             td.dataset.clueid += ',';
                             td.dataset.offset += ',';
                         }
                     }
                     if (down) {
-                        td.dataset.clueid += cell.clues.down.id;
+                        td.dataset.clueid += down.id;
                         td.dataset.offset += cell.offsets.down;
+                        if (down.shadingColor) {
+                            td.style.backgroundColor = down.shadingColor;
+                        }
                     }
                 }
                 cell.td = td;
                 cells[row][col] = cell;
+
+                const borders = crossword.grid.borders;
+                if (borders) {
+                    borders.forEach(border => {
+                        if (row >= (border.startRow - 1) && row <= (border.endRow - 1)
+                           && col >= (border.startCol - 1) && col <= (border.endCol - 1)) {
+                            
+                            if (border.style == 'thick') {
+                                // down
+                                const widthPx = '3px';
+                                td.style.borderRightWidth = widthPx;
+                                td.style.borderLeftWidth = widthPx;
+                                if (row == border.startRow - 1) {
+                                    td.style.borderTopWidth = widthPx;                                
+                                }
+                                if (row == border.endRow - 1) {
+                                    td.style.borderBottomWidth = widthPx;
+                                }
+                            }
+
+                        }
+                    })
+                }
+
                 tr.appendChild(td);
             }
             table.appendChild(tr);
