@@ -62,7 +62,7 @@ export class CrosswordDisplay {
                 if (el.nodeName == 'INPUT') {
                     el.value = value;
                 } else if (el.nodeName == 'TD') {
-                    el.textContent = value;
+                    el.firstChild.textContent = value;
                 }
             });
 

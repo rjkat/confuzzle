@@ -106,7 +106,23 @@ body {
 @include each-solver using ($color, $sel) {
     #{$sel} td.highlighted {
         background-color: $color;
+
     }
+    #{$sel} .cell-highlight-border {
+        display: block;
+    }
+}
+
+.cell-highlight-border {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-width: $highlightBorderWidth;
+    border-style: solid;
+    border-color: transparent;
 }
 
 .crossword-display {
@@ -132,7 +148,7 @@ body {
                 min-width: $gridCellSize;
                 max-width: $gridCellSize;
                 height: $gridCellSize;
-                line-height: $gridCellSize;
+                line-height: #{$gridCellSize - 2*$highlightBorderWidth};
                 position: relative;
                 text-align: center;
                 vertical-align: middle;
@@ -150,25 +166,25 @@ body {
                 &[data-empty] {
                     background: $gridBgColor;
                 }
+
             }
         }
 
         .crossword-grid-input {
             font-size: $gridFontSize;
             font-family: $answerFontFamily;
-            padding: $gridBorderWidth 0 0 $gridBorderWidth;
+            // padding: $gridBorderWidth 0 0 $gridBorderWidth;
             border: 0;
             background: none;
             outline: none;
             min-width: $gridCellSize;
             max-width: $gridCellSize;
-            height: $gridCellSize;
-            line-height: $gridCellSize;
+            height: $highlightCellSize;
+            line-height: $highlightCellSize;
             position: absolute;
             text-align: center;
             vertical-align: middle;
             text-transform: inherit;
-            box-sizing: border-box;
         }
     }
 
@@ -241,6 +257,10 @@ body {
                 cursor: pointer;
             }
         }
+    }
+
+    .crossword-clue-input {
+        display: inline-block;
     }
 
     input {

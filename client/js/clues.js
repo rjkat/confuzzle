@@ -146,6 +146,10 @@ export class ClueDisplay {
 
                 let word = 0;
                 let wordpos = 0;
+                let lastInput;
+
+                const inputContainer = document.createElement('div');
+                inputContainer.classList.add('crossword-clue-input');
                 for (let i = 0; i < clue.totalLength; i++) {
                     
                     const input = document.createElement('input');
@@ -159,26 +163,36 @@ export class ClueDisplay {
                     input.onblur = function () {
                         self.cwDisplay.clearOwnHighlight(clueid);
                     };
-
+                    const cell = clue.cells[i];
+                    if (cell.shadingColor) {
+                        input.style.backgroundColor = cell.shadingColor;
+                    }
                     // clicking on directions is equivalent to clicking first input
                     if (i == 0) {
                         directions.onclick = function(e) {
                             input.click();
                         };
                     }
-                    answer.appendChild(input);
+                    inputContainer.appendChild(input);
 
                     if (i == clue.lengths[word] - 1 && word < clue.separators.length) {
                         const sep = document.createElement('span');
                         sep.classList.add('crossword-separator');
                         sep.dataset.separator = clue.separators[word];
-                        answer.appendChild(sep);
+                        inputContainer.appendChild(sep);
                     }
                     if (i >= clue.lengths[word]) {
                         word++;
                         wordpos = 0;
                     }
+
+
+                    lastInput = input;
                 }
+                if (clue.shadingColor) {
+                    inputContainer.style.backgroundColor = clue.shadingColor;
+                }
+                answer.appendChild(inputContainer);
                 li.appendChild(answer);
                 list.appendChild(li);
             }

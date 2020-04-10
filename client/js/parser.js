@@ -69,16 +69,27 @@ function populateCells(cells, clues) {
 }
 
 function buildGrid(cw) {
-  let clues = cw.clues;
-  let grid = cw.grid;
+  const clues = cw.clues;
+  const grid = cw.grid;
+  const shading = grid.shading;
   grid.cells = []
   for (let row = 1; row <= grid.height; row++) {
     let rowCells = [];
     for (let col = 1; col <= grid.width; col++) {
-      rowCells.push({
+      const cell = {
         empty: true,
         contents: ''
-      });
+      };
+      if (shading) {
+          shading.forEach(rule => {
+              if (rule.startRow
+                 && row >= rule.startRow && row <= rule.endRow
+                 && col >= rule.startCol && col <= rule.endCol) {
+                  cell.shadingColor = rule.color;
+              }
+          });
+      }
+      rowCells.push(cell);
     }
     grid.cells.push(rowCells);
   }
@@ -96,7 +107,8 @@ function parseClue(cw, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
-  cw.clues[clueid] = {
+  
+  const parsed = {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
     number: parseInt(clueid.slice(0, -1), 10),
@@ -107,6 +119,15 @@ function parseClue(cw, clue) {
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue()
   };
+
+  if (cw.grid.shading) {
+    cw.grid.shading.forEach(rule => {
+      if (rule.clues && rule.clues.includes(clueid)) {
+        parsed.shadingColor = rule.color;
+      }
+    });
+  }
+  cw.clues[clueid] = parsed;
 }
 
 export function parse(input, options) {
@@ -147,34 +168,26 @@ export function parse(input, options) {
               let colorClues = x.optionalList('clues');
               if (colorClues) {
                 colorClues = colorClues.requiredStringValues();
+                cw.grid.shading.push({
+                  color: color,
+                  clues: colorClues
+                });
+              } else {
+                const startRow = x.requiredField('startRow').requiredIntegerValue();
+                const startCol = x.requiredField('startCol').requiredIntegerValue();
+                const endRow = x.requiredField('endRow').requiredIntegerValue();
+                const endCol = x.requiredField('endCol').requiredIntegerValue();
+                cw.grid.shading.push({
+                  color: color,
+                  startRow: startRow,
+                  startCol: startCol,
+                  endRow: endRow,
+                  endCol: endCol
+                });
               }
-              cw.grid.shading.push({
-                color: color,
-                clues: colorClues
-              });
           });
         }
         console.log("shading is " + JSON.stringify(cw.grid.shading));
-      } else if (name == "border") {
-        cw.grid.borders = [];
-        const borderEls = section.elements(); {
-          borderEls.forEach(el => {
-              const x = el.toSection();
-              const style = x.requiredField('style').requiredStringValue();
-              const startRow = x.requiredField('startRow').requiredIntegerValue();
-              const startCol = x.requiredField('startCol').requiredIntegerValue();
-              const endRow = x.requiredField('endRow').requiredIntegerValue();
-              const endCol = x.requiredField('endCol').requiredIntegerValue();
-              cw.grid.borders.push({
-                style: style,
-                startRow: startRow,
-                startCol: startCol,
-                endRow: endRow,
-                endCol: endCol
-              });
-          });
-        }
-        console.log("borders is " + JSON.stringify(cw.grid.borders));
       }
     }
   });
@@ -182,17 +195,7 @@ export function parse(input, options) {
   const clues = doc.requiredSection('clues').elements();
   clues.forEach(clue => parseClue(cw, clue));
 
-
-  if (cw.grid.shading) {
-    for (let [clueid, clue] of Object.entries(cw.clues)) {
-      cw.grid.shading.forEach(shading => {
-        if (shading.clues && shading.clues.includes(clueid)) {
-          clue.shadingColor = shading.color;
-        }
-      })
-    };
-  }
-
+  
   let errors = buildGrid(cw);
 
   return cw;

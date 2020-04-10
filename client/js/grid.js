@@ -62,17 +62,21 @@ export class GridDisplay {
             return;
         }
 
+        let td = target;
+        if (target.classList.contains('cell-highlight-border')) {
+            td = target.parentNode;
+        }
         // select cell
-        if (target.nodeName != 'TD') {
+        if (td.nodeName != 'TD') {
             return;
         }
-        if (target.dataset.empty !== undefined) {
+        if (td.dataset.empty !== undefined) {
             return;
         }
-        const row = parseInt(target.dataset.row, 10);
-        const col = parseInt(target.dataset.col, 10);
+        const row = parseInt(td.dataset.row, 10);
+        const col = parseInt(td.dataset.col, 10);
 
-        const offsets = target.dataset.offset.split(',');
+        const offsets = td.dataset.offset.split(',');
         // if it's both a down and across clue, and they've
         // clicked on a first letter, change direction to match
         // the clue with the first letter
@@ -142,7 +146,7 @@ export class GridDisplay {
     hideInputCell() {
         const el = this.inputCell.el;
         const cell = this.currentCell();
-        cell.td.textContent = cell.contents;
+        cell.td.firstChild.textContent = cell.contents;
         el.value = '';
         el.style.display = 'none';
         this.cwDisplay.clearOwnHighlight(this.currentClue().id);
@@ -193,7 +197,7 @@ export class GridDisplay {
         const input = this.inputCell;
         const el = input.el;
         let cell = this.currentCell();
-        cell.td.textContent = cell.contents;
+        cell.td.firstChild.textContent = cell.contents;
 
         // we've run off the end or hit an empty square
         if (   row < 0 || row >= cells.length
@@ -215,12 +219,12 @@ export class GridDisplay {
         }
 
         const td = cell.td;
-        td.textContent = '';
+        td.firstChild.textContent = '';
 
         el.value = cell.contents;
         el.style.display = '';
         el.style.left = td.offsetLeft + 'px';
-        el.style.top = td.offsetTop + 'px';
+        el.style.top = td.offsetTop + td.firstChild.clientTop + 'px';
         el.focus();
         el.select();
 
@@ -281,6 +285,11 @@ export class GridDisplay {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
 
+                const hlBorder = document.createElement('div');
+                hlBorder.style.borderColor = 'transparent';
+                hlBorder.classList.add('cell-highlight-border');
+                td.appendChild(hlBorder);
+
                 td.dataset.row = row;
                 td.dataset.col = col;
                 td.dataset.solverMask = 0;
@@ -298,8 +307,10 @@ export class GridDisplay {
                     if (across) {
                         td.dataset.clueid = across.id;
                         td.dataset.offset = cell.offsets.across;
-                        if (across.shadingColor) {
-                            td.style.backgroundColor = across.shadingColor;
+                        const c = across.shadingColor || cell.shadingColor;
+                        if (c) {
+                            td.style.backgroundColor = c;
+                            hlBorder.style.borderColor = c;
                         }
                         if (down) {
                             td.dataset.clueid += ',';
@@ -309,35 +320,25 @@ export class GridDisplay {
                     if (down) {
                         td.dataset.clueid += down.id;
                         td.dataset.offset += cell.offsets.down;
-                        if (down.shadingColor) {
-                            td.style.backgroundColor = down.shadingColor;
+                        const c = down.shadingColor || cell.shadingColor;
+                        if (c) {
+                            td.style.backgroundColor = c;
+                            hlBorder.style.borderColor = c;
                         }
                     }
                 }
                 cell.td = td;
                 cells[row][col] = cell;
 
-                const borders = crossword.grid.borders;
-                if (borders) {
-                    borders.forEach(border => {
-                        if (row >= (border.startRow - 1) && row <= (border.endRow - 1)
-                           && col >= (border.startCol - 1) && col <= (border.endCol - 1)) {
-                            
-                            if (border.style == 'thick') {
-                                // down
-                                const widthPx = '3px';
-                                td.style.borderRightWidth = widthPx;
-                                td.style.borderLeftWidth = widthPx;
-                                if (row == border.startRow - 1) {
-                                    td.style.borderTopWidth = widthPx;                                
-                                }
-                                if (row == border.endRow - 1) {
-                                    td.style.borderBottomWidth = widthPx;
-                                }
-                            }
-
+                const shading = crossword.grid.shading;
+                if (shading) {
+                    shading.forEach(rule => {
+                        if (rule.startRow
+                           && row >= (rule.startRow - 1) && row <= (rule.endRow - 1)
+                           && col >= (rule.startCol - 1) && col <= (rule.endCol - 1)) {
+                            td.style.backgroundColor = rule.color;
                         }
-                    })
+                    });
                 }
 
                 tr.appendChild(td);

@@ -4,21 +4,41 @@ export function sampleCrossword() {
 > it is written in eno: https://eno-lang.org/eno
 > comments start with ">"
 
-> metadata section - all below fields mandatory
+> crossword metadata
 # meta
+
+> mandatory fields
 name: Example crossword
 author: RK
 pubdate: 2020/04/07
 copyright: RK
 
-> grid information - height and width are mandatory 
+> optional fields
+note: [ NB - this is an example crossword ]
+
+> grid information
 # grid
+
+> height and width are mandatory 
 width: 15
 height: 15
 
-> planned extensions:
-> - marked squares
-> - author note/meta clue
+> optional subsection for shading squares
+## shading
+
+> subsections of "shading" can take start/end coordinates or lists of clues
+> subsection name is required but can be anything
+### yellowclues
+color: #fefc34
+clues:
+  - 1D
+
+### redsquare
+color: #f00
+startRow: 2
+startCol: 4
+endRow: 2
+endCol: 4
 
 > clue section - each clue is a subsection
 # clues
@@ -47,7 +67,6 @@ separators:
 
 > planned extensions:
 > - clues that reference other clues
-> - marked clues
 > - emphasis in clue text
 
 ## 1D

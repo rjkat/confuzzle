@@ -13,3 +13,5 @@ $displayPadding: 18px;
 
 $clueMinWidth: 15em;
 
+$highlightBorderWidth: 0.15ch;
+$highlightCellSize: #{$gridCellSize - 2*$highlightBorderWidth};
