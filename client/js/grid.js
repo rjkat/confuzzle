@@ -326,6 +326,9 @@ export class GridDisplay {
                             hlBorder.style.borderColor = c;
                         }
                     }
+                    if (hlBorder.style.borderColor != 'transparent') {
+                        hlBorder.style.borderRadius = '0.3ch';
+                    }
                 }
                 cell.td = td;
                 cells[row][col] = cell;

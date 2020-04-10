@@ -101,18 +101,6 @@ body {
     }
 }
 
-
-
-@include each-solver using ($color, $sel) {
-    #{$sel} td.highlighted {
-        background-color: $color;
-
-    }
-    #{$sel} .cell-highlight-border {
-        display: block;
-    }
-}
-
 .cell-highlight-border {
     content: '';
     position: absolute;
@@ -120,6 +108,8 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
+
+    background-clip: padding-box;
     border-width: $highlightBorderWidth;
     border-style: solid;
     border-color: transparent;
@@ -161,6 +151,7 @@ body {
                     font-size: .5em;
                     line-height: 1em;
                     background-color: rgba(240, 240, 240, 0.7);
+                    z-index: 5;
                 }
 
                 &[data-empty] {
