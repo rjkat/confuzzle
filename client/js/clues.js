@@ -191,6 +191,7 @@ export class ClueDisplay {
                 }
                 if (clue.shadingColor) {
                     inputContainer.style.backgroundColor = clue.shadingColor;
+                    inputContainer.style.borderRadius = '5px';
                 }
                 answer.appendChild(inputContainer);
                 li.appendChild(answer);
