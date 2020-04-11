@@ -29,16 +29,28 @@
 </div>
 
 <div class="crossword-display">
-    <input class="radio" id="select-solve" name="tab-selection" type="radio">
-    <input class="radio" id="select-compile" name="tab-selection" type="radio">
-    <input class="radio" id="select-collude" name="tab-selection" type="radio" checked>
+    <input class="radio" id="select-solve" name="panel-selection" type="radio">
+    <input class="radio" id="select-compile" name="panel-selection" type="radio">
+    <input class="radio" id="select-collude" name="panel-selection" type="radio" checked>
     <div class="crossword-panels">
         <div class="panel" id="solve-panel">
             <div class="crossword-clue-panel"></div>
         </div>
         <div class="panel" id="compile-panel">
             <div class="crossword-input">
-                <textarea class="crossword-compilearea" id="crossword-source"></textarea>
+                <input class="radio" id="select-source" name="compile-selection" type="radio" checked>
+                <input class="radio" id="select-errors" name="compile-selection" type="radio">
+                <div class="compile-tabs">
+                  <label class="compile-tab" id="source-tab" for="select-source">Source</label>
+                  <label class="compile-tab" id="errors-tab" for="select-errors">Errors</label>
+                </div>
+                <div class="compile-panels">
+                    <div class="compile-panel" id="source-panel">
+                        <textarea class="crossword-compilearea" id="crossword-source"></textarea>
+                    </div>
+                    <div class="compile-panel" id="errors-panel">
+                    </div>
+                </div>
             </div>
             <div class="crossword-input-controls">
                 <button type="button" class="action-button" id="render-button">Render</button>
@@ -72,10 +84,10 @@
                 </div>
             </div>
         </div>
-        <div class="tabs">
-          <label class="tab" id="solve-tab" for="select-solve">Solve</label>
-          <label class="tab" id="compile-tab" for="select-compile">Compile</label>
-          <label class="tab" id="collude-tab" for="select-collude">Collude</label>
+        <div class="panel-tabs">
+          <label class="panel-tab" id="solve-tab" for="select-solve">Solve</label>
+          <label class="panel-tab" id="compile-tab" for="select-compile">Compile</label>
+          <label class="panel-tab" id="collude-tab" for="select-collude">Collude</label>
         </div>
     </div>
 </div>

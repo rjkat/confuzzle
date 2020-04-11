@@ -6,6 +6,8 @@ import * as LibPuz from './libpuz.js'
 
 const parser = require('./parser.js');
 
+const { HtmlReporter, EnoError } = require('enolib');
+
 class AnagrindApp {
     constructor() {
         const self = this;
@@ -79,12 +81,9 @@ class AnagrindApp {
     gridJoined(msg) {
         this.selectTab('solve');
         this.panelContainer.dataset.solverid = msg.solverid;
-        document.querySelector('.crossword-name-input').disabled = true;
-        const btn = document.querySelector('#collude-button');
-        btn.value = 'Joined';
-        btn.disabled = true;
-        btn.style.backgroundColor = '#4b9';
-
+        this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
+        document.querySelector('.crossword-enter-name').classList.add('hidden');
+        document.querySelector('.crossword-share-link').classList.remove('hidden');
         document.querySelector('#compile-tab').classList.add('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
@@ -142,8 +141,17 @@ class AnagrindApp {
         if (!source){
             source = this.sourceTextArea.value;
         }
-        const crossword = parser.parse(source);
 
+        let crossword;
+        try {
+            crossword = parser.parse(source);
+        } catch(err) {
+            if (err instanceof EnoError) {
+                document.querySelector('#errors-panel').innerHTML = err.text;
+            }
+            return;
+        }
+       
         ['author', 'pubdate'].forEach(x => {
             let el = document.getElementById('crossword-' + x);
             el.textContent = x == 'author' ? 'by ' : '';
