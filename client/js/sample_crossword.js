@@ -2,6 +2,8 @@
 export function sampleCrossword() {
   return `> this is an example crossword spec
 > it is written in eno: https://eno-lang.org/eno
+> you may wish to edit in a text editor with support for
+> eno syntax highlighting - see https://eno-lang.org/plugins/ for a list
 > comments start with ">"
 
 > crossword metadata

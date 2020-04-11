@@ -300,7 +300,7 @@ body {
 }
 
 .compile-panels {
-    height: 80%;
+    height: 100%;
 }
 
 .compile-tabs {
@@ -322,24 +322,50 @@ body {
   }
 }
 
+#errors-panel {
+  overflow-y: scroll;
+}
+
 .compile-panel {
   display: none;
   height: 100%;
-  padding-top: 1em;
   // animation: fadein .8s;
   border: 1px solid #000;
 }
 
-#select-source:checked ~ .compile-panels #source-panel,
+#error-text {
+    padding-top: 1em;
+    padding-right: $displayPadding;
+    padding-left: $displayPadding;
+    display: block;
+    font-family: $answerFontFamily;
+}
+
+#error-snippet {
+    font-family: $answerFontFamily;
+    font-size: 14px;
+}
+
+#error-snippet-wrapper {
+    display: block;
+    width: 100%;
+}
+
+#errors-tab.error-highlight {
+    background-color: #e53 !important;
+}
+
+#select-source:checked ~ .compile-panels #source-panel {
+  display: flex;
+}
 #select-errors:checked ~ .compile-panels #errors-panel{
-  display:flex
+  display: block;
 }
 
 #select-source:checked ~ .compile-tabs #source-tab,
 #select-errors:checked ~ .compile-tabs #errors-tab {
   background:#fff;
   color:#000;
-  border-bottom-color: transparent;
 }
 
 .panel-tabs {
@@ -404,23 +430,19 @@ body {
 
 .crossword-input {
     display: block;
-    height: 80%;
+    height: calc(100% - 9em);
     .crossword-compilearea {
         flex-grow: 1;
         font-family: $answerFontFamily;
         font-size: 14px;
-        margin-left: .5em;
-        margin-right: .5em;
-        margin-bottom: .5em;
-        border-radius: 3px;
-        border-color: #AAA;
         resize: none;
         outline: none;
     }
 }
 
 #errors-panel {
-    overflow-y: scroll;
+    font-family: $answerFontFamily;
+    padding-left: .5em;
 }
 
 @mixin crossword-button {
@@ -504,11 +526,14 @@ body {
 }
 
 #compile-panel {
+
+    overflow: hidden;
     .crossword-input-controls {
         display: flex;
         flex-direction: row;
         overflow: hidden;
-        position: absolute;
+        margin-top: $displayPadding;
+        margin-bottom: $displayPadding;
         right: .5em;
         left: .5em;
         bottom: .5em;

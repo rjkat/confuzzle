@@ -1,8 +1,10 @@
 import {AnagrindClient} from './client.js'
 import {CrosswordDisplay} from './display.js'
 import {SolverDisplay} from './solvers.js'
+import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import * as LibPuz from './libpuz.js'
+import {TLN} from './tln.js';
 
 const parser = require('./parser.js');
 
@@ -17,8 +19,16 @@ class AnagrindApp {
         this.clueContainer = document.querySelector('.crossword-clue-panel');
 
         this.panelContainer = document.querySelector('.crossword-panels');
+
+        this.TLN = new TLN();
+        this.TLN.append_line_numbers('crossword-source');
         this.sourceTextArea = document.getElementById('crossword-source');
         
+        this.errorDisplay = new ErrorDisplay(
+            document.querySelector('#errors-tab'),
+            document.querySelector('#error-text'),
+            document.querySelector('#error-snippet')
+        );
         this.display = new CrosswordDisplay(
             {panelContainer: this.panelContainer,
              gridContainer: this.gridContainer,
@@ -146,12 +156,10 @@ class AnagrindApp {
         try {
             crossword = parser.parse(source);
         } catch(err) {
-            if (err instanceof EnoError) {
-                document.querySelector('#errors-panel').innerHTML = err.text;
-            }
+            this.errorDisplay.showError(err);
             return;
         }
-       
+        this.errorDisplay.clearError();
         ['author', 'pubdate'].forEach(x => {
             let el = document.getElementById('crossword-' + x);
             el.textContent = x == 'author' ? 'by ' : '';
