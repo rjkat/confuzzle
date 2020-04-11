@@ -33,12 +33,12 @@ color: #fefc34
 clues:
   - 1D
 
-### redsquare
+### scarletletter
 color: #f00
 startRow: 2
-startCol: 4
+startCol: 6
 endRow: 2
-endCol: 4
+endCol: 6
 
 > clue section - each clue is a subsection
 # clues

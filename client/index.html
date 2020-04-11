@@ -40,29 +40,35 @@
             <div class="crossword-input">
                 <textarea class="crossword-compilearea" id="crossword-source"></textarea>
             </div>
-            <div id="drop-area" class="entry-piece">
-              <form class="upload-form">
-                Drag and drop .puz file here, or 
-                <input type="file" id="selected-puz-file" accept="application/x-crossword">
-                <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
-              </form>
+            <div class="crossword-input-controls">
+                <button type="button" class="action-button" id="render-button">Render</button>
+                <div id="drop-area" class="entry-piece">
+                  <form class="upload-form">
+                    Drag and drop .puz file here, or 
+                    <input type="file" id="selected-puz-file" accept="application/x-crossword">
+                    <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
+                  </form>
+                </div>
             </div>
-            <button type="button" class="action-button" id="render-button">Render</button>
         </div>
         <div class="panel" id="collude-panel">
             <div class="crossword-join-panel">
+                <p>1. Join the chat room (optional)</p>
+                <div class="chat-widget-wrapper">
+                    <iframe src="https://discordapp.com/widget?id=698304447809323139&theme=light" allowtransparency="true" frameborder="0"></iframe>
+                </div>
                 <div class="crossword-enter-name">
+                    <p id="join-text">2. Get a shared link to your crossword</p>
                     <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
                     <input class="crossword-name-input" name="name" autocomplete="off"><br>
                     <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
                 </div>
                 <div class="crossword-share-link hidden">
-                    <p>Share this link to solve with others:</p>
+                    <p>2. Share this link to solve with others</p>
                     <div class="crossword-link-text">
                         anagrind.com/grid/foo
                     </div>
                     <button class="action-button" id="copy-link-button">Copy</button>
-                    <p>It will remain available whilst there is at least one active solver.</p>
                 </div>
             </div>
         </div>

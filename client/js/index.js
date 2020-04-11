@@ -41,6 +41,8 @@ class AnagrindApp {
 
         if (!this.gridid) {
             this.selectTab('compile');
+        } else {
+            document.querySelector('#join-text').textContent = '2. Join the crossword';
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
         this.nameInput = document.querySelector('.crossword-name-input');
@@ -77,6 +79,13 @@ class AnagrindApp {
     gridJoined(msg) {
         this.selectTab('solve');
         this.panelContainer.dataset.solverid = msg.solverid;
+        document.querySelector('.crossword-name-input').disabled = true;
+        const btn = document.querySelector('#collude-button');
+        btn.value = 'Joined';
+        btn.disabled = true;
+        btn.style.backgroundColor = '#4b9';
+
+        document.querySelector('#compile-tab').classList.add('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }
@@ -86,6 +95,7 @@ class AnagrindApp {
         this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
+        document.querySelector('#compile-tab').classList.add('hidden');
         this.renderCrossword();
         
         this.solvers.solversChanged(msg.solvers);

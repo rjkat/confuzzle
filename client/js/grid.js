@@ -224,7 +224,7 @@ export class GridDisplay {
         el.value = cell.contents;
         el.style.display = '';
         el.style.left = td.offsetLeft + 'px';
-        el.style.top = td.offsetTop + td.firstChild.clientTop + 'px';
+        el.style.top = td.offsetTop + 'px';
         el.focus();
         el.select();
 
@@ -285,9 +285,11 @@ export class GridDisplay {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
 
+                const text = document.createElement('a');
                 const hlBorder = document.createElement('div');
                 hlBorder.style.borderColor = 'transparent';
                 hlBorder.classList.add('cell-highlight-border');
+                td.appendChild(text);
                 td.appendChild(hlBorder);
 
                 td.dataset.row = row;
@@ -327,7 +329,7 @@ export class GridDisplay {
                         }
                     }
                     if (hlBorder.style.borderColor != 'transparent') {
-                        hlBorder.style.borderRadius = '0.3ch';
+                        hlBorder.style.borderWidth = '0.15ch';
                     }
                 }
                 cell.td = td;

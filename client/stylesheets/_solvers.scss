@@ -74,7 +74,7 @@ $maxSolvers: length($solverColors);
 @for $nMask from 1 through 4 {
     $combos: combinations($solverColors, $nMask);
     @each $mask, $values in $combos {
-        td#{"[data-solver-mask=\"#{$mask}\"]"} .cell-highlight-border {
+        td#{"[data-solver-mask=\"#{$mask}\"]"} {
             background: repeating-linear-gradient(
               45deg,
               gradient($values, $nMask),
