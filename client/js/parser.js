@@ -98,13 +98,11 @@ function buildGrid(cw) {
         contents: ''
       };
       if (shading) {
-          shading.forEach(rule => {
-              if (rule.startRow
-                 && row >= rule.startRow && row <= rule.endRow
-                 && col >= rule.startCol && col <= rule.endCol) {
-                  cell.shadingColor = rule.color;
-              }
-          });
+        shading.forEach(rule => {
+          if (rule.row && row == rule.row && col == rule.col) {
+              cell.shadingColor = rule.color;
+          }
+        });
       }
       rowCells.push(cell);
     }
@@ -184,7 +182,6 @@ export function parse(input, options) {
           shadingEls.forEach(el => {
               const x = el.toSection();
               const color = x.requiredField('color').requiredColorValue();
-              console.log("color is " + color);
               let colorClues = x.optionalList('clues');
               if (colorClues) {
                 colorClues = colorClues.requiredStringValues();
@@ -193,21 +190,16 @@ export function parse(input, options) {
                   clues: colorClues
                 });
               } else {
-                const startRow = x.requiredField('startRow').requiredIntegerValue();
-                const startCol = x.requiredField('startCol').requiredIntegerValue();
-                const endRow = x.requiredField('endRow').requiredIntegerValue();
-                const endCol = x.requiredField('endCol').requiredIntegerValue();
+                const row = x.requiredField('row').requiredIntegerValue();
+                const col = x.requiredField('col').requiredIntegerValue();
                 cw.grid.shading.push({
                   color: color,
-                  startRow: startRow,
-                  startCol: startCol,
-                  endRow: endRow,
-                  endCol: endCol
+                  row: row,
+                  col: col,
                 });
               }
           });
         }
-        console.log("shading is " + JSON.stringify(cw.grid.shading));
       }
     }
   });

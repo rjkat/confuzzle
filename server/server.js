@@ -129,10 +129,16 @@ io.on('connection', function(socket) {
             const solverid = grid.solvers[socket.id].solverid;
             grid.solverMask = clearSolverId(grid.solverMask, solverid);
             delete grid.solvers[socket.id];
-            event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
-            socket.to(gridid).emit(event.action, event);
-            grid.eventLog.push(event);
+            if (Object.keys(grid.solvers).length == 0) {
+                console.log("delete grid: " + gridid);
+                delete grids[gridid];
+            } else {
+                event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
+                socket.to(gridid).emit(event.action, event);
+                grid.eventLog.push(event);
+            }
         }
+        delete socketGrids[socket.id];
     });
 
     function makeBroadcastEventHandler(socket, name) {

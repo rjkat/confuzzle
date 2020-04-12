@@ -31,7 +31,7 @@ height: 15
 > optional subsection for shading squares
 ## shading
 
-> subsections of "shading" can take start/end coordinates
+> subsections of "shading" can have coordinates
 > or lists of clues
 > subsection name is required but can be anything
 ### yellowclues
@@ -41,10 +41,8 @@ clues:
 
 ### scarletletter
 color: #f00
-startRow: 2
-startCol: 6
-endRow: 2
-endCol: 6
+row: 2
+col: 6
 
 > clue section - each clue is a subsection
 # clues
@@ -52,7 +50,8 @@ endCol: 6
 > clue identifier 
 > number: used to number cell
 > A/D: denotes direction (A -> across, D -> down)
-> out of order/duplicate numbers are allowed, but duplicate clue identifiers are not
+> out of order/duplicate numbers are allowed,
+> use of duplicate clue identifiers is undefined
 ## 1A
 
 > clue coordinates (mandatory)
@@ -67,7 +66,8 @@ lengths:
     - 3
     - 6
 
-> separators to denote word breaks (optional, defaults to ",")
+> separators to denote word breaks
+> (optional, defaults to ",")
 separators:
     - -
 
