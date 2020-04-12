@@ -157,12 +157,22 @@ body {
                     z-index: 5;
                 }
 
-                &[data-across-separator] {
-                    border-right-width: 3px;
+                &[data-across-separator]:after {
+                    content: '';
+                    height: $gridCellSize;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    border-right: 3px #000 solid;
                 }
 
-                &[data-down-separator] {
-                    border-bottom-width: 3px;
+                &[data-down-separator]:after {
+                    content: '';
+                    width: $gridCellSize;
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    border-bottom: 3px #000 solid;
                 }
 
                 &[data-empty] {
