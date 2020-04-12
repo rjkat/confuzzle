@@ -31,9 +31,7 @@ export class GridDisplay {
         const self = this;
         const container = document.createElement('div');
         container.classList.add('crossword-grid-container');
-        container.onclick = function (e) {
-            self.onClick(e);
-        };
+       
         parent.appendChild(container);
         this.gridContainer = container;
         this.id = uniqid();
@@ -280,6 +278,10 @@ export class GridDisplay {
         const table = document.createElement('table');
         table.classList.add('crossword-grid');
         table.setAttribute('cellSpacing', 0);
+        const self = this;
+        table.onclick = function (e) {
+            self.onClick(e);
+        };
         for (let row = 0; row < cells.length; row++) {
             const tr = document.createElement('tr');
             for (let col = 0; col < cells[row].length; col++) {
