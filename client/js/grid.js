@@ -367,5 +367,9 @@ export class GridDisplay {
             copyright.textContent = '© ' + crossword.meta.copyright;
             this.gridContainer.appendChild(copyright);
         }
+        const gh = document.createElement('div');
+        gh.classList.add('crossword-github-link');
+        gh.innerHTML = '<a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>';
+        this.gridContainer.appendChild(gh);
     }
 }

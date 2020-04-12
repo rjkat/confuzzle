@@ -210,6 +210,13 @@ body {
     position: absolute;
 }
 
+.crossword-github-link {
+    font-family: $clueFontFamily;
+    margin-top: 2.5em;
+    text-transform: none;
+    position: absolute;
+}
+
 /* @media screen and (min-width: $fullSizeMinWidth) { */
 .crossword-panels {
     position: absolute;
