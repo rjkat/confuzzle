@@ -21,9 +21,8 @@ class AnagrindApp {
         this.panelContainer = document.querySelector('.crossword-panels');
 
         this.TLN = new TLN();
-        this.TLN.append_line_numbers('crossword-source');
         this.sourceTextArea = document.getElementById('crossword-source');
-        
+        this.TLN.append_line_numbers('crossword-source');
         this.errorDisplay = new ErrorDisplay(
             document.querySelector('#errors-tab'),
             document.querySelector('#error-text'),
@@ -42,7 +41,6 @@ class AnagrindApp {
             this.display.grid
         );
         this.renderButton = document.getElementById('render-button');
-        this.sourceTextArea.value = parser.sampleCrossword();
 
         this.renderButton.onclick = () => self.renderCrossword();
 
@@ -75,13 +73,13 @@ class AnagrindApp {
         const puzFile = document.getElementById('selected-puz-file');
 
         DragDrop.setupDropArea(dropArea, puzFile, buffer => self.puzFileUploaded(buffer));
-        this.renderCrossword();
+        
+        this.setCrosswordSource(parser.sampleCrossword());
     }
 
     puzFileUploaded(buffer) {
         const eno = LibPuz.loadPuzBuffer(buffer);
-        this.sourceTextArea.value = eno;
-        this.renderCrossword();
+        this.setCrosswordSource(eno);
     }
 
     solversChanged(msg) {
@@ -144,6 +142,8 @@ class AnagrindApp {
 
     setCrosswordSource(source) {
         this.sourceTextArea.value = source;
+        this.TLN.remove_line_numbers('crossword-source');
+        this.TLN.append_line_numbers('crossword-source');
         this.renderCrossword(source);
     }
 
@@ -160,10 +160,11 @@ class AnagrindApp {
             return;
         }
         this.errorDisplay.clearError();
-        ['author', 'pubdate'].forEach(x => {
+        ['type', 'author', 'identifier'].forEach(x => {
+            let val = crossword.meta[x];
             let el = document.getElementById('crossword-' + x);
             el.textContent = x == 'author' ? 'by ' : '';
-            el.textContent += crossword.meta[x];
+            el.textContent += val ? val : '';
         });
 
         this.display.setCrossword(crossword);

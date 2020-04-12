@@ -37,13 +37,15 @@ body {
     font-size: 36px;
     padding-left: 10px;
     font-weight: bold;
+    text-transform: uppercase;
 }
 #crossword-author {
     font-family: $clueFontFamily; 
-    margin-left: -1.5em;
+    flex: 1;
+    margin-left: .5em;
     font-size: 20px;
 }
-#crossword-pubdate {
+#crossword-identifier {
     font-family: 'Bree Serif';
     font-size: 30px;
 }
@@ -155,6 +157,14 @@ body {
                     z-index: 5;
                 }
 
+                &[data-across-separator] {
+                    border-right-width: 3px;
+                }
+
+                &[data-down-separator] {
+                    border-bottom-width: 3px;
+                }
+
                 &[data-empty] {
                     background: $gridBgColor;
                 }
@@ -181,6 +191,13 @@ body {
     }
 
 
+}
+
+.crossword-copyright {
+    font-family: $clueFontFamily;
+    margin-top: .5em;
+    text-transform: none;
+    position: absolute;
 }
 
 /* @media screen and (min-width: $fullSizeMinWidth) { */
@@ -434,6 +451,7 @@ body {
     .crossword-compilearea {
         flex-grow: 1;
         font-family: $answerFontFamily;
+        font-variant-ligatures: no-common-ligatures; 
         font-size: 14px;
         resize: none;
         outline: none;
@@ -442,6 +460,7 @@ body {
 
 #errors-panel {
     font-family: $answerFontFamily;
+    font-variant-ligatures: no-common-ligatures; 
     padding-left: .5em;
 }
 

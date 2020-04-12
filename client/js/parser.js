@@ -64,6 +64,23 @@ function populateCells(cells, clues) {
       }
       clue.cells.push(cell);
     });
+
+    let word = 0;
+    let wordpos = 0;
+    for (let i = 0; i < clue.totalLength; i++) {
+      if (i == clue.lengths[word] - 1 && word < clue.separators.length) {
+        const sep = clue.separators[word];
+        if (clue.isAcross) {
+          clue.cells[i].acrossSeparator = sep;
+        } else {
+          clue.cells[i].downSeparator = sep;
+        }
+      }
+      if (wordpos >= clue.lengths[word]) {
+        word++;
+        wordpos = 0;
+      }
+    }
   }
   return errors;
 }
@@ -141,10 +158,13 @@ export function parse(input, options) {
   ['name', 'author'].forEach(field =>
     cw.meta[field] = meta.requiredField(field).requiredStringValue()
   );
-  ['pubdate', 'copyright', 'note'].forEach(field => {
+  ['type', 'identifier', 'copyright', 'note'].forEach(field => {
     const f = meta.optionalField(field);
     if (f) {
-        cw.meta[field] = f.requiredStringValue()
+       cw.meta[field] = f.requiredStringValue()
+    }
+    if (field == 'type' && !cw.meta[field]) {
+       cw.meta.type = 'cryptic';
     }
   });
 

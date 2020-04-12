@@ -1,9 +1,9 @@
 
 export function sampleCrossword() {
   return `> this is an example crossword spec
-> it is written in eno: https://eno-lang.org/eno
+> it is written in eno: eno-lang.org/eno
 > you may wish to edit in a text editor with support for
-> eno syntax highlighting - see https://eno-lang.org/plugins/ for a list
+> eno syntax highlighting - see eno-lang.org/plugins
 > comments start with ">"
 
 > crossword metadata
@@ -12,10 +12,13 @@ export function sampleCrossword() {
 > mandatory fields
 name: Example crossword
 author: RK
-pubdate: 2020/04/07
-copyright: RK
 
 > optional fields
+
+> type defaults to "cryptic" if not present
+type: example
+identifier: 2020/04/07
+copyright: Please respect copyright when using this site
 note: [ NB - this is an example crossword ]
 
 > grid information
@@ -28,7 +31,8 @@ height: 15
 > optional subsection for shading squares
 ## shading
 
-> subsections of "shading" can take start/end coordinates or lists of clues
+> subsections of "shading" can take start/end coordinates
+> or lists of clues
 > subsection name is required but can be anything
 ### yellowclues
 color: #fefc34

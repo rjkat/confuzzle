@@ -144,14 +144,11 @@ export class ClueDisplay {
                 const answer = document.createElement('div');
                 answer.classList.add('crossword-answer-container');
 
-                let word = 0;
-                let wordpos = 0;
                 let lastInput;
 
                 const inputContainer = document.createElement('div');
                 inputContainer.classList.add('crossword-clue-input');
                 for (let i = 0; i < clue.totalLength; i++) {
-                    
                     const input = document.createElement('input');
                     input.setAttribute('maxlength', 1);
                     input.dataset.clueid = clueid;
@@ -175,18 +172,13 @@ export class ClueDisplay {
                     }
                     inputContainer.appendChild(input);
 
-                    if (i == clue.lengths[word] - 1 && word < clue.separators.length) {
+                    const separator = clue.isAcross ? cell.acrossSeparator : cell.downSeparator;
+                    if (separator) {
                         const sep = document.createElement('span');
                         sep.classList.add('crossword-separator');
-                        sep.dataset.separator = clue.separators[word];
+                        sep.dataset.separator = separator;
                         inputContainer.appendChild(sep);
                     }
-                    if (i >= clue.lengths[word]) {
-                        word++;
-                        wordpos = 0;
-                    }
-
-
                     lastInput = input;
                 }
                 if (clue.shadingColor) {

@@ -13,19 +13,13 @@
 <div id="crossword-header">
     <div id="crossword-title">
         <span class="crossword-details">
-            <div id="crossword-type">CRYPTIC</div>
+            <div id="crossword-type"></div>
             <div id="crossword-author"></div>
-            <div id="crossword-pubdate"></div>
+            <div id="crossword-identifier"></div>
         </span>
     </div>
 
-    <div class="crossword-solvers hidden">
-        <ul>
-            <li class="solver" data-solverid="0">Rowan</li>
-            <li class="solver" data-solverid="1">Stef</li>
-            <li class="solver" data-solverid="2">Chris</li>
-        </ul>
-    </div>
+    <div class="crossword-solvers hidden"></div>
 </div>
 
 <div class="crossword-display">
@@ -41,8 +35,8 @@
                 <input class="radio" id="select-source" name="compile-selection" type="radio" checked>
                 <input class="radio" id="select-errors" name="compile-selection" type="radio">
                 <div class="compile-tabs">
-                  <label class="compile-tab" id="source-tab" for="select-source">Source</label>
-                  <label class="compile-tab" id="errors-tab" for="select-errors">Errors</label>
+                  <label class="compile-tab" id="source-tab" for="select-source">Edit</label>
+                  <label class="compile-tab" id="errors-tab" for="select-errors">Debug</label>
                 </div>
                 <div class="compile-panels">
                     <div class="compile-panel" id="source-panel">

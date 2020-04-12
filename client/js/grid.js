@@ -169,6 +169,7 @@ export class GridDisplay {
                 v &= v - 1; // clear the least significant bit set
             }
             cell.td.dataset.solverMask = v;
+
         });
     }
 
@@ -301,6 +302,12 @@ export class GridDisplay {
                 if (cell.number) {
                     td.dataset.number = cell.number;
                 }
+                if (cell.acrossSeparator) {
+                    td.dataset.acrossSeparator = cell.acrossSeparator;
+                }
+                if (cell.downSeparator) {
+                    td.dataset.downSeparator = cell.downSeparator;
+                }
                 if (cell.clues) {
                     const across = cell.clues.across;
                     const down = cell.clues.down;
@@ -353,5 +360,12 @@ export class GridDisplay {
 
         this.gridTable = table;
         this.gridContainer.appendChild(table);
+
+        if (crossword.meta.copyright) {
+            const copyright = document.createElement('div');
+            copyright.classList.add('crossword-copyright');
+            copyright.textContent = '© ' + crossword.meta.copyright;
+            this.gridContainer.appendChild(copyright);
+        }
     }
 }
