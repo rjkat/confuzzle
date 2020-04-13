@@ -52,6 +52,8 @@ class AnagrindApp {
         if (!this.gridid) {
             this.selectTab('compile');
         } else {
+            document.querySelector('#compile-tab').classList.add('hidden');
+            document.querySelector('#solve-tab').classList.add('hidden');
             document.querySelector('#join-text').textContent = '2. Join the crossword';
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
@@ -74,7 +76,11 @@ class AnagrindApp {
 
         DragDrop.setupDropArea(dropArea, puzFile, buffer => self.puzFileUploaded(buffer));
         
-        this.setCrosswordSource(parser.sampleCrossword());
+        if (!this.gridid) {
+            this.setCrosswordSource(parser.sampleCrossword());
+        } else {
+            this.setCrosswordSource(parser.blankCrossword());
+        }
     }
 
     puzFileUploaded(buffer) {
@@ -92,7 +98,7 @@ class AnagrindApp {
         this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
         document.querySelector('.crossword-enter-name').classList.add('hidden');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
-        document.querySelector('#compile-tab').classList.add('hidden');
+        document.querySelector('#solve-tab').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }

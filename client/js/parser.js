@@ -1,11 +1,16 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
+const blank = require('./blank_crossword');
 
 enolib.register(enotype);
 
 export function sampleCrossword() {
   return sample.sampleCrossword();
+}
+
+export function blankCrossword() {
+  return blank.blankCrossword();
 }
 
 function forEachCell(clue, cells, cellFn) {
