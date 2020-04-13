@@ -68,17 +68,17 @@ function populateCells(cells, clues) {
     let word = 0;
     let wordpos = 0;
     for (let i = 0; i < clue.totalLength; i++) {
-      if (i == clue.lengths[word] - 1 && word < clue.separators.length) {
+      if (wordpos == clue.lengths[word] - 1 && word < clue.separators.length) {
         const sep = clue.separators[word];
         if (clue.isAcross) {
           clue.cells[i].acrossSeparator = sep;
         } else {
           clue.cells[i].downSeparator = sep;
         }
-      }
-      if (wordpos >= clue.lengths[word]) {
         word++;
         wordpos = 0;
+      } else {
+        wordpos++;
       }
     }
   }

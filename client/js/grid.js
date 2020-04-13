@@ -48,17 +48,7 @@ export class GridDisplay {
         e.preventDefault();
         const target = e.target;
         const input = this.inputCell;
-        // switch directions
-        if (target.nodeName == 'INPUT' && target.classList.contains('crossword-grid-input')) {
-            const cell = this.currentCell();
-            if (cell.clues.across && cell.clues.down) {
-                this.inputAcross = !this.inputAcross;
-            }
-            input.el.focus();
-            input.el.select();
-            this.selectCurrentClue();
-            return;
-        }
+        
 
         let td = target;
         if (target.classList.contains('cell-highlight-border')) {
@@ -108,6 +98,19 @@ export class GridDisplay {
             el: input,
             row: 0,
             col: 0,
+        };
+
+        input.onclick = function(e) {
+            // switch directions
+            const target = e.target;
+            const cell = self.currentCell();
+            if (cell.clues.across && cell.clues.down) {
+                self.inputAcross = !self.inputAcross;
+                this.focus();
+                this.select();
+                self.selectCurrentClue();
+                e.preventDefault();
+            }
         };
     }
 
