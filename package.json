@@ -1,7 +1,10 @@
 {
   "name": "anagrind",
   "version": "0.1.0",
-  "description": "",
+  "description": "multiplayer crosswords",
+  "engines": {
+    "node": "13.7.x"
+  },
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
