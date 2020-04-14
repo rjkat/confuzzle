@@ -17,7 +17,10 @@ export class ClueDisplay {
     }
 
     clearHighlightClue(clueid) {
-        this.getClueElement(clueid).classList.remove('highlighted');
+        const el = this.getClueElement(clueid);
+        if (el) {
+            el.classList.remove('highlighted');
+        }
     }
 
     highlightClue(clueid, scroll) {
