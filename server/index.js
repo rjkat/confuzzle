@@ -1,17 +1,21 @@
 const server = require('./server')
 
-let port = 5775;
-
-let redirPort = 8080;
-let prodPort = 3000;
-const isHeroku = process.argv && process.argv[2] == 'heroku';
-const isProduction = process.argv && process.argv[2] == 'production';
-
-if (isHeroku) {
-    redirPort = 80;
-    prodPort = 443;
+let port;
+var env = process.argv[2] || 'dev';
+switch (env) {
+    case 'dev':
+        port = 5775;
+        break;
+    case 'heroku':
+        port = process.env.PORT;
+        break;
+    case 'aws':
+        port = 3000;
+        break;
 }
-if (isHeroku || isProduction) {
+
+if (env == 'aws') {
+  const redirPort = 8080;
   const express = require('express')
   const app = express()
   const http = require('http')
@@ -20,7 +24,6 @@ if (isHeroku || isProduction) {
       res.redirect('https://anagrind.com' + req.url);
   });
   redirectServer.listen(redirPort);
-  port = prodPort;
 }
 
 server.listen(port, () => console.log('listening on port: ' + port));

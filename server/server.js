@@ -17,14 +17,15 @@ let server;
 
 var env = process.argv[2] || 'dev';
 switch (env) {
+    case 'heroku':
     case 'dev':
-	server = http.createServer(app);
+        server = http.createServer(app);
         break;
-    case 'production':
-	server = https.createServer({
-	     key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
-	     cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
-	}, app);
+    case 'aws':
+        server = https.createServer({
+            key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
+            cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
+        }, app);
         break;
 }
 
