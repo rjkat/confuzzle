@@ -1,8 +1,10 @@
 const express = require('express')
 const http = require('http')
 const https = require('https')
-const enforce = require('express-sslify')
+const secure = require('express-force-https')
 const app = express()
+app.use(secure)
+
 const robots = require('express-robots-txt')
 
 const Bundler = require('parcel-bundler')
@@ -28,10 +30,6 @@ switch (env) {
             cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
         }, app);
         break;
-}
-
-if (env == 'heroku' || env == 'aws') {
-    app.use(enforce.HTTPS());
 }
 
 app.use(bundler.middleware())
