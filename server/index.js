@@ -14,16 +14,4 @@ switch (env) {
         break;
 }
 
-if (env == 'aws') {
-  const redirPort = 8080;
-  const express = require('express')
-  const app = express()
-  const http = require('http')
-  const redirectServer = http.createServer(app);
-  app.get("*", function(req, res) {
-      res.redirect('https://anagrind.com' + req.url);
-  });
-  redirectServer.listen(redirPort);
-}
-
 server.listen(port, () => console.log('listening on port: ' + port));
