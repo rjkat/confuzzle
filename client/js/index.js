@@ -4,7 +4,7 @@ import {SolverDisplay} from './solvers.js'
 import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import * as LibPuz from './libpuz.js'
-import {TLN} from './tln.js';
+import 'regenerator-runtime/runtime'
 
 const parser = require('./parser.js');
 
@@ -20,9 +20,7 @@ class AnagrindApp {
 
         this.panelContainer = document.querySelector('.crossword-panels');
 
-        this.TLN = new TLN();
         this.sourceTextArea = document.getElementById('crossword-source');
-        this.TLN.append_line_numbers('crossword-source');
         this.errorDisplay = new ErrorDisplay(
             document.querySelector('#errors-tab'),
             document.querySelector('#error-text'),
@@ -148,8 +146,6 @@ class AnagrindApp {
 
     setCrosswordSource(source) {
         this.sourceTextArea.value = source;
-        this.TLN.remove_line_numbers('crossword-source');
-        this.TLN.append_line_numbers('crossword-source');
         this.renderCrossword(source);
     }
 

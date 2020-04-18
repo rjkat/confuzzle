@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="fonts/aurulentsans.css">
     <link rel="stylesheet" href="fonts/notcouriersans.css">
     <link rel="stylesheet" href="stylesheets/main.scss">
+    <link rel="stylesheet" href="../node_modules/prismjs/themes/prism.css">
+    <link rel="stylesheet" href="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css">
+    <link rel="stylesheet" href="stylesheets/prism-eno-light.css">
+    <link rel="stylesheet" href="stylesheets/prism-live.css">
 </head>
 
 <body>
@@ -39,8 +43,8 @@
                   <label class="compile-tab" id="errors-tab" for="select-errors">Debug</label>
                 </div>
                 <div class="compile-panels">
-                    <div class="compile-panel" id="source-panel">
-                        <textarea class="crossword-compilearea" id="crossword-source"></textarea>
+                    <div class="compile-panel line-numbers" id="source-panel">
+                        <textarea class="prism-live language-eno" id="crossword-source"></textarea>
                     </div>
                     <div class="compile-panel" id="errors-panel">
                         <div id="error-text"></div>
@@ -91,8 +95,12 @@
     </div>
 </div>
 
-<script src="./js/index.js"></script>
 
+<script src="./js/index.js"></script>
+<script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>
+<script src="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
+<script src="./js/prism-eno.js" charset="utf-8"></script>
+<script src="./js/prism-live.js"></script>
 
 </body>
 

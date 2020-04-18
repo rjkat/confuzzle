@@ -465,14 +465,10 @@ body {
 .crossword-input {
     display: block;
     height: calc(100% - 9em);
-    .crossword-compilearea {
-        flex-grow: 1;
-        font-family: $answerFontFamily;
-        font-variant-ligatures: no-common-ligatures; 
-        font-size: 14px;
-        resize: none;
-        outline: none;
-    }
+}
+
+.prism-live {
+    width: 100%;
 }
 
 #errors-panel {
