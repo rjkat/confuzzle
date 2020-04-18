@@ -43,7 +43,7 @@ class AnagrindApp {
         this.renderButton.onclick = () => self.renderCrossword();
 
         const pathParts = window.location.pathname.split('/');
-        if (pathParts.length > 2 && pathParts[1] == 'grid') {
+        if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
             this.gridid = pathParts[2];
         }
 
@@ -93,7 +93,7 @@ class AnagrindApp {
     gridJoined(msg) {
         this.selectTab('solve');
         this.panelContainer.dataset.solverid = msg.solverid;
-        this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
+        this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         document.querySelector('.crossword-enter-name').classList.add('hidden');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
         document.querySelector('#solve-tab').classList.remove('hidden');
@@ -103,7 +103,7 @@ class AnagrindApp {
 
     shareSucceeded(msg) {
         console.log('share success: ' + msg.gridid);
-        this.linkText.textContent = window.location.host + '/grid/' + msg.gridid;
+        this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
         document.querySelector('#compile-tab').classList.add('hidden');
