@@ -5,15 +5,15 @@
 
 code[class*="language-"],
 pre[class*="language-"] {
-	color: #383a42;
+	color: #000;
 	background: none;
-	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-family: 'notcouriersansregular', monospace;
 	text-align: left;
 	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;
 	word-wrap: normal;
-	line-height: 1.5;
+	/*line-height: 1.2;*/
 
 	-moz-tab-size: 4;
 	-o-tab-size: 4;
@@ -58,7 +58,7 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-	color: #a0a1a7;
+	color: #888;
 }
 
 .namespace {
@@ -72,7 +72,7 @@ pre[class*="language-"] {
 .token.constant,
 .token.symbol,
 .token.deleted {
-	color: #e45649;
+	color: #07b;
 }
 
 .token.selector,
@@ -89,13 +89,13 @@ pre[class*="language-"] {
 .token.url,
 .language-css .token.string,
 .style .token.string {
-	color: #0184bc;
+	color: #e53;
 }
 
 .token.atrule,
 .token.attr-value,
 .token.keyword {
-	color: #a626a4;
+	color: #e73;
 }
 
 .token.function,

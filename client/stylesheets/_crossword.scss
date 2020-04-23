@@ -464,10 +464,12 @@ body {
 
 .crossword-input {
     display: block;
-    height: calc(100% - 9em);
+    height: calc(100% - 4em);
 }
 
 .prism-live {
+    font-size: 13px;
+    font-variant-ligatures: no-common-ligatures;
     width: 100%;
 }
 

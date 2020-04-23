@@ -21,6 +21,14 @@ class AnagrindApp {
         this.panelContainer = document.querySelector('.crossword-panels');
 
         this.sourceTextArea = document.getElementById('crossword-source');
+        this.sourceTextArea.onkeyup = function () {
+            clearTimeout(self.renderDebounce)
+            self.renderDebounce = setTimeout(
+               () => self.renderCrossword(self.sourceTextArea.value),
+               500
+            );
+        }
+
         this.errorDisplay = new ErrorDisplay(
             document.querySelector('#errors-tab'),
             document.querySelector('#error-text'),
