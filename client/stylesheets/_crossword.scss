@@ -585,12 +585,29 @@ body {
   font-family: $clueFontFamily;
   text-align: center;
   flex-grow: 1;
-  height: 3em;
+  height: 6em;
   white-space: nowrap;
+  margin-top: 5em;
   margin-left: .5em;
+  margin-right: .5em;
   padding: .5em;
   border: 1px dashed #ccc;
   border-radius: 3px;
+}
+
+#download-wrapper {
+  text-align: center;
+  flex-grow: 1;
+}
+
+#download-button {
+    margin-left: .5em;
+    margin-top: 3em !important;
+    text-align: center;
+}
+
+.upload-form {
+  margin-top: 2em;
 }
 
 .upload-button {

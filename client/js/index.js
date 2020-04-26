@@ -4,7 +4,8 @@ import {SolverDisplay} from './solvers.js'
 import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import 'regenerator-runtime/runtime'
-import {readEno} from './eno.js'
+import {readEno, enoToPuz} from './eno.js'
+import {writePuz} from './puz.js'
 
 const parser = require('./parser.js');
 const arrayBufferToBuffer = require('arraybuffer-to-buffer');
@@ -47,7 +48,8 @@ class AnagrindApp {
             document.querySelector('.crossword-solvers'),
             this.display.grid
         );
-        this.renderButton = document.getElementById('render-button');
+        this.downloadButton = document.getElementById('download-button');
+        this.downloadButton.onclick = () => self.downloadClicked();
 
         const pathParts = window.location.pathname.split('/');
         if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
@@ -71,6 +73,7 @@ class AnagrindApp {
         this.colludeButton.value = this.gridid ? 'Join' : 'Share';
         this.colludeButton.onclick = () => self.colludeClicked();
 
+
         const copyButton = document.querySelector('#copy-link-button');
         copyButton.onclick = () => {
             navigator.clipboard.writeText(self.linkText.textContent);
@@ -87,6 +90,17 @@ class AnagrindApp {
     puzFileUploaded(buf) {
         const eno = readEno(arrayBufferToBuffer(buf));
         this.setCrosswordSource(eno);
+    }
+
+    downloadClicked() {
+        const puz = enoToPuz(this.sourceTextArea.value);
+        const puzbytes = writePuz(puz);
+        const blob = new Blob([puzbytes], {type: "application/x-crossword"});
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        const filename = this.display.crossword.meta.name + '.puz';
+        link.download = filename;
+        link.click();
     }
 
     solversChanged(msg) {
