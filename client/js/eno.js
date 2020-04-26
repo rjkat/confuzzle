@@ -1,4 +1,5 @@
 import {readPuz} from './puz.js';
+const parser = require('./parser.js');
 
 const BLACK_SQUARE_CHAR = '.';
 
@@ -6,120 +7,117 @@ function isBlackSquare(grid, row, ncols, col) {
     return grid[row*ncols + col] === BLACK_SQUARE_CHAR;
 }
 
-function acrossLen(grid, row, ncols, col) {
+function acrossSoln(grid, row, ncols, col) {
     var pos = row * ncols + col;
-    var len = 0;
+    var soln = '';
     while (pos < (row + 1) * ncols) {
-        if (grid[pos] == BLACK_SQUARE_CHAR) {
+        if (grid[pos] == BLACK_SQUARE_CHAR)
             break;
-        }
-        len++;
+        soln += grid[pos];
         pos++;
     }
-    return len;
+    return soln;
 }
 
-function downLen(grid, nrows, row, ncols, col) {
-    var len = 0;
+function downSoln(grid, nrows, row, ncols, col) {
     var pos = row * ncols + col;
+    var soln = '';
     while (pos < nrows * ncols) {
-        if (grid[pos] == BLACK_SQUARE_CHAR) {
+        if (grid[pos] == BLACK_SQUARE_CHAR)
             break;
-        }
+        soln += grid[pos];
         pos += ncols;
-        len++;
     }
-    return len;
+    return soln;
 }
 
-function getClue(p, n) {
+function getClues(p) {
     const nrows = p.header.height;
     const ncols = p.header.width;
     const grid = p.solution;
     var row, col;
     var number = 1;
-    var nclues = 0;
-    var found = false;
-
-    var clue = {};
+    var clues = [];
     for (row = 0; row < nrows; row++) {
         for (col = 0; col < ncols; col++) {
+            if (isBlackSquare(grid, row, ncols, col))
+                continue;
             var numbered = false;
             var isAcrossSpace, isDownSpace;
             var isAcrossClue = false;
             var isDownClue = false;
-            var nacross, ndown;
-            if (isBlackSquare(grid, row, ncols, col)) {
-                continue;
-            }
+            var aSoln, dSoln;
             isAcrossSpace = col == 0 || isBlackSquare(grid, row, ncols, col - 1);
-            nacross = acrossLen(grid, row, ncols, col);
-            if (isAcrossSpace && nacross > 1) {
+            aSoln = acrossSoln(grid, row, ncols, col);
+            if (isAcrossSpace && aSoln.length > 1) {
                 numbered = true;
                 isAcrossClue = true;
             }
             isDownSpace = row == 0 || isBlackSquare(grid, row - 1, ncols, col);
-            ndown = downLen(grid, nrows, row, ncols, col);
-            if (isDownSpace && ndown > 1) {
+            dSoln = downSoln(grid, nrows, row, ncols, col);
+            if (isDownSpace && dSoln.length > 1) {
                 numbered = true;
                 isDownClue = true;
             }
-            if (!numbered) {
+            if (!numbered)
                 continue;
-            }
+
             // clues are arranged numerically, with across clues coming first
-            if (!found) {
-                // across and down clue on the same square
-                if (isAcrossClue && isDownClue) {
-                    // across clues first
-                    if (n == nclues) {
-                        clue.isDown = false;
-                        clue.length = nacross;
-                        found = true;
-                    } else if (n == nclues + 1) {
-                        clue.isDown = true;
-                        clue.length = ndown;
-                        found = true;
-                    }
-                // only one of across/down clue on this square
-                } else if ((isAcrossClue || isDownClue) && n == nclues) {
-                    clue.isDown = isDownClue;
-                    clue.length = isDownClue ? ndown : nacross;
-                    found = true;
-                }
-                if (found) {
-                    clue.number = number;
-                    clue.row = row;
-                    clue.col = col;
-                    return clue;
-                }
+            if (isAcrossClue) {
+                clues.push({
+                    number: number,
+                    solution: aSoln,
+                    row: row,
+                    col: col,
+                    isDown: false,
+                    length: aSoln.length
+                });
+            }
+            if (isDownClue) {
+                clues.push({
+                    number: number,
+                    solution: dSoln,
+                    row: row,
+                    col: col,
+                    isDown: true,
+                    length: dSoln.length
+                });
             }
             number++;
-            nclues += isDownClue + isAcrossClue;
         }
     }
-    return null;
+    return clues;
 }
 
-function puzToEno(p) {
+export function puzToEno(p) {
     const h = p.header;
+    const clues = getClues(p);
+
     var eno = "# meta\n";
-    eno += "name: " + h.name + "\n";
-    eno += "author: " + h.author + "\n";
-    if (h.copyright)
-        eno += "copyright: " + h.copyright + "\n";
-    eno += "# grid\n";
+    eno += "name: " + p.title + "\n";
+    eno += "author: " + p.author + "\n";
+    if (p.copyright)
+        eno += "copyright: " + p.copyright + "\n";
+    // in the case where there are more clues than squares, the "note"
+    // field comes after the clues
+    if (p.note) {
+        eno += "--note\n"
+        eno += p.note + "\n";
+        eno += "--note\n"
+    }
+    eno += "\n# grid\n";
     eno += "width: " + h.width + "\n";
     eno += "height: " + h.height + "\n";
-    eno += "# clues\n";
-    for (var i = 0; i < h.numClues; i++) {
-        const clue = getClue(p, i);
-        if (!clue)
-            break;
-        eno += "## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
+    
+    eno += "\n# clues\n";
+    for (var i = 0; i < clues.length; i++) {
+        const clue = clues[i];
+        eno += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
         eno += "row: " + (clue.row + 1) + "\n";
         eno += "col: " + (clue.col + 1) + "\n";
         eno += "text: " + p.clues[i] + "\n";
+
+        // eno += "soln: " + clue.solution + "\n";
         eno += "lengths:\n    - " + clue.length + "\n";
     }
     return eno;
@@ -127,4 +125,37 @@ function puzToEno(p) {
 
 export function readEno(buf) {
     return puzToEno(readPuz(buf));
+}
+
+export function enoToPuz(eno) {
+    const cw = parser.parse(eno);
+    const meta = cw.meta;
+    const grid = cw.grid;
+    var solution = '';
+    var clues = [];
+    for (var row = 0; row < grid.height; row++) {
+        for (var col = 0; col < grid.width; col++) {
+            const cell = grid.cells[row][col];
+            solution += cell.empty ? '.' : (cell.solution ? cell.solution : '-');
+            if (!cell.number)
+                continue
+            
+            if (cell.clues.across && cell.offsets.across == 0) {
+                clues.push(cell.clues.across.text);
+            }
+            if (cell.clues.down && cell.offsets.down == 0) {
+                clues.push(cell.clues.down.text);
+            }
+        }
+    }
+    return {
+        title: meta.name,
+        author: meta.author,
+        copyright: meta.copyright,
+        note: meta.note,
+        width: grid.width,
+        height: grid.height,
+        solution: solution,
+        clues: clues
+    }
 }

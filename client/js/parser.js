@@ -1,16 +1,11 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
-const blank = require('./blank_crossword');
 
 enolib.register(enotype);
 
 export function sampleCrossword() {
   return sample.sampleCrossword();
-}
-
-export function blankCrossword() {
-  return blank.blankCrossword();
 }
 
 function forEachCell(clue, cells, cellFn) {
@@ -62,6 +57,9 @@ function populateCells(cells, clues) {
       } else {
         cell.clues.down = clue;
         cell.offsets.down = offset;
+      }
+      if (clue.solution) {
+        cell.solution = clue.solution[offset];
       }
       cell.empty = false;
       if (offset == 0) {
@@ -120,6 +118,10 @@ function parseClue(cw, clue) {
   const clueid = clue.stringKey();
   const x = clue.toSection();
   const lengths = x.requiredList('lengths').requiredIntegerValues();
+  var solution = x.optionalField('soln');
+  if (solution) {
+    solution = solution.requiredStringValue();
+  }
   const nwords = lengths.length;
   var sep = x.optionalList('separators');
   if (sep) {
@@ -127,7 +129,6 @@ function parseClue(cw, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
-  
   const parsed = {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
@@ -135,6 +136,7 @@ function parseClue(cw, clue) {
     text: x.requiredField('text').requiredStringValue(),
     separators: sep,
     lengths: lengths,
+    solution: solution,
     totalLength: lengths.reduce((acc, x) => acc + x),
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue()
@@ -211,7 +213,6 @@ export function parse(input, options) {
 
   const clues = doc.requiredSection('clues').elements();
   clues.forEach(clue => parseClue(cw, clue));
-
   
   let errors = buildGrid(cw);
 

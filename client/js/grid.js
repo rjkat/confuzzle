@@ -369,7 +369,7 @@ export class GridDisplay {
         if (crossword.meta.copyright) {
             const copyright = document.createElement('div');
             copyright.classList.add('crossword-copyright');
-            copyright.textContent = '© ' + crossword.meta.copyright;
+            copyright.textContent = crossword.meta.copyright;
             this.gridContainer.appendChild(copyright);
         }
         const gh = document.createElement('div');

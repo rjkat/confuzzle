@@ -2,8 +2,8 @@ import * as KeyCode from 'keycode-js';
 
 import * as parser from './parser.js';
 
-import {GridDisplay} from './grid.js'
-import {ClueDisplay} from './clues.js'
+import {GridDisplay} from './grid.js';
+import {ClueDisplay} from './clues.js';
 
 function matchesClueId(el, clueid, offset) {
     const idparts = el.dataset.clueid.split(',');
