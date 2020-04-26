@@ -3,6 +3,9 @@
 *.DS_STORE
 server/crosswords/*
 
+test.puz
+test.eno
+
 # Logs
 logs
 *.log

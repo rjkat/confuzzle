@@ -94,12 +94,17 @@ export function puzToEno(p) {
     const clues = getClues(p);
 
     var eno = "# meta\n";
-    eno += "name: " + p.title + "\n";
-    eno += "author: " + p.author + "\n";
+    var name = p.title;
+    var author = p.author;
+    // eno requires name and author
+    if (!/\S/.test(name))
+        name = '?'
+    if (!/\S/.test(author))
+        author = '?'
+    eno += "name: " + name + "\n";
+    eno += "author: " + author + "\n";
     if (p.copyright)
         eno += "copyright: " + p.copyright + "\n";
-    // in the case where there are more clues than squares, the "note"
-    // field comes after the clues
     if (p.note) {
         eno += "--note\n"
         eno += p.note + "\n";

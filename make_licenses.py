@@ -2,20 +2,17 @@ import os
 import json
 import shutil
 
+shutil.rmtree('licenses')
+os.mkdir('licenses')
+
 with open('licenses.json', 'r') as fobj:
     licenses = json.load(fobj)
 
 licenses.update(
     {
-        "libpuz": {
-            "repository": "https://github.com/ccasin/hpuz/tree/master/contrib/libpuz",
-            "publisher": "Chris Casinghino and Josh Myer",
-            "licenses": "GPL-2.0",
-        },
-        "textarea-line-numbers": {
-            "repository": "https://github.com/MatheusAvellar/textarea-line-numbers",
-            "publisher": "Matheus Avellar",
-            "licenses": "Apache-2.0"
+        "prism-live": {
+            "repository": "https://github.com/PrismJS/live",
+            "publisher": "Lea Verou",
         }
     }
 )

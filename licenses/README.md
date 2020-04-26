@@ -40,7 +40,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-helper-builder-binary-assignment-operator-visitor
 
 
-## @babel/helper-builder-react-jsx-experimental@7.9.0
+## @babel/helper-builder-react-jsx-experimental@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-helper-builder-react-jsx-experimental
 
@@ -75,6 +75,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## @babel/helper-function-name@7.8.3
+* licenses: MIT
+* repository: https://github.com/babel/babel/tree/master/packages/babel-helper-function-name
+
+
+## @babel/helper-function-name@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-helper-function-name
 
@@ -154,6 +159,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-helper-validator-identifier
 
 
+## @babel/helper-validator-identifier@7.9.5
+* licenses: MIT
+* repository: https://github.com/babel/babel/tree/master/packages/babel-helper-validator-identifier
+
+
 ## @babel/helper-wrap-function@7.8.3
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-helper-wrap-function
@@ -205,7 +215,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-numeric-separator
 
 
-## @babel/plugin-proposal-object-rest-spread@7.9.0
+## @babel/plugin-proposal-object-rest-spread@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-object-rest-spread
 
@@ -305,7 +315,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-block-scoping
 
 
-## @babel/plugin-transform-classes@7.9.2
+## @babel/plugin-transform-classes@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-classes
 
@@ -315,7 +325,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-computed-properties
 
 
-## @babel/plugin-transform-destructuring@7.8.8
+## @babel/plugin-transform-destructuring@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring
 
@@ -395,7 +405,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-super
 
 
-## @babel/plugin-transform-parameters@7.9.3
+## @babel/plugin-transform-parameters@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-parameters
 
@@ -452,7 +462,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-unicode-regex
 
 
-## @babel/preset-env@7.9.0
+## @babel/preset-env@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-preset-env
 * publisher: Henry Zhu
@@ -485,6 +495,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## @babel/types@7.9.0
+* licenses: MIT
+* repository: https://github.com/babel/babel/tree/master/packages/babel-types
+* publisher: Sebastian McKenzie
+* email: sebmck@gmail.com
+
+
+## @babel/types@7.9.5
 * licenses: MIT
 * repository: https://github.com/babel/babel/tree/master/packages/babel-types
 * publisher: Sebastian McKenzie
@@ -900,6 +917,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/jonschlinkert/array-unique
 * publisher: Jon Schlinkert
 * url: https://github.com/jonschlinkert
+
+
+## arraybuffer-to-buffer@0.0.7
+* licenses: MIT
+* repository: https://github.com/miguelmota/arraybuffer-to-buffer
+* publisher: Miguel Mota
+* email: hello@miguelmota.com
+* url: https://miguelmota.com
 
 
 ## arraybuffer.slice@0.0.7
@@ -1489,6 +1514,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: sindresorhus.com
 
 
+## clipboard@2.0.6
+* licenses: MIT
+* repository: https://github.com/zenorocha/clipboard.js
+
+
 ## cliui@5.0.0
 * licenses: ISC
 * repository: https://github.com/yargs/cliui
@@ -1728,7 +1758,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://github.com/jonschlinkert
 
 
-## core-js-compat@3.6.4
+## core-js-compat@3.6.5
 * licenses: MIT
 * repository: https://github.com/zloirock/core-js
 
@@ -2095,6 +2125,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Felix Geisendörfer
 * email: felix@debuggable.com
 * url: http://debuggable.com/
+
+
+## delegate@3.2.0
+* licenses: MIT
+* repository: https://github.com/zenorocha/delegate
 
 
 ## delegates@1.0.0
@@ -2487,6 +2522,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/facebook/jest
 
 
+## express-force-https@1.0.0
+* licenses: MIT
+* repository: https://github.com/njam3/express-force-https
+* publisher: Nick Poisson
+* email: nick@jam3.com
+* url: https://github.com/njam3
+
+
 ## express-robots-txt@0.4.1
 * licenses: MIT
 * repository: https://github.com/modosc/express-robots-txt
@@ -2788,12 +2831,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: alex.wilson@joyent.com
 
 
-## github-fork-ribbon-css@0.2.3
-* licenses: MIT
-* repository: https://github.com/simonwhitaker/github-fork-ribbon-css
-* publisher: Simon Whitaker
-
-
 ## glob-parent@3.1.0
 * licenses: ISC
 * repository: https://github.com/es128/glob-parent
@@ -2838,6 +2875,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
 * url: sindresorhus.com
+
+
+## good-listener@1.2.2
+* licenses: MIT
+* repository: https://github.com/zenorocha/good-listener
 
 
 ## got@6.7.1
@@ -3100,6 +3142,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## iconv-lite@0.4.24
+* licenses: MIT
+* repository: https://github.com/ashtuchkin/iconv-lite
+* publisher: Alexander Shtuchkin
+* email: ashtuchkin@gmail.com
+
+
+## iconv-lite@0.5.1
 * licenses: MIT
 * repository: https://github.com/ashtuchkin/iconv-lite
 * publisher: Alexander Shtuchkin
@@ -3912,7 +3961,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: aseem.kishore@gmail.com
 
 
-## json5@2.1.2
+## json5@2.1.3
 * licenses: MIT
 * repository: https://github.com/json5/json5
 * publisher: Aseem Kishore
@@ -3995,12 +4044,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/gkz/levn
 * publisher: George Zahariev
 * email: z@georgezahariev.com
-
-
-## libpuz
-* repository: https://github.com/ccasin/hpuz/tree/master/contrib/libpuz
-* publisher: Chris Casinghino and Josh Myer
-* licenses: GPL-2.0
 
 
 ## locate-path@3.0.0
@@ -5276,7 +5319,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: voischev.ivan@ya.ru
 
 
-## posthtml-render@1.2.0
+## posthtml-render@1.2.1
 * licenses: MIT
 * repository: https://github.com/posthtml/posthtml-render
 * publisher: Ivan Voischev
@@ -5290,7 +5333,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: winogradovaa@gmail.com
 
 
-## posthtml@0.12.0
+## posthtml@0.12.1
 * licenses: MIT
 * repository: https://github.com/posthtml/posthtml
 * publisher: Ivan Voischev
@@ -5317,6 +5360,17 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/facebook/jest
 * publisher: James Kyle
 * email: me@thejameskyle.com
+
+
+## prism-live
+* repository: https://github.com/PrismJS/live
+* publisher: Lea Verou
+
+
+## prismjs@1.20.0
+* licenses: MIT
+* repository: https://github.com/LeaVerou/prism
+* publisher: Lea Verou
 
 
 ## private@0.1.8
@@ -5817,6 +5871,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/lddubeau/saxes
 * publisher: Louis-Dominique Dubeau
 * email: ldd@lddubeau.com
+
+
+## select@1.1.2
+* licenses: MIT
+* repository: https://github.com/zenorocha/select
 
 
 ## semver-diff@2.1.0
@@ -6382,7 +6441,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: http://lisperator.net/
 
 
-## terser@4.6.7
+## terser@4.6.11
 * licenses: BSD-2-Clause
 * repository: https://github.com/terser/terser
 * publisher: Mihai Bazon
@@ -6395,12 +6454,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/istanbuljs/test-exclude
 * publisher: Ben Coe
 * email: ben@npmjs.com
-
-
-## textarea-line-numbers
-* repository: https://github.com/MatheusAvellar/textarea-line-numbers
-* publisher: Matheus Avellar
-* licenses: Apache-2.0
 
 
 ## throat@5.0.0
@@ -6437,6 +6490,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/mziccard/node-timsort
 * publisher: Marco Ziccardi
 * url: http://mziccard.me/
+
+
+## tiny-emitter@2.1.0
+* licenses: MIT
+* repository: https://github.com/scottcorgan/tiny-emitter
+* publisher: Scott Corgan
 
 
 ## tiny-inflate@1.0.3
