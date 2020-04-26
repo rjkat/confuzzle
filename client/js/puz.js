@@ -114,7 +114,8 @@ function puzChecksum(puz, cksum) {
     for (var i = 0; i < puz.clues.length; i++) {
         cksum = checksum(puzEncode(puz.clues[i]), cksum);
     }
-    cksum = checksum(puzEncode(puz.note + '\x00'), cksum);
+    if (puz.note)
+        cksum = checksum(puzEncode(puz.note + '\x00'), cksum);
     return cksum;
 }
 
@@ -126,8 +127,22 @@ function concatBytes(a, b) {
     return c;
 }
 
-function buildPuzBytes(puz, body) {
+function buildPuzBody(puz) {
+    var body = puzEncode(puz.solution);
+    if (!puz.state) {
+        puz.state = puz.solution.replace(/[^\.]/g, '-');
+    }
+    body = concatBytes(body, puzEncode(puz.state));
+    var strings = buildStrings(puz);
+    body = concatBytes(body, strings);
+    return body;
+}
+
+/* puz should have same fields as returned by readPuz, except for header. 
+   state and note are optional. */
+export function writePuz(puz) {
     const header = new Uint8Array(0x34);
+    const body = buildPuzBody(puz);
 
     // magic
     header.set(iconv.encode("ACROSS&DOWN", "utf-8"), 0x02);
@@ -172,6 +187,7 @@ function buildPuzBytes(puz, body) {
 
     // const parsed = readHeader(Buffer.from(header));
     // console.log(JSON.stringify(parsed));
+
     return concatBytes(header, body);
 }
 
@@ -179,15 +195,3 @@ function puzEncode(s) {
     return iconv.encode(s, PUZ_ENCODING);
 }
 
-/* puz should have same fields as returned by readPuz, except for header. 
-   state and note are optional. */
-export function writePuz(puz) {
-    var body = puzEncode(puz.solution);
-    if (!puz.state) {
-        puz.state = puz.solution.replace(/[^\.]/g, '-');
-    }
-    body = concatBytes(body, puzEncode(puz.state));
-    var strings = buildStrings(puz);
-    body = concatBytes(body, strings);
-    return buildPuzBytes(puz, body);
-}
