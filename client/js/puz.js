@@ -84,7 +84,7 @@ function buildStrings(puz) {
     if (puz.note) {
         body += puz.note + '\x00';
     }
-    return iconv.encode(body, PUZ_ENCODING);
+    return puzEncode(body);
 }
 
 function checksum(base, cksum, len) {
@@ -99,12 +99,23 @@ function checksum(base, cksum, len) {
 
   for (var i = 0; i < len; i++) {
     if (cksum & 0x0001)
-      cksum = (cksum >> 1) + 0x8000;
+      cksum = ((cksum >>> 1) + 0x8000) & 0xFFFF;
     else
-      cksum = cksum >> 1;
-    cksum += base[i];
+      cksum = (cksum >>> 1);
+    cksum = (cksum + base[i]) & 0xFFFF;
   }
   return cksum;
+}
+
+function puzChecksum(puz, cksum) {
+    cksum = checksum(puzEncode(puz.title + '\x00'), cksum);
+    cksum = checksum(puzEncode(puz.author + '\x00'), cksum);
+    cksum = checksum(puzEncode(puz.copyright + '\x00'), cksum);
+    for (var i = 0; i < puz.clues.length; i++) {
+        cksum = checksum(puzEncode(puz.clues[i]), cksum);
+    }
+    cksum = checksum(puzEncode(puz.note + '\x00'), cksum);
+    return cksum;
 }
 
 // why does this not already exist in javascript
@@ -115,7 +126,7 @@ function concatBytes(a, b) {
     return c;
 }
 
-function buildPuzBytes(puz, strings, body) {
+function buildPuzBytes(puz, body) {
     const header = new Uint8Array(0x34);
 
     // magic
@@ -130,16 +141,18 @@ function buildPuzBytes(puz, strings, body) {
     header[0x2E] = puz.clues.length & 0xFF;
     header[0x2F] = (puz.clues.length & 0xFF00) >> 8;
 
+    // magical random bitmask, causes across lite to crash if not set :S
+    header[0x30] = 0x01
+    
     // checksums
-    var data = concatBytes(header, body);
-    var c_cib = checksum(data.slice(0x2C), 8, 0);
-    var c_sol = checksum(puz.solution + '\x00');
-    var c_grid = checksum(puz.state + '\x00');
-    var c_part = checksum(strings);
+    var c_cib = checksum(header.slice(0x2C), 0, 8);
+    var c_sol = checksum(puzEncode(puz.solution));
+    var c_grid = checksum(puzEncode(puz.state));
+    var c_part = puzChecksum(puz);
  
-    var c_puz = checksum(puz.solution + '\x00', c_cib);
-    c_puz = checksum(puz.state + '\x00', c_puz);
-    c_puz = checksum(strings, c_puz);
+    var c_puz = checksum(puzEncode(puz.solution), c_cib);
+    c_puz = checksum(puzEncode(puz.state), c_puz);
+    c_puz = puzChecksum(puz, c_puz);
 
     header[0x00] = c_puz & 0xFF;
     header[0x01] = (c_puz & 0xFF00) >> 8;
@@ -162,16 +175,20 @@ function buildPuzBytes(puz, strings, body) {
     return concatBytes(header, body);
 }
 
+function puzEncode(s) {
+    return iconv.encode(s, PUZ_ENCODING);
+}
+
 /* puz should have same fields as returned by readPuz, except for header. 
    state and note are optional. */
 export function writePuz(puz) {
-    var body = iconv.encode(puz.solution, PUZ_ENCODING);
+    var body = puzEncode(puz.solution);
     if (!puz.state) {
         puz.state = puz.solution.replace(/[^\.]/g, '-');
     }
-    body = concatBytes(body, iconv.encode(puz.state, PUZ_ENCODING));
+    body = concatBytes(body, puzEncode(puz.state));
     
     var strings = buildStrings(puz);
     body = concatBytes(body, strings);
-    return buildPuzBytes(puz, strings, body);
+    return buildPuzBytes(puz, body);
 }

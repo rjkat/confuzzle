@@ -136,7 +136,7 @@ export function enoToPuz(eno) {
     for (var row = 0; row < grid.height; row++) {
         for (var col = 0; col < grid.width; col++) {
             const cell = grid.cells[row][col];
-            solution += cell.empty ? '.' : (cell.solution ? cell.solution : '-');
+            solution += cell.empty ? '.' : (cell.solution ? cell.solution : 'X');
             if (!cell.number)
                 continue
             
