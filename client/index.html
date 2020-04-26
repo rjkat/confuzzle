@@ -37,9 +37,11 @@
             <div class="crossword-input">
                 <input class="radio" id="select-source" name="compile-selection" type="radio" checked>
                 <input class="radio" id="select-errors" name="compile-selection" type="radio">
+                <input class="radio" id="select-convert" name="compile-selection" type="radio">
                 <div class="compile-tabs">
                   <label class="compile-tab" id="source-tab" for="select-source">Edit</label>
                   <label class="compile-tab" id="errors-tab" for="select-errors">Debug</label>
+                  <label class="compile-tab" id="convert-tab" for="select-convert">Convert</label>
                 </div>
                 <div class="compile-panels">
                     <div class="compile-panel line-numbers" id="source-panel">
@@ -51,8 +53,7 @@
                             <pre id="error-snippet"></pre>
                         </div>
                     </div>
-                    <div class="crossword-input-controls hidden">
-                        <button type="button" class="action-button" id="render-button">Render</button>
+                    <div class="compile-panel" id="convert-panel">
                         <div id="drop-area" class="entry-piece">
                           <form class="upload-form">
                             Drag and drop .puz file here, or 
@@ -60,6 +61,7 @@
                             <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
                           </form>
                         </div>
+                        <button type="button" class="action-button" id="download-button">Download as .puz file</button>
                     </div>
                 </div>
             </div>

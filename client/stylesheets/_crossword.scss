@@ -395,9 +395,13 @@ body {
 #select-errors:checked ~ .compile-panels #errors-panel{
   display: block;
 }
+#select-convert:checked ~ .compile-panels #convert-panel{
+  display: block;
+}
 
 #select-source:checked ~ .compile-tabs #source-tab,
-#select-errors:checked ~ .compile-tabs #errors-tab {
+#select-errors:checked ~ .compile-tabs #errors-tab,
+#select-convert:checked ~ .compile-tabs #convert-tab {
   background:#fff;
   color:#000;
 }

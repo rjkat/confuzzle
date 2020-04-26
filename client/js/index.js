@@ -3,10 +3,11 @@ import {CrosswordDisplay} from './display.js'
 import {SolverDisplay} from './solvers.js'
 import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
-import * as LibPuz from './libpuz.js'
 import 'regenerator-runtime/runtime'
+import {readEno} from './eno.js'
 
 const parser = require('./parser.js');
+const arrayBufferToBuffer = require('arraybuffer-to-buffer');
 
 const { HtmlReporter, EnoError } = require('enolib');
 
@@ -48,8 +49,6 @@ class AnagrindApp {
         );
         this.renderButton = document.getElementById('render-button');
 
-        this.renderButton.onclick = () => self.renderCrossword();
-
         const pathParts = window.location.pathname.split('/');
         if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
             this.gridid = pathParts[2];
@@ -80,17 +79,13 @@ class AnagrindApp {
         const dropArea = document.getElementById('drop-area');
         const puzFile = document.getElementById('selected-puz-file');
 
-        DragDrop.setupDropArea(dropArea, puzFile, buffer => self.puzFileUploaded(buffer));
+        DragDrop.setupDropArea(dropArea, puzFile, buf => self.puzFileUploaded(buf));
         
-        if (!this.gridid) {
-            this.setCrosswordSource(parser.sampleCrossword());
-        } else {
-            this.setCrosswordSource(parser.blankCrossword());
-        }
+        this.setCrosswordSource(parser.sampleCrossword());
     }
 
-    puzFileUploaded(buffer) {
-        const eno = LibPuz.loadPuzBuffer(buffer);
+    puzFileUploaded(buf) {
+        const eno = readEno(arrayBufferToBuffer(buf));
         this.setCrosswordSource(eno);
     }
 
@@ -154,6 +149,7 @@ class AnagrindApp {
 
     setCrosswordSource(source) {
         this.sourceTextArea.value = source;
+        this.sourceTextArea.dispatchEvent(new Event('input'));
         this.renderCrossword(source);
     }
 

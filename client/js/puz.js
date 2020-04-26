@@ -1,29 +1,29 @@
 const iconv = require('iconv-lite');
 
+
 // strings in puz files are ISO-8859-1
 const PUZ_ENCODING = "ISO-8859-1";
 
 // http://code.google.com/p/puz/wiki/FileFormat
 // https://github.com/tedtate/puzzler/blob/master/lib/crossword.js
 function readHeader(buf) {
-    const b = (offset, len) => buf.slice(offset, offset + len)
     return {
-        fileChecksum: b(0x00, 0x02).readInt16LE(),
-        fileMagic: b(0x02, 0x0B).toString(),
+        fileChecksum: buf.readUInt16LE(0x00),
+        fileMagic: buf.toString('utf8', 0x02, 0x02 + 0x0B),
         checksums: {
-            cib: b(0x0E, 0x02).readInt16LE(),
-            low: b(0x10, 0x04).toString('hex'),
-            high: b(0x14, 0x04).toString('hex')
+            cib: buf.readUInt16LE(0x0E),
+            low: buf.readUInt32LE(0x10),
+            high: buf.readUInt32LE(0x14)
         },
-        version: b(0x18, 0x04).toString(),
-        reserved1C: b(0x1C, 0x02).toString('hex'),
-        scrambledChecksum: b(0x1E, 0x02).readInt16LE(),
-        reserved20: b(0x20, 0x0C).toString('hex'),
-        width: b(0x2C, 0x01).readInt8(),
-        height: b(0x2D, 0x01).readInt8(),
-        numClues: b(0x2E, 0x02).readInt16LE(),
-        unknownBitmask: b(0x30, 0x02).readInt16LE(),
-        scrambledTag: b(0x32, 0x02).readInt16LE()
+        version: buf.toString('utf8', 0x18, 0x18 + 0x04),
+        reserved1C: buf.readUInt16LE(0x1C),
+        scrambledChecksum: buf.readUInt16LE(0x1E),
+        reserved20: buf.toString('hex', 0x20, 0x20 + 0x0C),
+        width: buf.readUInt8(0x2C),
+        height: buf.readUInt8(0x2D),
+        numClues: buf.readUInt16LE(0x2E),
+        unknownBitmask: buf.readUInt16LE(0x30),
+        scrambledTag: buf.readUInt16LE(0x32)
     }
 }
 
@@ -187,7 +187,6 @@ export function writePuz(puz) {
         puz.state = puz.solution.replace(/[^\.]/g, '-');
     }
     body = concatBytes(body, puzEncode(puz.state));
-    
     var strings = buildStrings(puz);
     body = concatBytes(body, strings);
     return buildPuzBytes(puz, body);
