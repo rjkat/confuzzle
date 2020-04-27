@@ -5,12 +5,8 @@ import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import 'regenerator-runtime/runtime'
 import {readEno, enoToPuz} from './eno.js'
-import {writePuz} from './puz.js'
 
 const parser = require('./parser.js');
-const arrayBufferToBuffer = require('arraybuffer-to-buffer');
-
-const { HtmlReporter, EnoError } = require('enolib');
 
 class AnagrindApp {
     constructor() {
@@ -88,13 +84,13 @@ class AnagrindApp {
     }
 
     puzFileUploaded(buf) {
-        const eno = readEno(arrayBufferToBuffer(buf));
+        const eno = readEno(new Uint8Array(buf));
         this.setCrosswordSource(eno);
     }
 
     downloadClicked() {
         const puz = enoToPuz(this.sourceTextArea.value);
-        const puzbytes = writePuz(puz);
+        const puzbytes = puz.toBytes();
         const blob = new Blob([puzbytes], {type: "application/x-crossword"});
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);

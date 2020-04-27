@@ -1,4 +1,4 @@
-import {readPuz} from './puz.js';
+import {PuzPayload} from './puz.js';
 const parser = require('./parser.js');
 
 const BLACK_SQUARE_CHAR = '.';
@@ -32,8 +32,8 @@ function downSoln(grid, nrows, row, ncols, col) {
 }
 
 function getClues(p) {
-    const nrows = p.header.height;
-    const ncols = p.header.width;
+    const nrows = p.height;
+    const ncols = p.width;
     const grid = p.solution;
     var row, col;
     var number = 1;
@@ -90,7 +90,6 @@ function getClues(p) {
 }
 
 export function puzToEno(p) {
-    const h = p.header;
     const clues = getClues(p);
 
     var eno = "# meta\n";
@@ -111,8 +110,8 @@ export function puzToEno(p) {
         eno += "--note\n"
     }
     eno += "\n# grid\n";
-    eno += "width: " + h.width + "\n";
-    eno += "height: " + h.height + "\n";
+    eno += "width: " + p.width + "\n";
+    eno += "height: " + p.height + "\n";
     
     eno += "\n# clues\n";
     for (var i = 0; i < clues.length; i++) {
@@ -129,7 +128,7 @@ export function puzToEno(p) {
 }
 
 export function readEno(buf) {
-    return puzToEno(readPuz(buf));
+    return puzToEno(PuzPayload.from(buf));
 }
 
 export function enoToPuz(eno) {
@@ -153,14 +152,15 @@ export function enoToPuz(eno) {
             }
         }
     }
-    return {
-        title: meta.name,
-        author: meta.author,
-        copyright: meta.copyright,
-        note: meta.note,
-        width: grid.width,
-        height: grid.height,
-        solution: solution,
-        clues: clues
-    }
+    return new PuzPayload({
+            title: meta.name,
+            author: meta.author,
+            copyright: meta.copyright,
+            note: meta.note,
+            width: grid.width,
+            height: grid.height,
+        },
+        clues,
+        solution
+    );
 }

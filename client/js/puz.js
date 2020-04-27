@@ -1,33 +1,60 @@
 const iconv = require('iconv-lite');
 
-
 // strings in puz files are ISO-8859-1
 const PUZ_ENCODING = "ISO-8859-1";
+
+const PUZ_HEADER_CONSTANTS = {
+    offsets: {
+        FILE_CHECKSUM: 0x00,
+        MAGIC: 0x02,
+        CIB_CHECKSUM: 0x0E,
+        ICHEATED_CHECKSUM: 0x10,
+        VERSION: 0x18,
+        RES1: 0x1C,
+        SCRAMBLED_CHECKSUM: 0x1E,
+        RES2: 0x20,
+        WIDTH: 0x2C,
+        HEIGHT: 0x2D,
+        NUM_CLUES: 0x2E,
+        UNKNOWN_BITMASK: 0x30,
+        SCRAMBLED_TAG: 0x32,
+    },
+    lengths: {
+        MAGIC: 0x0B,
+        VERSION: 0x04,
+        ICHEATED_CHECKSUM: 0x08,
+        RES2: 0x0C,
+        HEADER: 0x34
+    }
+}
 
 // http://code.google.com/p/puz/wiki/FileFormat
 // https://github.com/tedtate/puzzler/blob/master/lib/crossword.js
 function readHeader(buf) {
+    const h = PUZ_HEADER_CONSTANTS.offsets;
+    const l = PUZ_HEADER_CONSTANTS.lengths;
     return {
-        fileChecksum: buf.readUInt16LE(0x00),
-        fileMagic: buf.toString('utf8', 0x02, 0x02 + 0x0B),
-        checksums: {
-            cib: buf.readUInt16LE(0x0E),
-            low: buf.readUInt32LE(0x10),
-            high: buf.readUInt32LE(0x14)
-        },
-        version: buf.toString('utf8', 0x18, 0x18 + 0x04),
-        reserved1C: buf.readUInt16LE(0x1C),
-        scrambledChecksum: buf.readUInt16LE(0x1E),
-        reserved20: buf.toString('hex', 0x20, 0x20 + 0x0C),
-        width: buf.readUInt8(0x2C),
-        height: buf.readUInt8(0x2D),
-        numClues: buf.readUInt16LE(0x2E),
-        unknownBitmask: buf.readUInt16LE(0x30),
-        scrambledTag: buf.readUInt16LE(0x32)
+        FILE_CHECKSUM: buf.readUInt16LE(h.FILE_CHECKSUM),
+        MAGIC: buf.toString('utf8', h.MAGIC, h.MAGIC + l.MAGIC),
+        CIB_CHECKSUM: buf.readUInt16LE(h.CIB_CHECKSUM),
+        ICHEATED_CHECKSUM: buf.toString('hex', h.ICHEATED_CHECKSUM, h.ICHEATED_CHECKSUM + l.ICHEATED_CHECKSUM),
+        VERSION: buf.toString('utf8', h.VERSION, h.VERSION + l.VERSION),
+        RES1: buf.readUInt16LE(h.RES1),
+        SCRAMBLED_CHECKSUM: buf.readUInt16LE(h.SCRAMBLED_CHECKSUM),
+        RES2: buf.toString('hex', h.RES2, h.RES2 + l.RES2),
+        WIDTH: buf.readUInt8(h.WIDTH),
+        HEIGHT: buf.readUInt8(h.HEIGHT),
+        NUM_CLUES: buf.readUInt16LE(h.NUM_CLUES),
+        UNKNOWN_BITMASK: buf.readUInt16LE(h.UNKNOWN_BITMASK),
+        SCRAMBLED_TAG: buf.readUInt16LE(h.SCRAMBLED_TAG)
     }
 }
 
-function stringSlice(buf, start, end) {
+function puzEncode(s) {
+    return iconv.encode(s, PUZ_ENCODING);
+}
+
+function puzDecode(buf, start, end) {
     return iconv.decode(buf.slice(start, end), PUZ_ENCODING);
 }
 
@@ -37,89 +64,36 @@ function splitNulls(buf) {
     var parts = [];
     while (i < buf.length) {
         if (buf[i] == 0x0) {
-            parts.push(stringSlice(buf, prev, i));
+            parts.push(puzDecode(buf, prev, i));
             prev = i + 1;
         }
         i++;
     }
     if (i > prev)
-        parts.push(stringSlice(buf, prev, i));
+        parts.push(puzDecode(buf, prev, i));
     return parts;
 }
 
-export function readPuz(buf) {
-    var header = readHeader(buf);
-    const ncells = header.width * header.height;
-    var pos = 0x34;
-    const solution = stringSlice(buf, pos, pos + ncells);
-    pos += ncells;
-    const state = stringSlice(buf, pos, pos + ncells);
-    pos += ncells;
-    const parts = splitNulls(buf.slice(pos));
-    const fields = ['title', 'author', 'copyright'];
-    var puz = {
-        header: header,
-        width: header.width,
-        height: header.height,
-        clues: parts.slice(fields.length, fields.length + header.numClues),
-        note: parts[fields.length + header.numClues],
-        solution: solution,
-        state: state
-    }
-    fields.forEach(function(f, i) {
-        puz[f] = parts[i];
-    });
-    return puz;
-}
-
-function buildStrings(puz) {
-    var body = '';
-    const names = ['title', 'author', 'copyright'];
-    for (var i = 0; i < names.length; i++) {
-        body += puz[names[i]] + '\x00';
-    }
-    for (var i = 0; i < puz.clues.length; i++) {
-        body += puz.clues[i] + '\x00';
-    }
-    if (puz.note) {
-        body += puz.note + '\x00';
-    }
-    return puzEncode(body);
-}
-
-function checksum(base, cksum, len) {
-  if (cksum === undefined)
-    cksum = 0x0000;
+function checksum(base, ck, len) {
+  if (ck === undefined)
+    ck = 0x0000;
   
   if (base === undefined)
-    return cksum;
+    return ck;
 
   if (len === undefined)
     len = base.length;
 
   for (var i = 0; i < len; i++) {
-    if (cksum & 0x0001)
-      cksum = ((cksum >>> 1) + 0x8000) & 0xFFFF;
+    if (ck & 0x0001)
+      ck = ((ck >>> 1) + 0x8000) & 0xFFFF;
     else
-      cksum = (cksum >>> 1);
-    cksum = (cksum + base[i]) & 0xFFFF;
+      ck = (ck >>> 1);
+    ck = (ck + base[i]) & 0xFFFF;
   }
-  return cksum;
+  return ck;
 }
 
-function puzChecksum(puz, cksum) {
-    cksum = checksum(puzEncode(puz.title + '\x00'), cksum);
-    cksum = checksum(puzEncode(puz.author + '\x00'), cksum);
-    cksum = checksum(puzEncode(puz.copyright + '\x00'), cksum);
-    for (var i = 0; i < puz.clues.length; i++) {
-        cksum = checksum(puzEncode(puz.clues[i]), cksum);
-    }
-    if (puz.note)
-        cksum = checksum(puzEncode(puz.note + '\x00'), cksum);
-    return cksum;
-}
-
-// why does this not already exist in javascript
 function concatBytes(a, b) {
     var c = new Uint8Array(a.length + b.length);
     c.set(a);
@@ -127,71 +101,137 @@ function concatBytes(a, b) {
     return c;
 }
 
-function buildPuzBody(puz) {
-    var body = puzEncode(puz.solution);
-    if (!puz.state) {
-        puz.state = puz.solution.replace(/[^\.]/g, '-');
+function writeCheatChecksum(buf, offset, key, checksums) {
+    const n = checksums.length;
+    for (var shift = 0; shift < 2; shift++) {
+        for (var i = 0; i < checksums.length; i++) {
+            const c = (checksums[i] & (0xFF << 8*shift)) >>> 8*shift;
+            buf[offset + i + n*shift] = key.charCodeAt(i + n*shift) ^ c;
+        }
     }
-    body = concatBytes(body, puzEncode(puz.state));
-    var strings = buildStrings(puz);
-    body = concatBytes(body, strings);
-    return body;
 }
 
-/* puz should have same fields as returned by readPuz, except for header. 
-   state and note are optional. */
-export function writePuz(puz) {
-    const header = new Uint8Array(0x34);
-    const body = buildPuzBody(puz);
-
-    // magic
-    header.set(iconv.encode("ACROSS&DOWN", "utf-8"), 0x02);
-    
-    // version
-    header.set(iconv.encode("1.3", "utf-8"), 0x18);
-
-    // dimensions
-    header[0x2C] = puz.width;
-    header[0x2D] = puz.height;
-    header[0x2E] = puz.clues.length & 0xFF;
-    header[0x2F] = (puz.clues.length & 0xFF00) >> 8;
-
-    // magical random bitmask, causes across lite to crash if not set :S
-    header[0x30] = 0x01
-    
-    // checksums
-    var c_cib = checksum(header.slice(0x2C), 0, 8);
-    var c_sol = checksum(puzEncode(puz.solution));
-    var c_grid = checksum(puzEncode(puz.state));
-    var c_part = puzChecksum(puz);
- 
-    var c_puz = checksum(puzEncode(puz.solution), c_cib);
-    c_puz = checksum(puzEncode(puz.state), c_puz);
-    c_puz = puzChecksum(puz, c_puz);
-
-    header[0x00] = c_puz & 0xFF;
-    header[0x01] = (c_puz & 0xFF00) >> 8;
-
-    header[0x0E] = c_cib & 0xFF;
-    header[0x0F] = (c_cib & 0xFF00) >> 8;
-
-    header[0x10] = 0x49 ^ (c_cib & 0xFF);
-    header[0x11] = 0x43 ^ (c_sol & 0xFF);
-    header[0x12] = 0x48 ^ (c_grid & 0xFF);
-    header[0x13] = 0x45 ^ (c_part & 0xFF);
-
-    header[0x14] = 0x41 ^ ((c_cib & 0xFF00) >> 8);
-    header[0x15] = 0x54 ^ ((c_sol & 0xFF00) >> 8);
-    header[0x16] = 0x45 ^ ((c_grid & 0xFF00) >> 8);
-    header[0x17] = 0x44 ^ ((c_part & 0xFF00) >> 8);
-
-    // const parsed = readHeader(Buffer.from(header));
-    // console.log(JSON.stringify(parsed));
-
-    return concatBytes(header, body);
+function writeUInt16LE(buf, offset, val) {
+    buf[offset + 0] =  val & 0x00FF;
+    buf[offset + 1] = (val & 0xFF00) >> 8;
 }
 
-function puzEncode(s) {
-    return iconv.encode(s, PUZ_ENCODING);
+export class PuzPayload {
+    static from(x) {
+        const buf = Buffer.from(x);
+        var header = readHeader(buf);
+        const ncells = header.WIDTH * header.HEIGHT;
+        var pos = PUZ_HEADER_CONSTANTS.lengths.HEADER;
+        const solution = puzDecode(buf, pos, pos + ncells);
+        pos += ncells;
+        const state = puzDecode(buf, pos, pos + ncells);
+        pos += ncells;
+        const parts = splitNulls(buf.slice(pos));
+        const fields = ['title', 'author', 'copyright'];
+        const metadata = {};
+        fields.forEach(function(f, i) {
+            metadata[f] = parts[i];
+        });
+        metadata.note = parts[fields.length + header.NUM_CLUES];
+        metadata.width = header.WIDTH;
+        metadata.height = header.HEIGHT;
+        const clues = parts.slice(fields.length, fields.length + header.NUM_CLUES);
+        return new PuzPayload(metadata, clues, solution, state);
+    }
+
+    buildStrings() {
+        var body = '';
+        const names = ['title', 'author', 'copyright'];
+        for (var i = 0; i < names.length; i++)
+            body += this[names[i]] + '\x00';
+
+        for (var i = 0; i < this.clues.length; i++)
+            body += this.clues[i] + '\x00';
+
+        if (this.note)
+            body += this.note + '\x00';
+
+        return puzEncode(body);
+    }
+
+    stringsChecksum(ck) {
+        ck = checksum(puzEncode(this.title + '\x00'), ck);
+        ck = checksum(puzEncode(this.author + '\x00'), ck);
+        ck = checksum(puzEncode(this.copyright + '\x00'), ck);
+        for (var i = 0; i < this.clues.length; i++)
+            ck = checksum(puzEncode(this.clues[i]), ck);
+
+        if (this.note)
+            ck = checksum(puzEncode(this.note + '\x00'), ck);
+        return ck;
+    }
+
+    buildBody() {
+        var body = puzEncode(this.solution);
+        if (!this.state)
+            this.state = this.solution.replace(/[^\.]/g, '-');
+
+        body = concatBytes(body, puzEncode(this.state));
+        var strings = this.buildStrings();
+        body = concatBytes(body, strings);
+        return body;
+    }
+
+    computeChecksums(header) {
+        const c = PUZ_HEADER_CONSTANTS;
+        const cib = checksum(header.slice(c.offsets.WIDTH, c.lengths.HEADER));
+        let ck = checksum(puzEncode(this.solution), cib);
+        ck = checksum(puzEncode(this.state), ck);
+        return {
+            cib: cib,
+            solution: checksum(puzEncode(this.solution)),
+            state: checksum(puzEncode(this.state)),
+            strings: this.stringsChecksum(),
+            file: this.stringsChecksum(ck)
+        }
+    }
+
+    toBytes() {
+        const h = PUZ_HEADER_CONSTANTS.offsets;
+        const l = PUZ_HEADER_CONSTANTS.lengths;
+        const header = new Uint8Array(l.HEADER);
+        const body = this.buildBody();
+
+        // metadata
+        header.set(iconv.encode("ACROSS&DOWN", "utf-8"), h.MAGIC);
+        header.set(iconv.encode("1.3", "utf-8"), h.VERSION);
+
+        // dimensions
+        header[h.WIDTH] = this.width;
+        header[h.HEIGHT] = this.height;
+        writeUInt16LE(header, h.NUM_CLUES, this.clues.length);
+
+        // magical random bitmask, causes across lite to crash if not set :S
+        header[h.UNKNOWN_BITMASK] = 0x01;
+
+        // checksums
+        const ck = this.computeChecksums(header);
+        writeUInt16LE(header, h.FILE_CHECKSUM, ck.file);
+        writeUInt16LE(header, h.CIB_CHECKSUM, ck.cib);
+        writeCheatChecksum(header, h.ICHEATED_CHECKSUM, "ICHEATED", [
+            ck.cib, ck.solution, ck.state, ck.strings
+        ]);
+
+        return concatBytes(header, body);
+    }
+
+    toBuffer() {
+        return Buffer.from(this.toBytes());
+    }
+
+    /* state is optional */
+    constructor(metadata, clues, solution, state) {
+        for (let [field, value] of Object.entries(metadata)) {
+            this[field] = value;
+        }
+        this.clues = clues;
+        this.solution = solution;
+        this.state = state;
+    }
 }
 
