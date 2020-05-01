@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>anagrind.com - beta</title>
-    <link rel="stylesheet" href="fonts/bree-serif.css">
     <link rel="stylesheet" href="fonts/aurulentsans.css">
     <link rel="stylesheet" href="fonts/notcouriersans.css">
     <link rel="stylesheet" href="stylesheets/main.scss">
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
     <link rel="stylesheet" href="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css">
     <link rel="stylesheet" href="stylesheets/prism-eno-light.css">
     <link rel="stylesheet" href="stylesheets/prism-live.css">
@@ -13,41 +15,38 @@
 
 <body>
 
-<div id="crossword-header">
-    <div id="crossword-title">
-        <span class="crossword-details">
-            <div id="crossword-type"></div>
-            <div id="crossword-author"></div>
-            <div id="crossword-identifier"></div>
-        </span>
-    </div>
-
-    <div class="crossword-solvers hidden"></div>
-</div>
-
-<div class="crossword-display">
-    <input class="radio" id="select-solve" name="panel-selection" type="radio">
-    <input class="radio" id="select-compile" name="panel-selection" type="radio">
-    <input class="radio" id="select-collude" name="panel-selection" type="radio" checked>
-    <div class="crossword-panels">
-        <div class="panel" id="solve-panel">
-            <div class="crossword-clue-panel"></div>
+<div class="grid grid-cols-2 grid-gap-3">
+        <div class="c  _grid-ex" id="crossword-title">
+            <p>Title</p>
         </div>
-        <div class="panel" id="compile-panel">
-            <div class="crossword-input">
-                <input class="radio" id="select-source" name="compile-selection" type="radio">
-                <input class="radio" id="select-errors" name="compile-selection" type="radio">
-                <input class="radio" id="select-convert" name="compile-selection" type="radio" checked>
-                <div class="compile-tabs">
-                  <label class="compile-tab" id="source-tab" for="select-source">Edit</label>
-                  <label class="compile-tab" id="errors-tab" for="select-errors">Debug</label>
-                  <label class="compile-tab" id="convert-tab" for="select-convert">Convert</label>
-                </div>
-                <div class="compile-panels">
-                    <div class="compile-panel line-numbers" id="source-panel">
-                        <textarea class="prism-live language-eno" id="crossword-source"></textarea>
+
+        <div class="c  _grid-ex"><p>Solvers</p></div>
+
+        <div class="grid-r-6 _grid-ex level fill-height" id="grid-container"></div>
+        
+        <div class="grid-r-6 _grid-ex level">
+            <div class="crossword-panel frame level-item hidden" id="solve-panel">
+                <div class="frame">
+                    <div class="frame__body">
+                        <div class="crossword-clue-panel"></div>
                     </div>
-                    <div class="compile-panel" id="errors-panel">
+                </div>
+            </div>
+            <div class="crossword-panel frame level-item hidden" id="compile-panel">
+                <div class="frame-header">
+                    <div class="tab-container tabs-classic tabs-fill tabs-center">
+                    <ul>
+                        <li id="edit-tab"><a><span class="icon"><i class="fa fa-edit"></i></span><span>Edit</span></a></li>
+                        <li id="debug-tab"><a><span class="icon"><i class="fa fa-bug"></i></span><span>Debug</span></a></li>
+                        <li id="convert-tab" class="selected"><a><span class="icon"><i class="fa fa-file-export"></i></span><span>Convert</span></a></li>
+                    </ul>
+                    </div>
+                </div>
+                <div class="frame__body">
+                    <div class="compile-panel line-numbers" id="edit-panel">
+                        <!-- <textarea class="prism-live language-eno" id="crossword-source"></textarea> -->
+                    </div>
+                    <div class="compile-panel" id="debug-panel">
                         <div id="error-text"></div>
                         <div id="error-snippet-wrapper">
                             <pre id="error-snippet"></pre>
@@ -61,49 +60,61 @@
                             <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
                           </form>
                         </div>
-                        <div id="download-wrapper">
-                            <button type="button" class="action-button" id="download-button">Download as .puz file</button>
+                    </div>
+                </div>
+                <div class="compile-panel frame__footer">
+                    <div class="row u-center">
+                        <a><button type="button" class="action-button" id="download-puz-button">Download .puz</button></a>
+                        <a><button type="button" class="action-button" id="download-eno-button">Download .eno</button></a>
+                    </div>
+                </div>
+            </div>
+            <div class="crossword-panel frame level-item" id="collude-panel">
+                <div class="frame__body">
+                    <p>1. Join the chat room (optional)</p>
+                    <div class="chat-widget-wrapper">
+                        <iframe src="https://discordapp.com/widget?id=698304447809323139&theme=light" allowtransparency="true" frameborder="0"></iframe>
+                    </div>
+                    <div class="crossword-enter-name">
+                        <p id="join-text">2. Get a shared link to your crossword</p>
+                        <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
+                        <input class="crossword-name-input" name="name" autocomplete="off"><br>
+                        <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
+                    </div>
+                    <div class="crossword-share-link hidden">
+                        <p>2. Share this link to solve with others. It will remain active
+                        whilst there is at least one active solver.</p>
+                        <div class="crossword-link-text">
+                            anagrind.com/grid/foo
                         </div>
+                        <button class="action-button" id="copy-link-button">Copy</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="panel" id="collude-panel">
-            <div class="crossword-join-panel">
-                <p>1. Join the chat room (optional)</p>
-                <div class="chat-widget-wrapper">
-                    <iframe src="https://discordapp.com/widget?id=698304447809323139&theme=light" allowtransparency="true" frameborder="0"></iframe>
-                </div>
-                <div class="crossword-enter-name">
-                    <p id="join-text">2. Get a shared link to your crossword</p>
-                    <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
-                    <input class="crossword-name-input" name="name" autocomplete="off"><br>
-                    <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
-                </div>
-                <div class="crossword-share-link hidden">
-                    <p>2. Share this link to solve with others. It will remain active
-                    whilst there is at least one active solver.</p>
-                    <div class="crossword-link-text">
-                        anagrind.com/grid/foo
-                    </div>
-                    <button class="action-button" id="copy-link-button">Copy</button>
-                </div>
+
+        <div class="c  _grid-ex">
+            <p id="copyright-text">Copyright</p>
+            <a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>
+        </div>
+
+        <div class="c">
+            <div class="tab-container tabs-depth tabs-fill">
+                <ul>
+                    <li id="solve-tab"><a><span class="icon"><i class="fab fa-delicious"></i></span><span>Solve</span></a></li>
+                    <li id="compile-tab"><a><span class="icon"><i class="fa fa-hammer"></i></span><span>Compile</span></a></li>
+                    <li id="collude-tab" class="selected"><a><span class="icon"><i class="fa fa-users"></i></span><span>Collude</span></a></li>
+                </ul>
             </div>
         </div>
-        <div class="panel-tabs">
-          <label class="panel-tab" id="solve-tab" for="select-solve">Solve</label>
-          <label class="panel-tab" id="compile-tab" for="select-compile">Compile</label>
-          <label class="panel-tab" id="collude-tab" for="select-collude">Collude</label>
-        </div>
-    </div>
 </div>
 
-
-<script src="./js/index.js"></script>
-<script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>
+<script src="./js/cirrus.js"></script>
+<!-- <script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>
 <script src="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
-<script src="./js/prism-eno.js" charset="utf-8"></script>
-<script src="./js/prism-live.js"></script>
+<script src="./js/prism-eno.js" charset="utf-8"></script> -->
+<!-- <script src="./js/prism-live.js"></script> -->
+<script src="./js/index.js"></script>
 
 </body>
 

@@ -1,4 +1,29 @@
 @import '../../node_modules/sassybitwise/dist/SassyBitwise';
 @import 'variables';
+// @import 'crossword';
+
 @import 'solvers';
-@import 'crossword';
+
+@import 'grid';
+@import 'clues';
+
+.hidden {
+    display: none !important;
+}
+
+.crossword-panel {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+._grid-ex {
+    background-color: #eee;
+    border-radius: .25rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}

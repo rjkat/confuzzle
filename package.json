@@ -26,6 +26,9 @@
   "homepage": "https://github.com/rjkat/anagrind#readme",
   "dependencies": {
     "@babel/core": "^7.9.0",
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@openfonts/nunito-sans_all": "^1.44.1",
+    "cirrus-ui": "^0.5.5",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
     "express": "^4.17.1",
@@ -41,6 +44,9 @@
     "shortid": "^2.2.15",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
+    "typeface-bree-serif": "0.0.72",
+    "typeface-montserrat": "0.0.75",
+    "typeface-nunito-sans": "0.0.72",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {
