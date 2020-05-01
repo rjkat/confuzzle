@@ -3,9 +3,7 @@ import {CrosswordDisplay} from './display.js'
 import {SolverDisplay} from './solvers.js'
 import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
-import 'regenerator-runtime/runtime'
 import {readEno, enoToPuz} from './eno.js'
-
 
 require('typeface-bree-serif');
 require('typeface-nunito-sans');
@@ -25,14 +23,14 @@ class AnagrindApp {
 
         this.panelContainer = document.querySelector('.crossword-panels');
 
-        // this.sourceTextArea = document.getElementById('crossword-source');
-        // this.sourceTextArea.onkeyup = function () {
-        //     clearTimeout(self.renderDebounce)
-        //     self.renderDebounce = setTimeout(
-        //        () => self.renderCrossword(self.sourceTextArea.value),
-        //        500
-        //     );
-        // }
+        this.sourceTextArea = document.getElementById('crossword-source');
+        this.sourceTextArea.onkeyup = function () {
+            clearTimeout(self.renderDebounce)
+            self.renderDebounce = setTimeout(
+               () => self.renderCrossword(self.sourceTextArea.value),
+               500
+            );
+        }
 
         this.errorDisplay = new ErrorDisplay(
             document.querySelector('#debug-tab'),
@@ -188,8 +186,8 @@ class AnagrindApp {
     }
 
     setCrosswordSource(source) {
-        // this.sourceTextArea.value = source;
-        // this.sourceTextArea.dispatchEvent(new Event('input'));
+        this.sourceTextArea.value = source;
+        this.sourceTextArea.dispatchEvent(new Event('input'));
         this.renderCrossword(source);
     }
 

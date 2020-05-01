@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="fonts/aurulentsans.css">
     <link rel="stylesheet" href="fonts/notcouriersans.css">
     <link rel="stylesheet" href="stylesheets/main.scss">
-    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
     <link rel="stylesheet" href="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css">
     <link rel="stylesheet" href="stylesheets/prism-eno-light.css">
     <link rel="stylesheet" href="stylesheets/prism-live.css">
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="stylesheets/cirrus.css">
 </head>
 
 <body>
@@ -44,7 +45,7 @@
                 </div>
                 <div class="frame__body">
                     <div class="compile-panel line-numbers" id="edit-panel">
-                        <!-- <textarea class="prism-live language-eno" id="crossword-source"></textarea> -->
+                        <textarea class="prism-live language-eno" id="crossword-source"></textarea>
                     </div>
                     <div class="compile-panel" id="debug-panel">
                         <div id="error-text"></div>
@@ -109,11 +110,11 @@
         </div>
 </div>
 
-<script src="./js/cirrus.js"></script>
-<!-- <script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>
+<script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>
 <script src="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"></script>
-<script src="./js/prism-eno.js" charset="utf-8"></script> -->
-<!-- <script src="./js/prism-live.js"></script> -->
+<script src="./js/prism-eno.js" charset="utf-8"></script>
+<script src="../node_modules/regenerator-runtime/runtime.js" charset="utf-8"></script>
+<script src="./js/prism-live.js"></script>
 <script src="./js/index.js"></script>
 
 </body>
