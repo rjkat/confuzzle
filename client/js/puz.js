@@ -7,7 +7,7 @@ const PUZ_HEADER_CONSTANTS = {
     offsets: {
         FILE_CHECKSUM: 0x00,
         MAGIC: 0x02,
-        CIB_CHECKSUM: 0x0E,
+        HEADER_CHECKSUM: 0x0E,
         ICHEATED_CHECKSUM: 0x10,
         VERSION: 0x18,
         RES1: 0x1C,
@@ -25,28 +25,31 @@ const PUZ_HEADER_CONSTANTS = {
         ICHEATED_CHECKSUM: 0x08,
         RES2: 0x0C,
         HEADER: 0x34
-    }
-}
+    },
+};
+
+// names of string fields
+const PUZ_STRING_FIELDS = ['title', 'author', 'copyright'];
 
 // http://code.google.com/p/puz/wiki/FileFormat
 // https://github.com/tedtate/puzzler/blob/master/lib/crossword.js
 function readHeader(buf) {
-    const h = PUZ_HEADER_CONSTANTS.offsets;
-    const l = PUZ_HEADER_CONSTANTS.lengths;
+    const i = PUZ_HEADER_CONSTANTS.offsets;
+    const n = PUZ_HEADER_CONSTANTS.lengths;
     return {
-        FILE_CHECKSUM: buf.readUInt16LE(h.FILE_CHECKSUM),
-        MAGIC: buf.toString('utf8', h.MAGIC, h.MAGIC + l.MAGIC),
-        CIB_CHECKSUM: buf.readUInt16LE(h.CIB_CHECKSUM),
-        ICHEATED_CHECKSUM: buf.toString('hex', h.ICHEATED_CHECKSUM, h.ICHEATED_CHECKSUM + l.ICHEATED_CHECKSUM),
-        VERSION: buf.toString('utf8', h.VERSION, h.VERSION + l.VERSION),
-        RES1: buf.readUInt16LE(h.RES1),
-        SCRAMBLED_CHECKSUM: buf.readUInt16LE(h.SCRAMBLED_CHECKSUM),
-        RES2: buf.toString('hex', h.RES2, h.RES2 + l.RES2),
-        WIDTH: buf.readUInt8(h.WIDTH),
-        HEIGHT: buf.readUInt8(h.HEIGHT),
-        NUM_CLUES: buf.readUInt16LE(h.NUM_CLUES),
-        UNKNOWN_BITMASK: buf.readUInt16LE(h.UNKNOWN_BITMASK),
-        SCRAMBLED_TAG: buf.readUInt16LE(h.SCRAMBLED_TAG)
+        FILE_CHECKSUM: buf.readUInt16LE(i.FILE_CHECKSUM),
+        MAGIC: buf.toString('utf8', i.MAGIC, i.MAGIC + n.MAGIC),
+        HEADER_CHECKSUM: buf.readUInt16LE(i.HEADER_CHECKSUM),
+        ICHEATED_CHECKSUM: buf.toString('hex', i.ICHEATED_CHECKSUM, i.ICHEATED_CHECKSUM + n.ICHEATED_CHECKSUM),
+        VERSION: buf.toString('utf8', i.VERSION, i.VERSION + n.VERSION),
+        RES1: buf.readUInt16LE(i.RES1),
+        SCRAMBLED_CHECKSUM: buf.readUInt16LE(i.SCRAMBLED_CHECKSUM),
+        RES2: buf.toString('hex', i.RES2, i.RES2 + n.RES2),
+        WIDTH: buf.readUInt8(i.WIDTH),
+        HEIGHT: buf.readUInt8(i.HEIGHT),
+        NUM_CLUES: buf.readUInt16LE(i.NUM_CLUES),
+        UNKNOWN_BITMASK: buf.readUInt16LE(i.UNKNOWN_BITMASK),
+        SCRAMBLED_TAG: buf.readUInt16LE(i.SCRAMBLED_TAG)
     }
 }
 
@@ -59,9 +62,9 @@ function puzDecode(buf, start, end) {
 }
 
 function splitNulls(buf) {
-    var i = 0;
-    var prev = 0;
-    var parts = [];
+    let i = 0;
+    let prev = 0;
+    let parts = [];
     while (i < buf.length) {
         if (buf[i] == 0x0) {
             parts.push(puzDecode(buf, prev, i));
@@ -74,28 +77,28 @@ function splitNulls(buf) {
     return parts;
 }
 
-function checksum(base, ck, len) {
-  if (ck === undefined)
-    ck = 0x0000;
+function checksum(base, c, len) {
+  if (c === undefined)
+    c = 0x0000;
   
   if (base === undefined)
-    return ck;
+    return c;
 
   if (len === undefined)
     len = base.length;
 
-  for (var i = 0; i < len; i++) {
-    if (ck & 0x0001)
-      ck = ((ck >>> 1) + 0x8000) & 0xFFFF;
+  for (let i = 0; i < len; i++) {
+    if (c & 0x0001)
+      c = ((c >>> 1) + 0x8000) & 0xFFFF;
     else
-      ck = (ck >>> 1);
-    ck = (ck + base[i]) & 0xFFFF;
+      c = (c >>> 1);
+    c = (c + base[i]) & 0xFFFF;
   }
-  return ck;
+  return c;
 }
 
 function concatBytes(a, b) {
-    var c = new Uint8Array(a.length + b.length);
+    let c = new Uint8Array(a.length + b.length);
     c.set(a);
     c.set(b, a.length);
     return c;
@@ -103,8 +106,8 @@ function concatBytes(a, b) {
 
 function writeCheatChecksum(buf, offset, key, checksums) {
     const n = checksums.length;
-    for (var shift = 0; shift < 2; shift++) {
-        for (var i = 0; i < checksums.length; i++) {
+    for (let shift = 0; shift < 2; shift++) {
+        for (let i = 0; i < checksums.length; i++) {
             const c = (checksums[i] & (0xFF << 8*shift)) >>> 8*shift;
             buf[offset + i + n*shift] = key.charCodeAt(i + n*shift) ^ c;
         }
@@ -119,105 +122,103 @@ function writeUInt16LE(buf, offset, val) {
 export class PuzPayload {
     static from(x) {
         const buf = Buffer.from(x);
-        var header = readHeader(buf);
+        let header = readHeader(buf);
         const ncells = header.WIDTH * header.HEIGHT;
-        var pos = PUZ_HEADER_CONSTANTS.lengths.HEADER;
+        let pos = PUZ_HEADER_CONSTANTS.lengths.HEADER;
         const solution = puzDecode(buf, pos, pos + ncells);
         pos += ncells;
         const state = puzDecode(buf, pos, pos + ncells);
         pos += ncells;
-        const parts = splitNulls(buf.slice(pos));
-        const fields = ['title', 'author', 'copyright'];
-        const metadata = {};
+        const strings = splitNulls(buf.slice(pos));
+        const fields = PUZ_STRING_FIELDS;
+        const meta = {};
         fields.forEach(function(f, i) {
-            metadata[f] = parts[i];
+            meta[f] = strings[i];
         });
-        metadata.note = parts[fields.length + header.NUM_CLUES];
-        metadata.width = header.WIDTH;
-        metadata.height = header.HEIGHT;
-        const clues = parts.slice(fields.length, fields.length + header.NUM_CLUES);
-        return new PuzPayload(metadata, clues, solution, state);
+        meta.note = strings[fields.length + header.NUM_CLUES];
+        meta.width = header.WIDTH;
+        meta.height = header.HEIGHT;
+        const clues = strings.slice(fields.length, fields.length + header.NUM_CLUES);
+        return new PuzPayload(meta, clues, solution, state);
     }
 
     buildStrings() {
-        var body = '';
-        const names = ['title', 'author', 'copyright'];
-        for (var i = 0; i < names.length; i++)
-            body += this[names[i]] + '\x00';
+        let strings = '';
+        const fields = PUZ_STRING_FIELDS;
+        for (let i = 0; i < fields.length; i++)
+            strings += this[fields[i]] + '\x00';
 
-        for (var i = 0; i < this.clues.length; i++)
-            body += this.clues[i] + '\x00';
+        for (let i = 0; i < this.clues.length; i++)
+            strings += this.clues[i] + '\x00';
 
         if (this.note)
-            body += this.note + '\x00';
+            strings += this.note + '\x00';
 
-        return puzEncode(body);
+        return puzEncode(strings);
     }
 
-    stringsChecksum(ck) {
-        ck = checksum(puzEncode(this.title + '\x00'), ck);
-        ck = checksum(puzEncode(this.author + '\x00'), ck);
-        ck = checksum(puzEncode(this.copyright + '\x00'), ck);
-        for (var i = 0; i < this.clues.length; i++)
-            ck = checksum(puzEncode(this.clues[i]), ck);
+    stringsChecksum(c) {
+        c = checksum(puzEncode(this.title + '\x00'), c);
+        c = checksum(puzEncode(this.author + '\x00'), c);
+        c = checksum(puzEncode(this.copyright + '\x00'), c);
+        for (let i = 0; i < this.clues.length; i++)
+            c = checksum(puzEncode(this.clues[i]), c);
 
         if (this.note)
-            ck = checksum(puzEncode(this.note + '\x00'), ck);
-        return ck;
+            c = checksum(puzEncode(this.note + '\x00'), c);
+        return c;
     }
 
     buildBody() {
-        var body = puzEncode(this.solution);
+        let body = puzEncode(this.solution);
         if (!this.state)
             this.state = this.solution.replace(/[^\.]/g, '-');
-
         body = concatBytes(body, puzEncode(this.state));
-        var strings = this.buildStrings();
-        body = concatBytes(body, strings);
-        return body;
+        return concatBytes(body, this.buildStrings());
     }
 
     computeChecksums(header) {
-        const c = PUZ_HEADER_CONSTANTS;
-        const cib = checksum(header.slice(c.offsets.WIDTH, c.lengths.HEADER));
-        let ck = checksum(puzEncode(this.solution), cib);
-        ck = checksum(puzEncode(this.state), ck);
+        const p = PUZ_HEADER_CONSTANTS;
+        const h = checksum(header.slice(p.offsets.WIDTH, p.lengths.HEADER));
+        let c = checksum(puzEncode(this.solution), h);
+        c = checksum(puzEncode(this.state), c);
         return {
-            cib: cib,
+            header: h,
             solution: checksum(puzEncode(this.solution)),
             state: checksum(puzEncode(this.state)),
             strings: this.stringsChecksum(),
-            file: this.stringsChecksum(ck)
+            file: this.stringsChecksum(c)
         }
     }
 
-    toBytes() {
-        const h = PUZ_HEADER_CONSTANTS.offsets;
-        const l = PUZ_HEADER_CONSTANTS.lengths;
-        const header = new Uint8Array(l.HEADER);
-        const body = this.buildBody();
+    buildHeader() {
+        const i = PUZ_HEADER_CONSTANTS.offsets;
+        const header = new Uint8Array(PUZ_HEADER_CONSTANTS.lengths.HEADER);
 
         // metadata
-        header.set(iconv.encode("ACROSS&DOWN", "utf-8"), h.MAGIC);
-        header.set(iconv.encode("1.3", "utf-8"), h.VERSION);
+        header.set(iconv.encode("ACROSS&DOWN", "utf-8"), i.MAGIC);
+        header.set(iconv.encode("1.3", "utf-8"), i.VERSION);
 
         // dimensions
-        header[h.WIDTH] = this.width;
-        header[h.HEIGHT] = this.height;
-        writeUInt16LE(header, h.NUM_CLUES, this.clues.length);
+        header[i.WIDTH] = this.width;
+        header[i.HEIGHT] = this.height;
+        writeUInt16LE(header, i.NUM_CLUES, this.clues.length);
 
         // magical random bitmask, causes across lite to crash if not set :S
-        header[h.UNKNOWN_BITMASK] = 0x01;
+        header[i.UNKNOWN_BITMASK] = 0x01;
 
         // checksums
-        const ck = this.computeChecksums(header);
-        writeUInt16LE(header, h.FILE_CHECKSUM, ck.file);
-        writeUInt16LE(header, h.CIB_CHECKSUM, ck.cib);
-        writeCheatChecksum(header, h.ICHEATED_CHECKSUM, "ICHEATED", [
-            ck.cib, ck.solution, ck.state, ck.strings
+        const c = this.computeChecksums(header);
+        writeUInt16LE(header, i.FILE_CHECKSUM, c.file);
+        writeUInt16LE(header, i.HEADER_CHECKSUM, c.header);
+        writeCheatChecksum(header, i.ICHEATED_CHECKSUM, "ICHEATED", [
+            c.header, c.solution, c.state, c.strings
         ]);
+        return header;
+    }
 
-        return concatBytes(header, body);
+    toBytes() {
+        return concatBytes(this.buildHeader(), this.buildBody());
     }
 
     toBuffer() {
