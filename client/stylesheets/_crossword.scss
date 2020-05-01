@@ -361,35 +361,7 @@ body {
     }
 }
 
-.crossword-name-input {
-    font-size: $gridFontSize;
-    font-family: $answerFontFamily;
-    padding: $gridBorderWidth 0 0 $gridBorderWidth;
-    border: 0;
-    border-bottom: 1px solid $gridBgColor;
-    margin-right: 2px;
-    background: none;
-    outline: none;
-    height: $gridCellSize;
-    line-height: $gridCellSize;
-    text-transform: uppercase;
-    box-sizing: border-box;
-    width: 10em;
-}
-
-.crossword-link-text {
-    height: 40px;
-    line-height: 40px;
-    padding-left: 1em;
-    overflow-x: scroll;
-    max-width: 18em;
-    border-radius: 3px;
-    border: 1px solid $gridBgColor;
-    font-family: $answerFontFamily;
-}
-
 #compile-panel {
-
     overflow: hidden;
     .crossword-input-controls {
         display: flex;
@@ -406,47 +378,3 @@ body {
     }
 }
 
-#drop-area {
-  font-family: $clueFontFamily;
-  text-align: center;
-  flex-grow: 1;
-  height: 6em;
-  white-space: nowrap;
-  margin-top: 5em;
-  margin-left: .5em;
-  margin-right: .5em;
-  padding: .5em;
-  border: 1px dashed #ccc;
-  border-radius: 3px;
-}
-
-#download-wrapper {
-  text-align: center;
-  flex-grow: 1;
-}
-
-#download-button {
-    margin-left: .5em;
-    margin-top: 3em !important;
-    text-align: center;
-}
-
-.upload-form {
-  margin-top: 2em;
-}
-
-.upload-button {
-  @include crossword-button;
-  display: inline-block;
-  background: #ccc;
-}
-.upload-button:hover {
-  background: #ddd;
-}
-#drop-area.highlight {
-  border-color: #003264;
-}
-
-#selected-puz-file {
-  display: none;
-}

@@ -17,20 +17,18 @@
 <body>
 
 <div class="grid grid-cols-2 grid-gap-3">
-        <div class="c  _grid-ex" id="crossword-title">
+        <div class="grid-c-1 grid-r-1 _grid-ex" id="crossword-title">
             <p>Title</p>
         </div>
 
-        <div class="c  _grid-ex"><p>Solvers</p></div>
+        <div class="grid-c-1 grid-r-1 _grid-ex crossword-solvers"></div>
 
-        <div class="grid-r-6 _grid-ex level fill-height" id="grid-container"></div>
+        <div class="grid-c-1 grid-r-6 _grid-ex level ignore-screen" id="grid-container"></div>
         
-        <div class="grid-r-6 _grid-ex level">
+        <div class="grid-c-1 grid-r-6 _grid-ex level fill-height crossword-panels">
             <div class="crossword-panel frame level-item hidden" id="solve-panel">
-                <div class="frame">
-                    <div class="frame__body">
-                        <div class="crossword-clue-panel"></div>
-                    </div>
+                <div class="frame__body">
+                    <div class="crossword-clue-panel"></div>
                 </div>
             </div>
             <div class="crossword-panel frame level-item hidden" id="compile-panel">
@@ -44,10 +42,10 @@
                     </div>
                 </div>
                 <div class="frame__body">
-                    <div class="compile-panel line-numbers" id="edit-panel">
+                    <div class="compile-panel line-numbers hidden" id="edit-panel">
                         <textarea class="prism-live language-eno" id="crossword-source"></textarea>
                     </div>
-                    <div class="compile-panel" id="debug-panel">
+                    <div class="compile-panel hidden" id="debug-panel">
                         <div id="error-text"></div>
                         <div id="error-snippet-wrapper">
                             <pre id="error-snippet"></pre>
@@ -94,12 +92,12 @@
             </div>
         </div>
 
-        <div class="c  _grid-ex">
+        <div class="grid-c-1 grid-r-1  _grid-ex">
             <p id="copyright-text">Copyright</p>
             <a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>
         </div>
 
-        <div class="c">
+        <div class="grid-c-1 grid-r-1">
             <div class="tab-container tabs-depth tabs-fill">
                 <ul>
                     <li id="solve-tab"><a><span class="icon"><i class="fab fa-delicious"></i></span><span>Solve</span></a></li>

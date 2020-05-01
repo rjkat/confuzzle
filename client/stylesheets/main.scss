@@ -7,6 +7,7 @@
 @import 'grid';
 @import 'clues';
 @import 'compile';
+@import 'collude';
 
 .hidden {
     display: none !important;
@@ -21,10 +22,5 @@
 ._grid-ex {
     background-color: #eee;
     border-radius: .25rem;
-    font-weight: bold;
-    text-align: center;
 }
 
-p {
-    text-align: center;
-}

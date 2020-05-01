@@ -1,0 +1,27 @@
+
+.crossword-name-input {
+    font-size: $gridFontSize;
+    font-family: $answerFontFamily;
+    padding: $gridBorderWidth 0 0 $gridBorderWidth;
+    border: 0;
+    border-bottom: 1px solid $gridBgColor;
+    margin-right: 2px;
+    background: none;
+    outline: none;
+    height: $gridCellSize;
+    line-height: $gridCellSize;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    width: 10em;
+}
+
+.crossword-link-text {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 1em;
+    overflow-x: scroll;
+    max-width: 18em;
+    border-radius: 3px;
+    border: 1px solid $gridBgColor;
+    font-family: $answerFontFamily;
+}

@@ -4,5 +4,38 @@
 }
 
 .prism-live {
+    font-size: 13px;
+    width: 100%;
     font-variant-ligatures: no-common-ligatures;
+}
+
+#drop-area {
+  font-family: $clueFontFamily;
+  text-align: center;
+  flex-grow: 1;
+  height: 6em;
+  white-space: nowrap;
+  margin-top: 5em;
+  margin-left: .5em;
+  margin-right: .5em;
+  padding: .5em;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+}
+
+#download-wrapper {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.upload-form {
+  margin-top: 2em;
+}
+
+#drop-area.highlight {
+  border-color: #003264;
+}
+
+#selected-puz-file {
+  display: none;
 }

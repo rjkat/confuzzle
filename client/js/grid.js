@@ -291,7 +291,7 @@ export class GridDisplay {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
 
-                const text = document.createElement('a');
+                const text = document.createElement('span');
                 const hlBorder = document.createElement('div');
                 hlBorder.style.borderColor = 'transparent';
                 hlBorder.classList.add('cell-highlight-border');

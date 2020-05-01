@@ -17,6 +17,7 @@
     width: 100%;
     text-transform: uppercase;
     background-color: $gridBlankColor;
+    display:inline-block;
     .crossword-grid {
         margin: 0 auto;
         border: $gridBorderWidth solid;
@@ -25,7 +26,6 @@
         td {
             font-size: $gridFontSize;
             font-family: $answerFontFamily;
-            padding: 0;
             box-sizing: border-box;
             border: $gridBorderWidth solid;
             border-color: $gridBgColor;
@@ -76,7 +76,7 @@
     .crossword-grid-input {
         font-size: $gridFontSize;
         font-family: $answerFontFamily;
-        // padding: $gridBorderWidth 0 0 $gridBorderWidth;
+        padding: $gridBorderWidth 0 0 $gridBorderWidth;
         border: 0;
         background: none;
         outline: none;
