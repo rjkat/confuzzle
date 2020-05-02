@@ -6,77 +6,78 @@
     <title>anagrind.com - beta</title>
     <link rel="stylesheet" href="fonts/aurulentsans.css">
     <link rel="stylesheet" href="fonts/notcouriersans.css">
-    <link rel="stylesheet" href="stylesheets/main.scss">
     <link rel="stylesheet" href="../node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css">
     <link rel="stylesheet" href="stylesheets/prism-eno-light.css">
     <link rel="stylesheet" href="stylesheets/prism-live.css">
     <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
-    <link rel="stylesheet" href="stylesheets/cirrus.css">
+    <link rel="stylesheet" href="stylesheets/main.scss">
 </head>
 
 <body>
 
-<div class="grid grid-cols-2 grid-gap-3">
-        <div class="grid-c-1 grid-r-1 _grid-ex" id="crossword-title">
-            <p>Title</p>
+<div>
+        <div class="header-row">
+            <div class="header-col" id="crossword-title"><p>Title</p></div>
+            <div class="header-col crossword-solvers"><p>Solvers</p></div>
         </div>
 
-        <div class="grid-c-1 grid-r-1 _grid-ex crossword-solvers"></div>
-
-        <div class="grid-c-1 grid-r-6 _grid-ex level ignore-screen" id="grid-container"></div>
-        
-        <div class="grid-c-1 grid-r-6 _grid-ex level fill-height crossword-panels">
-            <div class="crossword-panel frame level-item hidden" id="solve-panel">
-                <div class="frame__body">
+        <div class="body-row">
+            <div class="body-col" id="grid-container">
+                <div class="grid-footer" id="copyright-footer">
+                    <p id="copyright-text">Copyright</p>
+                    <a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>
+                </div>
+            </div>
+            <div class="body-col crossword-panels tabs tabs-bottom">
+                <input type="radio" name="tabs" id="solve-tab" checked="checked">
+                <label class="tab-label" for="solve-tab"><i class="fab fa-delicious"></i>Solve</label>
+                <div class="crossword-panel panel" id="solve-panel">
                     <div class="crossword-clue-panel"></div>
                 </div>
-            </div>
-            <div class="crossword-panel frame level-item hidden" id="compile-panel">
-                <div class="frame-header">
-                    <div class="tab-container tabs-classic tabs-fill tabs-center">
-                    <ul>
-                        <li id="edit-tab"><a><span class="icon"><i class="fa fa-edit"></i></span><span>Edit</span></a></li>
-                        <li id="debug-tab"><a><span class="icon"><i class="fa fa-bug"></i></span><span>Debug</span></a></li>
-                        <li id="convert-tab" class="selected"><a><span class="icon"><i class="fa fa-file-export"></i></span><span>Convert</span></a></li>
-                    </ul>
-                    </div>
-                </div>
-                <div class="frame__body">
-                    <div class="compile-panel line-numbers hidden" id="edit-panel">
-                        <textarea class="prism-live language-eno" id="crossword-source"></textarea>
-                    </div>
-                    <div class="compile-panel hidden" id="debug-panel">
-                        <div id="error-text"></div>
-                        <div id="error-snippet-wrapper">
-                            <pre id="error-snippet"></pre>
+                <input type="radio" name="tabs" id="compile-tab">
+                <label class="tab-label" for="compile-tab"><i class="fa fa-hammer"></i>Compile</label>
+                <div class="crossword-panel panel" id="compile-panel">
+                    <div class="tabs tabs-top">
+                        <input type="radio" name="compile-tabs" id="edit-tab" checked="checked">
+                        <label class="tab-label" for="edit-tab"><i class="fa fa-edit"></i>Edit</label>
+                        <div class="compile-panel line-numbers panel" id="edit-panel">
+                            <textarea class="prism-live language-eno" id="crossword-source"></textarea>
+                        </div>
+                        <input type="radio" name="compile-tabs" id="debug-tab" checked="checked">
+                        <label class="tab-label" for="debug-tab"><i class="fa fa-bug"></i>Debug</label>
+                        <div class="compile-panel panel" id="debug-panel">
+                            <div id="error-text"></div>
+                            <div id="error-snippet-wrapper">
+                                <pre id="error-snippet"></pre>
+                            </div>
+                        </div>
+                        <input type="radio" name="compile-tabs" id="convert-tab" checked="checked">
+                        <label class="tab-label" for="convert-tab"><i class="fa fa-file-export"></i>Convert</label>
+                        <div class="compile-panel panel" id="convert-panel">
+                            <div id="drop-area">
+                              <form class="upload-form">
+                                Drag and drop .puz file here, or 
+                                <input type="file" id="selected-puz-file" accept="application/x-crossword">
+                                <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
+                              </form>
+                            </div>
+                             <div class="row u-center">
+                                <a><button type="button" class="action-button" id="download-puz-button">Download .puz</button></a>
+                                <a><button type="button" class="action-button" id="download-eno-button">Download .eno</button></a>
+                            </div>
                         </div>
                     </div>
-                    <div class="compile-panel" id="convert-panel">
-                        <div id="drop-area">
-                          <form class="upload-form">
-                            Drag and drop .puz file here, or 
-                            <input type="file" id="selected-puz-file" accept="application/x-crossword">
-                            <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
-                          </form>
-                        </div>
-                    </div>
                 </div>
-                <div class="compile-panel frame__footer">
-                    <div class="row u-center">
-                        <a><button type="button" class="action-button" id="download-puz-button">Download .puz</button></a>
-                        <a><button type="button" class="action-button" id="download-eno-button">Download .eno</button></a>
-                    </div>
-                </div>
-            </div>
-            <div class="crossword-panel frame level-item" id="collude-panel">
-                <div class="frame__body">
+                <input type="radio" name="tabs" id="collude-tab">
+                <label class="tab-label" for="collude-tab"><i class="fa fa-users"></i>Collude</label>
+                <div class="crossword-panel panel" id="collude-panel">
                     <p>1. Join the chat room (optional)</p>
                     <div class="chat-widget-wrapper">
                         <iframe src="https://discordapp.com/widget?id=698304447809323139&theme=light" allowtransparency="true" frameborder="0"></iframe>
                     </div>
                     <div class="crossword-enter-name">
                         <p id="join-text">2. Get a shared link to your crossword</p>
-                        <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
+                        <label class="tab-label" for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
                         <input class="crossword-name-input" name="name" autocomplete="off"><br>
                         <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
                     </div>
@@ -92,20 +93,7 @@
             </div>
         </div>
 
-        <div class="grid-c-1 grid-r-1  _grid-ex">
-            <p id="copyright-text">Copyright</p>
-            <a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>
-        </div>
-
-        <div class="grid-c-1 grid-r-1">
-            <div class="tab-container tabs-depth tabs-fill">
-                <ul>
-                    <li id="solve-tab"><a><span class="icon"><i class="fab fa-delicious"></i></span><span>Solve</span></a></li>
-                    <li id="compile-tab"><a><span class="icon"><i class="fa fa-hammer"></i></span><span>Compile</span></a></li>
-                    <li id="collude-tab" class="selected"><a><span class="icon"><i class="fa fa-users"></i></span><span>Collude</span></a></li>
-                </ul>
-            </div>
-        </div>
+      
 </div>
 
 <script src="../node_modules/prismjs/prism.js" charset="utf-8"></script>

@@ -32,7 +32,7 @@ export class GridDisplay {
         const container = document.createElement('div');
         container.classList.add('crossword-grid-container');
        
-        parent.appendChild(container);
+        parent.prepend(container);
         this.gridContainer = container;
         this.id = uniqid();
     }

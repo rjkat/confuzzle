@@ -1,0 +1,55 @@
+// https://codepen.io/mikestreety/pen/yVNNNm
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.panel {
+  overflow-y: scroll;
+}
+
+@mixin tab-label {
+  display: block;
+  padding: 1rem 2rem;
+  margin-right: 0.2rem;
+  cursor: pointer;
+  background: #90CAF9;
+  font-weight: bold;
+}
+
+@mixin tab-content {
+  flex-grow: 1;
+  width: 100%;
+  display: none;
+  background: #fff;
+}
+
+.tabs.tabs-bottom .panel {
+  @include tab-content;
+  order: -1;
+}
+
+.tabs.tabs-top .panel {
+  @include tab-content;
+}
+
+.tabs.tabs-bottom .tab-label {
+  @include tab-label;
+}
+
+.tabs.tabs-top .tab-label {
+  @include tab-label;
+  order: -2;
+}
+
+.tabs input[type="radio"] {
+    display: none;
+}
+.tabs input[type="radio"]:checked + .tab-label {
+    background: #fff;
+}
+.tabs input[type="radio"]:checked + .tab-label + .panel {
+    display: block;
+}
+

@@ -2,6 +2,7 @@
 @import 'variables';
 // @import 'crossword';
 
+@import 'tabs';
 @import 'solvers';
 
 @import 'grid';
@@ -10,7 +11,45 @@
 @import 'collude';
 
 .hidden {
-    display: none !important;
+    // display: none !important;
+}
+
+.header-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: $displayPadding;
+}
+
+.header-col {
+    width: 100%;
+    background-color: #eee;
+    border-radius: .25rem;
+}
+
+#crossword-title {
+    margin-right: $displayPadding;
+}
+
+.body-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: $displayPadding;
+}
+
+.body-col {
+    background-color: #eee;
+    border-radius: .25rem;
+}
+
+#grid-container {
+    margin-right: $displayPadding;
+}
+
+.crossword-panels {
+    width: 100%;
+    flex: 1 1 auto;
 }
 
 .crossword-panel {
@@ -18,9 +57,3 @@
     height: 100%;
     margin: 0 auto;
 }
-
-._grid-ex {
-    background-color: #eee;
-    border-radius: .25rem;
-}
-

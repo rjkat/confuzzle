@@ -106,8 +106,17 @@ export class CrosswordDisplay {
         grid.setCrossword(crossword);
 
         const gridTable = grid.gridTable;
-        // const panels = this.els.panelContainer;
-        // panels.style.left = gridTable.offsetLeft + gridTable.clientWidth + 'px';
+        const panels = this.els.panelContainer;
+
+        document.getElementById('crossword-title').style.maxWidth = gridTable.clientWidth + 'px';
+        document.querySelectorAll('.crossword-panel').forEach(el => {
+            el.style.maxHeight = gridTable.clientHeight + 'px';
+            el.style.minWidth = gridTable.clientWidth + 'px';
+        });
+        document.querySelectorAll('.compile-panel').forEach(el => {
+            el.style.maxHeight = gridTable.clientHeight + 'px';
+            el.style.minWidth = gridTable.clientWidth + 'px';
+        });
         // panels.style.top = gridTable.offsetTop + 'px';
         // panels.style.height = gridTable.offsetHeight + 'px';
         this.clues.setCrossword(crossword);

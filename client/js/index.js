@@ -55,14 +55,6 @@ class AnagrindApp {
             this.gridid = pathParts[2];
         }
 
-        ['compile', 'solve', 'collude'].forEach(tabName => {
-            document.getElementById(tabName + '-tab').onclick = () => self.selectTab('crossword', tabName);
-        });
-
-        ['edit', 'debug', 'convert'].forEach(tabName => {
-            document.getElementById(tabName + '-tab').onclick = () => self.selectTab('compile', tabName);
-        });
-
         this.downloadButton.onclick = () => self.downloadClicked();
 
         if (!this.gridid) {
