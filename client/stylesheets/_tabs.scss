@@ -1,55 +1,57 @@
 // https://codepen.io/mikestreety/pen/yVNNNm
 
 .tabs {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  align-content: flex-start;
+  flex-wrap: wrap;
 }
 
 .panel {
-  overflow-y: scroll;
-}
-
-@mixin tab-label {
-  display: block;
-  padding: 1rem 2rem;
-  margin-right: 0.2rem;
-  cursor: pointer;
-  background: #90CAF9;
-  font-weight: bold;
-}
-
-@mixin tab-content {
   flex-grow: 1;
   width: 100%;
   display: none;
   background: #fff;
+  overflow-y: scroll;
+}
+
+.tab-label {
+  display: block;
+  font-family: $clueFontFamily;
+  padding: 10px 20px;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  height: $minRowHeight;
+  cursor: pointer;
+  background: #ddd;
+  color:#000;
 }
 
 .tabs.tabs-bottom .panel {
-  @include tab-content;
-  order: -1;
-}
-
-.tabs.tabs-top .panel {
-  @include tab-content;
-}
-
-.tabs.tabs-bottom .tab-label {
-  @include tab-label;
-}
-
-.tabs.tabs-top .tab-label {
-  @include tab-label;
   order: -2;
 }
 
+.tabs.tabs-bottom .tab-label {
+  border-radius: 0px 0px 3px 3px;
+}
+
+.tabs.tabs-top .tab-label {
+  border-radius: 3px 3px 0px 0px;
+  order: -3;
+}
+
+.panel-spacer {
+  order: -1;
+}
+
 .tabs input[type="radio"] {
-    display: none;
+  margin: 0;
+  padding: 0;
+  display: none;
 }
 .tabs input[type="radio"]:checked + .tab-label {
-    background: #fff;
+  background: #fff;
 }
 .tabs input[type="radio"]:checked + .tab-label + .panel {
-    display: block;
+  display: block;
 }
 

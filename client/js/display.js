@@ -110,11 +110,21 @@ export class CrosswordDisplay {
 
         document.getElementById('crossword-title').style.maxWidth = gridTable.clientWidth + 'px';
         document.querySelectorAll('.crossword-panel').forEach(el => {
-            el.style.maxHeight = gridTable.clientHeight + 'px';
+            el.style.height = (gridTable.clientHeight - 2) + 'px';
+            el.style.maxHeight = (gridTable.clientHeight - 2) + 'px';
             el.style.minWidth = gridTable.clientWidth + 'px';
         });
-        document.querySelectorAll('.compile-panel').forEach(el => {
+
+        document.querySelectorAll('#compile-panel-wrapper').forEach(el => {
+            el.style.height = gridTable.clientHeight + 'px';
             el.style.maxHeight = gridTable.clientHeight + 'px';
+        });
+
+        // todo: remove hardcoded tab height and border width
+        const compileHeight = gridTable.clientHeight - 42;
+        document.querySelectorAll('.compile-panel').forEach(el => {
+            el.style.height = compileHeight + 'px';
+            el.style.maxHeight = compileHeight + 'px';
             el.style.minWidth = gridTable.clientWidth + 'px';
         });
         // panels.style.top = gridTable.offsetTop + 'px';
