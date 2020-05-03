@@ -366,10 +366,13 @@ export class GridDisplay {
         this.gridTable = table;
         this.gridContainer.appendChild(table);
 
-        // if (crossword.meta.copyright) {
-        //     const copyright = document.getElementById('copyright-text');
-        //     copyright.classList.add('crossword-copyright');
-        //     copyright.textContent = crossword.meta.copyright;
-        // }
+        const copyright = document.createElement('div');
+        copyright.classList.add('copyright-footer');
+        copyright.textContent = 'Copyright';
+        if (crossword.meta.copyright) {
+            copyright.textContent = crossword.meta.copyright;
+        }
+
+        this.gridContainer.appendChild(copyright);
     }
 }

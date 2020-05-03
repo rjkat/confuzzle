@@ -19,6 +19,7 @@
   display: block;
   font-family: $clueFontFamily;
   padding: 10px 20px;
+  margin-right: 4px;
   border: 1px solid #000;
   box-sizing: border-box;
   height: $tabHeight;
@@ -33,10 +34,13 @@
 
 .tabs.tabs-bottom .tab-label {
   border-radius: 0px 0px 3px 3px;
+  border-top: none;
 }
 
 .tabs.tabs-top .tab-label {
   border-radius: 3px 3px 0px 0px;
+  border: 1px solid #000;
+  border-bottom: none;
   order: -3;
 }
 
