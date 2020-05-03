@@ -8,6 +8,7 @@
 
 .panel {
   flex-grow: 1;
+  box-sizing: border-box;
   width: 100%;
   display: none;
   background: #fff;
@@ -20,7 +21,7 @@
   padding: 10px 20px;
   border: 1px solid #000;
   box-sizing: border-box;
-  height: $minRowHeight;
+  height: $tabHeight;
   cursor: pointer;
   background: #ddd;
   color:#000;
@@ -37,10 +38,6 @@
 .tabs.tabs-top .tab-label {
   border-radius: 3px 3px 0px 0px;
   order: -3;
-}
-
-.panel-spacer {
-  order: -1;
 }
 
 .tabs input[type="radio"] {

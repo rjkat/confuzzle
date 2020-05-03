@@ -34,7 +34,14 @@
 .body-row {
     display: flex;
     width: 100%;
+    height: 100%;
     justify-content: space-between;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .body-col {
@@ -61,15 +68,3 @@
     border: $gridBorderWidth solid;
 }
 
-#compile-panel-wrapper {
-    height: 100%;
-}
-
-#compile-panel {
-    height: 100%;
-}
-
-.compile-panel {
-    flex-grow: 1;
-    border: $gridBorderWidth solid;
-}
