@@ -6,8 +6,6 @@ import * as DragDrop from './dragdrop.js'
 import {readEno, enoToPuz} from './eno.js'
 
 require('typeface-bree-serif');
-require('typeface-nunito-sans');
-require('typeface-montserrat');
 
 const parser = require('./parser.js');
 
