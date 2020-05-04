@@ -27,6 +27,7 @@
   "dependencies": {
     "@babel/core": "^7.9.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "babel-types": "^6.26.0",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
     "express": "^4.17.1",
