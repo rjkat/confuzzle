@@ -1,4 +1,73 @@
 @import '../../node_modules/sassybitwise/dist/SassyBitwise';
 @import 'variables';
+// @import 'crossword';
+
+@import 'tabs';
+@import 'title';
 @import 'solvers';
-@import 'crossword';
+@import 'solverdisplay';
+
+@import 'grid';
+@import 'clues';
+@import 'compile';
+@import 'collude';
+
+.hidden {
+    display: none !important;
+}
+
+.header-row {
+    display: flex;
+    width: 100%;
+    height: $tabHeight;
+    justify-content: space-between;
+    margin-bottom: $displayPadding;
+}
+
+.header-col {
+    width: 100%;
+    border-radius: 3px;
+}
+
+.body-row {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.body-col {
+    display: flex;
+}
+
+#grid-container {
+    margin-right: $displayPadding;
+}
+
+.crossword-panels {
+    width: 100%;
+    flex: 1 1 auto;
+}
+
+.crossword-panel {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    overflow-y: scroll;
+    animation: fadein .8s;
+}
+
+.crossword-panel:not(#compile-panel-wrapper) {
+    border: $gridBorderWidth solid;
+    border-radius: 3px 3px 3px 0px;
+    padding-top: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+

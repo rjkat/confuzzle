@@ -32,7 +32,7 @@ export class GridDisplay {
         const container = document.createElement('div');
         container.classList.add('crossword-grid-container');
        
-        parent.appendChild(container);
+        parent.prepend(container);
         this.gridContainer = container;
         this.id = uniqid();
     }
@@ -291,7 +291,7 @@ export class GridDisplay {
                 const td = document.createElement('td');
                 const cell = cells[row][col];
 
-                const text = document.createElement('a');
+                const text = document.createElement('span');
                 const hlBorder = document.createElement('div');
                 hlBorder.style.borderColor = 'transparent';
                 hlBorder.classList.add('cell-highlight-border');
@@ -366,15 +366,13 @@ export class GridDisplay {
         this.gridTable = table;
         this.gridContainer.appendChild(table);
 
+        const copyright = document.createElement('div');
+        copyright.classList.add('copyright-footer');
+        copyright.textContent = 'Copyright';
         if (crossword.meta.copyright) {
-            const copyright = document.createElement('div');
-            copyright.classList.add('crossword-copyright');
             copyright.textContent = crossword.meta.copyright;
-            this.gridContainer.appendChild(copyright);
         }
-        const gh = document.createElement('div');
-        gh.classList.add('crossword-github-link');
-        gh.innerHTML = '<a href="https://github.com/rjkat/anagrind">anagrind.com source code</a>';
-        this.gridContainer.appendChild(gh);
+
+        this.gridContainer.appendChild(copyright);
     }
 }

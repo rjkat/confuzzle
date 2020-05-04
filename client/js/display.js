@@ -107,9 +107,29 @@ export class CrosswordDisplay {
 
         const gridTable = grid.gridTable;
         const panels = this.els.panelContainer;
-        panels.style.left = gridTable.offsetLeft + gridTable.clientWidth + 'px';
-        panels.style.top = gridTable.offsetTop + 'px';
-        panels.style.height = gridTable.offsetHeight + 'px';
+
+        document.getElementById('crossword-title').style.maxWidth = gridTable.clientWidth + 'px';
+        document.getElementById('crossword-content').style.maxHeight = gridTable.clientHeight + 'px';
+        // document.querySelectorAll('.crossword-panel').forEach(el => {
+        //     el.style.height = (gridTable.clientHeight - 2) + 'px';
+        //     el.style.maxHeight = (gridTable.clientHeight - 2) + 'px';
+        //     el.style.minWidth = gridTable.clientWidth + 'px';
+        // });
+
+        // document.querySelectorAll('#compile-panel-wrapper').forEach(el => {
+        //     el.style.height = gridTable.clientHeight + 'px';
+        //     el.style.maxHeight = gridTable.clientHeight + 'px';
+        // });
+
+        // // todo: remove hardcoded tab height and border width
+        // const compileHeight = gridTable.clientHeight - 42;
+        // document.querySelectorAll('.compile-panel').forEach(el => {
+        //     el.style.height = compileHeight + 'px';
+        //     el.style.maxHeight = compileHeight + 'px';
+        //     el.style.minWidth = gridTable.clientWidth + 'px';
+        // });
+        // panels.style.top = gridTable.offsetTop + 'px';
+        // panels.style.height = gridTable.offsetHeight + 'px';
         this.clues.setCrossword(crossword);
     }
 }

@@ -1,0 +1,86 @@
+
+#compile-panel-wrapper {
+  height: 100%;
+}
+
+#compile-panel {
+  height: 100%;
+}
+
+.compile-panel {
+  height: calc(100% - #{$tabHeight});
+  flex-grow: 1;
+  border: $gridBorderWidth solid;
+  border-radius: 0px 3px 3px 0px;
+}
+
+.prism-live {
+  font-size: 13px;
+  font-variant-ligatures: no-common-ligatures;
+}
+
+#drop-area {
+  font-family: $clueFontFamily;
+  text-align: center;
+  flex-grow: 1;
+  height: 6em;
+  white-space: nowrap;
+  margin-top: 5em;
+  margin-left: .5em;
+  margin-right: .5em;
+  padding: .5em;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+}
+
+#download-wrapper {
+  text-align: center;
+  flex-grow: 1;
+}
+
+.upload-form {
+  margin-top: 2em;
+}
+
+.upload-button {
+  @include crossword-button;
+  display: inline-block;
+  background: #ccc;
+}
+.upload-button:hover {
+  background: #ddd;
+}
+
+#drop-area.highlight {
+  border-color: #003264;
+}
+
+#selected-puz-file {
+  display: none;
+}
+
+#errors-panel {
+  overflow-y: scroll;
+}
+
+#error-text {
+    padding-top: 1em;
+    padding-right: $displayPadding;
+    padding-left: $displayPadding;
+    display: block;
+    font-family: $answerFontFamily;
+}
+
+#error-snippet {
+    font-family: $answerFontFamily;
+    font-size: 14px;
+}
+
+#error-snippet-wrapper {
+    display: block;
+    width: 100%;
+}
+
+#debug-label.error-highlight {
+    background-color: #e53 !important;
+}

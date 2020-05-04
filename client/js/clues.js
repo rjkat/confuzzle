@@ -26,10 +26,7 @@ export class ClueDisplay {
     highlightClue(clueid, scroll) {
         const el = this.getClueElement(clueid);
         if (scroll) {
-            this.scrollContainer.scrollTo({
-              top: el.offsetTop,
-              behavior: 'smooth'
-            });
+            el.scrollIntoView({behavior: 'smooth'});
         }
         el.classList.add('highlighted');
     }

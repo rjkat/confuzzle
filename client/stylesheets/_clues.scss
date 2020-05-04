@@ -1,0 +1,101 @@
+@use "sass:color";
+
+@include each-solver using ($color, $sel) {
+    li.highlighted#{$sel} {
+        color: color.adjust($color, $lightness: -20%);
+    }
+}
+
+@include each-solver using ($color, $sel) {
+    .highlighted#{$sel} input {
+        padding-bottom: 0px;
+        border-bottom: 2px solid $color;
+    }
+}
+
+.crossword-clue-panel {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.crossword-clue-container {
+    width: 100%;
+}
+
+.author-note {
+    text-align: center;
+    width: 100%;
+    font-family: $clueFontFamily;
+    padding-bottom: .5em;
+}
+
+.crossword-clues {
+    flex: 50%;
+    margin: 0 auto;
+    min-width: $clueMinWidth;
+    font-family: $clueFontFamily;
+
+    &[data-across]:before {
+        content: 'ACROSS';
+        font-weight: bold;
+        padding: .5em;
+    }
+
+    &[data-down]:before {
+        content: 'DOWN';
+        font-weight: bold;
+        padding: .5em;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 1em .5em 1em .5em;
+
+        li {
+            line-height: 1.5em;
+            padding-bottom: .5em;
+            .clue-directions {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .crossword-clue-input {
+        display: inline-block;
+    }
+
+    input {
+        font-size: $gridFontSize;
+        font-family: $answerFontFamily;
+        padding: $gridBorderWidth 0 0 $gridBorderWidth;
+        border: 0;
+        padding-bottom: 1px;
+        border-bottom: 1px solid $gridBgColor;
+        margin-right: 2px;
+        background: none;
+        outline: none;
+        min-width: $gridCellSize;
+        max-width: $gridCellSize;
+        height: $gridCellSize;
+        line-height: $gridCellSize;
+        text-align: center;
+        vertical-align: middle;
+        text-transform: uppercase;
+        box-sizing: border-box;
+    }
+
+    [data-separator=","]:after {
+        font-family: $answerFontFamily;
+        content: "\00A0";
+    }
+
+    [data-separator="-"]:after {
+        font-family: $answerFontFamily;
+        content: "-";
+    }
+
+    .clue-id {
+        font-weight: bold;
+    }
+}

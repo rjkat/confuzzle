@@ -1,0 +1,44 @@
+
+#crossword-title {
+    margin-right: $displayPadding;
+    display: flex;
+}
+
+.crossword-meta {
+    width: 100%;
+    color: #fff;
+    display: flex;
+    white-space: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    line-height: $tabHeight;
+    background-color: $titleBgColor;
+}
+
+#crossword-meta-type {
+    font-family: 'Bree Serif';
+    font-size: 36px;
+    padding-left: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+#crossword-meta-author {
+    font-family: $clueFontFamily; 
+    flex: 1;
+    margin-left: .5em;
+    margin-right: .5em;
+    font-size: 20px;
+}
+#crossword-meta-identifier {
+    font-family: 'Bree Serif';
+    font-size: 30px;
+}
+
+.crossword-title-chevron {
+    width: 0;
+    height: 0;
+    text-align: right;
+    border-style: solid;
+    border-width: #{$tabHeight/2} 0 #{$tabHeight/2} #{$tabHeight * $sin60};
+    border-color: transparent transparent transparent $titleBgColor;
+}

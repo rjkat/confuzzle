@@ -7,11 +7,60 @@ $gridBlankColor: #fff;
 $gridFontSize: 24px; 
 $gridCellSize: 2ch;
 $gridBorderWidth: 1px;
+$titleBgColor: #003264;
 
 $topMargin: 8px;
 $displayPadding: 18px;
+
+$tabHeight: 40px;
+$sin60: 0.86;
+
 
 $clueMinWidth: 15em;
 
 $highlightBorderWidth: 0.15ch;
 $highlightCellSize: #{$gridCellSize - 2*$highlightBorderWidth};
+
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+
+@mixin crossword-button {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    vertical-align: middle;
+    font-family: $clueFontFamily;
+    font-size: 14px;
+    border-radius: 3px;
+    outline: none;
+    border: 1px solid $gridBgColor;
+    padding: 0;
+    min-width: 5em;
+    padding-left: .5em;
+    padding-right: .5em;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: auto;
+    }
+}
+
+.action-button {
+    @include crossword-button;
+    color: #fff;
+    background-color: #003264;
+
+    &:hover {
+        background-color: #7ad;
+    }
+
+    &:disabled {
+        background-color: #aaa;
+    }
+}

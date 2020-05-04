@@ -3,8 +3,9 @@ import {CrosswordDisplay} from './display.js'
 import {SolverDisplay} from './solvers.js'
 import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
-import 'regenerator-runtime/runtime'
 import {readEno, enoToPuz} from './eno.js'
+
+require('typeface-bree-serif');
 
 const parser = require('./parser.js');
 
@@ -13,7 +14,7 @@ class AnagrindApp {
         const self = this;
 
         this.client = new AnagrindClient(this, window.location.host);
-        this.gridContainer = document.querySelector('.crossword-display');
+        this.gridContainer = document.querySelector('#grid-container');
         this.clueContainer = document.querySelector('.crossword-clue-panel');
 
         this.panelContainer = document.querySelector('.crossword-panels');
@@ -28,7 +29,7 @@ class AnagrindApp {
         }
 
         this.errorDisplay = new ErrorDisplay(
-            document.querySelector('#errors-tab'),
+            document.querySelector('#debug-label'),
             document.querySelector('#error-text'),
             document.querySelector('#error-snippet')
         );
@@ -44,7 +45,7 @@ class AnagrindApp {
             document.querySelector('.crossword-solvers'),
             this.display.grid
         );
-        this.downloadButton = document.getElementById('download-button');
+        this.downloadButton = document.getElementById('download-puz-button');
         this.downloadButton.onclick = () => self.downloadClicked();
 
         const pathParts = window.location.pathname.split('/');
@@ -52,11 +53,13 @@ class AnagrindApp {
             this.gridid = pathParts[2];
         }
 
+        this.downloadButton.onclick = () => self.downloadClicked();
+
         if (!this.gridid) {
             this.selectTab('compile');
         } else {
-            document.querySelector('#compile-tab').classList.add('hidden');
-            document.querySelector('#solve-tab').classList.add('hidden');
+            document.querySelector('#compile-tab-label').classList.add('hidden');
+            document.querySelector('#solve-tab-label').classList.add('hidden');
             document.querySelector('#join-text').textContent = '2. Join the crossword';
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
@@ -109,7 +112,7 @@ class AnagrindApp {
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         document.querySelector('.crossword-enter-name').classList.add('hidden');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
-        document.querySelector('#solve-tab').classList.remove('hidden');
+        document.querySelector('#solve-tab-label').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }
@@ -119,7 +122,7 @@ class AnagrindApp {
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
-        document.querySelector('#compile-tab').classList.add('hidden');
+        document.querySelector('#compile-tab-label').classList.add('hidden');
         this.renderCrossword();
         
         this.solvers.solversChanged(msg.solvers);
@@ -131,8 +134,21 @@ class AnagrindApp {
         this.colludeButton.disabled = !this.nameInput.value.length;
     }
 
-    selectTab(tabName) {
-        document.getElementById(tabName + '-tab').click();
+    selectTab(tabGroup, tabName) {
+        const tab = document.getElementById(tabName + '-tab');
+        if (!tab)
+            return;
+
+        document.querySelectorAll('.' + tabGroup + '-panel').forEach(el => {
+            el.classList.add('hidden');
+        });
+        document.getElementById(tabName + '-panel').classList.remove('hidden');
+
+        tab.parentElement.childNodes.forEach(el => {
+            if (el.nodeName == 'LI')
+                el.classList.remove('selected');
+        });
+        tab.classList.add('selected');
     }
 
     cellFilled(solverid, clueid, offset, value) {
@@ -178,7 +194,7 @@ class AnagrindApp {
         this.errorDisplay.clearError();
         ['type', 'author', 'identifier'].forEach(x => {
             let val = crossword.meta[x];
-            let el = document.getElementById('crossword-' + x);
+            let el = document.getElementById('crossword-meta-' + x);
             el.textContent = x == 'author' ? 'by ' : '';
             el.textContent += val ? val : '';
         });
@@ -187,7 +203,6 @@ class AnagrindApp {
 
         // yuck
         this.solvers.grid = this.display.grid;
-        document.querySelector('.crossword-solvers').style.left = this.panelContainer.offsetLeft + 'px';
     }
 
     colludeClicked() {
@@ -206,8 +221,3 @@ class AnagrindApp {
 }
 
 const app = new AnagrindApp();
-
-
-
-
-
