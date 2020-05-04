@@ -31,7 +31,7 @@ class AnagrindApp {
         }
 
         this.errorDisplay = new ErrorDisplay(
-            document.querySelector('#debug-tab'),
+            document.querySelector('#debug-label'),
             document.querySelector('#error-text'),
             document.querySelector('#error-snippet')
         );
@@ -60,8 +60,8 @@ class AnagrindApp {
         if (!this.gridid) {
             this.selectTab('compile');
         } else {
-            document.querySelector('#compile-tab').classList.add('hidden');
-            document.querySelector('#solve-tab').classList.add('hidden');
+            document.querySelector('#compile-tab-label').classList.add('hidden');
+            document.querySelector('#solve-tab-label').classList.add('hidden');
             document.querySelector('#join-text').textContent = '2. Join the crossword';
         }
         this.nameDiv = document.querySelector('.crossword-enter-name');
@@ -114,7 +114,7 @@ class AnagrindApp {
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         document.querySelector('.crossword-enter-name').classList.add('hidden');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
-        document.querySelector('#solve-tab').classList.remove('hidden');
+        document.querySelector('#solve-tab-label').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
     }
@@ -124,7 +124,7 @@ class AnagrindApp {
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
-        document.querySelector('#compile-tab').classList.add('hidden');
+        document.querySelector('#compile-tab-label').classList.add('hidden');
         this.renderCrossword();
         
         this.solvers.solversChanged(msg.solvers);
@@ -193,19 +193,18 @@ class AnagrindApp {
             this.errorDisplay.showError(err);
             return;
         }
-        // this.errorDisplay.clearError();
-        // ['type', 'author', 'identifier'].forEach(x => {
-        //     let val = crossword.meta[x];
-        //     let el = document.getElementById('crossword-' + x);
-        //     el.textContent = x == 'author' ? 'by ' : '';
-        //     el.textContent += val ? val : '';
-        // });
+        this.errorDisplay.clearError();
+        ['type', 'author', 'identifier'].forEach(x => {
+            let val = crossword.meta[x];
+            let el = document.getElementById('crossword-meta-' + x);
+            el.textContent = x == 'author' ? 'by ' : '';
+            el.textContent += val ? val : '';
+        });
 
         this.display.setCrossword(crossword);
 
         // yuck
         this.solvers.grid = this.display.grid;
-        // document.querySelector('.crossword-solvers').style.left = this.panelContainer.offsetLeft + 'px';
     }
 
     colludeClicked() {

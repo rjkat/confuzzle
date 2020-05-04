@@ -3,7 +3,9 @@
 // @import 'crossword';
 
 @import 'tabs';
+@import 'title';
 @import 'solvers';
+@import 'solverdisplay';
 
 @import 'grid';
 @import 'clues';
@@ -17,18 +19,14 @@
 .header-row {
     display: flex;
     width: 100%;
+    height: $tabHeight;
     justify-content: space-between;
     margin-bottom: $displayPadding;
 }
 
 .header-col {
     width: 100%;
-    background-color: #eee;
-    border-radius: .25rem;
-}
-
-#crossword-title {
-    margin-right: $displayPadding;
+    border-radius: 3px;
 }
 
 .body-row {
@@ -61,15 +59,15 @@
     width: 100%;
     height: 100%;
     margin: 0 auto;
-}
-
-.copyright-footer {
-    height: $tabHeight;
-    background-color: #eee;
+    overflow-y: scroll;
+    animation: fadein .8s;
 }
 
 .crossword-panel:not(#compile-panel-wrapper) {
     border: $gridBorderWidth solid;
     border-radius: 3px 3px 3px 0px;
+    padding-top: 1em;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 

@@ -42,10 +42,45 @@
   margin-top: 2em;
 }
 
+.upload-button {
+  @include crossword-button;
+  display: inline-block;
+  background: #ccc;
+}
+.upload-button:hover {
+  background: #ddd;
+}
+
 #drop-area.highlight {
   border-color: #003264;
 }
 
 #selected-puz-file {
   display: none;
+}
+
+#errors-panel {
+  overflow-y: scroll;
+}
+
+#error-text {
+    padding-top: 1em;
+    padding-right: $displayPadding;
+    padding-left: $displayPadding;
+    display: block;
+    font-family: $answerFontFamily;
+}
+
+#error-snippet {
+    font-family: $answerFontFamily;
+    font-size: 14px;
+}
+
+#error-snippet-wrapper {
+    display: block;
+    width: 100%;
+}
+
+#debug-label.error-highlight {
+    background-color: #e53 !important;
 }

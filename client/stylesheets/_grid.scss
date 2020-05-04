@@ -89,3 +89,10 @@
         text-transform: inherit;
     }
 }
+
+.copyright-footer {
+    height: $tabHeight;
+    font-family: $clueFontFamily;
+    margin-top: .5em;
+    text-transform: none;
+}

@@ -17,21 +17,28 @@
 
 <div>
         <div class="header-row">
-            <div class="header-col" id="crossword-title"><p>Title</p></div>
-            <div class="header-col crossword-solvers"><p>Solvers</p></div>
+            <div class="header-col" id="crossword-title">
+                <div class=crossword-meta>
+                    <div id="crossword-meta-type"></div>
+                    <div id="crossword-meta-author"></div>
+                    <div id="crossword-meta-identifier"></div>
+                </div>
+                <div class="crossword-title-chevron"></div>
+            </div>
+            <div class="header-col crossword-solvers hidden"></div>
         </div>
 
-        <div class="content" id="crossword-content">
-            <div class="body-row">
+        <div class="content">
+            <div class="body-row" id="crossword-content">
                 <div class="body-col" id="grid-container"></div>
                 <div class="body-col crossword-panels tabs tabs-bottom">
                     <input type="radio" name="tabs" id="solve-tab" checked="checked">
-                    <label class="tab-label" for="solve-tab"><i class="fab fa-delicious"></i>Solve</label>
+                    <label class="tab-label" for="solve-tab" id="solve-tab-label"><i class="fab fa-delicious"></i>Solve</label>
                     <div class="crossword-panel panel" id="solve-panel">
                         <div class="crossword-clue-panel"></div>
                     </div>
                     <input type="radio" name="tabs" id="compile-tab">
-                    <label class="tab-label" for="compile-tab"><i class="fa fa-hammer"></i>Compile</label>
+                    <label class="tab-label" for="compile-tab" id="compile-tab-label"><i class="fa fa-hammer"></i>Compile</label>
                     <div class="crossword-panel panel" id="compile-panel-wrapper">
                         <div class="tabs tabs-top" id="compile-panel">
                             <input type="radio" name="compile-tabs" id="edit-tab" checked="checked">
@@ -40,7 +47,7 @@
                                 <textarea class="prism-live language-eno" id="crossword-source"></textarea>
                             </div>
                             <input type="radio" name="compile-tabs" id="debug-tab" checked="checked">
-                            <label class="tab-label" for="debug-tab"><i class="fa fa-bug"></i>Debug</label>
+                            <label class="tab-label" for="debug-tab" id="debug-label"><i class="fa fa-bug"></i>Debug</label>
                             <div class="compile-panel panel" id="debug-panel">
                                 <div id="error-text"></div>
                                 <div id="error-snippet-wrapper">
@@ -57,9 +64,8 @@
                                     <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
                                   </form>
                                 </div>
-                                 <div class="row u-center">
+                                 <div style="text-align: center; margin-top: .5em;">
                                     <a><button type="button" class="action-button" id="download-puz-button">Download .puz</button></a>
-                                    <a><button type="button" class="action-button" id="download-eno-button">Download .eno</button></a>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +79,7 @@
                         </div>
                         <div class="crossword-enter-name">
                             <p id="join-text">2. Get a shared link to your crossword</p>
-                            <label class="tab-label" for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
+                            <label for="name"><b>0A Your name (<span id="name-length">0</span>)</b></label><br>
                             <input class="crossword-name-input" name="name" autocomplete="off"><br>
                             <input type="submit" class="action-button" value="Submit" id="collude-button" disabled>
                         </div>

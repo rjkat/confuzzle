@@ -109,7 +109,7 @@ export class CrosswordDisplay {
         const panels = this.els.panelContainer;
 
         document.getElementById('crossword-title').style.maxWidth = gridTable.clientWidth + 'px';
-        document.getElementById('crossword-content').style.height = gridTable.clientHeight + 'px';
+        document.getElementById('crossword-content').style.maxHeight = gridTable.clientHeight + 'px';
         // document.querySelectorAll('.crossword-panel').forEach(el => {
         //     el.style.height = (gridTable.clientHeight - 2) + 'px';
         //     el.style.maxHeight = (gridTable.clientHeight - 2) + 'px';

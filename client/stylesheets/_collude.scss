@@ -1,4 +1,22 @@
 
+#collude-panel {
+    font-family: $clueFontFamily;
+    padding-left: 1em;
+    padding-right: 1em;
+    .action-button {
+        margin-top: 1em;
+    }
+    .chat-widget-wrapper {
+        width: 100%;
+        iframe {
+            height: 175px;
+            width: 350px;
+            border: 1px solid #000;
+            border-radius: 5px;
+        }
+    }
+}
+
 .crossword-name-input {
     font-size: $gridFontSize;
     font-family: $answerFontFamily;
@@ -25,3 +43,5 @@
     border: 1px solid $gridBgColor;
     font-family: $answerFontFamily;
 }
+
+
