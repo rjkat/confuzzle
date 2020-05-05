@@ -202,7 +202,6 @@ export class GridDisplay {
         const input = this.inputCell;
         const el = input.el;
         let cell = this.currentCell();
-        let lastClue = this.currentClue();
         cell.td.firstChild.textContent = cell.contents;
 
         // we've run off the end or hit an empty square
@@ -234,9 +233,7 @@ export class GridDisplay {
         el.focus();
         el.select();
 
-        if (!lastClue || this.currentClue().id != lastClue.id) {
-            this.selectCurrentClue();
-        }
+        this.selectCurrentClue();
     }
 
     handleKeydown(e) {
