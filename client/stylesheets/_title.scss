@@ -1,13 +1,14 @@
 
 #crossword-title {
-    margin-right: $displayPadding;
     display: flex;
 }
 
 .crossword-meta {
     width: 100%;
     color: #fff;
+    flex-direction: row;
     display: flex;
+    overflow-x: scroll;
     white-space: nowrap;
     justify-content: space-between;
     align-items: center;
@@ -17,7 +18,7 @@
 
 #crossword-meta-type {
     font-family: 'Bree Serif';
-    font-size: 36px;
+    font-size: 30px;
     padding-left: 10px;
     font-weight: bold;
     text-transform: uppercase;

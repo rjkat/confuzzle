@@ -1,5 +1,6 @@
 .crossword-solvers {
     font-family: $answerFontFamily;
+    margin-left: $displayPadding;
     border: $gridBorderWidth solid;
     overflow: hidden;
     min-width: $clueMinWidth;
@@ -8,7 +9,7 @@
     animation: fadein .8s;
 
     ul {
-        height: 40px;
+        height: $tabHeight;
         display: flex;
         align-items: center;
         margin: 0;
@@ -24,8 +25,8 @@
 
     .solver {
         // display: block;
-        height: 40px;
-        line-height: 40px;
+        height: $tabHeight;
+        line-height: $tabHeight;
         padding-right: 2em;
         list-style-type: none;
         text-transform: uppercase;
