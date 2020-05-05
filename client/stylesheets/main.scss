@@ -13,6 +13,10 @@
 @import 'compile';
 @import 'collude';
 
+body {
+    background-color: $pageBgColor;
+}
+
 .hidden {
     display: none !important;
 }
