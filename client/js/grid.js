@@ -372,13 +372,10 @@ export class GridDisplay {
         this.gridTable = table;
         this.gridContainer.appendChild(table);
 
-        const copyright = document.createElement('div');
-        copyright.classList.add('copyright-footer');
+        const copyright = document.getElementById('copyright-text');
         copyright.textContent = 'Copyright';
         if (crossword.meta.copyright) {
             copyright.textContent = crossword.meta.copyright;
         }
-
-        this.gridContainer.appendChild(copyright);
     }
 }
