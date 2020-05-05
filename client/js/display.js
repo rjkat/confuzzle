@@ -52,7 +52,7 @@ export class CrosswordDisplay {
     fillCell(clueid, offset, value, forced) {
         const self = this;
         function fill(clueid, offset) {
-            let els = self.els.gridContainer.querySelectorAll(
+            let els = document.querySelectorAll(
                 '[data-clueid*="'+ clueid +'"][data-offset*="' + offset + '"]'
             );
             els.forEach(function (el) {
@@ -65,7 +65,6 @@ export class CrosswordDisplay {
                     el.firstChild.textContent = value;
                 }
             });
-
         }
         const clue = this.crossword.clues[clueid];
         const cell = clue.cells[offset];
