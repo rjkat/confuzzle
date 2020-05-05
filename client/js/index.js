@@ -55,23 +55,34 @@ class AnagrindApp {
 
         this.downloadButton.onclick = () => self.downloadClicked();
 
+        
+        this.nameDiv = document.querySelector('#collude-enter-name');
+        this.nameInput = document.querySelector('#collude-name-input');
+        this.nameInput.onkeyup = e => self.nameEntered(
+            e, document.querySelector('#collude-name-length'), document.querySelector('#collude-button')
+        );
+
         if (!this.gridid) {
+            this.nameDiv.classList.remove('hidden');
             this.selectTab('compile');
         } else {
+            location.hash = 'join';
             document.querySelector('#compile-tab-label').classList.add('hidden');
             document.querySelector('#solve-tab-label').classList.add('hidden');
-            document.querySelector('#join-text').textContent = '2. Join the crossword';
         }
-        this.nameDiv = document.querySelector('.crossword-enter-name');
-        this.nameInput = document.querySelector('.crossword-name-input');
-        this.nameInput.onkeyup = e => self.nameEntered(e);
+
+        this.joinInput = document.querySelector('#join-name-input');
+        this.joinInput.onkeyup = e => self.nameEntered(
+            e, document.querySelector('#join-name-length'), document.querySelector('#join-button')
+        );
 
         this.shareDiv = document.querySelector('.crossword-share-link');
         this.linkText = document.querySelector('.crossword-link-text');
         this.colludeButton = document.querySelector('#collude-button');
-        this.colludeButton.value = this.gridid ? 'Join' : 'Share';
         this.colludeButton.onclick = () => self.colludeClicked();
 
+        this.joinButton = document.querySelector('#join-button');
+        this.joinButton.onclick = () => self.joinClicked();
 
         const copyButton = document.querySelector('#copy-link-button');
         copyButton.onclick = () => {
@@ -110,7 +121,9 @@ class AnagrindApp {
         this.selectTab('solve');
         this.panelContainer.dataset.solverid = msg.solverid;
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
-        document.querySelector('.crossword-enter-name').classList.add('hidden');
+        document.querySelector('#join').classList.add('hidden');
+        // remove #join from URL
+        history.replaceState(null, null, ' ');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
         document.querySelector('#solve-tab-label').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
@@ -129,9 +142,10 @@ class AnagrindApp {
         this.solvers.show();
     }
 
-    nameEntered(e) {    
-        document.querySelector('#name-length').textContent = this.nameInput.value.length;
-        this.colludeButton.disabled = !this.nameInput.value.length;
+    nameEntered(el, nameLength, button) {
+        const name = el.target.value;
+        nameLength.textContent = name.length;
+        button.disabled = !name.length;
     }
 
     selectTab(tabGroup, tabName) {
@@ -205,18 +219,19 @@ class AnagrindApp {
         this.solvers.grid = this.display.grid;
     }
 
+    joinClicked() {
+        const self = this;
+        this.nameDiv.disabled = true;
+        this.client.joinGrid(this.gridid, this.joinInput.value, function (msg) {
+            self.gridJoined(msg);
+        });
+    }
+
     colludeClicked() {
         const self = this;
-        if (this.gridid) {
-            this.nameDiv.disabled = true;
-            this.client.joinGrid(this.gridid, this.nameInput.value, function (msg) {
-                self.gridJoined(msg);
-            });
-        } else {
-            this.client.shareCrossword(this.sourceTextArea.value, this.nameInput.value, function (msg) {
-                self.shareSucceeded(msg);
-            });
-        }
+        this.client.shareCrossword(this.sourceTextArea.value, this.nameInput.value, function (msg) {
+            self.shareSucceeded(msg);
+        });
     }
 }
 

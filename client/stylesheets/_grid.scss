@@ -24,14 +24,16 @@
 
         td {
             font-size: $gridFontSize;
-            font-family: $answerFontFamily;
             box-sizing: border-box;
+            font-family: $answerFontFamily;
             border: $gridBorderWidth solid;
             border-color: $gridBgColor;
             min-width: $gridCellSize;
             max-width: $gridCellSize;
+            min-height: $gridCellSize;
             height: $gridCellSize;
-            line-height: $gridCellSize;
+            max-height: $gridCellSize;
+            line-height: 1ch;
             position: relative;
             text-align: center;
             vertical-align: middle;
