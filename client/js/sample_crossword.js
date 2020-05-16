@@ -19,7 +19,7 @@ author: RK
 type: example
 identifier: 2020/04/07
 copyright: Please respect copyright when using this site
-note: [ NB - this is an example crossword ]
+note: Note: select 'Compile' below to edit this crossword or upload your own.
 
 > grid information
 # grid
