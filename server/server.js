@@ -2,8 +2,12 @@ const express = require('express')
 const http = require('http')
 const https = require('https')
 const secure = require('express-force-https')
+
+var favicon = require('serve-favicon');
+
 const app = express()
 app.use(secure)
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 const robots = require('express-robots-txt')
 
