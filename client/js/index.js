@@ -207,7 +207,7 @@ class AnagrindApp {
             return;
         }
         this.errorDisplay.clearError();
-        ['type', 'author', 'identifier'].forEach(x => {
+        ['name', 'author', 'identifier'].forEach(x => {
             let val = crossword.meta[x];
             let el = document.getElementById('crossword-meta-' + x);
             el.textContent = x == 'author' ? 'by ' : '';

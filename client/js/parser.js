@@ -163,6 +163,11 @@ export function parse(input, options) {
   ['name', 'author'].forEach(field =>
     cw.meta[field] = meta.requiredField(field).requiredStringValue()
   );
+  if (cw.meta.name.startsWith('smh-cryptic')) {
+    cw.meta.name = 'cryptic';
+  }
+  // sanitize author
+  cw.meta.author = cw.meta.author.replace(/^(.*\s+)?by\s+/i, '');
   ['type', 'identifier', 'copyright', 'note'].forEach(field => {
     const f = meta.optionalField(field);
     if (f) {
