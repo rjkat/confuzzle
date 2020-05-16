@@ -63,6 +63,7 @@ class AnagrindApp {
         );
 
         if (!this.gridid) {
+            this.showMain();
             this.nameDiv.classList.remove('hidden');
             this.selectTab('compile');
         } else {
@@ -219,8 +220,14 @@ class AnagrindApp {
         this.solvers.grid = this.display.grid;
     }
 
+    showMain() {
+        document.body.style.backgroundColor = "#F0F8FF";
+        document.getElementById('main').classList.remove('hidden');
+    }
+
     joinClicked() {
         const self = this;
+        this.showMain();
         this.nameDiv.disabled = true;
         this.client.joinGrid(this.gridid, this.joinInput.value, function (msg) {
             self.gridJoined(msg);

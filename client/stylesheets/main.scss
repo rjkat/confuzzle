@@ -14,7 +14,6 @@
 @import 'collude';
 
 body {
-    background-color: $pageBgColor;
 }
 
 .hidden {
@@ -55,6 +54,10 @@ body {
 
 .body-col {
     display: flex;
+}
+
+#main {
+    animation: fadein .8s;
 }
 
 #grid-container {
