@@ -1,32 +1,35 @@
 .crossword-solvers {
     font-family: $answerFontFamily;
+    display: flex;
+    align-items: center;
     margin-left: $displayPadding;
     border: $gridBorderWidth solid;
-    overflow: hidden;
     min-width: $clueMinWidth;
     background-color: $gridBlankColor;
-    overflow-x: scroll;
     animation: fadein .8s;
 
+    .solvers-text {
+        margin-left: 0.5em;
+        margin-right: 2em;
+        font-family: $clueFontFamily;
+        font-weight: bold;
+    }
     ul {
-        height: $tabHeight;
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: 100%;
         display: flex;
         align-items: center;
         margin: 0;
         padding: 0;
-        &:before {
-            content: "SOLVERS";
-            margin-left: 0.5em;
-            margin-right: 2em;
-            font-family: $clueFontFamily;
-            font-weight: bold;
-        }
+        list-style-type: none;
     }
 
     .solver {
         // display: block;
-        height: $tabHeight;
-        line-height: $tabHeight;
+        height: 100%;
+        display: flex;
+        align-items: center;
         padding-right: 2em;
         list-style-type: none;
         text-transform: uppercase;
@@ -34,12 +37,13 @@
 
         &::first-letter {
             float: left;
-            font-size: 48px;
         }
 
         @include each-solver using ($color, $sel) {
             &#{$sel}:before {
-                content: $solverIcon;
+                font-size: 50px;
+                content: "■";
+                margin-right: 3px;
                 color: $color;
             }
         }

@@ -11,6 +11,10 @@ export class SolverDisplay {
 
     solversChanged(solvers) {
         this.container.innerHTML = ''
+        const text = document.createElement('div');
+        text.innerText = 'SOLVERS';
+        text.classList.add('solvers-text');
+        this.container.appendChild(text);
         const list = document.createElement('ul');
         const items = []
         const newids = new Set([]);
@@ -25,6 +29,7 @@ export class SolverDisplay {
             li.textContent = props.name;
             items.push(li);
         }
+        
         items.sort((a, b) => a.dataset.solverid < b.dataset.solverid);
         items.forEach(li => list.appendChild(li));
         this.container.appendChild(list);

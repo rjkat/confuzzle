@@ -35,9 +35,10 @@
 
 .crossword-link-text {
     height: 40px;
-    line-height: 40px;
+    display: flex;
+    align-items: center;
     padding-left: 1em;
-    overflow-x: scroll;
+    overflow: auto;
     max-width: 18em;
     border-radius: 3px;
     border: 1px solid $gridBgColor;

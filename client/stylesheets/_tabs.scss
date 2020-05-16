@@ -12,7 +12,8 @@
   width: 100%;
   display: none;
   background: #fff;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .tab-label {

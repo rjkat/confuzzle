@@ -1,7 +1,7 @@
 @use "sass:map";
 @use "sass:color";
 
-$solverIcon: "\25a0\00a0";
+$solverIcon: "■";
 $solverColors: #7ad, #e86, #fab, #e53, #4b9, #bc3, #aa0, #ddd;
 
 $maxSolvers: length($solverColors);
