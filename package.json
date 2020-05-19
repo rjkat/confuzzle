@@ -8,6 +8,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
+    "build": "parcel build client/index.html --no-source-maps --no-content-hash",
     "start": "NODE_ENV=development nodemon server/index.js",
     "production": "npm server/index.js"
   },
@@ -28,6 +29,7 @@
     "@babel/core": "^7.9.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "babel-types": "^6.26.0",
+    "compression": "^1.7.4",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
     "express": "^4.17.1",

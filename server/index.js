@@ -3,14 +3,15 @@ const server = require('./server')
 let port;
 var env = process.argv[2] || 'dev';
 switch (env) {
-    case 'dev':
-        port = 5775;
-        break;
     case 'heroku':
         port = process.env.PORT;
         break;
     case 'aws':
         port = 3000;
+        break;
+    case 'dev':
+    default:
+        port = 5775;
         break;
 }
 
