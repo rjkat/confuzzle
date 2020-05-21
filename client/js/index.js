@@ -5,7 +5,22 @@ import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import {readEno, enoToPuz} from './eno.js'
 
+
+require('../fonts/aurulentsans.css');
+require('../fonts/notcouriersans.css');
+require('@fortawesome/fontawesome-free/css/all.css');
 require('typeface-bree-serif');
+
+require('prismjs/plugins/line-numbers/prism-line-numbers.css');
+require('../stylesheets/prism-eno-light.css');
+require('../stylesheets/prism-live.css');
+require('../stylesheets/main.scss');
+
+require('prismjs/prism.js');
+require('prismjs/plugins/line-numbers/prism-line-numbers.js');
+require('./prism-eno.js');
+require('regenerator-runtime/runtime.js');
+require('./prism-live.js');
 
 const parser = require('./parser.js');
 
