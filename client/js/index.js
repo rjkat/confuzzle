@@ -105,7 +105,9 @@ class AnagrindApp {
 
         DragDrop.setupDropArea(dropArea, puzFile, buf => self.puzFileUploaded(buf));
         
-        this.setCrosswordSource(parser.sampleCrossword());
+        if (!this.gridid) {
+            this.setCrosswordSource(parser.sampleCrossword());
+        }
     }
 
     puzFileUploaded(buf) {
@@ -138,8 +140,6 @@ class AnagrindApp {
         document.querySelector('#solve-tab-label').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
-
-        document.querySelector('#join').classList.add('hidden');
     }
 
     shareSucceeded(msg) {
@@ -229,6 +229,8 @@ class AnagrindApp {
 
         // yuck
         this.solvers.grid = this.display.grid;
+
+        document.getElementById('join').classList.add('hidden');
     }
 
     showMain() {
@@ -238,6 +240,7 @@ class AnagrindApp {
 
     joinClicked() {
         const self = this;
+
         this.showMain();
         this.nameDiv.disabled = true;
         this.client.joinGrid(this.gridid, this.joinInput.value, function (msg) {
