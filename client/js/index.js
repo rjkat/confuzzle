@@ -137,13 +137,14 @@ class AnagrindApp {
         this.selectTab('solve');
         this.panelContainer.dataset.solverid = msg.solverid;
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
-        document.querySelector('#join').classList.add('hidden');
         // remove #join from URL
         history.replaceState(null, null, ' ');
         document.querySelector('.crossword-share-link').classList.remove('hidden');
         document.querySelector('#solve-tab-label').classList.remove('hidden');
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
+
+        document.querySelector('#join').classList.add('hidden');
     }
 
     shareSucceeded(msg) {
