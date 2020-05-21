@@ -33,7 +33,6 @@ export class AnagrindClient {
     }
 
     gridJoined(msg) {
-        console.log('joined grid: ' + JSON.stringify(msg));
         this.app.solverid = msg.solverId;
         this.app.display.solverid = msg.solverid; 
         this.app.setCrosswordSource(msg.crossword);
@@ -43,17 +42,17 @@ export class AnagrindClient {
     }
 
     solversChanged(msg) {
-        console.log('solversChanged: ' + JSON.stringify(msg));
+        // console.log('solversChanged: ' + JSON.stringify(msg));
         this.app.solvers.solversChanged(msg.solvers);
     }
 
     selectionChanged(msg) {
-        console.log('got selectionChanged' + JSON.stringify(msg));
+        // console.log('got selectionChanged' + JSON.stringify(msg));
         this.app.display.selectionChanged(msg);
     }
 
     fillCell(msg) {
-        console.log('got fillCell' + JSON.stringify(msg));
+        // console.log('got fillCell' + JSON.stringify(msg));
         this.app.display.fillCell(msg.clueid, msg.offset, msg.value, true);
     }
 
