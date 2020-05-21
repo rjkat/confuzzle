@@ -19,7 +19,7 @@
 }
 
 #crossword-meta-name {
-    font-family: 'Bree Serif';
+    font-family: $titleFontFamily;
     font-size: 18px;
     padding-left: 10px;
     font-weight: bold;
@@ -35,7 +35,7 @@
     background-color: $titleBgColor;
 }
 #crossword-meta-identifier {
-    font-family: 'Bree Serif';
+    font-family: $titleFontFamily;
     font-size: 18px;
 }
 

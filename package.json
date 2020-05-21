@@ -29,6 +29,7 @@
     "@babel/core": "^7.9.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "babel-types": "^6.26.0",
+    "blissfuljs": "^1.0.6",
     "compression": "^1.7.4",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
