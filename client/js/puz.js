@@ -171,8 +171,6 @@ export class PuzPayload {
 
     buildBody() {
         let body = puzEncode(this.solution);
-        if (!this.state)
-            this.state = this.solution.replace(/[^\.]/g, '-');
         body = concatBytes(body, puzEncode(this.state));
         return concatBytes(body, this.buildStrings());
     }
@@ -233,6 +231,8 @@ export class PuzPayload {
         this.clues = clues;
         this.solution = solution;
         this.state = state;
+        if (!this.state)
+            this.state = this.solution.replace(/[^\.]/g, '-');
     }
 }
 
