@@ -19,6 +19,18 @@ function matchesClueId(el, clueid, offset) {
     return false;
 }
 
+function gridComplete(grid) {
+    for (let row = 0; row < grid.height; row++) {
+        for (let col = 0; col < grid.width; col++) {
+            if (!grid.cells[row][col].empty
+                && grid.cells[row][col].contents == '') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 export class CrosswordDisplay {
     constructor(els, callbacks) {
         this.els = els;
@@ -78,6 +90,11 @@ export class CrosswordDisplay {
         }
         if (this.callbacks.onFillCell && !forced) {
             this.callbacks.onFillCell(this.solverid, clueid, offset, value);
+        }
+        if (gridComplete(this.crossword.grid)) {
+            this.explosions = emojisplosions();
+        } else {
+            this.explosions && this.explosions.cancel();
         }
     }
 
