@@ -148,6 +148,9 @@ export class ClueDisplay {
                     }
                     lengthstr += lengths[i];
                 }
+                if (lengths.length - 1 < sep.length) {
+                    lengthstr += sep[lengths.length - 1];
+                }
                 lengthstr += ')';
                 lengthEl.textContent = lengthstr;
                 directions.appendChild(lengthEl);
