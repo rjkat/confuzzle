@@ -133,8 +133,15 @@ export class ClueDisplay {
                 const lengthEl = document.createElement('span');
                 lengthEl.classList.add('clue-length');
                 let lengthstr = ' (';
-                const lengths = clue.refLengths ? clue.refLengths : clue.lengths;
+
+                var lengths = clue.refLengths ? clue.refLengths : clue.lengths;
+                
+                // handle case where one clue has been split across multiple grid cells
+                if (clue.refLengths && clue.refSeparators && clue.refSeparators.length == 0) {
+                    lengths = [clue.refLengths.reduce((acc, x) => acc + x)];
+                }
                 const sep = clue.refSeparators ? clue.refSeparators : clue.separators;
+
                 for (let i = 0; i < lengths.length; i++) {
                     if (i > 0) {
                         lengthstr += sep[i - 1];
