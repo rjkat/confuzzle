@@ -156,7 +156,7 @@ export class GridDisplay {
         this.cwDisplay.clearOwnHighlight(this.currentClue().id);
     }
 
-    highlightClue(clueid, solverid) {
+    highlightClue(clueid, solverid, nested) {
         if (solverid === undefined) {
             return;
         }
@@ -175,6 +175,14 @@ export class GridDisplay {
             cell.td.dataset.solverMask = v;
 
         });
+        const refids = clue.refIds
+        if (refids) {
+            for (var i = 0; i < refids.length; i++) {
+                if (refids[i] != clueid && !nested) {
+                    this.highlightClue(refids[i], solverid, true);
+                }
+            }
+        }
     }
 
     clearAllClues(solverid) {
@@ -189,12 +197,20 @@ export class GridDisplay {
         });
     }
 
-    clearHighlightClue(clueid, solverid) {
+    clearHighlightClue(clueid, solverid, nested) {
         if (solverid === undefined) {
             return;
         }
         const clue = this.crossword.clues[clueid];
         clue.cells.forEach(cell => clearSolverMask(cell.td, solverid, clue.isAcross, !clue.isAcross));
+        const refids = clue.refIds
+        if (refids) {
+            for (var i = 0; i < refids.length; i++) {
+                if (refids[i] != clueid && !nested) {
+                    this.clearHighlightClue(refids[i], solverid, true);
+                }
+            }
+        }
     }
 
     setInputCell(row, col, backspace) {

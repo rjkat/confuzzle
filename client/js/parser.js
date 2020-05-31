@@ -181,9 +181,12 @@ function parseRef(cw, ref) {
   if (i < sep.length) {
     refSeparators.push(sep[i]);
   }
-  cw.clues[clueid].refLengths = refLengths;
-  cw.clues[clueid].refSeparators = refSeparators;
-  cw.clues[clueid].refIds = refIds;
+
+  for (var i = 0; i < refIds.length; i++) {
+    cw.clues[refIds[i]].refLengths = refLengths;
+    cw.clues[refIds[i]].refSeparators = refSeparators;
+    cw.clues[refIds[i]].refIds = refIds;
+  }
 }
 
 export function parse(input, options) {

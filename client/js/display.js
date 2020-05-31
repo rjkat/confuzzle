@@ -43,11 +43,25 @@ export class CrosswordDisplay {
         this.solverid = 0;
     }
 
+    isSelected(clueid) {
+        if (clueid == this.selectedid) {
+            return true;
+        }
+        const refs = this.crossword.clues[clueid].refIds;
+        if (refs) {
+            for (var i = 0; i < refs.length; i++) {
+                if (refs[i] == this.selectedid) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     clearOwnHighlight(clueid, force) {
         if (!clueid) {
             return;
         }
-        if (force || clueid != this.selectedid) {
+        if (force || !this.isSelected(clueid)) {
             this.clues.clearHighlightClue(clueid);
             this.grid.clearHighlightClue(clueid, this.solverid);
         }

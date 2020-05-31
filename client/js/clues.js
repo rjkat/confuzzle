@@ -24,19 +24,36 @@ export class ClueDisplay {
         return this.clueContainer.querySelector('li[data-clueid="'+ clueid +'"]');
     }
 
-    clearHighlightClue(clueid) {
+    clearHighlightClue(clueid, nested) {
         const el = this.getClueElement(clueid);
         if (el) {
             el.classList.remove('highlighted');
         }
+        const refids = this.crossword.clues[clueid].refIds
+        if (refids) {
+            for (var i = 0; i < refids.length; i++) {
+                if (refids[i] != clueid && !nested) {
+                    this.clearHighlightClue(refids[i], true);
+                }
+            }
+        }
     }
 
-    highlightClue(clueid, scroll) {
+    highlightClue(clueid, scroll, nested) {
         const el = this.getClueElement(clueid);
         if (scroll) {
             el.scrollIntoView({behavior: 'smooth'});
         }
         el.classList.add('highlighted');
+
+        const refids = this.crossword.clues[clueid].refIds
+        if (refids) {
+            for (var i = 0; i < refids.length; i++) {
+                if (refids[i] != clueid && !nested) {
+                    this.highlightClue(refids[i], false, true);
+                }
+            }
+        }
     }
 
     moveInput(input, direction) {
@@ -121,7 +138,7 @@ export class ClueDisplay {
 
                 const idEl = document.createElement('span');
                 idEl.classList.add('clue-id');
-                const idText = clue.refIds ? clue.refIds.join(', ') : clueid;
+                const idText = (clue.refIds && clueid == clue.refIds[0]) ? clue.refIds.join(', ') : clueid;
                 idEl.textContent = idText + ' ';
                 directions.appendChild(idEl);
 
@@ -148,12 +165,16 @@ export class ClueDisplay {
                     }
                     lengthstr += lengths[i];
                 }
-                if (lengths.length - 1 < sep.length) {
+                if (lengths.length - 1 < sep.length && !clue.refIds) {
                     lengthstr += sep[lengths.length - 1];
                 }
                 lengthstr += ')';
-                lengthEl.textContent = lengthstr;
-                directions.appendChild(lengthEl);
+
+                // don't show lengths on referenced clues
+                if (!clue.refIds || clueid == clue.refIds[0]) {
+                    lengthEl.textContent = lengthstr;
+                    directions.appendChild(lengthEl);
+                }
 
                 li.appendChild(directions);
                 const self = this;
