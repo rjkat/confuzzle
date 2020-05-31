@@ -3,7 +3,7 @@ const http = require('http')
 const https = require('https')
 const secure = require('express-force-https')
 const compression = require('compression')
-var favicon = require('serve-favicon');
+const favicon = require('serve-favicon');
 
 const app = express()
 app.use(secure)

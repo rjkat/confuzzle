@@ -1,5 +1,13 @@
 import * as KeyCode from 'keycode-js';
 const uniqid = require('uniqid');
+const sanitizeHtml = require('sanitize-html');
+
+function sanitizeClueHtml(dirty) {
+    return sanitizeHtml(dirty, {
+        allowedTags: [ 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol',
+  'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code' ],
+    });
+}
 
 export class ClueDisplay {
     constructor(cwDisplay, panel) {
@@ -113,22 +121,25 @@ export class ClueDisplay {
 
                 const idEl = document.createElement('span');
                 idEl.classList.add('clue-id');
-                idEl.textContent = clueid + ' ';
+                const idText = clue.refIds ? clue.refIds.join(', ') : clueid;
+                idEl.textContent = idText + ' ';
                 directions.appendChild(idEl);
 
                 const textEl = document.createElement('span');
                 textEl.classList.add('clue-text');
-                textEl.textContent = clue.text;
+                textEl.innerHTML = sanitizeClueHtml(clue.text);
                 directions.appendChild(textEl);
 
                 const lengthEl = document.createElement('span');
                 lengthEl.classList.add('clue-length');
                 let lengthstr = ' (';
-                for (let i = 0; i < clue.lengths.length; i++) {
+                const lengths = clue.refLengths ? clue.refLengths : clue.lengths;
+                const sep = clue.refSeparators ? clue.refSeparators : clue.separators;
+                for (let i = 0; i < lengths.length; i++) {
                     if (i > 0) {
-                        lengthstr += clue.separators[i - 1];
+                        lengthstr += sep[i - 1];
                     }
-                    lengthstr += clue.lengths[i];
+                    lengthstr += lengths[i];
                 }
                 lengthstr += ')';
                 lengthEl.textContent = lengthstr;
@@ -203,7 +214,7 @@ export class ClueDisplay {
         if (meta.note) {
             const note = document.createElement('div');
             note.classList.add('author-note');
-            note.textContent = meta.note;
+            note.innerHTML = sanitizeClueHtml(meta.note);
             el.appendChild(note);
         }
 

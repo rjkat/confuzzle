@@ -118,7 +118,7 @@ function parseClue(cw, clue) {
   const clueid = clue.stringKey();
   const x = clue.toSection();
   const lengths = x.requiredList('lengths').requiredIntegerValues();
-  var solution = x.optionalField('soln');
+  var solution = x.optionalField('ans');
   if (solution) {
     solution = solution.requiredStringValue();
   }
@@ -150,6 +150,40 @@ function parseClue(cw, clue) {
     });
   }
   cw.clues[clueid] = parsed;
+}
+
+function parseRef(cw, ref) {
+  const clueid = ref.stringKey();
+  if (!cw.clues[clueid]) {
+    throw "Unknown clue in references section: " + clueid;
+  }
+  const x = ref.toSection();
+  const refIds = x.requiredList('clues').requiredStringValues();
+  var sep = x.optionalList('separators');
+  if (sep) {
+    sep = sep.requiredStringValues();
+  } else {
+    sep = Array(refIds.length - 1).fill(",");
+  }
+  var refLengths = [];
+  var refSeparators = [];
+  for (var i = 0; i < refIds.length; i++) {
+    const refClue = cw.clues[refIds[i]];
+    if (!refClue) {
+      throw "Unknown clue in references section: " + refIds[i];
+    }
+    refSeparators = refSeparators.concat(refClue.separators);
+    refLengths = refLengths.concat(refClue.lengths);
+    if (i < sep.length) {
+      refSeparators.push(sep[i]);
+    }
+  }
+  if (i < sep.length) {
+    refSeparators.push(sep[i]);
+  }
+  cw.clues[clueid].refLengths = refLengths;
+  cw.clues[clueid].refSeparators = refSeparators;
+  cw.clues[clueid].refIds = refIds;
 }
 
 export function parse(input, options) {
@@ -218,7 +252,11 @@ export function parse(input, options) {
 
   const clues = doc.requiredSection('clues').elements();
   clues.forEach(clue => parseClue(cw, clue));
-  
+
+  const refs = doc.optionalSection('references');
+  if (refs) {
+    refs.elements().forEach(ref => parseRef(cw, ref));
+  }
   let errors = buildGrid(cw);
 
   return cw;
