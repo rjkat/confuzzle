@@ -320,6 +320,7 @@ export class GridDisplay {
                 td.dataset.row = row;
                 td.dataset.col = col;
                 td.dataset.solverMask = 0;
+                td.firstChild.textContent = cell.contents;
                 if (cell.empty) {
                     td.dataset.empty = '';
                 }

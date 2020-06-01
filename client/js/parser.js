@@ -30,7 +30,7 @@ function forEachCell(clue, cells, cellFn) {
   }
 }
 
-function populateCells(cells, clues) {
+function populateCells(cw, cells, clues, compiling) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
     cells[clue.row - 1][clue.col - 1].number = clue.number;
@@ -60,6 +60,9 @@ function populateCells(cells, clues) {
       }
       if (clue.solution) {
         cell.solution = clue.solution[offset];
+        if (!cw.meta.scramble && compiling) {
+          cell.contents = cell.solution;
+        }
       }
       cell.empty = false;
       if (offset == 0) {
@@ -88,7 +91,7 @@ function populateCells(cells, clues) {
   return errors;
 }
 
-function buildGrid(cw) {
+function buildGrid(cw, compiling) {
   const clues = cw.clues;
   const grid = cw.grid;
   const shading = grid.shading;
@@ -111,7 +114,7 @@ function buildGrid(cw) {
     }
     grid.cells.push(rowCells);
   }
-  return populateCells(grid.cells, clues);
+  return populateCells(cw, grid.cells, clues, compiling);
 }
 
 function parseClue(cw, clue) {
@@ -137,6 +140,7 @@ function parseClue(cw, clue) {
     separators: sep,
     lengths: lengths,
     solution: solution,
+    refIds: [],
     totalLength: lengths.reduce((acc, x) => acc + x),
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue()
@@ -189,7 +193,7 @@ function parseRef(cw, ref) {
   }
 }
 
-export function parse(input, options) {
+export function parse(input, compiling, options) {
   const cw = {
     meta: {},
     grid: {},
@@ -205,7 +209,7 @@ export function parse(input, options) {
   }
   // sanitize author
   cw.meta.author = cw.meta.author.replace(/^(.*\s+)?by\s+/i, '');
-  ['type', 'identifier', 'copyright', 'note'].forEach(field => {
+  ['type', 'identifier', 'copyright', 'note', 'scramble'].forEach(field => {
     const f = meta.optionalField(field);
     if (f) {
        cw.meta[field] = f.requiredStringValue()
@@ -260,7 +264,7 @@ export function parse(input, options) {
   if (refs) {
     refs.elements().forEach(ref => parseRef(cw, ref));
   }
-  let errors = buildGrid(cw);
+  let errors = buildGrid(cw, compiling);
 
   return cw;
 };

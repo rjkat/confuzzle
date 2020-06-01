@@ -33,7 +33,7 @@ class AnagrindApp {
         this.sourceTextArea.onkeyup = function () {
             clearTimeout(self.renderDebounce)
             self.renderDebounce = setTimeout(
-               () => self.renderCrossword(self.sourceTextArea.value),
+               () => self.renderCrossword(self.sourceTextArea.value, true),
                500
             );
         }
@@ -205,14 +205,14 @@ class AnagrindApp {
         this.renderCrossword(source);
     }
 
-    renderCrossword(source) {
+    renderCrossword(source, compiling) {
         if (!source){
             source = this.sourceTextArea.value;
         }
 
         let crossword;
         try {
-            crossword = parser.parse(source);
+            crossword = parser.parse(source, compiling);
         } catch(err) {
             this.errorDisplay.showError(err);
             return;
