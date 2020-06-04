@@ -171,7 +171,7 @@ export class ClueDisplay {
                 lengthstr += ')';
 
                 // don't show lengths on referenced clues
-                if (!clue.refIds || clueid == clue.refIds[0]) {
+                if (clue.refIds.length == 0 || clueid == clue.refIds[0]) {
                     lengthEl.textContent = lengthstr;
                     directions.appendChild(lengthEl);
                 }
