@@ -132,10 +132,11 @@ function parseClue(cw, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
+  const number = clueid.match(/\d+/);
   const parsed = {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
-    number: parseInt(clueid.slice(0, -1), 10),
+    number: number ? parseInt(number, 10) : NaN,
     text: x.requiredField('text').requiredStringValue(),
     separators: sep,
     lengths: lengths,
