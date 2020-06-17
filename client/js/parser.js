@@ -139,6 +139,7 @@ function parseClue(cw, clue) {
     number: number ? parseInt(number, 10) : NaN,
     text: x.requiredField('text').requiredStringValue(),
     separators: sep,
+    verbatim: x.optionalEmpty('verbatim') ? true : false,
     lengths: lengths,
     solution: solution,
     refIds: [],

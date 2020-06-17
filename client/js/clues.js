@@ -170,8 +170,8 @@ export class ClueDisplay {
                 }
                 lengthstr += ')';
 
-                // don't show lengths on referenced clues
-                if (clue.refIds.length == 0 || clueid == clue.refIds[0]) {
+                // don't show lengths on referenced clues or verbatim clues
+                if ((clue.refIds.length == 0 || clueid == clue.refIds[0]) && !clue.verbatim) {
                     lengthEl.textContent = lengthstr;
                     directions.appendChild(lengthEl);
                 }
