@@ -56,6 +56,14 @@ function queryGrid(gridid) {
     return undefined;
 }
 
+app.get("/d/:gridid", function(req, res, next) {
+    let gridid = req.params ? req.params.gridid : undefined;
+    if (!queryGrid(gridid)) {
+        res.sendStatus(404);
+        return;
+    }
+    res.redirect('/grid/' + gridid + '#join');
+});
 
 app.get("/grid/:gridid", function(req, res, next) {
     let gridid = req.params ? req.params.gridid : undefined;
