@@ -143,12 +143,14 @@ class AnagrindApp {
     }
 
     shareSucceeded(msg) {
-        console.log('share success: ' + msg.gridid);
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
         document.querySelector('#compile-tab-label').classList.add('hidden');
         this.renderCrossword();
+
+        // replace url in url bar with the link to the grid
+        window.history.replaceState(null, 'anagrind.com', '/grid/' + msg.gridid);
         
         this.solvers.solversChanged(msg.solvers);
         this.solvers.show();
