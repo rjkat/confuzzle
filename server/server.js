@@ -56,6 +56,13 @@ function queryGrid(gridid) {
     return undefined;
 }
 
+app.get('*', function(req, res, next) {
+    if (req.hostname == 'anagr.in') {
+        res.redirect('https://anagrind.com' + req.url);
+    }
+    next('route');
+});
+
 app.get("/d/:gridid", function(req, res, next) {
     let gridid = req.params ? req.params.gridid : undefined;
     if (!queryGrid(gridid)) {
