@@ -5,6 +5,10 @@ import {ErrorDisplay} from './errors.js'
 import * as DragDrop from './dragdrop.js'
 import {readEno, enoToPuz} from './eno.js'
 
+import Vue from 'vue';
+import 'keen-ui/dist/keen-ui.css';
+import App from '../App.vue'
+
 require('prismjs/plugins/line-numbers/prism-line-numbers.css');
 require('../stylesheets/prism-eno-light.css');
 require('../stylesheets/prism-live.css');
@@ -257,5 +261,9 @@ class AnagrindApp {
         });
     }
 }
+
+new Vue({
+    render: createElement => createElement(App),
+}).$mount('#app');
 
 const app = new AnagrindApp();
