@@ -1,20 +1,4 @@
 
-#compile-panel-wrapper {
-  height: 100%;
-}
-
-#compile-panel {
-  height: 100%;
-  background-color: $pageBgColor;
-}
-
-.compile-panel {
-  height: calc(100% - #{$tabHeight});
-  flex-grow: 1;
-  border: $gridBorderWidth solid;
-  border-radius: 0px 3px 3px 0px;
-}
-
 .prism-live {
   font-size: 13px;
   font-variant-ligatures: no-common-ligatures;
