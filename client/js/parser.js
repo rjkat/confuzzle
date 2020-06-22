@@ -62,7 +62,7 @@ function populateCells(cw, cells, clues, compiling) {
       }
       if (clue.solution) {
         cell.solution = clue.solution[offset];
-        if (!cw.meta.scramble && compiling) {
+        if ((!cw.meta.scramble || cw.meta.scramble == "none") && compiling) {
           cell.contents = cell.solution;
         }
       }
