@@ -125,8 +125,15 @@ function addEmoji(cw, word) {
   }
   const wordEmoji = EMOJI_DICT[word.toLowerCase()];
   if (wordEmoji) {
-    for (var i = 0; i < wordEmoji.length; i++) {
-      cw.meta.emoji.push(wordEmoji[i]); 
+    // if there is only one emoji for this word, include lots of it
+    if (wordEmoji.length == 1) {
+      for (var i = 0; i < 3; i++) {
+        cw.meta.emoji.push(wordEmoji[0]); 
+      }
+    } else {
+      for (var i = 0; i < wordEmoji.length; i++) {
+        cw.meta.emoji.push(wordEmoji[i]); 
+      }
     }
   }
 }

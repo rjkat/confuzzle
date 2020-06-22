@@ -8,18 +8,26 @@ with open('emoji.json') as fobj:
 
 d = {}
 for x in emoji_dict:
+    # don't allow emoji that aren't emojizable
     if emoji.emojize(emoji.demojize(x['emoji'])) != x['emoji']:
         continue
-    words = set()
-    lc = lambda x: x.lower()
-    words.update(set(map(lc, x.get('tags', []))))
+    aliases = []
     for a in x.get('aliases', []):
-        words.update(set(map(lc, a.split('_'))))
-    words.update(set(map(lc, x.get('description', '').split(' '))))
-    for w in words:
-        if w not in d.keys():
-            d[w] = set()
-        d[w].add(x['emoji'])
+        aliases.extend(a.split('_'))
+    tags = x.get('tags', [])
+    desc = x.get('description', '').split(' ')
+    for possible in [aliases, desc, tags]:
+        sanitized = [x.lower() for x in possible]
+        # if this word is specific to this emoji,
+        # ignore all the other ones
+        if len(sanitized) == 1:
+            w = sanitized[0]
+            d[w] = set([x['emoji']])
+        else:
+            for w in sanitized:
+                if w not in d.keys():
+                    d[w] = set()
+                d[w].add(x['emoji'])
 
 class SetEncoder(json.JSONEncoder):
     def default(self, obj):
