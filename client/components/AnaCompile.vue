@@ -1,51 +1,34 @@
 <template>
     <div id="compile-panel-wrapper">
         <div id="compile-panel">
-            <ui-tabs type="icon-and-text">
-                <ui-tab title="Edit">
-                    <ui-icon slot="icon" icon="edit"></ui-icon>
-                    <div class="compile-panel line-numbers panel" id="edit-panel">
-                        <textarea class="prism-live language-eno" id="crossword-source"></textarea>
-                    </div>
-                </ui-tab>
-                <ui-tab title="Debug" id="debug-label">
-                    <ui-icon slot="icon" icon="report"></ui-icon>
-                    <div class="compile-panel panel" id="debug-panel">
+            <div class="compile-panel line-numbers panel" id="edit-panel">
+                <ui-fileupload color="primary" id="selected-puz-file" name="puz-file" accept="application/x-crossword">Upload .puz</ui-fileupload>
+                <ui-button icon="get_app" id="download-puz-button">Download .puz</ui-button>
+                <button class="popover-trigger">
+                    Debug
+                    <ui-popover open-on="mouseenter">
                         <div id="error-text"></div>
                         <div id="error-snippet-wrapper">
                             <pre id="error-snippet"></pre>
                         </div>
-                    </div>
-                </ui-tab>
-                <ui-tab title="Convert">
-                    <ui-icon slot="icon" icon="publish"></ui-icon>
-                    <div class="compile-panel panel" id="convert-panel">
-                        <div id="drop-area">
-                          <form class="upload-form">
-                            Drag and drop .puz file here, or 
-                            <input type="file" id="selected-puz-file" accept="application/x-crossword">
-                            <label class="upload-button" for="selected-puz-file">Upload .puz file</label>
-                          </form>
-                        </div>
-                         <div style="text-align: center; margin-top: .5em;">
-                            <a><button type="button" class="action-button" id="download-puz-button">Download .puz</button></a>
-                        </div>
-                    </div>
-                </ui-tab>
-            </ui-tabs>
+                    </ui-popover>
+                </button>
+                <textarea class="prism-live language-eno" id="crossword-source"></textarea>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { UiIcon, UiTab, UiTabs } from 'keen-ui';
+import { UiButton, UiFileupload, UiIcon, UiPopover } from 'keen-ui';
 
 export default Vue.extend({
   components: {
+    UiButton,
+    UiFileupload,
     UiIcon,
-    UiTab,
-    UiTabs
+    UiPopover,
   },
   data() {
     return {

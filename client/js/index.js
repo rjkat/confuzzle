@@ -82,7 +82,6 @@ class AnagrindApp {
             this.selectTab('compile');
         } else {
             location.hash = 'join';
-            document.querySelector('#compile-tab-label').classList.add('hidden');
             document.querySelector('#solve-tab-label').classList.add('hidden');
         }
 
@@ -107,7 +106,7 @@ class AnagrindApp {
         const dropArea = document.getElementById('drop-area');
         const puzFile = document.getElementById('selected-puz-file');
 
-        DragDrop.setupDropArea(dropArea, puzFile, buf => self.puzFileUploaded(buf));
+        // DragDrop.setupDropArea(dropArea, puzFile, buf => self.puzFileUploaded(buf));
         
         if (!this.gridid) {
             this.setCrosswordSource(parser.sampleCrossword());
@@ -150,7 +149,6 @@ class AnagrindApp {
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         this.nameDiv.classList.add('hidden');
         this.shareDiv.classList.remove('hidden');
-        document.querySelector('#compile-tab-label').classList.add('hidden');
         this.renderCrossword();
 
         // replace url in url bar with the link to the grid

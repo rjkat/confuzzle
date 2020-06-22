@@ -8,7 +8,7 @@
             <p id="join-text">2. Get a shared link to your crossword</p>
             <label for="name"><b>0A Your name (<span id="collude-name-length">0</span>)</b></label><br>
             <input id="collude-name-input" class="crossword-name-input" name="name" autocomplete="off"><br>
-            <input type="submit" class="action-button" value="Share" id="collude-button" disabled>
+            <ui-button id="collude-button" color="primary" disabled>Share</ui-button>
         </div>
         <div class="crossword-share-link hidden">
             <p>2. Share this link to solve with others. It will remain active
@@ -16,16 +16,18 @@
             <div class="crossword-link-text">
                 anagrind.com/grid/foo
             </div>
-            <button class="action-button" id="copy-link-button">Copy</button>
+            <ui-button id="copy-link-button" color="primary">Copy</ui-button>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import { UiButton } from 'keen-ui';
 
 export default Vue.extend({
   components: {
+    UiButton
   },
   data() {
     return {

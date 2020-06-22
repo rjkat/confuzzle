@@ -1,17 +1,26 @@
 <template>
     <ui-tabs type="icon-and-text">
-        <ui-tab title="Solve">
-            <ui-icon slot="icon" icon="extension"></ui-icon>
+        <ui-tab>
+            <div slot="header" class="ana-tab-header">
+                <ui-icon slot="icon" icon="extension"></ui-icon>
+                <span>Solve</span>
+            </div>
             <div id="solve-panel">
                 <div class="crossword-clue-panel"></div>
             </div>
         </ui-tab>
-        <ui-tab title="Compile">
-            <ui-icon slot="icon" icon="build"></ui-icon>
+        <ui-tab>
+            <div slot="header" class="ana-tab-header">
+                <ui-icon slot="icon" icon="build"></ui-icon>
+                <span>Compile</span>
+            </div>
             <ana-compile/>
         </ui-tab>
-        <ui-tab title="Collude">
-            <ui-icon slot="icon" icon="people"></ui-icon>
+        <ui-tab>
+            <div slot="header" class="ana-tab-header">
+                <ui-icon slot="icon" icon="people"></ui-icon>
+                <span>Collude</span>
+            </div>
             <ana-collude/>
         </ui-tab>
     </ui-tabs>
@@ -41,8 +50,15 @@ export default Vue.extend({
 
 <style lang="scss">
     @import "./stylesheets/_variables.scss";
-    .ui-tab-header-item__text {
+    .ui-tab-header-item--type-icon-and-text {
+        height: 2.5rem;
+    }
+    .ana-tab-header {
         font-family: $clueFontFamily;
         text-transform: none;
+        display: flex;
+        .ui-icon {
+            margin-right: 8px;
+        }
     }
 </style>
