@@ -152,7 +152,7 @@ export class CrosswordDisplay {
         if (this.callbacks.onFillCell && !forced) {
             this.callbacks.onFillCell(this.solverid, clueid, offset, value);
         }
-        // if (gridComplete(this.crossword.grid)) {
+        if (gridComplete(this.crossword.grid)) {
             if (!this.explosions) {
                 if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 0) {
                     console.log(this.crossword.meta.emoji);
@@ -161,9 +161,9 @@ export class CrosswordDisplay {
                     this.explosions = emojisplosions();
                 }
             }
-        // } else if (this.explosions) {
-        //     this.explosions.cancel();
-        // }
+        } else if (this.explosions) {
+            this.explosions.cancel();
+        }
     }
 
     // remote solver has changed their selection
