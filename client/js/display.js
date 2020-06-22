@@ -155,7 +155,7 @@ export class CrosswordDisplay {
         if (gridComplete(this.crossword.grid)) {
             if (!this.explosions) {
                 if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 0) {
-                    console.log(this.crossword.meta.emoji);
+                    // console.log(this.crossword.meta.emoji);
                     this.explosions = emojisplosions({emojis: defaultEmojis.concat(this.crossword.meta.emoji)});
                 } else {
                     this.explosions = emojisplosions();
@@ -163,6 +163,7 @@ export class CrosswordDisplay {
             }
         } else if (this.explosions) {
             this.explosions.cancel();
+            this.explosions = null;
         }
     }
 
