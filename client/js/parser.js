@@ -2,6 +2,8 @@ const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
 
+import {EMOJI_DICT} from './words_to_emoji.js';
+
 enolib.register(enotype);
 
 export function sampleCrossword() {
@@ -117,13 +119,44 @@ function buildGrid(cw, compiling) {
   return populateCells(cw, grid.cells, clues, compiling);
 }
 
+function addEmoji(cw, word) {
+  if (word.length <= 2) {
+    return;
+  }
+  const wordEmoji = EMOJI_DICT[word.toLowerCase()];
+  if (wordEmoji) {
+    for (var i = 0; i < wordEmoji.length; i++) {
+      cw.meta.emoji.push(wordEmoji[i]); 
+    }
+  }
+}
+
+function addAllEmoji(cw, word) {
+  addEmoji(cw, word);
+  // add plurals as well
+  if (word[word.length - 1] == 'S') {
+    addEmoji(cw, word.slice(0, word.length - 1));
+  }
+}
+
 function parseClue(cw, clue) {
   const clueid = clue.stringKey();
   const x = clue.toSection();
   const lengths = x.requiredList('lengths').requiredIntegerValues();
   var solution = x.optionalField('ans');
+
   if (solution) {
     solution = solution.requiredStringValue();
+    if (cw.meta.scramble == 'base64') {
+      solution = atob(solution);
+    }
+    var emoji = [];
+    var wordStart = 0;
+    for (var i = 0; i <= lengths.length - 1; i++) {
+      const word = solution.slice(wordStart, wordStart + lengths[i]);
+      addAllEmoji(cw, word);
+      wordStart = lengths[i];
+    }
   }
   const nwords = lengths.length;
   var sep = x.optionalList('separators');
@@ -197,7 +230,9 @@ function parseRef(cw, ref) {
 
 export function parse(input, compiling, options) {
   const cw = {
-    meta: {},
+    meta: {
+      emoji: [],
+    },
     grid: {},
     clues: {}
   };

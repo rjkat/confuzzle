@@ -5,6 +5,53 @@ import * as parser from './parser.js';
 import {GridDisplay} from './grid.js';
 import {ClueDisplay} from './clues.js';
 
+// https://github.com/joshuakgoldberg/emojisplosion/blob/HEAD/src/emojis.ts 
+export const defaultEmojis = [
+    "😁",
+    "😂",
+    "🤣",
+    "😃",
+    "😅",
+    "😆",
+    "😍",
+    "🤩",
+    "😎",
+    "🤔",
+    "😒",
+    "😭",
+    "😱",
+    "🤖",
+    "😻",
+    "🙀",
+    "🙈",
+    "🙉",
+    "🙊",
+    "🏄",
+    "💪",
+    "👌",
+    "👋",
+    "🙌",
+    "💝",
+    "💖",
+    "💗",
+    "🧡",
+    "💛",
+    "💚",
+    "💙",
+    "💜",
+    "🚀",
+    "⛄",
+    // These emoji are extra fun, so they get twice the inclusion!
+    "🔥",
+    "🔥",
+    "✨",
+    "✨",
+    "🎉",
+    "🎉",
+    "💯",
+    "💯",
+];
+
 function matchesClueId(el, clueid, offset) {
     const idparts = el.dataset.clueid.split(',');
     let offsetparts;
@@ -105,11 +152,18 @@ export class CrosswordDisplay {
         if (this.callbacks.onFillCell && !forced) {
             this.callbacks.onFillCell(this.solverid, clueid, offset, value);
         }
-        if (gridComplete(this.crossword.grid)) {
-            this.explosions = emojisplosions();
-        } else {
-            this.explosions && this.explosions.cancel();
-        }
+        // if (gridComplete(this.crossword.grid)) {
+            if (!this.explosions) {
+                if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 0) {
+                    console.log(this.crossword.meta.emoji);
+                    this.explosions = emojisplosions({emojis: defaultEmojis.concat(this.crossword.meta.emoji)});
+                } else {
+                    this.explosions = emojisplosions();
+                }
+            }
+        // } else if (this.explosions) {
+        //     this.explosions.cancel();
+        // }
     }
 
     // remote solver has changed their selection
