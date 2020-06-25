@@ -102,6 +102,7 @@ export function puzToEno(p) {
         author = '?'
     eno += "name: " + name + "\n";
     eno += "author: " + author + "\n";
+    eno += "scramble: base64\n";
     if (p.copyright)
         eno += "copyright: " + p.copyright + "\n";
     if (p.note) {
@@ -121,7 +122,11 @@ export function puzToEno(p) {
         eno += "col: " + (clue.col + 1) + "\n";
         eno += "text: " + p.clues[i] + "\n";
 
-        // eno += "soln: " + clue.solution + "\n";
+        // the length is in the clue, mark it as verbatim
+        if (p.clues[i].match(/\(\d+.*?\)\s*$/)) {
+            eno += "verbatim\n"
+        }
+        eno += "ans: " + Buffer.from(clue.solution).toString('base64') + "\n";
         eno += "lengths:\n    - " + clue.length + "\n";
     }
     return eno;

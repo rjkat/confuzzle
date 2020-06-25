@@ -35,7 +35,9 @@ function forEachCell(clue, cells, cellFn) {
 function populateCells(cw, cells, clues, compiling) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
-    cells[clue.row - 1][clue.col - 1].number = clue.number;
+    const numCol =  clue.isAcross ? clue.col - 1 + clue.numbering.offset : clue.col - 1;
+    const numRow = !clue.isAcross ? clue.row - 1 + clue.numbering.offset : clue.row - 1;
+    cells[numRow][numCol].number = clue.numbering.gridText;
     forEachCell(clue, cells, function (cell, offset) {
       if (cell.empty) {
         cell.clues = {};
@@ -172,12 +174,15 @@ function parseClue(cw, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
-  const number = clueid.match(/\d+/);
+  const textField = x.optionalField('text');
+  var parsedText = '';
+  if (textField) {
+    parsedText = textField.requiredStringValue();
+  }
   const parsed = {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
-    number: number ? parseInt(number, 10) : NaN,
-    text: x.requiredField('text').requiredStringValue(),
+    text: parsedText,
     separators: sep,
     verbatim: x.optionalEmpty('verbatim') ? true : false,
     lengths: lengths,
@@ -187,6 +192,35 @@ function parseClue(cw, clue) {
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue()
   };
+
+  const number = clueid.match(/\d+/);
+  var offset = 0;
+  var gridText = number ? parseInt(number, 10) : '';
+  var clueText = gridText + (parsed.isAcross ? 'A' : 'D');
+
+  const numbering = x.optionalSection('numbering');
+
+  if (numbering) {
+    offset = numbering.optionalField('offset');
+    if (offset) {
+      offset = offset.requiredIntegerValue();
+    }
+    const gridField = numbering.optionalField('grid');
+    if (gridField) {
+      gridText = gridField.optionalStringValue() || "";
+    }
+    const clueField = numbering.optionalField('clue');
+    if (clueField) {
+      clueText = clueField.optionalStringValue() || "";
+    }
+  }
+
+  parsed.numbering = {
+    offset: offset,
+    gridText: gridText,
+    clueText: clueText
+  };
+
 
   if (cw.grid.shading) {
     cw.grid.shading.forEach(rule => {
@@ -227,6 +261,7 @@ function parseRef(cw, ref) {
   if (i < sep.length) {
     refSeparators.push(sep[i]);
   }
+
 
   for (var i = 0; i < refIds.length; i++) {
     cw.clues[refIds[i]].refLengths = refLengths;

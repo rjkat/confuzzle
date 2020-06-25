@@ -81,15 +81,21 @@ lengths:
 separators:
     - -
 
+> custom numbering, of course you can have emoji 😉
+### numbering
+clue: ❤️ [1A]
+grid: ❤️
+offset: 6
+
 ## 1D
 row: 7
 col: 10
 ans: ONE
 
-> of course you can have emoji 😉
 text: ⬅️ duck low, without severed connection
 lengths:
     - 3
+
 
 ## 2D
 row: 7

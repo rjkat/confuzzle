@@ -1,7 +1,13 @@
 const iconv = require('iconv-lite');
 
-// strings in puz files are ISO-8859-1
-const PUZ_ENCODING = "ISO-8859-1";
+// Strings in puz files are ISO-8859-1.
+
+// From https://www.i18nqa.com/debug/table-iso8859-1-vs-windows-1252.html:
+// ISO-8859-1 (also called Latin-1) is identical to Windows-1252 (also called CP1252)
+// except for the code points 128-159 (0x80-0x9F). ISO-8859-1 assigns several control
+// codes in this range. Windows-1252 has several characters, punctuation, arithmetic
+// and business symbols assigned to these code points.
+const PUZ_ENCODING = "windows-1252";
 
 const PUZ_HEADER_CONSTANTS = {
     offsets: {
@@ -53,27 +59,57 @@ function readHeader(buf) {
     }
 }
 
-function puzEncode(s) {
-    return iconv.encode(s, PUZ_ENCODING);
+function puzEncode(s, encoding) {
+    if (!encoding) {
+        encoding = PUZ_ENCODING;
+    }
+    return iconv.encode(s, encoding);
 }
 
-function puzDecode(buf, start, end) {
-    return iconv.decode(buf.slice(start, end), PUZ_ENCODING);
+// http://blog.tatedavies.com/2012/08/28/replace-microsoft-chars-in-javascript/
+/**
+ * Replace Word characters with Ascii equivalent
+ **/
+function replaceWordChars(text) {
+    var s = text;
+    // smart single quotes and apostrophe
+    s = s.replace(/[\u2018|\u2019|\u201A]/g, "\'");
+    // smart double quotes
+    s = s.replace(/[\u201C|\u201D|\u201E]/g, "\"");
+    // ellipsis
+    s = s.replace(/\u2026/g, "...");
+    // dashes
+    s = s.replace(/[\u2013|\u2014]/g, "-");
+    // circumflex
+    s = s.replace(/\u02C6/g, "^");
+    // open angle bracket
+    s = s.replace(/\u2039/g, "");
+    // spaces
+    s = s.replace(/[\u02DC|\u00A0]/g, " ");
+    return s;
 }
 
-function splitNulls(buf) {
+function puzDecode(buf, start, end, encoding) {
+    if (!encoding) {
+        encoding = PUZ_ENCODING;
+    }
+    const s = iconv.decode(buf.slice(start, end), encoding);
+    return replaceWordChars(s);
+}
+
+function splitNulls(buf, encoding) {
     let i = 0;
     let prev = 0;
     let parts = [];
     while (i < buf.length) {
         if (buf[i] == 0x0) {
-            parts.push(puzDecode(buf, prev, i));
+            parts.push(puzDecode(buf, prev, i, encoding));
             prev = i + 1;
         }
         i++;
     }
     if (i > prev)
-        parts.push(puzDecode(buf, prev, i));
+        parts.push(puzDecode(buf, prev, i, encoding));
     return parts;
 }
 
@@ -119,17 +155,17 @@ function writeUInt16LE(buf, offset, val) {
     buf[offset + 1] = (val & 0xFF00) >> 8;
 }
 
-export class PuzPayload {
-    static from(x) {
+class PuzPayload {
+    static from(x, encoding) {
         const buf = Buffer.from(x);
         let header = readHeader(buf);
         const ncells = header.WIDTH * header.HEIGHT;
         let pos = PUZ_HEADER_CONSTANTS.lengths.HEADER;
-        const solution = puzDecode(buf, pos, pos + ncells);
+        const solution = puzDecode(buf, pos, pos + ncells, encoding);
         pos += ncells;
-        const state = puzDecode(buf, pos, pos + ncells);
+        const state = puzDecode(buf, pos, pos + ncells, encoding);
         pos += ncells;
-        const strings = splitNulls(buf.slice(pos));
+        const strings = splitNulls(buf.slice(pos), encoding);
         const fields = PUZ_STRING_FIELDS;
         const meta = {};
         fields.forEach(function(f, i) {
@@ -171,8 +207,6 @@ export class PuzPayload {
 
     buildBody() {
         let body = puzEncode(this.solution);
-        if (!this.state)
-            this.state = this.solution.replace(/[^\.]/g, '-');
         body = concatBytes(body, puzEncode(this.state));
         return concatBytes(body, this.buildStrings());
     }
@@ -233,6 +267,12 @@ export class PuzPayload {
         this.clues = clues;
         this.solution = solution;
         this.state = state;
+        if (!this.state)
+            this.state = this.solution.replace(/[^\.]/g, '-');
     }
+}
+
+module.exports = {
+    PuzPayload: PuzPayload
 }
 
