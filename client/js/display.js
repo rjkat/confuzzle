@@ -186,6 +186,11 @@ export class CrosswordDisplay {
     }
 
     setCrossword(crossword) {
+        if (this.crossword) {
+            for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+                this.clearOwnHighlight(clueid, true);
+            }
+        }
         this.crossword = crossword;
         const grid = this.grid;
         grid.setCrossword(crossword);
