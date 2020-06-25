@@ -208,7 +208,11 @@ export class ClueDisplay {
                     input.onblur = function () {
                         self.cwDisplay.clearOwnHighlight(clueid);
                     };
+
                     const cell = clue.cells[i];
+                    if (!cell) {
+                        continue;
+                    }
                     if (cell.shadingColor) {
                         input.style.backgroundColor = cell.shadingColor;
                     }
