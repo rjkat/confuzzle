@@ -105,10 +105,17 @@ export class CrosswordDisplay {
         if (this.callbacks.onFillCell && !forced) {
             this.callbacks.onFillCell(this.solverid, clueid, offset, value);
         }
-        if (gridComplete(this.crossword.grid)) {
-            this.explosions = emojisplosions();
-        } else {
-            this.explosions && this.explosions.cancel();
+        if (gridComplete(this.crossword.grid) && !this.explosions) {
+            if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 5) {
+                this.explosions = emojisplosions({
+                    emojis: this.crossword.meta.emoji,
+                });
+            } else {
+                this.explosions = emojisplosions();
+            }
+        } else if (this.explosions) {
+            this.explosions.cancel();
+            this.explosions = null;
         }
     }
 
@@ -131,6 +138,11 @@ export class CrosswordDisplay {
     }
 
     setCrossword(crossword) {
+        if (this.crossword) {
+            for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+                this.clearOwnHighlight(clueid, true);
+            }
+        }
         this.crossword = crossword;
         const grid = this.grid;
         grid.setCrossword(crossword);

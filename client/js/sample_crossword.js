@@ -19,7 +19,13 @@ author: RK
 type: example
 identifier: 2020/04/07
 copyright: Please respect copyright when using this site
-note: Note: select 'Compile' below to edit this crossword or upload your own.
+
+> a subset of HTML is supported for formatting
+note: Note: select <i>Compile</i> below to edit this crossword or upload your own.
+
+> answer scrambling, can be anything, defaults to "none".
+> "base64" is understood by the crossword engine.
+scramble: none
 
 > grid information
 # grid
@@ -31,13 +37,13 @@ height: 15
 > optional subsection for shading squares
 ## shading
 
-> subsections of "shading" can have coordinates
-> or lists of clues
-> subsection name is required but can be anything
+> subsections of "shading" can have coordinates or lists of clues. 
+> subsection name is required but can be anything.
 ### yellowclues
 color: #fefc34
 clues:
   - 1D
+  - 2D
 
 ### scarletletter
 color: #f00
@@ -61,6 +67,10 @@ col: 3
 > clue text (mandatory)
 text: Coarsen, so coarsely, this?
 
+> solution as shown in grid (optional, may be scrambled according to "scramble" field in metadata)
+> will be automatically filled in when compiling if scramble is "none"
+ans: ONEACROSS
+
 > lengths of each word in the clue (mandatory)
 lengths:
     - 3
@@ -71,16 +81,50 @@ lengths:
 separators:
     - -
 
-> planned extensions:
-> - clues that reference other clues
-> - emphasis in clue text
+> custom numbering, of course you can have emoji 😉
+### numbering
+clue: ❤️ [1A]
+grid: ❤️
+offset: 6
 
 ## 1D
 row: 7
 col: 10
-text: This - duck low, without any sound
+ans: ONE
+
+text: ⬅️ duck low, without severed connection
+lengths:
+    - 3
+
+
+## 2D
+row: 7
+col: 12
+ans: TWODOWN
+text: See 1D
 lengths:
     - 3
     - 4
+
+> section describing clues which are spread across multiple grid slots
+# references
+
+> primary clue
+## 1D
+
+> grid slots in order
+clues:
+    - 1D
+    - 2D
+
+> word separators between grid slots.
+> to split a single word across multiple slots, specify an empty list here.
+separators:
+    - /
+
+> bug reports and suggestions for new features are absolutely welcome:
+> https://github.com/rjkat/anagrind/issues/new
+
+> happy compiling!
 `;
 }

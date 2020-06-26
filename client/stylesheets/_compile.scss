@@ -4,6 +4,10 @@
   font-variant-ligatures: no-common-ligatures;
 }
 
+.line-numbers {
+  line-height: 1.5 !important;
+}
+
 #drop-area {
   font-family: $clueFontFamily;
   text-align: center;

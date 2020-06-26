@@ -2,6 +2,8 @@ const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
 
+import {EMOJI_DICT} from './words_to_emoji.js';
+
 enolib.register(enotype);
 
 export function sampleCrossword() {
@@ -33,7 +35,9 @@ function forEachCell(clue, cells, cellFn) {
 function populateCells(cw, cells, clues, compiling) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
-    cells[clue.row - 1][clue.col - 1].number = clue.number;
+    const numCol =  clue.isAcross ? clue.col - 1 + clue.numbering.offset : clue.col - 1;
+    const numRow = !clue.isAcross ? clue.row - 1 + clue.numbering.offset : clue.row - 1;
+    cells[numRow][numCol].number = clue.numbering.gridText;
     forEachCell(clue, cells, function (cell, offset) {
       if (cell.empty) {
         cell.clues = {};
@@ -60,7 +64,7 @@ function populateCells(cw, cells, clues, compiling) {
       }
       if (clue.solution) {
         cell.solution = clue.solution[offset];
-        if (!cw.meta.scramble && compiling) {
+        if ((!cw.meta.scramble || cw.meta.scramble == "none") && compiling) {
           cell.contents = cell.solution;
         }
       }
@@ -117,13 +121,51 @@ function buildGrid(cw, compiling) {
   return populateCells(cw, grid.cells, clues, compiling);
 }
 
+function addEmoji(cw, word) {
+  if (word.length <= 2) {
+    return;
+  }
+  const wordEmoji = EMOJI_DICT[word.toLowerCase()];
+  if (wordEmoji) {
+    // if there is only one emoji for this word, include lots of it
+    if (wordEmoji.length == 1) {
+      for (var i = 0; i < 3; i++) {
+        cw.meta.emoji.push(wordEmoji[0]); 
+      }
+    } else {
+      for (var i = 0; i < wordEmoji.length; i++) {
+        cw.meta.emoji.push(wordEmoji[i]); 
+      }
+    }
+  }
+}
+
+function addAllEmoji(cw, word) {
+  addEmoji(cw, word);
+  // add plurals as well
+  if (word[word.length - 1] == 'S') {
+    addEmoji(cw, word.slice(0, word.length - 1));
+  }
+}
+
 function parseClue(cw, clue) {
   const clueid = clue.stringKey();
   const x = clue.toSection();
   const lengths = x.requiredList('lengths').requiredIntegerValues();
   var solution = x.optionalField('ans');
+
   if (solution) {
     solution = solution.requiredStringValue();
+    if (cw.meta.scramble == 'base64') {
+      solution = atob(solution);
+    }
+    var emoji = [];
+    var wordStart = 0;
+    for (var i = 0; i <= lengths.length - 1; i++) {
+      const word = solution.slice(wordStart, wordStart + lengths[i]);
+      addAllEmoji(cw, word);
+      wordStart = lengths[i];
+    }
   }
   const nwords = lengths.length;
   var sep = x.optionalList('separators');
@@ -132,12 +174,15 @@ function parseClue(cw, clue) {
   } else {
     sep = nwords > 0 ? Array(nwords - 1).fill(",") : [];
   }
-  const number = clueid.match(/\d+/);
+  const textField = x.optionalField('text');
+  var parsedText = '';
+  if (textField) {
+    parsedText = textField.requiredStringValue();
+  }
   const parsed = {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
-    number: number ? parseInt(number, 10) : NaN,
-    text: x.requiredField('text').requiredStringValue(),
+    text: parsedText,
     separators: sep,
     verbatim: x.optionalEmpty('verbatim') ? true : false,
     lengths: lengths,
@@ -147,6 +192,35 @@ function parseClue(cw, clue) {
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue()
   };
+
+  const number = clueid.match(/\d+/);
+  var offset = 0;
+  var gridText = number ? parseInt(number, 10) : '';
+  var clueText = gridText + (parsed.isAcross ? 'A' : 'D');
+
+  const numbering = x.optionalSection('numbering');
+
+  if (numbering) {
+    offset = numbering.optionalField('offset');
+    if (offset) {
+      offset = offset.requiredIntegerValue();
+    }
+    const gridField = numbering.optionalField('grid');
+    if (gridField) {
+      gridText = gridField.optionalStringValue() || "";
+    }
+    const clueField = numbering.optionalField('clue');
+    if (clueField) {
+      clueText = clueField.optionalStringValue() || "";
+    }
+  }
+
+  parsed.numbering = {
+    offset: offset,
+    gridText: gridText,
+    clueText: clueText
+  };
+
 
   if (cw.grid.shading) {
     cw.grid.shading.forEach(rule => {
@@ -188,6 +262,7 @@ function parseRef(cw, ref) {
     refSeparators.push(sep[i]);
   }
 
+
   for (var i = 0; i < refIds.length; i++) {
     cw.clues[refIds[i]].refLengths = refLengths;
     cw.clues[refIds[i]].refSeparators = refSeparators;
@@ -197,7 +272,9 @@ function parseRef(cw, ref) {
 
 export function parse(input, compiling, options) {
   const cw = {
-    meta: {},
+    meta: {
+      emoji: [],
+    },
     grid: {},
     clues: {}
   };

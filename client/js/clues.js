@@ -138,7 +138,13 @@ export class ClueDisplay {
 
                 const idEl = document.createElement('span');
                 idEl.classList.add('clue-id');
-                const idText = (clue.refIds && clueid == clue.refIds[0]) ? clue.refIds.join(', ') : clueid;
+
+                const numbering = clue.numbering.clueText;
+                var idText = numbering;
+                if (!clue.verbatim && (clue.refIds && clueid == clue.refIds[0]))
+                {
+                    idText = clue.refIds.join(', ');
+                }
                 idEl.textContent = idText + ' ';
                 directions.appendChild(idEl);
 
@@ -202,7 +208,11 @@ export class ClueDisplay {
                     input.onblur = function () {
                         self.cwDisplay.clearOwnHighlight(clueid);
                     };
+
                     const cell = clue.cells[i];
+                    if (!cell) {
+                        continue;
+                    }
                     if (cell.shadingColor) {
                         input.style.backgroundColor = cell.shadingColor;
                     }
