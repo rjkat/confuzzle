@@ -9,17 +9,7 @@ import Vue from 'vue';
 import 'keen-ui/dist/keen-ui.css';
 import App from '../App.vue'
 
-require('prismjs/plugins/line-numbers/prism-line-numbers.css');
-require('../stylesheets/prism-eno-light.css');
-require('../stylesheets/prism-live.css');
 require('../stylesheets/main.scss');
-
-require('prismjs/prism.js');
-require('prismjs/plugins/line-numbers/prism-line-numbers.js');
-require('./prism-eno.js');
-require('blissfuljs');
-require('regenerator-runtime/runtime.js');
-require('./prism-live.js');
 
 const parser = require('./parser.js');
 
@@ -29,29 +19,17 @@ class AnagrindApp {
 
         this.client = new AnagrindClient(this, window.location.host);
         this.gridContainer = document.querySelector('#grid-container');
-        this.clueContainer = document.querySelector('.crossword-clue-panel');
 
-        this.panelContainer = document.querySelector('.crossword-panels');
+        // this.panelContainer = document.querySelector('.crossword-panels');
 
-        this.sourceTextArea = document.getElementById('crossword-source');
-        this.sourceTextArea.onkeyup = function () {
-            clearTimeout(self.renderDebounce)
-            self.renderDebounce = setTimeout(
-               () => self.renderCrossword(self.sourceTextArea.value, true),
-               500
-            );
-        }
-
-        this.errorDisplay = new ErrorDisplay(
-            document.querySelector('#debug-label'),
-            document.querySelector('#error-text'),
-            document.querySelector('#error-snippet')
-        );
+        // this.errorDisplay = new ErrorDisplay(
+        //     document.querySelector('#debug-label'),
+        //     document.querySelector('#error-text'),
+        //     document.querySelector('#error-snippet')
+        // );
         this.display = new CrosswordDisplay(
             {panelContainer: this.panelContainer,
-             gridContainer: this.gridContainer,
-             clueContainer: this.clueContainer,
-             sourceTextArea: this.sourceTextArea},
+             gridContainer: this.gridContainer},
             {onFillCell: (...args) => self.cellFilled(...args),
              onSelectionChanged: (...args) => self.selectionChanged(...args)}
         );
@@ -59,52 +37,17 @@ class AnagrindApp {
             document.querySelector('.crossword-solvers'),
             this.display.grid
         );
-        this.downloadButton = document.getElementById('download-puz-button');
-        this.downloadButton.onclick = () => self.downloadClicked();
 
         const pathParts = window.location.pathname.split('/');
         if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
             this.gridid = pathParts[2];
         }
 
-        this.downloadButton.onclick = () => self.downloadClicked();
-
-        
-        this.nameDiv = document.querySelector('#collude-enter-name');
-        this.nameInput = document.querySelector('#collude-name-input');
-        this.nameInput.onkeyup = e => self.nameEntered(
-            e, document.querySelector('#collude-name-length'), document.querySelector('#collude-button')
-        );
-
         if (!this.gridid) {
             this.showMain();
-            this.nameDiv.classList.remove('hidden');
-            this.selectTab('compile');
         } else {
             location.hash = 'join';
-            document.querySelector('#solve-tab-label').classList.add('hidden');
         }
-
-        this.joinInput = document.querySelector('#join-name-input');
-        this.joinInput.onkeyup = e => self.nameEntered(
-            e, document.querySelector('#join-name-length'), document.querySelector('#join-button')
-        );
-
-        this.shareDiv = document.querySelector('.crossword-share-link');
-        this.linkText = document.querySelector('.crossword-link-text');
-        this.colludeButton = document.querySelector('#collude-button');
-        this.colludeButton.onclick = () => self.colludeClicked();
-
-        this.joinButton = document.querySelector('#join-button');
-        this.joinButton.onclick = () => self.joinClicked();
-
-        const copyButton = document.querySelector('#copy-link-button');
-        copyButton.onclick = () => {
-            navigator.clipboard.writeText(self.linkText.textContent);
-        }
-
-        const dropArea = document.getElementById('drop-area');
-        const puzFile = document.getElementById('selected-puz-file');
 
         // DragDrop.setupDropArea(dropArea, puzFile, buf => self.puzFileUploaded(buf));
         
@@ -135,7 +78,7 @@ class AnagrindApp {
 
     gridJoined(msg) {
         this.selectTab('solve');
-        this.panelContainer.dataset.solverid = msg.solverid;
+        // this.panelContainer.dataset.solverid = msg.solverid;
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         // remove #join from URL
         history.replaceState(null, null, ' ');
@@ -204,38 +147,35 @@ class AnagrindApp {
     }
 
     setCrosswordSource(source) {
-        this.sourceTextArea.value = source;
-        this.sourceTextArea.dispatchEvent(new Event('input'));
-        this.renderCrossword(source);
     }
 
-    renderCrossword(source, compiling) {
-        if (!source){
-            source = this.sourceTextArea.value;
-        }
+    // renderCrossword(source, compiling) {
+    //     if (!source){
+    //         source = this.sourceTextArea.value;
+    //     }
 
-        let crossword;
-        try {
-            crossword = parser.parse(source, compiling);
-        } catch(err) {
-            this.errorDisplay.showError(err);
-            return;
-        }
-        this.errorDisplay.clearError();
-        ['name', 'author', 'identifier'].forEach(x => {
-            let val = crossword.meta[x];
-            let el = document.getElementById('crossword-meta-' + x);
-            el.textContent = x == 'author' ? 'by ' : '';
-            el.textContent += val ? val : '';
-        });
+    //     let crossword;
+    //     try {
+    //         crossword = parser.parse(source, compiling);
+    //     } catch(err) {
+    //         this.errorDisplay.showError(err);
+    //         return;
+    //     }
+    //     this.errorDisplay.clearError();
+    //     ['name', 'author', 'identifier'].forEach(x => {
+    //         let val = crossword.meta[x];
+    //         let el = document.getElementById('crossword-meta-' + x);
+    //         el.textContent = x == 'author' ? 'by ' : '';
+    //         el.textContent += val ? val : '';
+    //     });
 
-        this.display.setCrossword(crossword);
+    //     this.display.setCrossword(crossword);
 
-        // yuck
-        this.solvers.grid = this.display.grid;
+    //     // yuck
+    //     this.solvers.grid = this.display.grid;
 
-        document.getElementById('join').classList.add('hidden');
-    }
+    //     document.getElementById('join').classList.add('hidden');
+    // }
 
     showMain() {
         document.body.style.backgroundColor = "#F0F8FF";
@@ -260,8 +200,9 @@ class AnagrindApp {
     }
 }
 
-new Vue({
-    render: createElement => createElement(App),
-}).$mount('#app');
-
 const app = new AnagrindApp();
+
+const vm = new App({
+    el: '#app',
+    cwDisplay: app.display
+});

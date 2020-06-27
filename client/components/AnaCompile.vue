@@ -13,13 +13,13 @@
                         </div>
                     </ui-popover>
                 </button>
-                <textarea class="prism-live language-eno" id="crossword-source"></textarea>
+                <ana-editor/>
             </div>
         </div>
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
 import { UiButton, UiFileupload, UiIcon, UiPopover } from 'keen-ui';
 

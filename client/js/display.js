@@ -3,7 +3,6 @@ import * as KeyCode from 'keycode-js';
 import * as parser from './parser.js';
 
 import {GridDisplay} from './grid.js';
-import {ClueDisplay} from './clues.js';
 
 function matchesClueId(el, clueid, offset) {
     const idparts = el.dataset.clueid.split(',');
@@ -35,7 +34,6 @@ export class CrosswordDisplay {
     constructor(els, callbacks) {
         this.els = els;
         this.grid = new GridDisplay(this, els.gridContainer);
-        this.clues = new ClueDisplay(this, els.clueContainer);
         // to avoid flickering when clearing highlight state
         this.highlightDebounceMs = 50;
         this.sourceTextArea = els.sourceTextArea;
@@ -62,7 +60,7 @@ export class CrosswordDisplay {
             return;
         }
         if (force || !this.isSelected(clueid)) {
-            this.clues.clearHighlightClue(clueid);
+            // this.clues.clearHighlightClue(clueid);
             this.grid.clearHighlightClue(clueid, this.solverid);
         }
     }
@@ -71,7 +69,7 @@ export class CrosswordDisplay {
         if (!clueid) {
             return
         }
-        this.clues.highlightClue(clueid, scroll);
+        // this.clues.highlightClue(clueid, scroll);
         this.grid.highlightClue(clueid, this.solverid);
     }
 
@@ -172,6 +170,6 @@ export class CrosswordDisplay {
         // });
         // panels.style.top = gridTable.offsetTop + 'px';
         // panels.style.height = gridTable.offsetHeight + 'px';
-        this.clues.setCrossword(crossword);
+        // this.clues.setCrossword(crossword);
     }
 }

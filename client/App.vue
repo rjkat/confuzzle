@@ -5,9 +5,7 @@
                 <ui-icon slot="icon" icon="extension"></ui-icon>
                 <span>Solve</span>
             </div>
-            <div id="solve-panel">
-                <div class="crossword-clue-panel"></div>
-            </div>
+            <ana-solve :cw-display="cwDisplay"/>
         </ui-tab>
         <ui-tab>
             <div slot="header" class="ana-tab-header">
@@ -31,14 +29,19 @@ import Vue from "vue";
 import { UiIcon, UiTab, UiTabs } from 'keen-ui';
 import AnaCompile from './components/AnaCompile.vue'
 import AnaCollude from './components/AnaCollude.vue'
+import AnaSolve from './components/AnaSolve.vue'
 
 export default Vue.extend({
   components: {
     AnaCompile,
     AnaCollude,
+    AnaSolve,
     UiIcon,
     UiTab,
     UiTabs
+  },
+  props: {
+    cwDisplay: Object,
   },
   data() {
     return {
