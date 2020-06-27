@@ -34,8 +34,7 @@ export class AnagrindClient {
 
     gridJoined(msg) {
         this.app.solverid = msg.solverId;
-        this.app.display.solverid = msg.solverid; 
-        this.app.setCrosswordSource(msg.crossword);
+        this.app.crosswordSource = msg.crossword;
         const self = this;
         msg.events.forEach(event => self[self.handlers[event.action]](event));
         this.onJoinSuccess(msg);
@@ -43,17 +42,17 @@ export class AnagrindClient {
 
     solversChanged(msg) {
         // console.log('solversChanged: ' + JSON.stringify(msg));
-        this.app.solvers.solversChanged(msg.solvers);
+        this.app.solvers = msg.solvers;
     }
 
     selectionChanged(msg) {
         // console.log('got selectionChanged' + JSON.stringify(msg));
-        this.app.display.selectionChanged(msg);
+        this.app.selectionChanged(msg);
     }
 
     fillCell(msg) {
         // console.log('got fillCell' + JSON.stringify(msg));
-        this.app.display.fillCell(msg.clueid, msg.offset, msg.value, true);
+        this.app.fillCell(msg.clueid, msg.offset, msg.value, true);
     }
 
     sendUpdate(event) {

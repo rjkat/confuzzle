@@ -13,7 +13,7 @@
                         </div>
                     </ui-popover>
                 </button>
-                <ana-editor/>
+                <ana-editor></ana-editor>
             </div>
         </div>
     </div>
@@ -22,9 +22,11 @@
 <script>
 import Vue from "vue";
 import { UiButton, UiFileupload, UiIcon, UiPopover } from 'keen-ui';
+import AnaEditor from './AnaEditor.vue'
 
 export default Vue.extend({
   components: {
+    AnaEditor,
     UiButton,
     UiFileupload,
     UiIcon,

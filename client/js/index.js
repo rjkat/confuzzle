@@ -77,7 +77,6 @@ class AnagrindApp {
     }
 
     gridJoined(msg) {
-        this.selectTab('solve');
         // this.panelContainer.dataset.solverid = msg.solverid;
         this.linkText.textContent = 'https://anagr.in/d/' + msg.gridid;
         // remove #join from URL
@@ -105,23 +104,6 @@ class AnagrindApp {
         const name = el.target.value;
         nameLength.textContent = name.length;
         button.disabled = !name.length;
-    }
-
-    selectTab(tabGroup, tabName) {
-        const tab = document.getElementById(tabName + '-tab');
-        if (!tab)
-            return;
-
-        document.querySelectorAll('.' + tabGroup + '-panel').forEach(el => {
-            el.classList.add('hidden');
-        });
-        document.getElementById(tabName + '-panel').classList.remove('hidden');
-
-        tab.parentElement.childNodes.forEach(el => {
-            if (el.nodeName == 'LI')
-                el.classList.remove('selected');
-        });
-        tab.classList.add('selected');
     }
 
     cellFilled(solverid, clueid, offset, value) {

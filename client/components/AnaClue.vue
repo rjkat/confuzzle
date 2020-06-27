@@ -9,14 +9,12 @@
                        maxlength="1"
                        :data-clueid="clue.id"
                        :data-offset="i"
-                       @click="selectClueFromInput($event)"
-                       @keypress="handleKeypress($event)"
+                       @click.preventdefault="selectClueFromInput($event)"
+                       @keypress.preventdefault="handleKeypress($event)"
                        @keydown="handleKeydown($event)"
                        @mousedown.preventdefault
-                       @blur="cwDisplay.clearOwnHighlight(clue.id)"
-                       :style="{
-                            backgroundColor: clue.shadingColor || clue.cells[i].shadingColor
-                        }">
+                       @blur="$emit('clear-own-highlight', clue.id)"
+                       :style="{backgroundColor: shadingColor(i)}">
                 </input>
             </div>
         </div>
@@ -25,6 +23,7 @@
 
 <script>
 import Vue from "vue";
+import * as KeyCode from 'keycode-js';
 
 const sanitizeHtml = require('sanitize-html');
 
@@ -35,8 +34,9 @@ export default Vue.extend({
   },
   computed: {
     idText: function () {
-        let idText = numbering;
-        if (!clue.verbatim && (clue.refIds && thisid == clue.refIds[0]))
+        const clue = this.clue;
+        let idText = clue.numbering.clueText;
+        if (!clue.verbatim && (clue.refIds && this.clue.id == clue.refIds[0]))
         {
             idText = clue.refIds.join(', ');
         }
@@ -84,6 +84,13 @@ export default Vue.extend({
     }
   },
   methods: {
+    shadingColor: function(i) {
+        if (this.clue)
+            return this.clue.shadingColor;
+        if (this.clue.cells[i])
+            return this.clue.cells[i].shadingColor;
+        return '';
+    },
     moveInput: function(input, direction) {
         const el = input.parentNode;
         const nextoffset = parseInt(input.dataset.offset, 10) + direction;
@@ -96,22 +103,20 @@ export default Vue.extend({
         } else if (nextoffset >= 0) {
             // only blur when going off the end
             input.blur();
-            this.cwDisplay.clearOwnHighlight(input.dataset.clueid);
         }
     },
     fillCell: function(input, value) {
         input.value = value;
-        this.cwDisplay.fillCell(input.dataset.clueid, input.dataset.offset, value);
+        this.$emit('fill-cell', {clueid: input.dataset.clueid, offset: input.dataset.offset, value: value});
+        this.$emit('clear-own-highlight', input.dataset.clueid);
     },
     selectClueFromInput: function (event) {
         const input = event.target;
-        event.preventDefault();
-        this.cwDisplay.selectClueFromInput(input.dataset.clueid);
+        this.$emit('select-clue', input.dataset.clueid);
         input.focus();
         input.select();
     },
     handleKeypress: function(event) {
-        event.preventDefault();
         const input = event.target;
         this.fillCell(input, event.key);
         this.moveInput(input, 1);
@@ -135,7 +140,6 @@ export default Vue.extend({
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
                 input.blur();
-                this.cwDisplay.clearOwnHighlight(input.dataset.clueid);
                 event.preventDefault();
                 break;
         }

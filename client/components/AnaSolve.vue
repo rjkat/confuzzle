@@ -2,9 +2,9 @@
 <div id="solve-panel">
     <div class="crossword-clue-panel">
         <div class="crossword-clue-container">
-            <div class="author-note" v-if="crossword.meta.note">{{noteHTML}}</div>
-            <ana-clue-list is-across="true"  clues="acrossClues"/>
-            <ana-clue-list is-across="false" clues="downClues"/>
+            <div class="author-note" v-if="crossword && crossword.meta.note">{{noteHTML}}</div>
+            <ana-clue-list data-across :clues="acrossClues"></ana-clue-list>
+            <ana-clue-list data-down :clues="downClues"></ana-clue-list>
         </div>
     </div>
 </div>
@@ -21,16 +21,15 @@ export default Vue.extend({
     AnaClueList
   },
   props: {
-    cwDisplay: Object,
+    crossword: Object,
   },
   computed: {
-    crossword: function () {
-        return this.cwDisplay.crossword;
-    },
     acrossClues: function () {
+        if (!this.crossword)
+            return [];
         let cs = [];
         for (let [clueid, clue] of
-             Object.entries(this.cwDisplay.crossword.clues)) {
+             Object.entries(this.crossword.clues)) {
             if (clue.isAcross) {
                 cs.push(clue);
             }
@@ -38,9 +37,11 @@ export default Vue.extend({
         return cs;
     },
     downClues: function () {
+        if (!this.crossword)
+            return [];
         let cs = [];
         for (let [clueid, clue] of
-             Object.entries(this.cwDisplay.crossword.clues)) {
+             Object.entries(this.crossword.clues)) {
             if (!clue.isAcross) {
                 cs.push(clue);
             }
@@ -48,7 +49,9 @@ export default Vue.extend({
         return cs;
     },
     noteHTML: function () {
-        let meta = this.cwDisplay.crossword.meta;
+        if (!this.crossword)
+            return '';
+        let meta = this.crossword.meta;
         return sanitizeHtml(meta.note, {
             allowedTags: [ 
                 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
