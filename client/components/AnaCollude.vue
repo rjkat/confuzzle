@@ -21,7 +21,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue';
 import { UiButton } from 'keen-ui';
 

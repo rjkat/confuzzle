@@ -12,7 +12,7 @@
                 <ui-icon slot="icon" icon="build"></ui-icon>
                 <span>Compile</span>
             </div>
-            <ana-compile></ana-compile>
+            <ana-compile :crossword-source="crosswordSource"></ana-compile>
         </ui-tab>
         <ui-tab>
             <div slot="header" class="ana-tab-header">

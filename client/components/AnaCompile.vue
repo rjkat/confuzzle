@@ -1,7 +1,7 @@
 <template>
     <div id="compile-panel-wrapper">
         <div id="compile-panel">
-            <div class="compile-panel line-numbers panel" id="edit-panel">
+            <div class="compile-panel panel" id="edit-panel">
                 <ui-fileupload color="primary" id="selected-puz-file" name="puz-file" accept="application/x-crossword">Upload .puz</ui-fileupload>
                 <ui-button icon="get_app" id="download-puz-button">Download .puz</ui-button>
                 <button class="popover-trigger">
@@ -13,7 +13,7 @@
                         </div>
                     </ui-popover>
                 </button>
-                <ana-editor></ana-editor>
+                <ana-editor :crossword-source="crosswordSource"></ana-editor>
             </div>
         </div>
     </div>
@@ -31,6 +31,9 @@ export default Vue.extend({
     UiFileupload,
     UiIcon,
     UiPopover,
+  },
+  props: {
+    crosswordSource: String,
   },
   data() {
     return {
