@@ -41,38 +41,6 @@ export class CrosswordDisplay {
         this.solverid = 0;
     }
 
-    isSelected(clueid) {
-        if (clueid == this.selectedid) {
-            return true;
-        }
-        const refs = this.crossword.clues[clueid].refIds;
-        if (refs) {
-            for (var i = 0; i < refs.length; i++) {
-                if (refs[i] == this.selectedid) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    clearOwnHighlight(clueid, force) {
-        if (!clueid) {
-            return;
-        }
-        if (force || !this.isSelected(clueid)) {
-            // this.clues.clearHighlightClue(clueid);
-            this.grid.clearHighlightClue(clueid, this.solverid);
-        }
-    }
-
-    drawOwnHighlight(clueid, scroll) {
-        if (!clueid) {
-            return
-        }
-        // this.clues.highlightClue(clueid, scroll);
-        this.grid.highlightClue(clueid, this.solverid);
-    }
-
     fillCell(clueid, offset, value, forced) {
         const self = this;
         function fill(clueid, offset) {
@@ -124,15 +92,6 @@ export class CrosswordDisplay {
         } else {
             this.grid.clearHighlightClue(msg.clueid, msg.solverid);
         }
-    }
-
-    // local solver has changed their selection
-    selectClue(clueid, scroll) {
-        this.callbacks.onSelectionChanged(false, this.solverid, this.selectedid);
-        this.clearOwnHighlight(this.selectedid, true);
-        this.selectedid = clueid;
-        this.drawOwnHighlight(this.selectedid, scroll);
-        this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     }
 
     setCrossword(crossword) {

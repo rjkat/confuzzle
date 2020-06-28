@@ -1,29 +1,3 @@
-import * as KeyCode from 'keycode-js';
-const uniqid = require('uniqid');
-
-// https://graphics.stanford.edu/~seander/bithacks.html
-function nBitsSet(v) {
-    let n = 0;
-    while (v) {
-        n++;
-        v &= v - 1; // clear the least significant bit set
-    }
-    return n;
-}
-
-function clearSolverMask(td, solverid, clearAcross, clearDown) {
-    if (!td) {
-        return;
-    }
-    if (clearAcross) {
-        td.dataset.acrossMask &= ~(1 << solverid);
-    }
-    if (clearDown) {
-        td.dataset.downMask &= ~(1 << solverid);
-    }
-    td.dataset.solverMask = (td.dataset.acrossMask | td.dataset.downMask);
-}
-
 export class GridDisplay {
     constructor(cwDisplay, parent) {
         this.cwDisplay = cwDisplay;
@@ -42,41 +16,6 @@ export class GridDisplay {
         this.gridContainer.innerHTML = "";
         this.drawGrid(crossword);
         this.createInput();
-    }
-
-    onClick(e) {
-        e.preventDefault();
-        const target = e.target;
-        const input = this.inputCell;
-        
-
-        let td = target;
-        if (target.classList.contains('cell-highlight-border')) {
-            td = target.parentNode;
-        }
-        // select cell
-        if (td.nodeName != 'TD') {
-            return;
-        }
-        if (td.dataset.empty !== undefined) {
-            return;
-        }
-        const row = parseInt(td.dataset.row, 10);
-        const col = parseInt(td.dataset.col, 10);
-
-        const offsets = td.dataset.offset.split(',');
-        // if it's both a down and across clue, and they've
-        // clicked on a first letter, change direction to match
-        // the clue with the first letter
-        if (offsets.length > 1) {
-            for (let i = 0; i < offsets.length; i++) {
-                if (parseInt(offsets[i], 10) == 0) {
-                    this.inputAcross = (i == 0);
-                    break;
-                }
-            }
-        }
-        this.setInputCell(row, col);
     }
 
     createInput() {

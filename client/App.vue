@@ -1,46 +1,87 @@
 <template>
-    <ui-tabs type="icon-and-text">
-        <ui-tab>
-            <div slot="header" class="ana-tab-header">
-                <ui-icon slot="icon" icon="extension"></ui-icon>
-                <span>Solve</span>
-            </div>
-            <ana-solve :crossword="crossword"></ana-solve>
-        </ui-tab>
-        <ui-tab>
-            <div slot="header" class="ana-tab-header">
-                <ui-icon slot="icon" icon="build"></ui-icon>
-                <span>Compile</span>
-            </div>
-            <ana-compile :crossword-source="crosswordSource"></ana-compile>
-        </ui-tab>
-        <ui-tab>
-            <div slot="header" class="ana-tab-header">
-                <ui-icon slot="icon" icon="people"></ui-icon>
-                <span>Collude</span>
-            </div>
-            <ana-collude></ana-collude>
-        </ui-tab>
-    </ui-tabs>
+<div class="body-row" id="crossword-content">
+    <div id="grid-container">
+        <ana-cell-grid :crossword="crossword"></ana-cell-grid>
+        <div class="copyright-footer" id="copyright-text"></div>
+    </div>
+    <div class="body-col crossword-panels">
+        <ui-tabs type="icon-and-text">
+            <ui-tab>
+                <div slot="header" class="ana-tab-header">
+                    <ui-icon slot="icon" icon="extension"></ui-icon>
+                    <span>Solve</span>
+                </div>
+                <ana-solve :crossword="crossword"></ana-solve>
+            </ui-tab>
+            <ui-tab>
+                <div slot="header" class="ana-tab-header">
+                    <ui-icon slot="icon" icon="build"></ui-icon>
+                    <span>Compile</span>
+                </div>
+                <ana-compile :crossword-source="crosswordSource"></ana-compile>
+            </ui-tab>
+            <ui-tab>
+                <div slot="header" class="ana-tab-header">
+                    <ui-icon slot="icon" icon="people"></ui-icon>
+                    <span>Collude</span>
+                </div>
+                <ana-collude></ana-collude>
+            </ui-tab>
+        </ui-tabs>
+    </div>
+</div>
 </template>
+
+<style lang="scss">
+@import "./stylesheets/_variables.scss";
+.ui-tab-header-item--type-icon-and-text {
+    height: 2.5rem;
+}
+.ana-tab-header {
+    font-family: $clueFontFamily;
+    text-transform: none;
+    display: flex;
+    .ui-icon {
+        margin-right: 8px;
+    }
+}
+#grid-container {
+    margin-right: $displayPadding;
+    width: 100%;
+}
+.copyright-footer {
+    width: 100%;
+    display: block;
+    height: $tabHeight;
+    font-family: $clueFontFamily;
+    margin-top: .5em;
+    text-transform: none;
+}
+</style>
 
 <script>
 import Vue from "vue";
-import { UiIcon, UiTab, UiTabs } from 'keen-ui';
+import { UiIcon, UiTab, UiTabs, UiToolbar } from 'keen-ui';
+import AnaCellGrid from './components/AnaCellGrid.vue'
 import AnaCompile from './components/AnaCompile.vue'
 import AnaCollude from './components/AnaCollude.vue'
 import AnaSolve from './components/AnaSolve.vue'
 
 const parser = require('./js/parser.js');
+import {readEno, enoToPuz} from './js/eno.js'
+
+import 'keen-ui/dist/keen-ui.css';
 
 export default Vue.extend({
   components: {
+    AnaCellGrid,
     AnaCompile,
     AnaCollude,
     AnaSolve,
     UiIcon,
     UiTab,
-    UiTabs
+    UiTabs,
+    UiToolbar
   },
   props: {
     gridid: String,
@@ -64,6 +105,36 @@ export default Vue.extend({
     };
   },
   methods: {
+    isSelected(clueid) {
+        if (clueid == this.selectedid) {
+            return true;
+        }
+        const refs = this.crossword.clues[clueid].refIds;
+        if (refs) {
+            for (var i = 0; i < refs.length; i++) {
+                if (refs[i] == this.selectedid) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+    clearOwnHighlight(clueid, force) {
+        if (!clueid) {
+            return;
+        }
+        if (force || !this.isSelected(clueid)) {
+            // this.clues.clearHighlightClue(clueid);
+            this.grid.clearHighlightClue(clueid, this.solverid);
+        }
+    },
+    drawOwnHighlight(clueid, scroll) {
+        if (!clueid) {
+            return
+        }
+        // this.clues.highlightClue(clueid, scroll);
+        this.grid.highlightClue(clueid, this.solverid);
+    },
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
@@ -71,6 +142,14 @@ export default Vue.extend({
         } else {
             this.grid.clearHighlightClue(msg.clueid, msg.solverid);
         }
+    },
+    // local solver has changed their selection
+    selectClue(clueid, scroll) {
+        this.callbacks.onSelectionChanged(false, this.solverid, this.selectedid);
+        this.clearOwnHighlight(this.selectedid, true);
+        this.selectedid = clueid;
+        this.drawOwnHighlight(this.selectedid, scroll);
+        this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     },
     fillCell(clueid, offset, value, forced) {
         const self = this;
@@ -144,18 +223,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss">
-    @import "./stylesheets/_variables.scss";
-    .ui-tab-header-item--type-icon-and-text {
-        height: 2.5rem;
-    }
-    .ana-tab-header {
-        font-family: $clueFontFamily;
-        text-transform: none;
-        display: flex;
-        .ui-icon {
-            margin-right: 8px;
-        }
-    }
-</style>

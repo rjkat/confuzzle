@@ -2,17 +2,17 @@
     <div class="clue-directions">
         <span class="clue-id">{{idText}} </span>
         <span class="clue-text">{{sanitizedText}}</span>
-        <span class="clue-length">{{lengthText}}}</span>
+        <span class="clue-length">{{lengthText}}</span>
         <div class="crossword-answer-container">
             <div class="crossword-clue-input">
                 <input v-for="i in clue.totalLength"
                        maxlength="1"
                        :data-clueid="clue.id"
                        :data-offset="i"
-                       @click.preventdefault="selectClueFromInput($event)"
-                       @keypress.preventdefault="handleKeypress($event)"
+                       @click.prevent="selectClueFromInput($event)"
+                       @keypress.prevent="handleKeypress($event)"
                        @keydown="handleKeydown($event)"
-                       @mousedown.preventdefault
+                       @mousedown.prevent
                        @blur="$emit('clear-own-highlight', clue.id)"
                        :style="{backgroundColor: shadingColor(i)}">
                 </input>

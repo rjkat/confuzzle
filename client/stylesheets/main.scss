@@ -7,7 +7,6 @@
 @import 'solvers';
 @import 'solverdisplay';
 
-@import 'grid';
 @import 'clues';
 @import 'compile';
 @import 'collude';
@@ -53,10 +52,6 @@ body {
 
 .body-col {
     display: flex;
-}
-
-#grid-container {
-    margin-right: $displayPadding;
 }
 
 .crossword-panels {

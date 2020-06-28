@@ -104,6 +104,8 @@ function buildGrid(cw, compiling) {
     let rowCells = [];
     for (let col = 1; col <= grid.width; col++) {
       const cell = {
+        col: col - 1,
+        row: row - 1,
         empty: true,
         contents: ''
       };

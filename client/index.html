@@ -15,7 +15,7 @@
 
 <body>
 
-<div id="main" class="hidden">
+<div id="main">
     <div class="header-row">
         <div class="header-col" id="crossword-title">
             <div class=crossword-meta>
@@ -27,33 +27,9 @@
         </div>
         <div class="header-col crossword-solvers hidden"></div>
     </div>
-
-    <div class="content">
-        <div class="body-row" id="crossword-content">
-            <div>
-                <div id="grid-container"></div>
-                <div class="copyright-footer" id="copyright-text"></div>
-            </div>
-            <div class="body-col crossword-panels" id="app"></div>
-        </div>
-    </div>
+    <div class="content" id="app"></div>
     <div class="footer">
         <a href="https://github.com/rjkat/anagrind"><i class="fab fa-github"></i></a> <a href="https://github.com/rjkat/anagrind">rjkat/anagrind</a>
-    </div>
-</div>
-
-<div class="modal" id="join">
-    <div class="modal-content" role="document">
-        <div class="modal-header">
-            <div class="modal-title">anagrind.com</div>
-        </div>
-        <div class="modal-body">
-            <div class="crossword-enter-name">
-                <label for="name"><b>0A Your name (<span id="join-name-length">0</span>)</b></label><br>
-                <input id="join-name-input" class="crossword-name-input" name="name" autocomplete="off"><br>
-                <input type="submit" class="action-button" value="Join" id="join-button" disabled>
-            </div>
-        </div>
     </div>
 </div>
 
