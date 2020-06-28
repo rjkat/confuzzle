@@ -4,6 +4,17 @@
     </div>
 </template>
 
+<style lang="scss">
+.line-numbers {
+  height: 100%;
+  width: 100%;
+}
+.prism-live {
+  height: 100%;
+  width: 100%;
+}
+</style>
+
 <script>
 require('prismjs/plugins/line-numbers/prism-line-numbers.css');
 require('../stylesheets/prism-eno-light.css');

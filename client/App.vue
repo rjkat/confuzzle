@@ -27,7 +27,7 @@
                 color="white"
                 has-dropdown
                 icon="more_vert"
-                ref="dropdownButton1"
+                ref="menuDropdown"
                 size="large"
             >
                 <ui-menu
@@ -35,7 +35,8 @@
                     has-icons
                     slot="dropdown"
                     :options="menuOptions"
-                    @close="$refs.dropdownButton1.closeDropdown()"
+                    @select="selectMenuOption($event)"
+                    @close="$refs.menuDropdown.closeDropdown()"
                 ></ui-menu>
             </ui-icon-button>
         </div>
@@ -75,9 +76,14 @@
 #grid-container {
     display: flex;
     justify-content: flex-start;
-    width: 100%;
     height: 100%;
 }
+
+#editor {
+    max-height: 30em;
+    overflow-x: scroll;
+}
+
 #grid {
     flex: none;
 }
@@ -104,20 +110,6 @@ import AnaSolve from './components/AnaSolve.vue'
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
-const menuOptions = [
-    {
-        label: 'Edit',
-        icon: 'edit'
-    },
-    {
-        label: 'Download',
-        icon: 'get_app'
-    },
-    {
-        label: 'About',
-        icon: 'info'
-    }
-];
 
 export default Vue.extend({
   components: {
@@ -143,15 +135,49 @@ export default Vue.extend({
   computed: {
     crossword() {
         return parser.parse(this.crosswordSource, this.compiling);
+    },
+    menuOptions() {
+        if (!this.compiling) {
+            return [{
+                label: 'Edit',
+                icon: 'edit'
+            },
+            {
+                label: 'Download',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        } else {
+            return [{
+                label: 'Preview',
+                icon: 'visibility'
+            },
+            {
+                label: 'Download',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        }
     }
   },
   data() {
     return {
-      menuOptions: menuOptions,
       bundler: "Parcel"
     };
   },
   methods: {
+    selectMenuOption(option) {
+        if (option.label == 'Edit' || option.label == 'Preview') {
+            this.compiling = !this.compiling;
+        }
+        console.log(option);
+    },
     isSelected(clueid) {
         if (clueid == this.selectedid) {
             return true;

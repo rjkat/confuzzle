@@ -1,15 +1,5 @@
 <template>
 <div>
-    
-    <button class="popover-trigger">
-        Debug
-        <ui-popover open-on="mouseenter">
-            <div id="error-text"></div>
-            <div id="error-snippet-wrapper">
-                <pre id="error-snippet"></pre>
-            </div>
-        </ui-popover>
-    </button>
     <ana-editor :crossword-source="crosswordSource"></ana-editor>
 </div>
 </template>
