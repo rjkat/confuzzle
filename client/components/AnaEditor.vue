@@ -1,5 +1,7 @@
 <template>
-  <textarea class="prism-live language-eno" id="crossword-source" @keyup="$emit('update-source', $event.target.value)" :value="crosswordSource"></textarea>
+    <div class="line-numbers">
+        <textarea class="prism-live language-eno" id="crossword-source" ref="textarea" @keyup="$emit('update-source', $event.target.value)" :value="crosswordSource"></textarea>
+    </div>
 </template>
 
 <script>
@@ -23,6 +25,9 @@ export default Vue.extend({
     return {
       bundler: "Parcel",
     };
+  },
+  mounted() {
+    new Prism.Live(this.$refs.textarea);
   }
 });
 </script>

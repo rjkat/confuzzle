@@ -1,7 +1,6 @@
 <template>
 <div>
-    <ui-fileupload color="primary" id="selected-puz-file" name="puz-file" accept="application/x-crossword">Upload .puz</ui-fileupload>
-    <ui-button icon="get_app" id="download-puz-button">Download .puz</ui-button>
+    
     <button class="popover-trigger">
         Debug
         <ui-popover open-on="mouseenter">

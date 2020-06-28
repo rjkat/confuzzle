@@ -9,13 +9,42 @@
             </span>
         </template>
         <div slot="actions">
-            <ui-switch label="Editing" v-model="compiling"></ui-switch>
-            <ui-button raised color="accent">Share</ui-button>
+            <ui-icon-button
+                color="white"
+                has-dropdown
+                icon="get_app"
+                size="large"
+            >
+            </ui-icon-button>
+            <ui-icon-button
+                color="white"
+                has-dropdown
+                icon="share"
+                size="large"
+            >
+            </ui-icon-button>
+            <ui-icon-button
+                color="white"
+                has-dropdown
+                icon="more_vert"
+                ref="dropdownButton1"
+                size="large"
+            >
+                <ui-menu
+                    contain-focus
+                    has-icons
+                    slot="dropdown"
+                    :options="menuOptions"
+                    @close="$refs.dropdownButton1.closeDropdown()"
+                ></ui-menu>
+            </ui-icon-button>
         </div>
     </ui-toolbar>
     <div class="content" id="app">
         <div id="grid-container">
-            <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
+            <div>
+                <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
+            </div>
             <ana-compile :crossword-source="crosswordSource" id="editor" v-if="compiling"></ana-compile>
             <ana-solve :crossword="crossword" id="clues" v-else></ana-solve>
         </div>
@@ -51,9 +80,9 @@
 }
 #grid {
     flex: none;
-    margin-right: $displayPadding;
 }
 #clues {
+    margin-left: $displayPadding;
     margin-top: $displayPadding;
 }
 </style>
@@ -75,6 +104,20 @@ import AnaSolve from './components/AnaSolve.vue'
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
+const menuOptions = [
+    {
+        label: 'Edit',
+        icon: 'edit'
+    },
+    {
+        label: 'Upload .puz file',
+        icon: 'publish'
+    },
+    {
+        label: 'About anagrind.com',
+        icon: 'info'
+    }
+];
 
 export default Vue.extend({
   components: {
@@ -104,6 +147,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      menuOptions: menuOptions,
       bundler: "Parcel"
     };
   },
