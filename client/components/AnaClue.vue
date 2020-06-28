@@ -1,7 +1,7 @@
 <template>
     <div class="clue-directions">
         <span class="clue-id">{{idText}} </span>
-        <span class="clue-text">{{sanitizedText}}</span>
+        <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
         <div class="crossword-answer-container">
             <div class="crossword-clue-input">

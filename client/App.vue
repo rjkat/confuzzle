@@ -12,7 +12,7 @@
             <ui-icon-button
                 color="white"
                 has-dropdown
-                icon="get_app"
+                icon="publish"
                 size="large"
             >
             </ui-icon-button>
@@ -40,7 +40,7 @@
             </ui-icon-button>
         </div>
     </ui-toolbar>
-    <div class="content" id="app">
+    <div class="content">
         <div id="grid-container">
             <div>
                 <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
@@ -110,11 +110,11 @@ const menuOptions = [
         icon: 'edit'
     },
     {
-        label: 'Upload .puz file',
-        icon: 'publish'
+        label: 'Download',
+        icon: 'get_app'
     },
     {
-        label: 'About anagrind.com',
+        label: 'About',
         icon: 'info'
     }
 ];

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="author-note" v-if="crossword && crossword.meta.note">{{noteHTML}}</div>
+    <div class="author-note" v-if="crossword && crossword.meta.note" v-html="noteHTML"></div>
     <div class="ana-clue-list-container">
         <ana-clue-list class="clue-list" data-across :clues="acrossClues"></ana-clue-list>
         <ana-clue-list class="clue-list" data-down :clues="downClues"></ana-clue-list>
