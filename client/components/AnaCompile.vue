@@ -21,7 +21,7 @@
 
 <script>
 import Vue from "vue";
-import { UiButton, UiFileupload, UiIcon, UiPopover } from 'keen-ui';
+import { UiButton, UiFileupload, UiIcon, UiPopover } from 'keen-ui/src';
 import AnaEditor from './AnaEditor.vue'
 
 export default Vue.extend({

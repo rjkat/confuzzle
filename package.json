@@ -8,12 +8,12 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "build": "parcel build client/index.html --no-source-maps --no-content-hash",
+    "build": "parcel build client/index.html --no-source-maps --no-content-hash --no-cache",
     "develop": "NODE_ENV=development nodemon server/index.js",
     "start": "node server/index.js"
   },
   "nodemonConfig": {
-    "watch": "server/*,client/*"
+    "watch": "server/*,client/*,node_modules/keen-ui/*"
   },
   "repository": {
     "type": "git",

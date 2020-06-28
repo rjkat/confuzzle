@@ -23,7 +23,7 @@
 
 <script>
 import Vue from 'vue';
-import { UiButton } from 'keen-ui';
+import { UiButton } from 'keen-ui/src';
 
 export default Vue.extend({
   components: {

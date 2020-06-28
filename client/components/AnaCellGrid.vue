@@ -7,8 +7,6 @@
 </template>
 
 <style lang="scss">
-@import "../stylesheets/_variables.scss";
-
 .crossword-grid {
     text-transform: uppercase;
     background-color: $gridBlankColor;

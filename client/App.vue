@@ -1,39 +1,50 @@
 <template>
-<div class="body-row" id="crossword-content">
-    <div id="grid-container">
-        <ana-cell-grid :crossword="crossword"></ana-cell-grid>
-        <div class="copyright-footer" id="copyright-text"></div>
+<div>
+    <ui-toolbar type="colored" text-color="white" :title="crossword.meta.name" removeNavIcon="true"></ui-toolbar>
+    <div class="content" id="app">
+        <div class="body-row" id="crossword-content">
+            <div id="grid-container">
+                <ana-cell-grid :crossword="crossword"></ana-cell-grid>
+                <div class="copyright-footer" id="copyright-text"></div>
+            </div>
+            <div class="body-col crossword-panels">
+                <ui-tabs type="icon-and-text">
+                    <ui-tab>
+                        <div slot="header" class="ana-tab-header">
+                            <ui-icon slot="icon" icon="extension"></ui-icon>
+                            <span>Solve</span>
+                        </div>
+                        <ana-solve :crossword="crossword"></ana-solve>
+                    </ui-tab>
+                    <ui-tab>
+                        <div slot="header" class="ana-tab-header">
+                            <ui-icon slot="icon" icon="build"></ui-icon>
+                            <span>Compile</span>
+                        </div>
+                        <ana-compile :crossword-source="crosswordSource"></ana-compile>
+                    </ui-tab>
+                    <ui-tab>
+                        <div slot="header" class="ana-tab-header">
+                            <ui-icon slot="icon" icon="people"></ui-icon>
+                            <span>Collude</span>
+                        </div>
+                        <ana-collude></ana-collude>
+                    </ui-tab>
+                </ui-tabs>
+            </div>
+        </div>
     </div>
-    <div class="body-col crossword-panels">
-        <ui-tabs type="icon-and-text">
-            <ui-tab>
-                <div slot="header" class="ana-tab-header">
-                    <ui-icon slot="icon" icon="extension"></ui-icon>
-                    <span>Solve</span>
-                </div>
-                <ana-solve :crossword="crossword"></ana-solve>
-            </ui-tab>
-            <ui-tab>
-                <div slot="header" class="ana-tab-header">
-                    <ui-icon slot="icon" icon="build"></ui-icon>
-                    <span>Compile</span>
-                </div>
-                <ana-compile :crossword-source="crosswordSource"></ana-compile>
-            </ui-tab>
-            <ui-tab>
-                <div slot="header" class="ana-tab-header">
-                    <ui-icon slot="icon" icon="people"></ui-icon>
-                    <span>Collude</span>
-                </div>
-                <ana-collude></ana-collude>
-            </ui-tab>
-        </ui-tabs>
+    <div class="footer">
+        <a href="https://github.com/rjkat/anagrind"><i class="fab fa-github"></i></a> <a href="https://github.com/rjkat/anagrind">rjkat/anagrind</a>
     </div>
 </div>
 </template>
 
 <style lang="scss">
-@import "./stylesheets/_variables.scss";
+.ui-toolbar__title {
+    font-family: $titleFontFamily;
+}
+
 .ui-tab-header-item--type-icon-and-text {
     height: 2.5rem;
 }
@@ -60,8 +71,14 @@
 </style>
 
 <script>
-import Vue from "vue";
-import { UiIcon, UiTab, UiTabs, UiToolbar } from 'keen-ui';
+
+import Vue from 'vue';
+
+import 'keen-ui/src/bootstrap';
+import KeenUI from 'keen-ui/src';
+
+Vue.use(KeenUI);
+
 import AnaCellGrid from './components/AnaCellGrid.vue'
 import AnaCompile from './components/AnaCompile.vue'
 import AnaCollude from './components/AnaCollude.vue'
@@ -70,18 +87,13 @@ import AnaSolve from './components/AnaSolve.vue'
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
-import 'keen-ui/dist/keen-ui.css';
 
 export default Vue.extend({
   components: {
     AnaCellGrid,
     AnaCompile,
     AnaCollude,
-    AnaSolve,
-    UiIcon,
-    UiTab,
-    UiTabs,
-    UiToolbar
+    AnaSolve
   },
   props: {
     gridid: String,
@@ -101,6 +113,17 @@ export default Vue.extend({
   },
   data() {
     return {
+      menuOptions: [
+        {
+            label: 'Settings'
+        },
+        {
+            label: 'About'
+        },
+        {
+            label: 'Help'
+        }
+      ],
       bundler: "Parcel"
     };
   },

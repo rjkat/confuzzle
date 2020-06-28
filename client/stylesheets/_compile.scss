@@ -31,15 +31,6 @@
   margin-top: 2em;
 }
 
-.upload-button {
-  @include crossword-button;
-  display: inline-block;
-  background: #ccc;
-}
-.upload-button:hover {
-  background: #ddd;
-}
-
 #drop-area.highlight {
   border-color: #003264;
 }

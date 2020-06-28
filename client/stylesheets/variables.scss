@@ -1,0 +1,23 @@
+$titleFontFamily: 'Bree Serif', serif;
+$answerFontFamily: "notcouriersansregular", monospace;
+$clueFontFamily: "aurulent_sansregular", sans-serif;
+
+$pageBgColor: #F0F8FF;
+$gridBgColor: #000;
+$gridBlankColor: #fff;
+$gridFontSize: 24px; 
+$gridCellSize: 2ch;
+$gridBorderWidth: 1px;
+$titleBgColor: #003264;
+
+$topMargin: 8px;
+$displayPadding: 18px;
+
+$tabHeight: 40px;
+$sin60: 0.86;
+
+
+$clueMinWidth: 15em;
+
+$highlightBorderWidth: 0.15ch;
+$highlightCellSize: #{$gridCellSize - 2*$highlightBorderWidth};

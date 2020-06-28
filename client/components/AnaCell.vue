@@ -4,15 +4,14 @@
     :data-solver-mask="solverMask"
     :data-number="cell.number"
     :data-across-separator="cell.acrossSeparator"
-    :data-down-separator="cell.downSeparator">
+    :data-down-separator="cell.downSeparator"
+    :data-empty="cell.empty">
     <span>{{cell.contents}}</span>
     <div class="cell-highlight-border"></div>
 </td>
 </template>
 
 <style lang="scss">
-@import "../stylesheets/_variables.scss";
-
 .cell-highlight-border {
     content: '';
     position: absolute;

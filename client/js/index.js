@@ -1,3 +1,5 @@
+require('../../.sassrc.js');
+
 import {AnagrindClient} from './client.js'
 
 import Vue from 'vue';

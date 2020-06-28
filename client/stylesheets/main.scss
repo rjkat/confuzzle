@@ -1,5 +1,4 @@
 @import '../../node_modules/sassybitwise/dist/SassyBitwise';
-@import 'variables';
 // @import 'crossword';
 
 @import 'modal';
@@ -10,6 +9,16 @@
 @import 'clues';
 @import 'compile';
 @import 'collude';
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 100%;
+}
 
 body {
 }
