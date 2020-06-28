@@ -1,12 +1,20 @@
 <template>
-<div class="ana-clue-list-container">
+<div>
     <div class="author-note" v-if="crossword && crossword.meta.note">{{noteHTML}}</div>
-    <ana-clue-list class="clue-list" data-across :clues="acrossClues"></ana-clue-list>
-    <ana-clue-list class="clue-list" data-down :clues="downClues"></ana-clue-list>
+    <div class="ana-clue-list-container">
+        <ana-clue-list class="clue-list" data-across :clues="acrossClues"></ana-clue-list>
+        <ana-clue-list class="clue-list" data-down :clues="downClues"></ana-clue-list>
+    </div>
 </div>
 </template>
 
 <style lang="scss">
+.author-note {
+    text-align: center;
+    width: 100%;
+    font-family: $clueFontFamily;
+    padding-bottom: $displayPadding;
+}
 .ana-clue-list-container {
     display: flex;
     flex: 1 1 auto;
@@ -28,12 +36,6 @@
             font-weight: bold;
             padding: .5em;
         }
-    }
-    .author-note {
-        text-align: center;
-        width: 100%;
-        font-family: $clueFontFamily;
-        padding-bottom: .5em;
     }
 }
 </style>

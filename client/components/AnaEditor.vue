@@ -1,7 +1,5 @@
 <template>
-    <div class="line-numbers">
-        <textarea class="prism-live language-eno" id="crossword-source" @keyup="$emit('update-source', $event.target.value)" :value="crosswordSource"></textarea>
-    </div>
+  <textarea class="prism-live language-eno" id="crossword-source" @keyup="$emit('update-source', $event.target.value)" :value="crosswordSource"></textarea>
 </template>
 
 <script>
@@ -27,5 +25,4 @@ export default Vue.extend({
     };
   }
 });
-
 </script>

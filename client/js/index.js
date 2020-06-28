@@ -1,6 +1,6 @@
-require('../../.sassrc.js');
 
 require('../stylesheets/main.scss');
+require('../../.sassrc.js');
 
 import {AnagrindClient} from './client.js'
 

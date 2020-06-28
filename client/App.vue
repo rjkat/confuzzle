@@ -1,34 +1,23 @@
 <template>
 <div>
-    <ui-toolbar type="colored" text-color="white" :title="crossword.meta.name" removeNavIcon></ui-toolbar>
+    <ui-toolbar type="colored" text-color="white" removeNavIcon>
+        <template v-slot="title">
+            <span style="{display: inline-flex; align-items: center;}">
+                <span class="crossword-meta-name">{{crossword.meta.name}}</span>
+                <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
+                <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
+            </span>
+        </template>
+        <div slot="actions">
+            <ui-switch label="Editing" v-model="compiling"></ui-switch>
+            <ui-button raised color="accent">Share</ui-button>
+        </div>
+    </ui-toolbar>
     <div class="content" id="app">
         <div id="grid-container">
             <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
-            <ana-solve :crossword="crossword" id="clues"></ana-solve>
-        </div>
-        <div>
-            <ui-tabs type="icon-and-text">
-                <ui-tab>
-                    <div slot="header" class="ana-tab-header">
-                        <ui-icon slot="icon" icon="extension"></ui-icon>
-                        <span>Solve</span>
-                    </div>
-                </ui-tab>
-                <ui-tab>
-                    <div slot="header" class="ana-tab-header">
-                        <ui-icon slot="icon" icon="build"></ui-icon>
-                        <span>Compile</span>
-                    </div>
-                    <ana-compile :crossword-source="crosswordSource"></ana-compile>
-                </ui-tab>
-                <ui-tab>
-                    <div slot="header" class="ana-tab-header">
-                        <ui-icon slot="icon" icon="people"></ui-icon>
-                        <span>Collude</span>
-                    </div>
-                    <ana-collude></ana-collude>
-                </ui-tab>
-            </ui-tabs>
+            <ana-compile :crossword-source="crosswordSource" id="editor" v-if="compiling"></ana-compile>
+            <ana-solve :crossword="crossword" id="clues" v-else></ana-solve>
         </div>
     </div>
 </div>
@@ -36,20 +25,23 @@
 
 <style lang="scss">
 
-.ui-toolbar__title {
-    font-family: $titleFontFamily;
+.ui-toolbar--type-colored {
+    background-color: $titleBgColor !important;
 }
 
-.ui-tab-header-item--type-icon-and-text {
-    height: 2.5rem;
+.crossword-meta-name {
+    text-transform: uppercase;
+    font-family: $titleFontFamily;
+    font-weight: bold;
 }
-.ana-tab-header {
-    font-family: $clueFontFamily;
-    text-transform: none;
-    display: flex;
-    .ui-icon {
-        margin-right: 8px;
-    }
+.crossword-meta-author {
+    font-family: $clueFontFamily; 
+    margin-left: .5em;
+    margin-right: .5em;
+    font-size: 16px;
+}
+.crossword-meta-identifier {
+    font-family: $titleFontFamily;
 }
 #grid-container {
     display: flex;
@@ -96,7 +88,10 @@ export default Vue.extend({
     grid: Object,
     solverid: Number,
     solvers: Object,
-    compiling: Boolean,
+    compiling: {
+        type: Boolean,
+        default: false
+    },
     crosswordSource: {
         type: String,
         default: parser.sampleCrossword()
@@ -109,17 +104,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      menuOptions: [
-        {
-            label: 'Settings'
-        },
-        {
-            label: 'About'
-        },
-        {
-            label: 'Help'
-        }
-      ],
       bundler: "Parcel"
     };
   },
