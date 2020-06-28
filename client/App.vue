@@ -1,46 +1,41 @@
 <template>
 <div>
-    <ui-toolbar type="colored" text-color="white" :title="crossword.meta.name" removeNavIcon="true"></ui-toolbar>
+    <ui-toolbar type="colored" text-color="white" :title="crossword.meta.name" removeNavIcon></ui-toolbar>
     <div class="content" id="app">
-        <div class="body-row" id="crossword-content">
-            <div id="grid-container">
-                <ana-cell-grid :crossword="crossword"></ana-cell-grid>
-                <div class="copyright-footer" id="copyright-text"></div>
-            </div>
-            <div class="body-col crossword-panels">
-                <ui-tabs type="icon-and-text">
-                    <ui-tab>
-                        <div slot="header" class="ana-tab-header">
-                            <ui-icon slot="icon" icon="extension"></ui-icon>
-                            <span>Solve</span>
-                        </div>
-                        <ana-solve :crossword="crossword"></ana-solve>
-                    </ui-tab>
-                    <ui-tab>
-                        <div slot="header" class="ana-tab-header">
-                            <ui-icon slot="icon" icon="build"></ui-icon>
-                            <span>Compile</span>
-                        </div>
-                        <ana-compile :crossword-source="crosswordSource"></ana-compile>
-                    </ui-tab>
-                    <ui-tab>
-                        <div slot="header" class="ana-tab-header">
-                            <ui-icon slot="icon" icon="people"></ui-icon>
-                            <span>Collude</span>
-                        </div>
-                        <ana-collude></ana-collude>
-                    </ui-tab>
-                </ui-tabs>
-            </div>
+        <div id="grid-container">
+            <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
+            <ana-solve :crossword="crossword" id="clues"></ana-solve>
         </div>
-    </div>
-    <div class="footer">
-        <a href="https://github.com/rjkat/anagrind"><i class="fab fa-github"></i></a> <a href="https://github.com/rjkat/anagrind">rjkat/anagrind</a>
+        <div>
+            <ui-tabs type="icon-and-text">
+                <ui-tab>
+                    <div slot="header" class="ana-tab-header">
+                        <ui-icon slot="icon" icon="extension"></ui-icon>
+                        <span>Solve</span>
+                    </div>
+                </ui-tab>
+                <ui-tab>
+                    <div slot="header" class="ana-tab-header">
+                        <ui-icon slot="icon" icon="build"></ui-icon>
+                        <span>Compile</span>
+                    </div>
+                    <ana-compile :crossword-source="crosswordSource"></ana-compile>
+                </ui-tab>
+                <ui-tab>
+                    <div slot="header" class="ana-tab-header">
+                        <ui-icon slot="icon" icon="people"></ui-icon>
+                        <span>Collude</span>
+                    </div>
+                    <ana-collude></ana-collude>
+                </ui-tab>
+            </ui-tabs>
+        </div>
     </div>
 </div>
 </template>
 
 <style lang="scss">
+
 .ui-toolbar__title {
     font-family: $titleFontFamily;
 }
@@ -57,16 +52,17 @@
     }
 }
 #grid-container {
-    margin-right: $displayPadding;
+    display: flex;
+    justify-content: flex-start;
     width: 100%;
+    height: 100%;
 }
-.copyright-footer {
-    width: 100%;
-    display: block;
-    height: $tabHeight;
-    font-family: $clueFontFamily;
-    margin-top: .5em;
-    text-transform: none;
+#grid {
+    flex: none;
+    margin-right: $displayPadding;
+}
+#clues {
+    margin-top: $displayPadding;
 }
 </style>
 

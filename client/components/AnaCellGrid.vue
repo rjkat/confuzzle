@@ -11,7 +11,6 @@
     text-transform: uppercase;
     background-color: $gridBlankColor;
     display:inline-block;
-    margin: 0 auto;
     border: $gridBorderWidth solid;
     border-collapse: collapse;
 }

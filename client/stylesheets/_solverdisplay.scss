@@ -39,7 +39,7 @@
             float: left;
         }
 
-        @include each-solver using ($color, $sel) {
+        @include each-solver using ($color, $lightColor, $sel) {
             &#{$sel}:before {
                 font-size: 50px;
                 content: "■";

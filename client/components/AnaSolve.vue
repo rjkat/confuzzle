@@ -1,14 +1,42 @@
 <template>
-<div id="solve-panel">
-    <div class="crossword-clue-panel">
-        <div class="crossword-clue-container">
-            <div class="author-note" v-if="crossword && crossword.meta.note">{{noteHTML}}</div>
-            <ana-clue-list data-across :clues="acrossClues"></ana-clue-list>
-            <ana-clue-list data-down :clues="downClues"></ana-clue-list>
-        </div>
-    </div>
+<div class="ana-clue-list-container">
+    <div class="author-note" v-if="crossword && crossword.meta.note">{{noteHTML}}</div>
+    <ana-clue-list class="clue-list" data-across :clues="acrossClues"></ana-clue-list>
+    <ana-clue-list class="clue-list" data-down :clues="downClues"></ana-clue-list>
 </div>
 </template>
+
+<style lang="scss">
+.ana-clue-list-container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+
+    .clue-list {
+        flex: 50%;
+        margin: 0 auto;
+        min-width: $clueMinWidth;
+        font-family: $clueFontFamily;
+        &[data-across]:before {
+            content: 'ACROSS';
+            font-weight: bold;
+            padding: .5em;
+        }
+
+        &[data-down]:before {
+            content: 'DOWN';
+            font-weight: bold;
+            padding: .5em;
+        }
+    }
+    .author-note {
+        text-align: center;
+        width: 100%;
+        font-family: $clueFontFamily;
+        padding-bottom: .5em;
+    }
+}
+</style>
 
 <script>
 import Vue from "vue";

@@ -21,6 +21,48 @@
     </div>
 </template>
 
+<style lang="scss">
+.clue-directions {
+    .crossword-clue-input {
+        display: inline-block;
+    }
+
+    input {
+        font-size: $gridFontSize;
+        font-family: $answerFontFamily;
+        padding: $gridBorderWidth 0 0 $gridBorderWidth;
+        border: 0;
+        padding-bottom: 1px;
+        border-bottom: 1px solid $gridBgColor;
+        margin-right: 2px;
+        background: none;
+        outline: none;
+        min-width: $gridCellSize;
+        max-width: $gridCellSize;
+        height: $gridCellSize;
+        line-height: $gridCellSize;
+        text-align: center;
+        vertical-align: middle;
+        text-transform: uppercase;
+        box-sizing: border-box;
+    }
+
+    [data-separator=","]:after {
+        font-family: $answerFontFamily;
+        content: "\00A0";
+    }
+
+    [data-separator="-"]:after {
+        font-family: $answerFontFamily;
+        content: "-";
+    }
+
+    .clue-id {
+        font-weight: bold;
+    } 
+}
+</style>
+
 <script>
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';

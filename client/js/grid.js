@@ -325,10 +325,10 @@ export class GridDisplay {
         this.gridTable = table;
         this.gridContainer.appendChild(table);
 
-        const copyright = document.getElementById('copyright-text');
-        copyright.textContent = 'Copyright';
-        if (crossword.meta.copyright) {
-            copyright.textContent = crossword.meta.copyright;
-        }
+        // const copyright = document.getElementById('copyright-text');
+        // copyright.textContent = 'Copyright';
+        // if (crossword.meta.copyright) {
+        //     copyright.textContent = crossword.meta.copyright;
+        // }
     }
 }
