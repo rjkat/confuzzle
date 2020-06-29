@@ -3,18 +3,19 @@
         <span class="clue-id">{{idText}} </span>
         <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
-        <div class="crossword-answer-container">
+        <div class="crossword-answer-container" v-if="value">
             <div class="crossword-clue-input">
-                <input v-for="i in clue.totalLength"
+                <input v-for="(cell, i) in value.cells"
                        maxlength="1"
-                       :data-clueid="clue.id"
+                       :data-clueid="value.id"
                        :data-offset="i"
                        @click.prevent="selectClueFromInput($event)"
                        @keypress.prevent="handleKeypress($event)"
                        @keydown="handleKeydown($event)"
                        @mousedown.prevent
-                       @blur="$emit('clear-own-highlight', clue.id)"
-                       :style="{backgroundColor: shadingColor(i)}">
+                       @blur="$emit('clear-own-highlight', value.id)"
+                       :style="{backgroundColor: shadingColor(i)}"
+                       v-model="value.cells[i].contents">
                 </input>
             </div>
         </div>
@@ -72,22 +73,27 @@ const sanitizeHtml = require('sanitize-html');
 export default Vue.extend({
   props: {
     cwDisplay: Object,
-    clue: Object,
+    value: Object,
   },
   computed: {
     idText: function () {
-        const clue = this.clue;
+        const clue = this.value;
+        if (!clue)
+            return '';
         let idText = clue.numbering.clueText;
-        if (!clue.verbatim && (clue.refIds && this.clue.id == clue.refIds[0]))
+        if (!clue.verbatim && (clue.refIds && clue.id == clue.refIds[0]))
         {
             idText = clue.refIds.join(', ');
         }
         return idText;
     },
+    totalLength() {
+        this.value ? this.value.totalLength : 0;
+    },
     lengthText: function () {
-        const clue = this.clue;
+        const clue = this.value;
         // don't show lengths on referenced clues or verbatim clues
-        if (clue.verbatim)
+        if (!clue || clue.verbatim)
             return '';
         if (clue.refIds.length > 0 && clue.id != clue.refIds[0])
             return '';
@@ -113,11 +119,11 @@ export default Vue.extend({
         lengthText += ')';
         return lengthText;
     },
-    totalLength: function () {
-        return this.clue.lengths.reduce((acc, x) => acc + x);
-    },
     sanitizedText: function () {
-        return sanitizeHtml(this.clue.text, {
+        if (!this.value) {
+            return '';
+        }
+        return sanitizeHtml(this.value.text, {
             allowedTags: [ 
                 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
@@ -127,10 +133,10 @@ export default Vue.extend({
   },
   methods: {
     shadingColor: function(i) {
-        if (this.clue)
-            return this.clue.shadingColor;
-        if (this.clue.cells[i])
-            return this.clue.cells[i].shadingColor;
+        if (this.value)
+            return this.value.shadingColor;
+        if (this.value.cells[i])
+            return this.value.cells[i].shadingColor;
         return '';
     },
     moveInput: function(input, direction) {

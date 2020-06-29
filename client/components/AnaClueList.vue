@@ -2,8 +2,8 @@
 <div class="crossword-clues">
     <ul>
         <li is="ana-clue"
-            v-for="clue in clues"
-            :clue=clue
+            v-for="(clue, i) in value"
+            v-model="value[i]"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)">
         </li>
@@ -51,7 +51,7 @@ export default Vue.extend({
     AnaClue
   },
   props: {
-    clues: {
+    value: {
         type: Array,
         required: true
     },

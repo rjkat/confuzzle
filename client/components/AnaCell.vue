@@ -1,13 +1,12 @@
 <template>
-<td :data-row="cell.row"
-    :data-col="cell.col"
-    :data-solver-mask="solverMask"
-    :data-number="cell.number"
-    :data-across-separator="cell.acrossSeparator"
-    :data-down-separator="cell.downSeparator"
-    :data-empty="cell.empty">
-    <span>{{cell.contents}}</span>
-    <div class="cell-highlight-border"></div>
+<td :data-solver-mask="solverMask"
+    :data-number="value.number"
+    :data-across-separator="value.acrossSeparator"
+    :data-down-separator="value.downSeparator"
+    :data-empty="value.empty"
+    @click.prevent="onClick($event)">
+    <input class="crossword-grid-input" v-if="showInput" v-model="value.contents"></input>
+    <span v-else>{{value.contents}}<div class="cell-highlight-border"></div></span>
 </td>
 </template>
 
@@ -75,6 +74,27 @@ td {
     &[data-empty] {
         background: $gridBgColor;
     }
+
+    .crossword-grid-input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        font-size: $gridFontSize;
+        font-family: $answerFontFamily;
+        border: 0;
+        background: none;
+        outline: none;
+        min-width: $gridCellSize;
+        max-width: $gridCellSize;
+        height: $gridCellSize;
+        line-height: $gridCellSize;
+        position: absolute;
+        text-align: center;
+        vertical-align: middle;
+        text-transform: inherit;
+    }
 }
 </style>
 
@@ -106,14 +126,16 @@ function clearSolverMask(td, solverid, clearAcross, clearDown) {
 }
 
 export default Vue.extend({
-  components: {
-  },
   props: {
-    cell: Object
+    value: Object,
+    editable: {
+        type: Boolean,
+        default: true
+    }
   },
   computed: {
     solverMask: function () {
-        let v = (this.cell.acrossMask | this.cell.downMask);
+        let v = (this.value.acrossMask | this.value.downMask);
         // can only show 4 overlapping solvers...
         while (nBitsSet(v) > 4) {
             v &= v - 1; // clear the least significant bit set
@@ -123,27 +145,31 @@ export default Vue.extend({
   },
   methods: {
     onClick(event) {
-        const cell = this.cell;
+        if (!this.editable) {
+            return;
+        }
+        const cell = this.value;
         // if it's both a down and across clue, and they've
         // clicked on a first letter, change direction to match
         // the clue with the first letter
-        if (cell.clues.across && cell.clues.down
+        if (cell.clues && cell.clues.across && cell.clues.down
             && (cell.offsets.across == 0 || cell.offsets.down == 0)) {
             this.$emit('change-input-direction');
         }
-        this.$emit('set-input-cell', {row: cell.row, col: cell.col});
+        this.showInput = true;
     },
     highlight(solverid, isAcross) {
         if (isAcross) {
-            this.cell.acrossMask |= (1 << solverid);
+            this.value.acrossMask |= (1 << solverid);
         } else {
-            this.cell.downMask |= (1 << solverid);
+            this.value.downMask |= (1 << solverid);
         }
     }
   },
   data() {
     return {
-      bundler: "Parcel"
+      bundler: "Parcel",
+      showInput: false
     };
   },
 });

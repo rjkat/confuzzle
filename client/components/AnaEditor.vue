@@ -1,6 +1,6 @@
 <template>
     <div class="line-numbers">
-        <textarea class="prism-live language-eno" id="crossword-source" ref="textarea" @keyup="$emit('update-source', $event.target.value)" :value="crosswordSource"></textarea>
+        <textarea class="prism-live language-eno" id="crossword-source" ref="textarea" v-model="value"></textarea>
     </div>
 </template>
 
@@ -30,7 +30,7 @@ import Vue from 'vue';
 
 export default Vue.extend({
   props: {
-    crosswordSource: String
+    value: String
   },
   data() {
     return {

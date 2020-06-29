@@ -231,6 +231,7 @@ function parseClue(cw, clue) {
       }
     });
   }
+
   cw.clues[clueid] = parsed;
 }
 

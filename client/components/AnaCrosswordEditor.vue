@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ana-editor :crossword-source="crosswordSource"></ana-editor>
+    <ana-editor v-model="value"></ana-editor>
 </div>
 </template>
 
@@ -13,7 +13,7 @@ export default Vue.extend({
     AnaEditor
   },
   props: {
-    crosswordSource: String,
+    value: String,
   },
   data() {
     return {

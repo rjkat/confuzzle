@@ -46,10 +46,10 @@
     <div class="content">
         <div id="grid-container">
             <div>
-                <ana-cell-grid :crossword="crossword" id="grid"></ana-cell-grid>
+                <ana-crossword-grid v-model="crossword" id="grid"></ana-crossword-grid>
             </div>
-            <ana-compile :crossword-source="crosswordSource" id="editor" v-if="compiling"></ana-compile>
-            <ana-solve :crossword="crossword" id="clues" v-else></ana-solve>
+            <ana-crossword-editor v-model="crosswordSource" id="editor" v-if="compiling"></ana-crossword-editor>
+            <ana-crossword-clues v-model="crossword" id="clues" v-else></ana-crossword-clues>
         </div>
     </div>
 </div>
@@ -108,21 +108,20 @@ import KeenUI from 'keen-ui/src';
 
 Vue.use(KeenUI);
 
-import AnaCellGrid from './components/AnaCellGrid.vue'
-import AnaCompile from './components/AnaCompile.vue'
+import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
+import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
+import AnaCrosswordEditor from './components/AnaCrosswordEditor.vue'
 import AnaShareModal from './components/AnaShareModal.vue'
-import AnaSolve from './components/AnaSolve.vue'
 
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
-
 export default Vue.extend({
   components: {
-    AnaCellGrid,
-    AnaCompile,
-    AnaShareModal,
-    AnaSolve
+    AnaCrosswordClues,
+    AnaCrosswordGrid,
+    AnaCrosswordEditor,
+    AnaShareModal
   },
   props: {
     gridid: String,
