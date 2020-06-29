@@ -82,6 +82,9 @@ export default Vue.extend({
     metadata: Object,
     compiling: Boolean
   },
+  model: {
+    prop: 'compiling'
+  },
   computed: {
     menuOptions() {
         if (!this.compiling) {
@@ -122,7 +125,7 @@ export default Vue.extend({
     },
     selectMenuOption(option) {
         if (option.label == 'Edit' || option.label == 'Preview') {
-            this.$emit('update:compiling', option.label == 'Edit');
+            this.$emit('input', !this.compiling);
         } else if (option.label == 'Download') {
             this.$emit('download-clicked');
         }

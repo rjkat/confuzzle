@@ -10,7 +10,7 @@
                        :data-clueid="clue.id"
                        :data-offset="i"
                        @click.prevent="selectClueFromInput($event)"
-                       @keypress="handleKeypress($event, i)"
+                       @keypress.prevent="handleKeypress($event, i)"
                        @keydown="handleKeydown($event, i)"
                        @mousedown.prevent
                        @blur="$emit('clear-own-highlight', clue.id)"
@@ -73,6 +73,9 @@ const sanitizeHtml = require('sanitize-html');
 export default Vue.extend({
   props: {
     clue: Object,
+  },
+  model: {
+    prop: 'clue'
   },
   computed: {
     idText: function () {
@@ -154,6 +157,7 @@ export default Vue.extend({
     fillCell: function(input, value) {
         input.value = value;
         const cell = this.clue.cells[input.dataset.offset];
+        cell.contents = value;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
         this.$emit('clear-own-highlight', input.dataset.clueid);
     },

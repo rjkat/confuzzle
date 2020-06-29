@@ -4,7 +4,7 @@
       <tr v-for="row in crossword.grid.cells">
           <ana-cell v-for="cell in row"
                     v-on="$listeners"
-                    :cell.sync="crossword.grid.cells[cell.row][cell.col]"
+                    v-model="crossword.grid.cells[cell.row][cell.col]"
                     @change-input-direction="changeInputDirection($event)">
           </ana-cell>
       </tr>
@@ -28,6 +28,9 @@ import AnaCell from './AnaCell.vue'
 export default Vue.extend({
   components: {
     AnaCell
+  },
+  model: {
+    prop: 'crossword'
   },
   props: {
     crossword: Object,

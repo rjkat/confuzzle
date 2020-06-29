@@ -10,7 +10,6 @@
         class="crossword-grid-input"
         v-model="cell.contents"
         maxlength="1"
-        v-on="$listeners"
         @input="fillCell($event)"
     >
     </input>
@@ -141,6 +140,9 @@ export default Vue.extend({
         default: true
     }
   },
+  model: {
+    prop: 'cell'
+  },
   computed: {
     solverMask: function () {
         let v = (this.cell.acrossMask | this.cell.downMask);
@@ -149,7 +151,7 @@ export default Vue.extend({
             v &= v - 1; // clear the least significant bit set
         }
         return v;
-    }
+    },
   },
   methods: {
     fillCell(event) {

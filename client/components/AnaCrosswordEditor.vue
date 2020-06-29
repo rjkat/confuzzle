@@ -1,6 +1,9 @@
 <template>
 <div>
-    <ana-editor :value.sync="source"></ana-editor>
+    <ana-editor
+        :source="source"
+        @input="$emit('input', $event)">
+    </ana-editor>
 </div>
 </template>
 
@@ -14,6 +17,9 @@ export default Vue.extend({
   },
   props: {
     source: String,
+  },
+  model: {
+    prop: 'source'
   },
   data() {
     return {

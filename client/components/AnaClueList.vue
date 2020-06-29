@@ -4,7 +4,7 @@
         <li is="ana-clue"
             v-for="(clue, i) in clues"
             v-on="$listeners"
-            :clue="clues[i]"
+            v-model="clues[i]"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
             >

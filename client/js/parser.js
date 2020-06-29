@@ -348,6 +348,16 @@ export function parse(input, compiling, options) {
   }
   let errors = buildGrid(cw, compiling);
 
+  cw.acrossClues = [];
+  cw.downClues = [];
+  for (let [clueid, clue] of Object.entries(cw.clues)) {
+      if (clue.isAcross) {
+          cw.acrossClues.push(clue);
+      } else {
+          cw.downClues.push(clue);
+      }
+  }
+
   return cw;
 };
 

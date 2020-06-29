@@ -1,22 +1,23 @@
 <template>
 <div>
-    <ana-toolbar :metadata="crossword.meta" :compiling.sync="compiling"></ana-toolbar>
+    <ana-toolbar :metadata="crossword.meta" v-model="compiling"></ana-toolbar>
     <div class="content">
         <div id="grid-container">
             <div>
                 <ana-crossword-grid id="grid"
-                    :crossword="crossword"
-                    v-on="$listeners">
+                    v-model="crossword"
+                    @fill-cell="fillCell($event)">
                 </ana-crossword-grid>
             </div>
             <ana-crossword-editor id="editor"
                 v-if="compiling"
-                :source.sync="crosswordSource">
+                v-model="crosswordSource"
+                @input="crosswordEdited()">
             </ana-crossword-editor>
             <ana-crossword-clues id="clues"
-                :crossword="crossword" 
-                v-on="$listeners"
-                v-else>
+                v-else
+                v-model="crossword" 
+                @fill-cell="fillCell($event)">
             </ana-crossword-clues>
         </div>
     </div>
@@ -61,6 +62,7 @@ import AnaToolbar from './components/AnaToolbar.vue'
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
+const defaultCrossword = parser.parse(parser.sampleCrossword(), false);
 export default Vue.extend({
   components: {
     AnaCrosswordClues,
@@ -70,22 +72,20 @@ export default Vue.extend({
   },
   props: {
     gridid: String,
-    grid: Object,
     solverid: Number,
     solvers: Object,
     compiling: {
         type: Boolean,
         default: false
     },
+    crossword: {
+        type: Object,
+        default: function () { return defaultCrossword }
+    },
     crosswordSource: {
         type: String,
         default: parser.sampleCrossword()
     }
-  },
-  computed: {
-    crossword() {
-        return parser.parse(this.crosswordSource, this.compiling);
-    },
   },
   data() {
     return {
@@ -106,6 +106,17 @@ export default Vue.extend({
             }
         }
         return false;
+    },
+    crosswordEdited() {
+        console.log('edit');
+        const self = this;
+        clearTimeout(self.editDebounce)
+        self.editDebounce = setTimeout(
+           () => {
+              self.crossword = parser.parse(self.crosswordSource, true);
+           },
+           500
+        );
     },
     clearOwnHighlight(clueid, force) {
         if (!clueid) {
@@ -140,44 +151,14 @@ export default Vue.extend({
         this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     },
     fillCell(event) {
-        console.log(event);
-    },
-    fillCellInternal(clueid, offset, value, forced) {
-        const self = this;
-        function fill(clueid, offset) {
-            let els = document.querySelectorAll(
-                '[data-clueid*="'+ clueid +'"][data-offset*="' + offset + '"]'
-            );
-            els.forEach(function (el) {
-                if (!matchesClueId(el, clueid, offset)) {
-                    return;
-                }
-                if (el.nodeName == 'INPUT') {
-                    el.value = value;
-                } else if (el.nodeName == 'TD') {
-                    el.firstChild.textContent = value;
-                }
-            });
-        }
-        const clue = this.crossword.clues[clueid];
-        const cell = clue.cells[offset];
-        cell.contents = value;
-        fill(clueid, offset);
-        if (clue.intersections) {
-            const intersection = clue.intersections[offset];
-            if (intersection) {
-                fill(intersection.clueid, intersection.offset);
-            }
-        }
-        if (!forced) {
-            this.client.sendUpdate({
-                action: 'fillCell',
-                solverid: this.solverid,
-                clueid: clueid,
-                offset: offset,
-                value: value
-            });
-        }
+        // console.log(event);
+        // this.client.sendUpdate({
+        //     action: 'fillCell',
+        //     solverid: this.solverid,
+        //     clueid: clueid,
+        //     offset: offset,
+        //     value: value
+        // });
     },
     gridJoined(msg) {
         this.solverid = msg.solverid;

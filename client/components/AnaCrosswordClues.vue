@@ -5,15 +5,15 @@
         <ana-clue-list
             class="clue-list"
             data-across
-            :clues="acrossClues"
-            @fill-cell="fillCell($event)"
+            v-model="crossword.acrossClues"
+            v-on="$listeners"
         >
         </ana-clue-list>
         <ana-clue-list
             class="clue-list"
             data-down
-            :clues="downClues"
-            @fill-cell="fillCell($event)"
+            v-model="crossword.downClues"
+            v-on="$listeners"
         >
         </ana-clue-list>
     </div>
@@ -65,31 +65,10 @@ export default Vue.extend({
   props: {
     crossword: Object,
   },
+  model: {
+    prop: 'crossword'
+  },
   computed: {
-    acrossClues: function () {
-        if (!this.crossword)
-            return [];
-        let cs = [];
-        for (let [clueid, clue] of
-             Object.entries(this.crossword.clues)) {
-            if (clue.isAcross) {
-                cs.push(clue);
-            }
-        }
-        return cs;
-    },
-    downClues: function () {
-        if (!this.crossword)
-            return [];
-        let cs = [];
-        for (let [clueid, clue] of
-             Object.entries(this.crossword.clues)) {
-            if (!clue.isAcross) {
-                cs.push(clue);
-            }
-        }
-        return cs;
-    },
     noteHTML: function () {
         if (!this.crossword)
             return '';
@@ -103,10 +82,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    fillCell(event) {
-        console.log(event);
-        this.$emit('fill-cell', event);
-    }
   },
   data() {
     return {
