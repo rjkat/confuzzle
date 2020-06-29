@@ -1,84 +1,29 @@
 <template>
 <div>
-    <ui-toolbar type="colored" removeNavIcon>
-        <template v-slot="title">
-            <span style="{display: inline-flex; align-items: center;}">
-                <span class="crossword-meta-name">{{crossword.meta.name}}</span>
-                <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
-                <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
-            </span>
-        </template>
-        <div slot="actions">
-            <ui-icon-button
-                color="white"
-                has-dropdown
-                icon="publish"
-                size="large"
-            >
-            </ui-icon-button>
-            <ui-icon-button
-                color="white"
-                has-dropdown
-                icon="share"
-                size="large"
-                @click="openModal('shareModal')"
-            >
-            </ui-icon-button>
-            <ana-share-modal ref="shareModal"></ana-share-modal>
-            <ui-icon-button
-                color="white"
-                has-dropdown
-                icon="more_vert"
-                ref="menuDropdown"
-                size="large"
-            >
-                <ui-menu
-                    contain-focus
-                    has-icons
-                    slot="dropdown"
-                    :options="menuOptions"
-                    @select="selectMenuOption($event)"
-                    @close="$refs.menuDropdown.closeDropdown()"
-                ></ui-menu>
-            </ui-icon-button>
-        </div>
-    </ui-toolbar>
+    <ana-toolbar :metadata="crossword.meta" :compiling.sync="compiling"></ana-toolbar>
     <div class="content">
         <div id="grid-container">
             <div>
-                <ana-crossword-grid v-model="crossword" id="grid"></ana-crossword-grid>
+                <ana-crossword-grid id="grid"
+                    :crossword="crossword"
+                    v-on="$listeners">
+                </ana-crossword-grid>
             </div>
-            <ana-crossword-editor v-model="crosswordSource" id="editor" v-if="compiling"></ana-crossword-editor>
-            <ana-crossword-clues v-model="crossword" id="clues" v-else></ana-crossword-clues>
+            <ana-crossword-editor id="editor"
+                v-if="compiling"
+                :source.sync="crosswordSource">
+            </ana-crossword-editor>
+            <ana-crossword-clues id="clues"
+                :crossword="crossword" 
+                v-on="$listeners"
+                v-else>
+            </ana-crossword-clues>
         </div>
     </div>
 </div>
 </template>
 
 <style lang="scss">
-
-.ui-toolbar--type-colored {
-    background-color: $titleBgColor !important;
-
-    .ui-toolbar__body {
-        color: white !important;
-    }
-}
-
-.crossword-meta-name {
-    text-transform: uppercase;
-    font-family: $titleFontFamily;
-    font-weight: bold;
-}
-.crossword-meta-author {
-    font-family: $clueFontFamily; 
-    margin-left: .5em;
-    margin-right: .5em;
-    font-size: 16px;
-}
-.crossword-meta-identifier {
-    font-family: $titleFontFamily;
-}
 #grid-container {
     display: flex;
     justify-content: flex-start;
@@ -111,7 +56,7 @@ Vue.use(KeenUI);
 import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
 import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
 import AnaCrosswordEditor from './components/AnaCrosswordEditor.vue'
-import AnaShareModal from './components/AnaShareModal.vue'
+import AnaToolbar from './components/AnaToolbar.vue'
 
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
@@ -121,7 +66,7 @@ export default Vue.extend({
     AnaCrosswordClues,
     AnaCrosswordGrid,
     AnaCrosswordEditor,
-    AnaShareModal
+    AnaToolbar
   },
   props: {
     gridid: String,
@@ -141,35 +86,6 @@ export default Vue.extend({
     crossword() {
         return parser.parse(this.crosswordSource, this.compiling);
     },
-    menuOptions() {
-        if (!this.compiling) {
-            return [{
-                label: 'Edit',
-                icon: 'edit'
-            },
-            {
-                label: 'Download',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }];
-        } else {
-            return [{
-                label: 'Preview',
-                icon: 'visibility'
-            },
-            {
-                label: 'Download',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }];
-        }
-    }
   },
   data() {
     return {
@@ -177,19 +93,6 @@ export default Vue.extend({
     };
   },
   methods: {
-    openModal(ref) {
-        this.$refs[ref].open();
-    },
-    closeModal(ref) {
-        this.$refs[ref].close();
-    },
-    selectMenuOption(option) {
-        if (option.label == 'Edit' || option.label == 'Preview') {
-            this.compiling = !this.compiling;
-        } else if (option.label == 'Download') {
-            this.downloadClicked();
-        }
-    },
     isSelected(clueid) {
         if (clueid == this.selectedid) {
             return true;
@@ -236,7 +139,10 @@ export default Vue.extend({
         this.drawOwnHighlight(this.selectedid, scroll);
         this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
     },
-    fillCell(clueid, offset, value, forced) {
+    fillCell(event) {
+        console.log(event);
+    },
+    fillCellInternal(clueid, offset, value, forced) {
         const self = this;
         function fill(clueid, offset) {
             let els = document.querySelectorAll(

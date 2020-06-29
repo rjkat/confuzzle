@@ -2,10 +2,12 @@
 <div class="crossword-clues">
     <ul>
         <li is="ana-clue"
-            v-for="(clue, i) in value"
-            v-model="value[i]"
+            v-for="(clue, i) in clues"
+            v-on="$listeners"
+            :clue="clues[i]"
             @mouseover="$emit('draw-own-highlight', clue.id)"
-            @mouseout="$emit('clear-own-highlight', clue.id)">
+            @mouseout="$emit('clear-own-highlight', clue.id)"
+            >
         </li>
     </ul>
 </div>
@@ -50,8 +52,11 @@ export default Vue.extend({
   components: {
     AnaClue
   },
+  model: {
+    prop: 'clues'
+  },
   props: {
-    value: {
+    clues: {
         type: Array,
         required: true
     },

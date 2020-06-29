@@ -1,9 +1,21 @@
 <template>
 <div>
-    <div class="author-note" v-if="value.meta.note" v-html="noteHTML"></div>
+    <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="ana-clue-list-container">
-        <ana-clue-list class="clue-list" data-across v-model="acrossClues"></ana-clue-list>
-        <ana-clue-list class="clue-list" data-down v-model="downClues"></ana-clue-list>
+        <ana-clue-list
+            class="clue-list"
+            data-across
+            :clues="acrossClues"
+            @fill-cell="fillCell($event)"
+        >
+        </ana-clue-list>
+        <ana-clue-list
+            class="clue-list"
+            data-down
+            :clues="downClues"
+            @fill-cell="fillCell($event)"
+        >
+        </ana-clue-list>
     </div>
 </div>
 </template>
@@ -51,15 +63,15 @@ export default Vue.extend({
     AnaClueList
   },
   props: {
-    value: Object,
+    crossword: Object,
   },
   computed: {
     acrossClues: function () {
-        if (!this.value)
+        if (!this.crossword)
             return [];
         let cs = [];
         for (let [clueid, clue] of
-             Object.entries(this.value.clues)) {
+             Object.entries(this.crossword.clues)) {
             if (clue.isAcross) {
                 cs.push(clue);
             }
@@ -67,11 +79,11 @@ export default Vue.extend({
         return cs;
     },
     downClues: function () {
-        if (!this.value)
+        if (!this.crossword)
             return [];
         let cs = [];
         for (let [clueid, clue] of
-             Object.entries(this.value.clues)) {
+             Object.entries(this.crossword.clues)) {
             if (!clue.isAcross) {
                 cs.push(clue);
             }
@@ -79,15 +91,21 @@ export default Vue.extend({
         return cs;
     },
     noteHTML: function () {
-        if (!this.value)
+        if (!this.crossword)
             return '';
-        let meta = this.value.meta;
+        let meta = this.crossword.meta;
         return sanitizeHtml(meta.note, {
             allowedTags: [ 
                 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
             ]
         });
+    }
+  },
+  methods: {
+    fillCell(event) {
+        console.log(event);
+        this.$emit('fill-cell', event);
     }
   },
   data() {

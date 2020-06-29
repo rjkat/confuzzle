@@ -3,19 +3,19 @@
         <span class="clue-id">{{idText}} </span>
         <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
-        <div class="crossword-answer-container" v-if="value">
+        <div class="crossword-answer-container" v-if="clue">
             <div class="crossword-clue-input">
-                <input v-for="(cell, i) in value.cells"
+                <input v-for="(cell, i) in clue.cells"
                        maxlength="1"
-                       :data-clueid="value.id"
+                       :data-clueid="clue.id"
                        :data-offset="i"
                        @click.prevent="selectClueFromInput($event)"
-                       @keypress.prevent="handleKeypress($event)"
-                       @keydown="handleKeydown($event)"
+                       @keypress="handleKeypress($event, i)"
+                       @keydown="handleKeydown($event, i)"
                        @mousedown.prevent
-                       @blur="$emit('clear-own-highlight', value.id)"
+                       @blur="$emit('clear-own-highlight', clue.id)"
                        :style="{backgroundColor: shadingColor(i)}"
-                       v-model="value.cells[i].contents">
+                       v-model="clue.cells[i].contents">
                 </input>
             </div>
         </div>
@@ -72,12 +72,11 @@ const sanitizeHtml = require('sanitize-html');
 
 export default Vue.extend({
   props: {
-    cwDisplay: Object,
-    value: Object,
+    clue: Object,
   },
   computed: {
     idText: function () {
-        const clue = this.value;
+        const clue = this.clue;
         if (!clue)
             return '';
         let idText = clue.numbering.clueText;
@@ -88,10 +87,10 @@ export default Vue.extend({
         return idText;
     },
     totalLength() {
-        this.value ? this.value.totalLength : 0;
+        this.clue ? this.clue.totalLength : 0;
     },
     lengthText: function () {
-        const clue = this.value;
+        const clue = this.clue;
         // don't show lengths on referenced clues or verbatim clues
         if (!clue || clue.verbatim)
             return '';
@@ -120,10 +119,10 @@ export default Vue.extend({
         return lengthText;
     },
     sanitizedText: function () {
-        if (!this.value) {
+        if (!this.clue) {
             return '';
         }
-        return sanitizeHtml(this.value.text, {
+        return sanitizeHtml(this.clue.text, {
             allowedTags: [ 
                 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
@@ -133,29 +132,29 @@ export default Vue.extend({
   },
   methods: {
     shadingColor: function(i) {
-        if (this.value)
-            return this.value.shadingColor;
-        if (this.value.cells[i])
-            return this.value.cells[i].shadingColor;
+        if (this.clue)
+            return this.clue.shadingColor;
+        if (this.clue.cells[i])
+            return this.clue.cells[i].shadingColor;
         return '';
     },
-    moveInput: function(input, direction) {
+    moveInput: function(input, pos) {
         const el = input.parentNode;
-        const nextoffset = parseInt(input.dataset.offset, 10) + direction;
         const nextinput = el.querySelector(
-            'input[data-offset="' + nextoffset + '"]'
+            'input[data-offset="' + pos + '"]'
         );
         if (nextinput) {
             nextinput.select();
             nextinput.focus();
-        } else if (nextoffset >= 0) {
+        } else if (pos >= 0) {
             // only blur when going off the end
             input.blur();
         }
     },
     fillCell: function(input, value) {
         input.value = value;
-        this.$emit('fill-cell', {clueid: input.dataset.clueid, offset: input.dataset.offset, value: value});
+        const cell = this.clue.cells[input.dataset.offset];
+        this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
         this.$emit('clear-own-highlight', input.dataset.clueid);
     },
     selectClueFromInput: function (event) {
@@ -164,25 +163,28 @@ export default Vue.extend({
         input.focus();
         input.select();
     },
-    handleKeypress: function(event) {
+    handleKeypress: function(event, offset) {
         const input = event.target;
         this.fillCell(input, event.key);
-        this.moveInput(input, 1);
+        this.moveInput(input, offset + 1);
     },
-    handleKeydown: function (event) {
+    handleKeydown: function (event, offset) {
         const input = event.target;
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
-                this.moveInput(input, 1);
+                this.moveInput(input, offset + 1);
                 event.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 this.fillCell(input, '');
+                this.moveInput(input, offset - 1);
+                event.preventDefault();
+                break;
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
-                this.moveInput(input, -1);
+                this.moveInput(input, offset - 1);
                 event.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:

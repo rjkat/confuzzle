@@ -1,12 +1,20 @@
 <template>
 <td :data-solver-mask="solverMask"
-    :data-number="value.number"
-    :data-across-separator="value.acrossSeparator"
-    :data-down-separator="value.downSeparator"
-    :data-empty="value.empty"
+    :data-number="cell.number"
+    :data-across-separator="cell.acrossSeparator"
+    :data-down-separator="cell.downSeparator"
+    :data-empty="cell.empty"
     @click.prevent="onClick($event)">
-    <input class="crossword-grid-input" v-if="showInput" v-model="value.contents"></input>
-    <span v-else>{{value.contents}}<div class="cell-highlight-border"></div></span>
+    <input
+        v-if="editable"
+        class="crossword-grid-input"
+        v-model="cell.contents"
+        maxlength="1"
+        v-on="$listeners"
+        @input="fillCell($event)"
+    >
+    </input>
+    <span v-else>{{cell.contents}}<div class="cell-highlight-border"></div></span>
 </td>
 </template>
 
@@ -127,7 +135,7 @@ function clearSolverMask(td, solverid, clearAcross, clearDown) {
 
 export default Vue.extend({
   props: {
-    value: Object,
+    cell: Object,
     editable: {
         type: Boolean,
         default: true
@@ -135,7 +143,7 @@ export default Vue.extend({
   },
   computed: {
     solverMask: function () {
-        let v = (this.value.acrossMask | this.value.downMask);
+        let v = (this.cell.acrossMask | this.cell.downMask);
         // can only show 4 overlapping solvers...
         while (nBitsSet(v) > 4) {
             v &= v - 1; // clear the least significant bit set
@@ -144,11 +152,15 @@ export default Vue.extend({
     }
   },
   methods: {
+    fillCell(event) {
+        const cell = this.cell;
+        this.$emit('fill-cell', {row: cell.row, col: cell.col, value: event.target.value});
+    },
     onClick(event) {
         if (!this.editable) {
             return;
         }
-        const cell = this.value;
+        const cell = this.cell;
         // if it's both a down and across clue, and they've
         // clicked on a first letter, change direction to match
         // the clue with the first letter
@@ -156,20 +168,18 @@ export default Vue.extend({
             && (cell.offsets.across == 0 || cell.offsets.down == 0)) {
             this.$emit('change-input-direction');
         }
-        this.showInput = true;
     },
     highlight(solverid, isAcross) {
         if (isAcross) {
-            this.value.acrossMask |= (1 << solverid);
+            this.cell.acrossMask |= (1 << solverid);
         } else {
-            this.value.downMask |= (1 << solverid);
+            this.cell.downMask |= (1 << solverid);
         }
     }
   },
   data() {
     return {
       bundler: "Parcel",
-      showInput: false
     };
   },
 });

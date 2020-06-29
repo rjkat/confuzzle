@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ana-editor v-model="value"></ana-editor>
+    <ana-editor :value.sync="source"></ana-editor>
 </div>
 </template>
 
@@ -13,7 +13,7 @@ export default Vue.extend({
     AnaEditor
   },
   props: {
-    value: String,
+    source: String,
   },
   data() {
     return {
