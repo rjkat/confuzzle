@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ui-toolbar type="colored" text-color="white" removeNavIcon>
+    <ui-toolbar type="colored" removeNavIcon>
         <template v-slot="title">
             <span style="{display: inline-flex; align-items: center;}">
                 <span class="crossword-meta-name">{{crossword.meta.name}}</span>
@@ -21,8 +21,10 @@
                 has-dropdown
                 icon="share"
                 size="large"
+                @click="openModal('shareModal')"
             >
             </ui-icon-button>
+            <ana-share-modal ref="shareModal"></ana-share-modal>
             <ui-icon-button
                 color="white"
                 has-dropdown
@@ -57,6 +59,10 @@
 
 .ui-toolbar--type-colored {
     background-color: $titleBgColor !important;
+
+    .ui-toolbar__body {
+        color: white !important;
+    }
 }
 
 .crossword-meta-name {
@@ -104,7 +110,7 @@ Vue.use(KeenUI);
 
 import AnaCellGrid from './components/AnaCellGrid.vue'
 import AnaCompile from './components/AnaCompile.vue'
-import AnaCollude from './components/AnaCollude.vue'
+import AnaShareModal from './components/AnaShareModal.vue'
 import AnaSolve from './components/AnaSolve.vue'
 
 const parser = require('./js/parser.js');
@@ -115,7 +121,7 @@ export default Vue.extend({
   components: {
     AnaCellGrid,
     AnaCompile,
-    AnaCollude,
+    AnaShareModal,
     AnaSolve
   },
   props: {
@@ -172,11 +178,18 @@ export default Vue.extend({
     };
   },
   methods: {
+    openModal(ref) {
+        this.$refs[ref].open();
+    },
+    closeModal(ref) {
+        this.$refs[ref].close();
+    },
     selectMenuOption(option) {
         if (option.label == 'Edit' || option.label == 'Preview') {
             this.compiling = !this.compiling;
+        } else if (option.label == 'Download') {
+            this.downloadClicked();
         }
-        console.log(option);
     },
     isSelected(clueid) {
         if (clueid == this.selectedid) {
