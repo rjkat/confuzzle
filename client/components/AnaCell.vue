@@ -4,9 +4,10 @@
     :data-across-separator="cell.acrossSeparator"
     :data-down-separator="cell.downSeparator"
     :data-empty="cell.empty"
-    @click.prevent="onClick($event)">
+    v-on="$listeners">
     <input
-        v-if="editable"
+        v-if="editable && !cell.empty"
+        ref="input"
         class="crossword-grid-input"
         v-model="cell.contents"
         maxlength="1"
@@ -158,18 +159,11 @@ export default Vue.extend({
         const cell = this.cell;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: event.target.value});
     },
-    onClick(event) {
-        if (!this.editable) {
+    select() {
+        if (!this.editable)
             return;
-        }
-        const cell = this.cell;
-        // if it's both a down and across clue, and they've
-        // clicked on a first letter, change direction to match
-        // the clue with the first letter
-        if (cell.clues && cell.clues.across && cell.clues.down
-            && (cell.offsets.across == 0 || cell.offsets.down == 0)) {
-            this.$emit('change-input-direction');
-        }
+        this.$refs.input.focus();
+        this.$refs.input.select();
     },
     highlight(solverid, isAcross) {
         if (isAcross) {

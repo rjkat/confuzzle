@@ -6,10 +6,9 @@
         <div class="crossword-answer-container" v-if="clue">
             <div class="crossword-clue-input">
                 <input v-for="(cell, i) in clue.cells"
+                       ref="inputs"
                        maxlength="1"
-                       :data-clueid="clue.id"
-                       :data-offset="i"
-                       @click.prevent="selectClueFromInput($event)"
+                       @click.prevent="selectClueFromInput($event, i)"
                        @keypress.prevent="handleKeypress($event, i)"
                        @keydown="handleKeydown($event, i)"
                        @mousedown.prevent
@@ -142,10 +141,7 @@ export default Vue.extend({
         return '';
     },
     moveInput: function(input, pos) {
-        const el = input.parentNode;
-        const nextinput = el.querySelector(
-            'input[data-offset="' + pos + '"]'
-        );
+        const nextinput = this.$refs.inputs[pos];
         if (nextinput) {
             nextinput.select();
             nextinput.focus();
@@ -154,23 +150,21 @@ export default Vue.extend({
             input.blur();
         }
     },
-    fillCell: function(input, value) {
-        input.value = value;
-        const cell = this.clue.cells[input.dataset.offset];
+    fillCell: function(offset, value) {
+        const cell = this.clue.cells[offset];
         cell.contents = value;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
-        this.$emit('clear-own-highlight', input.dataset.clueid);
+        this.$emit('clear-own-highlight', this.clue.id);
     },
-    selectClueFromInput: function (event) {
+    selectClueFromInput: function (event, clueid) {
         const input = event.target;
-        this.$emit('select-clue', input.dataset.clueid);
+        this.$emit('select-clue', clueid);
         input.focus();
         input.select();
     },
     handleKeypress: function(event, offset) {
-        const input = event.target;
-        this.fillCell(input, event.key);
-        this.moveInput(input, offset + 1);
+        this.fillCell(offset, event.key);
+        this.moveInput(event.target, offset + 1);
     },
     handleKeydown: function (event, offset) {
         const input = event.target;
@@ -182,7 +176,7 @@ export default Vue.extend({
                 event.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
-                this.fillCell(input, '');
+                this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
                 event.preventDefault();
                 break;
