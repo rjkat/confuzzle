@@ -1,6 +1,11 @@
 <template>
 <div>
-    <ana-toolbar :metadata="crossword.meta" v-model="compiling"></ana-toolbar>
+    <ana-toolbar
+        :metadata="crossword.meta"
+        v-model="compiling"
+        @download-clicked="downloadClicked()"
+    >
+    </ana-toolbar>
     <div class="content">
         <div id="grid-container">
             <div>
@@ -25,6 +30,10 @@
 </template>
 
 <style lang="scss">
+body {
+    background-color: rgb(240, 248, 255);
+}
+
 #grid-container {
     display: flex;
     justify-content: flex-start;
@@ -32,16 +41,26 @@
 }
 
 #editor {
+    margin-left: $displayPadding;
+    margin-top: $displayPadding;
     max-height: 30em;
     overflow-x: scroll;
+    width: 100vw;
+    border: 1px solid #000;
 }
 
 #grid {
+    padding-top: $displayPadding;
     flex: none;
 }
 #clues {
     margin-left: $displayPadding;
     margin-top: $displayPadding;
+    padding-top: $displayPadding;
+    max-height: 30em;
+    overflow-y: scroll;
+    border: 1px solid #000;
+    background-color: #fff;
 }
 </style>
 

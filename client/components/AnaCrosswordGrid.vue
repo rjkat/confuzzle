@@ -7,8 +7,7 @@
                     @click.prevent="cellClicked($event, cell)"
                     @keypress.prevent="handleKeypress($event, cell)"
                     @keydown="handleKeydown($event, cell)"
-                    @mousedown.prevent
-                    @change-input-direction="changeInputDirection($event)">
+                    @mousedown.prevent>
           </ana-cell>
       </tr>
   </table>

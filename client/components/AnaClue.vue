@@ -1,5 +1,5 @@
 <template>
-    <div class="clue-directions">
+    <li class="clue-directions">
         <span class="clue-id">{{idText}} </span>
         <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
@@ -18,7 +18,7 @@
                 </input>
             </div>
         </div>
-    </div>
+    </li>
 </template>
 
 <style lang="scss">
