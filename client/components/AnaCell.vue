@@ -1,9 +1,11 @@
 <template>
+
 <td :data-solver-mask="solverMask"
     :data-number="cell.number"
     :data-across-separator="cell.acrossSeparator"
     :data-down-separator="cell.downSeparator"
     :data-empty="cell.empty"
+    :style="{backgroundColor: cell.shadingColor}"
     v-on="$listeners">
     <input
         v-if="editable && !cell.empty"
@@ -14,7 +16,10 @@
         @input="fillCell($event)"
     >
     </input>
-    <span v-else>{{cell.contents}}<div class="cell-highlight-border"></div></span>
+    <span v-else>
+        {{cell.contents}}
+    </span>
+    <div class="cell-highlight-border" v-if="cell.highlighted" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
 </td>
 </template>
 

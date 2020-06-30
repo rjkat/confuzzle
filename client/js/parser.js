@@ -68,6 +68,9 @@ function populateCells(cw, cells, clues, compiling) {
           cell.contents = cell.solution;
         }
       }
+      if (clue.shadingColor) {
+        cell.shadingColor = clue.shadingColor;
+      }
       cell.empty = false;
       if (offset == 0) {
         clue.cells = [];
@@ -109,7 +112,8 @@ function buildGrid(cw, compiling) {
         empty: true,
         contents: '',
         acrossMask: 0,
-        downMask: 0
+        downMask: 0,
+        highlighted: false
       };
       if (shading) {
         shading.forEach(rule => {
@@ -370,23 +374,27 @@ export function parse(input, compiling, options) {
       clue.highlight = function(solverid) {
         this.highlighted = true;
         for (let i = 0; i < this.cells.length; i++) {
+          const cell = this.cells[i];
           if (this.isAcross) {
-            this.cells[i].acrossMask |= (1 << solverid);
+            cell.acrossMask |= (1 << solverid);
           } else {
-            this.cells[i].downMask |= (1 << solverid);
+            cell.downMask |= (1 << solverid);
           }
+          cell.highlighted = (cell.acrossMask | cell.downMask);
         }
       };
       clue.clearHighlight = function(solverid) {
         let anyHighlighted = false;
         for (let i = 0; i < this.cells.length; i++) {
+          const cell = this.cells[i];
           if (this.isAcross) {
-            this.cells[i].acrossMask &= ~(1 << solverid);
-            anyHighlighted |= this.cells[i].acrossMask;
+            cell.acrossMask &= ~(1 << solverid);
+            anyHighlighted |= cell.acrossMask;
           } else {
-            this.cells[i].downMask &= ~(1 << solverid);
-            anyHighlighted |= this.cells[i].downMask;
+            cell.downMask &= ~(1 << solverid);
+            anyHighlighted |= cell.downMask;
           }
+          cell.highlighted = (cell.acrossMask | cell.downMask);
         }
         this.highlighted = anyHighlighted;
       };

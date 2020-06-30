@@ -4,20 +4,21 @@
         <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
         <div class="crossword-answer-container" v-if="clue">
-            <div class="crossword-clue-input">
-                <input v-for="(cell, i) in clue.cells"
-                       ref="inputs"
-                       maxlength="1"
-                       @click.prevent="select($event.target)"
-                       @keypress.prevent="handleKeypress($event, i)"
-                       @blur="focusChanged()"
-                       @focus="focusChanged()"
-                       @keydown="handleKeydown($event, i)"
-                       :style="{backgroundColor: shadingColor(i)}"
-                       :data-solver-mask="solverMask"
-                       :class="{highlighted: clue.highlighted}"
-                       v-model="clue.cells[i].contents">
-                </input>
+            <div class="crossword-clue-input" :style="{backgroundColor: clue.shadingColor}">
+                <template v-for="(cell, i) in clue.cells">
+                    <input ref="inputs"
+                           maxlength="1"
+                           @click.prevent="select($event.target)"
+                           @keypress.prevent="handleKeypress($event, i)"
+                           @blur="focusChanged()"
+                           @focus="focusChanged()"
+                           @keydown="handleKeydown($event, i)"
+                           :style="{backgroundColor: shadingColor(i)}"
+                           :data-solver-mask="solverMask"
+                           :class="{highlighted: clue.highlighted}"
+                           v-model="clue.cells[i].contents">
+                    </input><span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
+                </template>
             </div>
         </div>
     </li>
@@ -38,7 +39,6 @@
         border: 0;
         padding-bottom: 1px;
         border-bottom: 1px solid $gridBgColor;
-        margin-right: 2px;
         background: none;
         outline: none;
         min-width: $gridCellSize;
@@ -59,14 +59,9 @@
         }
     }
 
-    [data-separator=","]:after {
+    .crossword-separator {
         font-family: $answerFontFamily;
-        content: "\00A0";
-    }
-
-    [data-separator="-"]:after {
-        font-family: $answerFontFamily;
-        content: "-";
+        margin-right: 4px;
     }
 
     .clue-id {
@@ -93,6 +88,7 @@ export default Vue.extend({
     prop: 'clue'
   },
   computed: {
+   
     solverMask: function () {
         return (1 << this.solverid);
     },
@@ -143,15 +139,20 @@ export default Vue.extend({
         if (!this.clue) {
             return '';
         }
-        return sanitizeHtml(this.clue.text, {
-            allowedTags: [ 
-                'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
-                'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
-            ]
-        });
+        return sanitizeHtml(this.clue.text, this.htmlOptions);
     }
   },
   methods: {
+    separator: function (cell) {
+        let sep = this.clue.isAcross ? cell.acrossSeparator : cell.downSeparator;
+        if (!sep) {
+            return null;
+        }
+        if (sep == ',') {
+            sep = "&nbsp;";
+        }
+        return sanitizeHtml(sep, this.htmlOptions);
+    },
     focusChanged: function() {
         let haveFocus = false;
         for (let i = 0; i < this.$refs.inputs.length; i++) {
@@ -217,7 +218,13 @@ export default Vue.extend({
   },
   data() {
     return {
-      bundler: "Parcel"
+        bundler: "Parcel",
+        htmlOptions: {
+            allowedTags: [ 
+                'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
+                'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
+            ]
+        }
     };
   }
 });
