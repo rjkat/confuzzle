@@ -13,6 +13,7 @@
         class="crossword-grid-input"
         v-model="cell.contents"
         maxlength="1"
+        @blur="onBlur()"
         @input="fillCell($event)"
     >
     </input>
@@ -43,7 +44,8 @@ td {
     font-size: $gridFontSize;
     box-sizing: border-box;
     font-family: $answerFontFamily;
-    border: $gridBorderWidth solid;
+    
+
     border-color: $gridBgColor;
     min-width: $gridCellSize;
     max-width: $gridCellSize;
@@ -54,6 +56,7 @@ td {
     position: relative;
     text-align: center;
     vertical-align: middle;
+    border: $gridBorderWidth solid;
 
     &[data-number]:before {
         position: absolute;
@@ -147,6 +150,11 @@ export default Vue.extend({
     },
   },
   methods: {
+    onBlur: function() {
+        let haveFocus = this.$refs.input === document.activeElement;
+        if (!haveFocus)
+            this.$emit('blur-cell', this.cell);
+    },
     fillCell(event) {
         const cell = this.cell;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: event.target.value});

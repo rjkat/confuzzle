@@ -4,6 +4,7 @@
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
                     v-model="crossword.grid.cells[cell.row][cell.col]"
+                    @blur-cell="deselectCell($event)"
                     @click.prevent="cellClicked($event, cell)"
                     @keypress.prevent="handleKeypress($event, cell)"
                     @keydown="handleKeydown($event, cell)"
@@ -49,7 +50,9 @@ export default Vue.extend({
   methods: {
     deselectCell(cell) {
        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
-       clue.deselect(this.solverid);
+       if (clue) {
+        clue.deselect(this.solverid);
+       }
     },
     selectCell(cell) {
         if (cell.empty)

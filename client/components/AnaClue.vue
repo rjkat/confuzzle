@@ -1,8 +1,13 @@
 <template>
-    <li class="clue-directions" :class="{highlighted: clue.highlighted}" :data-solver-mask="solverMask">
-        <span class="clue-id">{{idText}} </span>
-        <span class="clue-text" v-html="sanitizedText"></span>
-        <span class="clue-length">{{lengthText}}</span>
+    <li class=clue-item
+        :class="{highlighted: clue.highlighted}"
+        :data-solver-mask="solverMask"
+        ref="item">
+        <span class="clue-directions" @click="directionsClicked()">
+            <span class="clue-id">{{idText}} </span>
+            <span class="clue-text" v-html="sanitizedText"></span>
+            <span class="clue-length">{{lengthText}}</span>
+        </span>
         <div class="crossword-answer-container" v-if="clue">
             <div class="crossword-clue-input" :style="{backgroundColor: clue.shadingColor}">
                 <template v-for="(cell, i) in clue.cells">
@@ -27,7 +32,11 @@
 <style lang="scss">
 @import '../stylesheets/solvers';
 
-.clue-directions {
+.clue-item {
+    .clue-directions {
+        cursor: pointer;
+    }
+
     .crossword-clue-input {
         display: inline-block;
     }
@@ -87,8 +96,20 @@ export default Vue.extend({
   model: {
     prop: 'clue'
   },
+  watch: {
+    selected: function(val) {
+        if (val && !this.wasClicked) {
+            this.$refs.item.scrollIntoView({behavior: 'smooth'});
+        }
+        if (!val) {
+            this.wasClicked = false;
+        }
+    }
+  },
   computed: {
-   
+    selected() {
+        return this.clue.selected;
+    },
     solverMask: function () {
         return (1 << this.solverid);
     },
@@ -153,11 +174,17 @@ export default Vue.extend({
         }
         return sanitizeHtml(sep, this.htmlOptions);
     },
+    directionsClicked: function() {
+        this.$refs.inputs[0].click();
+        this.wasClicked = true;
+    },
     focusChanged: function() {
         let haveFocus = false;
         for (let i = 0; i < this.$refs.inputs.length; i++) {
             haveFocus |= this.$refs.inputs[i] === document.activeElement
         }
+        this.wasClicked |= haveFocus;
+        console.log('focusChanged: ' + this.wasClicked);
         haveFocus ? this.clue.select(this.solverid) : this.clue.deselect(this.solverid);
     },
     shadingColor: function(i) {
@@ -177,6 +204,8 @@ export default Vue.extend({
         }
     },
     select: function(input) {
+        console.log('select');
+        this.wasClicked = true;
         input.focus();
         input.select();
     },
@@ -219,6 +248,7 @@ export default Vue.extend({
   data() {
     return {
         bundler: "Parcel",
+        wasClicked: false,
         htmlOptions: {
             allowedTags: [ 
                 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
