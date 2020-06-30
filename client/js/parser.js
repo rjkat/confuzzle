@@ -355,13 +355,17 @@ export function parse(input, compiling, options) {
   for (let [clueid, clue] of Object.entries(cw.clues)) {
       clue.highlighted = false;
       clue.selected = false;
-      clue.select = function (solverid) {
-        this.selected = true;
-        this.highlight(solverid);
-      };
       clue.deselect = function (solverid) {
         this.selected = false;
         this.clearHighlight(solverid);
+      };
+      clue.select = function (solverid) {
+        for (let [otherid, other] of Object.entries(cw.clues)) {
+          if (otherid != clueid)
+            other.deselect();
+        }
+        this.selected = true;
+        this.highlight(solverid);
       };
       clue.highlight = function(solverid) {
         this.highlighted = true;

@@ -41,8 +41,16 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
+    solverid: {
+      type: Number,
+      default: 0
+    }
   },
   methods: {
+    deselectCell(cell) {
+       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
+       clue.deselect(this.solverid);
+    },
     selectCell(cell) {
         if (cell.empty)
           return;
@@ -54,18 +62,28 @@ export default Vue.extend({
         const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col]
         if (inputCell)
           inputCell.select();
+
+        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
+        clue.select(this.solverid);
     },
     cellClicked(event, cell) {
         if (!this.editable) {
             return;
         }
-        // if it's both a down and across clue, and they've
-        // clicked on a first letter, change direction to match
-        // the clue with the first letter
-        if (cell.clues && cell.clues.across && cell.clues.down
-            && (cell.offsets.across == 0 || cell.offsets.down == 0)) {
+        // if it's both a down and across clue,
+        if (cell.clues && cell.clues.across && cell.clues.down) {
+
+          // if it's the same as the last clicked cell, switch directions
+          if (cell == this.lastClicked) {
             this.inputAcross = !this.inputAcross;
+
+          // clicked on a first letter, change direction to match
+          // the clue with the first letter
+          } else if (cell.offsets.across == 0 || cell.offsets.down == 0) {
+            this.inputAcross = cell.offsets.across == 0;
+          }
         }
+        this.lastClicked = cell;
         this.selectCell(cell);
     },
     moveInputCell(input, cell, direction) {
@@ -85,6 +103,7 @@ export default Vue.extend({
             || cells[row][col].empty) {
             // make it so that backspace doesn't hide the input
             if (!backspace) {
+                this.deselectCell(cell);
                 input.blur();
             }
             return;
@@ -118,6 +137,7 @@ export default Vue.extend({
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
+                this.deselectCell(cell);
                 e.target.blur();
                 break;
         }
@@ -126,7 +146,8 @@ export default Vue.extend({
   data() {
     return {
       bundler: "Parcel",
-      inputAcross: true
+      inputAcross: true,
+      lastClicked: undefined
     };
   }
 });

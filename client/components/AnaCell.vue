@@ -126,14 +126,13 @@ export default Vue.extend({
     editable: {
         type: Boolean,
         default: true
-    }
+    },
   },
   model: {
     prop: 'cell'
   },
   computed: {
     solverMask: function () {
-        console.log("this.cell.acrossMask: " + this.cell.acrossMask);
         let v = (this.cell.acrossMask | this.cell.downMask);
         // can only show 4 overlapping solvers...
         while (nBitsSet(v) > 4) {
@@ -153,13 +152,6 @@ export default Vue.extend({
         this.$refs.input.focus();
         this.$refs.input.select();
     },
-    highlight(solverid, isAcross) {
-        if (isAcross) {
-            this.cell.acrossMask |= (1 << solverid);
-        } else {
-            this.cell.downMask |= (1 << solverid);
-        }
-    }
   },
   data() {
     return {
