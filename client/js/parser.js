@@ -192,7 +192,9 @@ function parseClue(cw, clue) {
     refIds: [],
     totalLength: lengths.reduce((acc, x) => acc + x),
     row: x.requiredField('row').requiredIntegerValue(),
-    col: x.requiredField('col').requiredIntegerValue()
+    col: x.requiredField('col').requiredIntegerValue(),
+    highlighted: false,
+    selected: false
   };
 
   const number = clueid.match(/\d+/);

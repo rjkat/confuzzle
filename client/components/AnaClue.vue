@@ -1,5 +1,5 @@
 <template>
-    <li class="clue-directions">
+    <li class="clue-directions" :class="{highlighted: clue.highlighted}" :data-solver-mask="solverMask">
         <span class="clue-id">{{idText}} </span>
         <span class="clue-text" v-html="sanitizedText"></span>
         <span class="clue-length">{{lengthText}}</span>
@@ -8,12 +8,14 @@
                 <input v-for="(cell, i) in clue.cells"
                        ref="inputs"
                        maxlength="1"
-                       @click.prevent="selectClueFromInput($event, i)"
+                       @click.prevent="select($event.target)"
                        @keypress.prevent="handleKeypress($event, i)"
+                       @blur="focusChanged()"
+                       @focus="focusChanged()"
                        @keydown="handleKeydown($event, i)"
-                       @mousedown.prevent
-                       @blur="$emit('clear-own-highlight', clue.id)"
                        :style="{backgroundColor: shadingColor(i)}"
+                       :data-solver-mask="solverMask"
+                       :class="{highlighted: clue.highlighted}"
                        v-model="clue.cells[i].contents">
                 </input>
             </div>
@@ -22,6 +24,8 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/solvers';
+
 .clue-directions {
     .crossword-clue-input {
         display: inline-block;
@@ -45,6 +49,14 @@
         vertical-align: middle;
         text-transform: uppercase;
         box-sizing: border-box;
+    }
+
+
+    @include each-solver using ($color, $lightColor, $sel) {
+        input.highlighted#{$sel} {
+            padding-bottom: 0px;
+            border-bottom: 2px solid $color;
+        }
     }
 
     [data-separator=","]:after {
@@ -72,11 +84,18 @@ const sanitizeHtml = require('sanitize-html');
 export default Vue.extend({
   props: {
     clue: Object,
+    solverid: {
+        type: Number,
+        default: 0
+    },
   },
   model: {
     prop: 'clue'
   },
   computed: {
+    solverMask: function () {
+        return (1 << this.solverid);
+    },
     idText: function () {
         const clue = this.clue;
         if (!clue)
@@ -133,6 +152,14 @@ export default Vue.extend({
     }
   },
   methods: {
+    focusChanged: function() {
+        let haveFocus = false;
+        for (let i = 0; i < this.$refs.inputs.length; i++) {
+            haveFocus |= this.$refs.inputs[i] === document.activeElement
+        }
+        this.clue.selected = haveFocus;
+        this.clue.highlighted = haveFocus;
+    },
     shadingColor: function(i) {
         if (this.clue)
             return this.clue.shadingColor;
@@ -143,24 +170,21 @@ export default Vue.extend({
     moveInput: function(input, pos) {
         const nextinput = this.$refs.inputs[pos];
         if (nextinput) {
-            nextinput.select();
-            nextinput.focus();
+            this.select(nextinput);
         } else if (pos >= 0) {
             // only blur when going off the end
             input.blur();
         }
+    },
+    select: function(input) {
+        input.focus();
+        input.select();
     },
     fillCell: function(offset, value) {
         const cell = this.clue.cells[offset];
         cell.contents = value;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
         this.$emit('clear-own-highlight', this.clue.id);
-    },
-    selectClueFromInput: function (event, clueid) {
-        const input = event.target;
-        this.$emit('select-clue', clueid);
-        input.focus();
-        input.select();
     },
     handleKeypress: function(event, offset) {
         this.fillCell(offset, event.key);

@@ -22,13 +22,6 @@
     }
 }
 
-@include each-solver using ($color, $lightColor, $sel) {
-    .highlighted#{$sel} input {
-        padding-bottom: 0px;
-        border-bottom: 2px solid $color;
-    }
-}
-
 ul {
     list-style: none;
     margin: 0;
