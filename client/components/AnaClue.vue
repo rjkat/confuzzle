@@ -157,8 +157,7 @@ export default Vue.extend({
         for (let i = 0; i < this.$refs.inputs.length; i++) {
             haveFocus |= this.$refs.inputs[i] === document.activeElement
         }
-        this.clue.selected = haveFocus;
-        this.clue.highlighted = haveFocus;
+        haveFocus ? this.clue.select(this.solverid) : this.clue.deselect(this.solverid);
     },
     shadingColor: function(i) {
         if (this.clue)
@@ -184,7 +183,6 @@ export default Vue.extend({
         const cell = this.clue.cells[offset];
         cell.contents = value;
         this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
-        this.$emit('clear-own-highlight', this.clue.id);
     },
     handleKeypress: function(event, offset) {
         this.fillCell(offset, event.key);

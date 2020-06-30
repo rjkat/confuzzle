@@ -107,7 +107,9 @@ function buildGrid(cw, compiling) {
         col: col - 1,
         row: row - 1,
         empty: true,
-        contents: ''
+        contents: '',
+        acrossMask: 0,
+        downMask: 0
       };
       if (shading) {
         shading.forEach(rule => {
@@ -193,8 +195,6 @@ function parseClue(cw, clue) {
     totalLength: lengths.reduce((acc, x) => acc + x),
     row: x.requiredField('row').requiredIntegerValue(),
     col: x.requiredField('col').requiredIntegerValue(),
-    highlighted: false,
-    selected: false
   };
 
   const number = clueid.match(/\d+/);
@@ -353,6 +353,39 @@ export function parse(input, compiling, options) {
   cw.acrossClues = [];
   cw.downClues = [];
   for (let [clueid, clue] of Object.entries(cw.clues)) {
+      clue.highlighted = false;
+      clue.selected = false;
+      clue.select = function (solverid) {
+        this.selected = true;
+        this.highlight(solverid);
+      };
+      clue.deselect = function (solverid) {
+        this.selected = false;
+        this.clearHighlight(solverid);
+      };
+      clue.highlight = function(solverid) {
+        this.highlighted = true;
+        for (let i = 0; i < this.cells.length; i++) {
+          if (this.isAcross) {
+            this.cells[i].acrossMask |= (1 << solverid);
+          } else {
+            this.cells[i].downMask |= (1 << solverid);
+          }
+        }
+      };
+      clue.clearHighlight = function(solverid) {
+        let anyHighlighted = false;
+        for (let i = 0; i < this.cells.length; i++) {
+          if (this.isAcross) {
+            this.cells[i].acrossMask &= ~(1 << solverid);
+            anyHighlighted |= this.cells[i].acrossMask;
+          } else {
+            this.cells[i].downMask &= ~(1 << solverid);
+            anyHighlighted |= this.cells[i].downMask;
+          }
+        }
+        this.highlighted = anyHighlighted;
+      };
       if (clue.isAcross) {
           cw.acrossClues.push(clue);
       } else {

@@ -120,19 +120,6 @@ function nBitsSet(v) {
     return n;
 }
 
-function clearSolverMask(td, solverid, clearAcross, clearDown) {
-    if (!td) {
-        return;
-    }
-    if (clearAcross) {
-        td.dataset.acrossMask &= ~(1 << solverid);
-    }
-    if (clearDown) {
-        td.dataset.downMask &= ~(1 << solverid);
-    }
-    td.dataset.solverMask = (td.dataset.acrossMask | td.dataset.downMask);
-}
-
 export default Vue.extend({
   props: {
     cell: Object,
@@ -146,6 +133,7 @@ export default Vue.extend({
   },
   computed: {
     solverMask: function () {
+        console.log("this.cell.acrossMask: " + this.cell.acrossMask);
         let v = (this.cell.acrossMask | this.cell.downMask);
         // can only show 4 overlapping solvers...
         while (nBitsSet(v) > 4) {
