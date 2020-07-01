@@ -1,30 +1,27 @@
 <template>
-<div>
+<div id="app-container">
     <ana-toolbar
+        id="app-toolbar"
         :metadata="crossword.meta"
         v-model="compiling"
         @download-clicked="downloadClicked()"
     >
     </ana-toolbar>
-    <div class="content">
-        <div id="grid-container">
-            <div>
-                <ana-crossword-grid id="grid"
-                    v-model="crossword"
-                    @fill-cell="fillCell($event)">
-                </ana-crossword-grid>
-            </div>
-            <ana-crossword-editor id="editor"
-                v-if="compiling"
-                v-model="crosswordSource"
-                @input="crosswordEdited()">
-            </ana-crossword-editor>
-            <ana-crossword-clues id="clues"
-                v-else
-                v-model="crossword" 
-                @fill-cell="fillCell($event)">
-            </ana-crossword-clues>
-        </div>
+    <div id="app-content">
+        <ana-crossword-grid id="grid"
+            v-model="crossword"
+            @fill-cell="fillCell($event)">
+        </ana-crossword-grid>
+        <ana-crossword-editor id="editor"
+            v-if="compiling"
+            v-model="crosswordSource"
+            @input="crosswordEdited()">
+        </ana-crossword-editor>
+        <ana-crossword-clues id="clues"
+            v-else
+            v-model="crossword" 
+            @fill-cell="fillCell($event)">
+        </ana-crossword-clues>
     </div>
 </div>
 </template>
@@ -34,10 +31,9 @@ body {
     background-color: rgb(240, 248, 255);
 }
 
-#grid-container {
+#app-content {
     display: flex;
     justify-content: flex-start;
-    height: 100%;
 }
 
 #editor {
@@ -57,9 +53,11 @@ body {
     margin-left: $displayPadding;
     margin-top: $displayPadding;
     padding-top: $displayPadding;
-    max-height: 30em;
+    min-width: 20em;
+    max-height: 80vh;
     overflow-y: scroll;
     border: 1px solid #000;
+    width: 100vw;
     background-color: #fff;
 }
 </style>

@@ -21,7 +21,7 @@ identifier: 2020/04/07
 copyright: Please respect copyright when using this site
 
 > a subset of HTML is supported for formatting
-note: Note: select <i>Edit</i> from the menu above to edit this crossword.
+note: <b>Note:</b> select <i>Edit</i> from the menu above to edit this crossword.
 
 > answer scrambling, can be anything, defaults to "none".
 > "base64" is understood by the crossword engine.
