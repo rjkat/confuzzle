@@ -4,7 +4,7 @@
         :data-solver-mask="solverMask"
         ref="item">
         <span class="clue-directions" @click="directionsClicked()">
-            <span class="clue-id">{{idText}} </span>
+            <span class="clue-id">{{idText}}<span class="hidden-print" v-if="showDirection">{{clue.isAcross ? 'A' : 'D'}}</span> </span>
             <span class="clue-text" v-html="sanitizedText"></span>
             <span class="clue-length">{{lengthText}}</span>
         </span>
@@ -117,12 +117,20 @@ export default Vue.extend({
     solverMask: function () {
         return (1 << this.solverid);
     },
+    isPrimaryRef: function () {
+        const clue = this.clue;
+        return (clue.refIds && clue.id == clue.refIds[0]);
+    },
+    showDirection: function () {
+        const clue = this.clue;
+        return (clue.numbering.clueText == clue.numbering.gridText) && !(this.clue.verbatim || this.isPrimaryRef);
+    },
     idText: function () {
         const clue = this.clue;
         if (!clue)
             return '';
         let idText = clue.numbering.clueText;
-        if (!clue.verbatim && (clue.refIds && clue.id == clue.refIds[0]))
+        if (!clue.verbatim && this.isPrimaryRef)
         {
             idText = clue.refIds.join(', ');
         }

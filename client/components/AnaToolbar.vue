@@ -63,9 +63,16 @@
 
 .ui-toolbar--type-colored {
     background-color: $titleBgColor !important;
+    @media print {
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
 
     .ui-toolbar__body {
         color: white !important;
+        @media print {
+            color: black !important;
+        }
     }
 }
 

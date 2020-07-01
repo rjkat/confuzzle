@@ -204,7 +204,7 @@ function parseClue(cw, clue) {
   const number = clueid.match(/\d+/);
   var offset = 0;
   var gridText = number ? parseInt(number, 10) : '';
-  var clueText = gridText + (parsed.isAcross ? 'A' : 'D');
+  var clueText = gridText;
 
   const numbering = x.optionalSection('numbering');
 
