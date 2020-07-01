@@ -34,6 +34,9 @@ body {
 #app-content {
     display: flex;
     justify-content: flex-start;
+    @media print {
+        display: block !important;
+    }
 }
 
 #editor {
@@ -50,15 +53,19 @@ body {
     flex: none;
 }
 #clues {
-    margin-left: $displayPadding;
     margin-top: $displayPadding;
     padding-top: $displayPadding;
     min-width: 20em;
-    max-height: 80vh;
+    
     overflow-y: scroll;
-    border: 1px solid #000;
     width: 100vw;
     background-color: #fff;
+
+    @media screen {
+        margin-left: $displayPadding;
+        border: 1px solid #000;
+        max-height: 80vh;
+    }
 }
 </style>
 

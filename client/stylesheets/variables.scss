@@ -21,3 +21,10 @@ $clueMinWidth: 15em;
 
 $highlightBorderWidth: 0.15ch;
 $highlightCellSize: #{$gridCellSize - 2*$highlightBorderWidth};
+
+
+@media print {
+  .hidden-print {
+    display: none !important;
+  }
+}

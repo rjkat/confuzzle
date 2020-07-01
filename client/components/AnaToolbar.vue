@@ -7,7 +7,7 @@
             <span class="crossword-meta-identifier" v-if="metadata.identifier">{{metadata.identifier}}</span>
         </span>
     </template>
-    <div slot="actions">
+    <div slot="actions" class="hidden-print">
         <ui-icon-button
             color="white"
             has-dropdown

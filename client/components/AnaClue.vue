@@ -9,7 +9,7 @@
             <span class="clue-length">{{lengthText}}</span>
         </span>
         <div class="crossword-answer-container" v-if="clue">
-            <div class="crossword-clue-input" :style="{backgroundColor: clue.shadingColor}">
+            <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
                 <template v-for="(cell, i) in clue.cells">
                     <input ref="inputs"
                            maxlength="1"
@@ -35,6 +35,10 @@
 .clue-item {
     .clue-directions {
         cursor: pointer;
+    }
+
+    @media print {
+        font-size: 13px;
     }
 
     .crossword-clue-input {
