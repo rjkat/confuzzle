@@ -2,6 +2,7 @@
     <ui-modal ref="modal" title="Share Crossword">
         <div style="text-align: center;">
             <template v-if="!shared">
+                <p class="share-info-text">Get a shared link to this crossword and collude with others in real time.</p>
                 <ui-textbox class="crossword-name-input" v-model="solverName">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>

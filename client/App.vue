@@ -3,8 +3,9 @@
     <ana-toolbar
         id="app-toolbar"
         :metadata="crossword.meta"
-        v-model="compiling"
+        v-model="state"
         @download-clicked="downloadClicked()"
+        @puz-file-uploaded="puzFileUploaded($event)"
     >
     </ana-toolbar>
     <div id="app-content">
@@ -13,7 +14,7 @@
             @fill-cell="fillCell($event)">
         </ana-crossword-grid>
         <ana-crossword-editor id="editor"
-            v-if="compiling"
+            v-if="state.compiling"
             v-model="crosswordSource"
             @input="crosswordEdited()">
         </ana-crossword-editor>
@@ -98,13 +99,13 @@ export default Vue.extend({
     gridid: String,
     solverid: Number,
     solvers: Object,
-    compiling: {
-        type: Boolean,
-        default: false
+    state: {
+        type: Object,
+        default: function() { return {compiling: false, printing: false}; }
     },
     crossword: {
         type: Object,
-        default: function () { return defaultCrossword }
+        default: function () { return defaultCrossword; }
     },
     crosswordSource: {
         type: String,
@@ -132,7 +133,6 @@ export default Vue.extend({
         return false;
     },
     crosswordEdited() {
-        console.log('edit');
         const self = this;
         clearTimeout(self.editDebounce)
         self.editDebounce = setTimeout(
@@ -205,6 +205,7 @@ export default Vue.extend({
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
+        this.crossword = parser.parse(this.crosswordSource, true);
     },
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);

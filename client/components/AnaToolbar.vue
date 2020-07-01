@@ -11,19 +11,26 @@
         <ui-icon-button
             color="white"
             has-dropdown
-            icon="publish"
+            icon="print"
             size="large"
+            @click="printClicked()"
         >
         </ui-icon-button>
         <ui-icon-button
             color="white"
             has-dropdown
-            icon="share"
+            icon="people"
             size="large"
             @click="openModal('shareModal')"
         >
         </ui-icon-button>
         <ana-share-modal ref="shareModal"></ana-share-modal>
+
+        <input type="file" ref="fileInput"
+            accept="application/x-crossword"
+            @change="handleFiles()"
+            style="display: none">
+        </input>
         <ui-icon-button
             color="white"
             has-dropdown
@@ -40,11 +47,20 @@
                 @close="$refs.menuDropdown.closeDropdown()"
             ></ui-menu>
         </ui-icon-button>
+
+        <ui-modal ref="aboutModal" title="About anagrind.com">
+            <p class="about-text">This is a hobby project by <a href="https://rjk.at">Rowan</a>. <a href="https://github.com/rjkat/anagrind">Click here</a> to view
+            the source code on github (MIT license).</p>
+        </ui-modal>
     </div>
 </ui-toolbar>
 </template>
 
 <style lang="scss">
+.about-text {
+    font-family: $clueFontFamily;
+}
+
 .ui-toolbar--type-colored {
     background-color: $titleBgColor !important;
 
@@ -80,20 +96,24 @@ export default Vue.extend({
   },
   props: {
     metadata: Object,
-    compiling: Boolean
+    state: Object
   },
   model: {
-    prop: 'compiling'
+    prop: 'state'
   },
   computed: {
     menuOptions() {
-        if (!this.compiling) {
+        if (!this.state.compiling) {
             return [{
                 label: 'Edit',
                 icon: 'edit'
             },
             {
-                label: 'Download',
+                label: 'Upload .puz',
+                icon: 'publish'
+            },
+            {
+                label: 'Download .puz',
                 icon: 'get_app'
             },
             {
@@ -106,7 +126,11 @@ export default Vue.extend({
                 icon: 'visibility'
             },
             {
-                label: 'Download',
+                label: 'Upload .puz',
+                icon: 'publish'
+            },
+            {
+                label: 'Download .puz',
                 icon: 'get_app'
             },
             {
@@ -123,11 +147,29 @@ export default Vue.extend({
     closeModal(ref) {
         this.$refs[ref].close();
     },
+    handleFiles() {
+        const self = this;
+        let files = this.$refs.fileInput.files;
+        console.log(files)
+        files = [...files];
+        files.forEach(file => file.arrayBuffer().then(
+            buffer => self.$emit('puz-file-uploaded', buffer)
+        ));
+    },
+    printClicked() {
+        this.state.printing = true;
+        this.state.compiling = false;
+        Vue.nextTick(() => window.print());
+    },
     selectMenuOption(option) {
         if (option.label == 'Edit' || option.label == 'Preview') {
-            this.$emit('input', !this.compiling);
-        } else if (option.label == 'Download') {
+            this.state.compiling = !this.state.compiling;
+        } else if (option.label == 'Download .puz') {
             this.$emit('download-clicked');
+        } else if (option.label == 'Upload .puz') {
+            this.$refs.fileInput.click();
+        } else if (option.label == 'About') {
+            this.openModal('aboutModal');
         }
     },
   },
