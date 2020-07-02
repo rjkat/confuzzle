@@ -66,6 +66,9 @@ td {
         font-size: .5em;
         line-height: 1em;
         background-color: rgba(240, 240, 240, 0.7);
+        @media print {
+            background-color: transparent !important;
+        }
         z-index: 5;
     }
 

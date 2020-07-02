@@ -1,20 +1,18 @@
 <template>
     <ui-modal ref="modal" title="Share Crossword">
         <div style="text-align: center;">
-            <template v-if="!shared">
+            <template v-if="!link">
                 <p class="share-info-text">Get a shared link to this crossword and collude with others in real time.</p>
                 <ui-textbox class="crossword-name-input" v-model="solverName">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>
-                <ui-button color="primary" :disabled="!solverName.length" @click="shareClicked()">Share</ui-button>
+                <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="shareClicked()">Share</ui-button>
             </template>
             <template v-else>
                 <p class="share-info-text">Share this link to solve with others. It will remain active
                    whilst there is at least one active solver.</p>
-                <div class="crossword-link-text">
-                    anagrind.com/grid/foo
-                </div>
-                <ui-button color="primary" style="margin-top: 1em;">Copy</ui-button>
+                <div class="crossword-link-text">{{link}}</div>
+                <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
             </template>
         </div>
     </ui-modal>
@@ -41,16 +39,6 @@
 }
 
 .crossword-link-text {
-    height: 40px;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    align-items: center;
-    padding-left: 1em;
-    overflow: auto;
-    max-width: 18em;
-    border-radius: 3px;
-    border: 1px solid $gridBgColor;
     font-family: $answerFontFamily;
 }
 
@@ -75,12 +63,19 @@ export default Vue.extend({
     return {
       solverName: "",
       bundler: "Parcel",
-      shared: false
     };
+  },
+  props: {
+    loading: false,
+    link: ""
   },
   methods: {
     shareClicked() {
-        this.shared = true;
+        this.$emit('share-clicked', this.solverName);
+    },
+    copyClicked() {
+        navigator.clipboard.writeText(this.link);
+        this.$emit('copy-clicked');
     },
     open() {
         this.$refs.modal.open();

@@ -3,8 +3,12 @@
     <ana-toolbar
         id="app-toolbar"
         :metadata="crossword.meta"
+        :shareLoading="shareLoading"
+        :shareLink="shareLink"
         v-model="state"
+        @share-clicked="shareClicked($event)"
         @download-clicked="downloadClicked()"
+        @copy-clicked="copyClicked()"
         @puz-file-uploaded="puzFileUploaded($event)"
     >
     </ana-toolbar>
@@ -24,6 +28,7 @@
             @fill-cell="fillCell($event)">
         </ana-crossword-clues>
     </div>
+    <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
 </div>
 </template>
 
@@ -47,6 +52,12 @@ body {
     overflow-x: scroll;
     width: 100vw;
     border: 1px solid #000;
+}
+
+#snackbar {
+    position: absolute;
+    width: 100%;
+    margin-bottom: $displayPadding;
 }
 
 #grid {
@@ -87,6 +98,8 @@ import AnaToolbar from './components/AnaToolbar.vue'
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
+import {AnagrindClient} from './js/client.js'
+
 const defaultCrossword = parser.parse(parser.sampleCrossword(), false);
 export default Vue.extend({
   components: {
@@ -101,8 +114,16 @@ export default Vue.extend({
     solvers: Object,
     state: {
         type: Object,
-        default: function() { return {compiling: false, printing: false}; }
+        default: function() {
+            return {
+                colluding: false,
+                compiling: false,
+                printing: false,
+            };
+        }
     },
+    shareLoading: false,
+    shareLink: "",
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -110,11 +131,18 @@ export default Vue.extend({
     crosswordSource: {
         type: String,
         default: parser.sampleCrossword()
-    }
+    },
+    client: Object
+  },
+  created() {
+    this.$options.client = new AnagrindClient(this, window.location.host);
   },
   data() {
     return {
-      bundler: "Parcel"
+      shortUrl: 'https://anagr.in/d/',
+      bundler: "Parcel",
+      copyMessage: 'Link copied to clipboard',
+      snackbarDuration: 3000
     };
   },
   methods: {
@@ -131,6 +159,12 @@ export default Vue.extend({
             }
         }
         return false;
+    },
+    snackbarMessage(msg) {
+        this.$refs.snackbarContainer.createSnackbar({
+            message: msg,
+            duration: this.snackbarDuration
+        });
     },
     crosswordEdited() {
         const self = this;
@@ -176,7 +210,7 @@ export default Vue.extend({
     },
     fillCell(event) {
         // console.log(event);
-        // this.client.sendUpdate({
+        // this.$options.client.sendUpdate({
         //     action: 'fillCell',
         //     solverid: this.solverid,
         //     clueid: clueid,
@@ -193,15 +227,22 @@ export default Vue.extend({
     },
     joinClicked(name) {
         const self = this;
-        this.client.joinGrid(this.gridid, name, function (msg) {
+        this.$options.client.joinGrid(this.gridid, name, function (msg) {
             self.gridJoined(msg);
         });
     },
-    colludeClicked(name) {
+    shareClicked(name) {
         const self = this;
-        this.client.shareCrossword(this.crosswordSource, name, function (msg) {
+        this.shareLoading = true;
+        this.$options.client.shareCrossword(this.crosswordSource, name, function (msg) {
             self.shareSucceeded(msg);
         });
+    },
+    shareSucceeded(msg) {
+        this.shareLink = this.shortUrl + msg.gridid;
+        window.history.replaceState(null, 'anagrind.com', '/grid/' + msg.gridid);
+        this.state.colluding = true;
+        this.shareLoading = false;
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
@@ -216,6 +257,9 @@ export default Vue.extend({
         const filename = this.crossword.meta.name + '.puz';
         link.download = filename;
         link.click();
+    },
+    copyClicked() {
+        this.snackbarMessage(this.copyMessage);
     }
   }
 });

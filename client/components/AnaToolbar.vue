@@ -24,7 +24,12 @@
             @click="openModal('shareModal')"
         >
         </ui-icon-button>
-        <ana-share-modal ref="shareModal"></ana-share-modal>
+        <ana-share-modal
+            ref="shareModal"
+            :loading="shareLoading"
+            :link="shareLink"
+            v-on="$listeners">
+        </ana-share-modal>
 
         <input type="file" ref="fileInput"
             accept="application/x-crossword"
@@ -103,14 +108,26 @@ export default Vue.extend({
   },
   props: {
     metadata: Object,
-    state: Object
+    state: Object,
+    shareLoading: false,
+    shareLink: ""
   },
   model: {
     prop: 'state'
   },
   computed: {
     menuOptions() {
-        if (!this.state.compiling) {
+        if (this.state.colluding) {
+            return [
+            {
+                label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        } else if (!this.state.compiling) {
             return [{
                 label: 'Edit',
                 icon: 'edit'
