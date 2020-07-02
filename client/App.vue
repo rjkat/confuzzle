@@ -2,6 +2,7 @@
 <div id="app-container">
     <ana-toolbar
         id="app-toolbar"
+        v-if="!state.joining"
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
@@ -13,20 +14,33 @@
     >
     </ana-toolbar>
     <div id="app-content">
-        <ana-crossword-grid id="grid"
-            v-model="crossword"
-            @fill-cell="fillCell($event)">
-        </ana-crossword-grid>
-        <ana-crossword-editor id="editor"
-            v-if="state.compiling"
-            v-model="crosswordSource"
-            @input="crosswordEdited()">
-        </ana-crossword-editor>
-        <ana-crossword-clues id="clues"
-            v-else
-            v-model="crossword" 
-            @fill-cell="fillCell($event)">
-        </ana-crossword-clues>
+        <template v-if="state.joining">
+            <ui-modal ref="joinModal" title="Join crossword" :dismissible="false">
+                <div style="text-align: center;">
+                    <p class="join-info-text">Join this crossword and collude with others in real time.</p>
+                    <ui-textbox class="crossword-name-input" v-model="solverName">
+                            <b>0A</b> Your name ({{solverName ? solverName.length : 0}})
+                    </ui-textbox> 
+                    <ui-button :loading="joinLoading" color="primary" :disabled="!solverName" @click="joinClicked(solverName)">Join</ui-button>
+                </div>
+            </ui-modal>
+        </template>
+        <template v-else>
+            <ana-crossword-grid id="grid"
+                v-model="crossword"
+                @fill-cell="fillCell($event)">
+            </ana-crossword-grid>
+            <ana-crossword-editor id="editor"
+                v-if="state.compiling"
+                v-model="crosswordSource"
+                @input="crosswordEdited()">
+            </ana-crossword-editor>
+            <ana-crossword-clues id="clues"
+                v-else
+                v-model="crossword" 
+                @fill-cell="fillCell($event)">
+            </ana-crossword-clues>
+        </template>
     </div>
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
 </div>
@@ -35,6 +49,25 @@
 <style lang="scss">
 body {
     background-color: rgb(240, 248, 255);
+}
+
+.crossword-name-input {
+    width: 10em;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    .ui-textbox__label-text {
+        font-family: $clueFontFamily;
+    }
+    input {
+        font-size: $gridFontSize;
+        font-family: $answerFontFamily;
+        text-transform: uppercase;
+    }
+}
+
+.join-info-text {
+    font-family: $clueFontFamily;
 }
 
 #app-content {
@@ -119,11 +152,13 @@ export default Vue.extend({
                 colluding: false,
                 compiling: false,
                 printing: false,
+                joining: false
             };
         }
     },
+    joinLoading: false,
     shareLoading: false,
-    shareLink: "",
+    solverName: "",
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -134,8 +169,20 @@ export default Vue.extend({
     },
     client: Object
   },
+  computed: {
+    shareLink() {
+        return !this.gridid ? "" : this.shortUrl + this.gridid;
+    }
+  },
   created() {
     this.$options.client = new AnagrindClient(this, window.location.host);
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
+        this.gridid = pathParts[2];
+        this.state.joining = true;
+        const self = this;
+        Vue.nextTick(() => self.$refs.joinModal.open());
+    }
   },
   data() {
     return {
@@ -222,10 +269,12 @@ export default Vue.extend({
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
-        // remove #join from URL
-        history.replaceState(null, null, ' ');
+        this.state.joining = false;
+        this.joinLoading = false;
+        this.state.colluding = true;
     },
     joinClicked(name) {
+        this.joinLoading = true;
         const self = this;
         this.$options.client.joinGrid(this.gridid, name, function (msg) {
             self.gridJoined(msg);
@@ -239,7 +288,7 @@ export default Vue.extend({
         });
     },
     shareSucceeded(msg) {
-        this.shareLink = this.shortUrl + msg.gridid;
+        this.gridid = msg.gridid;
         window.history.replaceState(null, 'anagrind.com', '/grid/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
