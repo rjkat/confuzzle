@@ -5,6 +5,7 @@
         <ana-clue-list
             class="clue-list"
             data-across
+            :solverid="solverid"
             v-model="crossword.acrossClues"
             v-on="$listeners"
         >
@@ -12,6 +13,7 @@
         <ana-clue-list
             class="clue-list"
             data-down
+            :solverid="solverid"
             v-model="crossword.downClues"
             v-on="$listeners"
         >
@@ -64,6 +66,10 @@ export default Vue.extend({
   },
   props: {
     crossword: Object,
+    solverid: {
+        type: Number,
+        default: 0
+    }
   },
   model: {
     prop: 'crossword'

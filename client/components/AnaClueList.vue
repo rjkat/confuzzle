@@ -5,6 +5,7 @@
             v-for="(clue, i) in clues"
             v-on="$listeners"
             v-model="clues[i]"
+            :solverid="solverid"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
             >
@@ -53,6 +54,10 @@ export default Vue.extend({
         type: Array,
         required: true
     },
+    solverid: {
+        type: Number,
+        default: 0
+    }
   },
   data() {
     return {

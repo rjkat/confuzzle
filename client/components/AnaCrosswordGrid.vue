@@ -4,6 +4,7 @@
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
                     v-model="crossword.grid.cells[cell.row][cell.col]"
+                    @fill-grid-cell="fillCell($event)"
                     @blur-cell="deselectCell($event)"
                     @click.prevent="cellClicked($event, cell)"
                     @keypress.prevent="handleKeypress($event, cell)"
@@ -68,6 +69,11 @@ export default Vue.extend({
 
         const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
         clue.select(this.solverid);
+    },
+    fillCell(cell) {
+      const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
+      const offset = this.inputAcross ? cell.offsets.across : cell.offsets.down;
+      this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents});
     },
     cellClicked(event, cell) {
         if (!this.editable) {

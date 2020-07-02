@@ -14,7 +14,7 @@
         v-model="cell.contents"
         maxlength="1"
         @blur="onBlur()"
-        @input="fillCell($event)"
+        @keypress="fillCell($event)"
     >
     </input>
     <span v-else>
@@ -159,8 +159,7 @@ export default Vue.extend({
             this.$emit('blur-cell', this.cell);
     },
     fillCell(event) {
-        const cell = this.cell;
-        this.$emit('fill-cell', {row: cell.row, col: cell.col, value: event.target.value});
+        this.$emit('fill-grid-cell', this.cell);
     },
     select() {
         if (!this.editable)

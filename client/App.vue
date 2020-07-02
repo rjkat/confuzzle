@@ -15,7 +15,7 @@
     </ana-toolbar>
     <div id="app-content">
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" title="Join crossword" :dismissible="false">
+            <ui-modal ref="joinModal" title="Join Crossword" :dismissible="false">
                 <div style="text-align: center;">
                     <p class="join-info-text">Join this crossword and collude with others in real time.</p>
                     <ui-textbox class="crossword-name-input" v-model="solverName">
@@ -28,7 +28,8 @@
         <template v-else>
             <ana-crossword-grid id="grid"
                 v-model="crossword"
-                @fill-cell="fillCell($event)">
+                :solverid="solverid"
+                @fill-cell="sendFillCell($event)">
             </ana-crossword-grid>
             <ana-crossword-editor id="editor"
                 v-if="state.compiling"
@@ -37,8 +38,9 @@
             </ana-crossword-editor>
             <ana-crossword-clues id="clues"
                 v-else
+                :solverid="solverid"
                 v-model="crossword" 
-                @fill-cell="fillCell($event)">
+                @fill-cell="sendFillCell($event)">
             </ana-crossword-clues>
         </template>
     </div>
@@ -85,12 +87,6 @@ body {
     overflow-x: scroll;
     width: 100vw;
     border: 1px solid #000;
-}
-
-#snackbar {
-    position: absolute;
-    width: 100%;
-    margin-bottom: $displayPadding;
 }
 
 #grid {
@@ -223,52 +219,31 @@ export default Vue.extend({
            500
         );
     },
-    clearOwnHighlight(clueid, force) {
-        if (!clueid) {
-            return;
-        }
-        if (force || !this.isSelected(clueid)) {
-            // this.clues.clearHighlightClue(clueid);
-            this.grid.clearHighlightClue(clueid, this.solverid);
-        }
-    },
-    drawOwnHighlight(clueid, scroll) {
-        if (!clueid) {
-            return
-        }
-        // this.clues.highlightClue(clueid, scroll);
-        this.grid.highlightClue(clueid, this.solverid);
-    },
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
-            this.grid.highlightClue(msg.clueid, msg.solverid);
+            this.crossword.clues[msg.clueid].highlight(msg.solverid);
         } else {
-            this.grid.clearHighlightClue(msg.clueid, msg.solverid);
+            this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
         }
     },
-    // local solver has changed their selection
-    selectClue(clueid, scroll) {
-        this.callbacks.onSelectionChanged(false, this.solverid, this.selectedid);
-        this.clearOwnHighlight(this.selectedid, true);
-        this.selectedid = clueid;
-        this.drawOwnHighlight(this.selectedid, scroll);
-        this.callbacks.onSelectionChanged(true, this.solverid, this.selectedid);
+    fillCell(clueid, offset, value) {
+        this.crossword.clues[clueid].cells[offset].contents = value;
     },
-    fillCell(event) {
-        // console.log(event);
-        // this.$options.client.sendUpdate({
-        //     action: 'fillCell',
-        //     solverid: this.solverid,
-        //     clueid: clueid,
-        //     offset: offset,
-        //     value: value
-        // });
+    sendFillCell(event) {
+        this.$options.client.sendUpdate({
+            action: 'fillCell',
+            solverid: this.solverid,
+            clueid: event.clueid,
+            offset: event.offset,
+            value: event.value
+        });
     },
-    gridJoined(msg) {
+    gridJoined(msg, solvers) {
+        this.crossword = parser.parse(msg.crossword, false);
+        this.solvers = solvers;
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
-        this.solvers = msg.solvers;
         this.state.joining = false;
         this.joinLoading = false;
         this.state.colluding = true;

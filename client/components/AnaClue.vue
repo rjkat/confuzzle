@@ -196,7 +196,6 @@ export default Vue.extend({
             haveFocus |= this.$refs.inputs[i] === document.activeElement
         }
         this.wasClicked |= haveFocus;
-        console.log('focusChanged: ' + this.wasClicked);
         haveFocus ? this.clue.select(this.solverid) : this.clue.deselect(this.solverid);
     },
     shadingColor: function(i) {
@@ -216,7 +215,6 @@ export default Vue.extend({
         }
     },
     select: function(input) {
-        console.log('select');
         this.wasClicked = true;
         input.focus();
         input.select();
@@ -224,7 +222,7 @@ export default Vue.extend({
     fillCell: function(offset, value) {
         const cell = this.clue.cells[offset];
         cell.contents = value;
-        this.$emit('fill-cell', {row: cell.row, col: cell.col, value: value});
+        this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
     },
     handleKeypress: function(event, offset) {
         this.fillCell(offset, event.key);

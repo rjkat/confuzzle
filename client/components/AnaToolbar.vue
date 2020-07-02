@@ -174,7 +174,6 @@ export default Vue.extend({
     handleFiles() {
         const self = this;
         let files = this.$refs.fileInput.files;
-        console.log(files)
         files = [...files];
         files.forEach(file => file.arrayBuffer().then(
             buffer => self.$emit('puz-file-uploaded', buffer)
