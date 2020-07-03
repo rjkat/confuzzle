@@ -14,7 +14,7 @@
 </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../stylesheets/solvers';
 
 @include each-solver using ($color, $lightColor, $sel) {

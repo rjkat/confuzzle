@@ -1,5 +1,4 @@
 <template>
-
 <td :data-solver-mask="solverMask"
     :data-number="cell.number"
     :data-across-separator="cell.acrossSeparator"
@@ -20,7 +19,7 @@
     <span v-else>
         {{cell.contents}}
     </span>
-    <div class="cell-highlight-border" v-if="cell.highlighted" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
+    <div class="cell-highlight-border" v-if="cell.highlightMask" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
 </td>
 </template>
 

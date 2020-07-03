@@ -4,6 +4,7 @@
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
                     v-model="crossword.grid.cells[cell.row][cell.col]"
+                    :solverid="solverid"
                     @fill-grid-cell="fillCell($event)"
                     @blur-cell="deselectCell($event)"
                     @click.prevent="cellClicked($event, cell)"
@@ -13,6 +14,7 @@
           </ana-cell>
       </tr>
   </table>
+  <div class="copyright-text">{{crossword.meta.copyright}}</div>
 </div>
 </template>
 
@@ -22,6 +24,9 @@
     background-color: $gridBlankColor;
     display:inline-block;
     border-collapse: collapse;
+}
+.copyright-text {
+  font-family: $clueFontFamily;
 }
 </style>
 
@@ -43,16 +48,13 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-    solverid: {
-      type: Number,
-      default: 0
-    }
+    solverid: Number
   },
   methods: {
     deselectCell(cell) {
        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
        if (clue) {
-        clue.deselect(this.solverid);
+          clue.deselect(this.solverid);
        }
     },
     selectCell(cell) {

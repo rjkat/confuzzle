@@ -73,15 +73,17 @@ $maxSolvers: length($solverColors);
     @return $g;
 }
 
-// number of solvers to highlight simultaneously
-@for $nMask from 1 through 4 {
-    $combos: combinations($solverColors, $nMask);
-    @each $mask, $values in $combos {
-        td#{"[data-solver-mask=\"#{$mask}\"]"} {
-            background: repeating-linear-gradient(
-              45deg,
-              gradient($values, $nMask),
-            ) !important;
+@media screen {
+    // number of solvers to highlight simultaneously
+    @for $nMask from 1 through 4 {
+        $combos: combinations($solverColors, $nMask);
+        @each $mask, $values in $combos {
+            td#{"[data-solver-mask=\"#{$mask}\"]"} {
+                background: repeating-linear-gradient(
+                  45deg,
+                  gradient($values, $nMask),
+                ) !important;
+            }
         }
     }
 }

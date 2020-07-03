@@ -31,17 +31,22 @@
                 :solverid="solverid"
                 @fill-cell="sendFillCell($event)">
             </ana-crossword-grid>
-            <ana-crossword-editor id="editor"
-                v-if="state.compiling"
-                v-model="crosswordSource"
-                @input="crosswordEdited()">
-            </ana-crossword-editor>
-            <ana-crossword-clues id="clues"
-                v-else
-                :solverid="solverid"
-                v-model="crossword" 
-                @fill-cell="sendFillCell($event)">
-            </ana-crossword-clues>
+            <template v-if="state.compiling">
+                <ana-crossword-editor id="editor"
+                    v-model="crosswordSource"
+                    @input="crosswordEdited()">
+                </ana-crossword-editor>
+            </template>
+            <template v-else>
+                <div id="clue-container">
+                    <ana-solver-list v-if="state.colluding" class="hidden-print" :solvers="solvers"></ana-solver-list>
+                    <ana-crossword-clues id="clues"
+                        :solverid="solverid"
+                        v-model="crossword" 
+                        @fill-cell="sendFillCell($event)">
+                    </ana-crossword-clues>
+                </div>
+            </template>
         </template>
     </div>
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
@@ -97,15 +102,19 @@ body {
     margin-top: $displayPadding;
     padding-top: $displayPadding;
     min-width: 20em;
-    
+    height: 100%;
     overflow-y: scroll;
-    width: 100vw;
     background-color: #fff;
 
     @media screen {
         margin-left: $displayPadding;
         border: 1px solid #000;
-        max-height: 80vh;
+    }
+}
+#clue-container {
+    align-items: stretch;
+    @media screen {
+        max-height: 70vh;
     }
 }
 </style>
@@ -123,11 +132,12 @@ import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
 import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
 import AnaCrosswordEditor from './components/AnaCrosswordEditor.vue'
 import AnaToolbar from './components/AnaToolbar.vue'
+import AnaSolverList from './components/AnaSolverList.vue'
 
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
 
-import {AnagrindClient} from './js/client.js'
+import io from 'socket.io-client';
 
 const defaultCrossword = parser.parse(parser.sampleCrossword(), false);
 export default Vue.extend({
@@ -135,11 +145,15 @@ export default Vue.extend({
     AnaCrosswordClues,
     AnaCrosswordGrid,
     AnaCrosswordEditor,
-    AnaToolbar
+    AnaToolbar,
+    AnaSolverList
   },
   props: {
     gridid: String,
-    solverid: Number,
+    solverid: {
+        type: Number,
+        default: 0,
+    },
     solvers: Object,
     state: {
         type: Object,
@@ -168,10 +182,49 @@ export default Vue.extend({
   computed: {
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + this.gridid;
+    },
+    selectedClue() {
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            if (clue.selected) {
+                return clue;
+            }
+        }
+        return undefined;
+    }
+  },
+  watch: {
+    selectedClue(newValue, oldValue) {
+        if (oldValue) {
+            this.sendUpdate({
+                action: 'selectionChanged',
+                clueid: oldValue.id,
+                solverid: this.solverid,
+                selected: false
+            });
+        }
+        if (newValue) {
+            this.sendUpdate({
+                action: 'selectionChanged',
+                clueid: newValue.id,
+                solverid: this.solverid,
+                selected: true
+            });
+        }
     }
   },
   created() {
-    this.$options.client = new AnagrindClient(this, window.location.host);
+    const self = this;
+    this.$options.socket = io(window.location.host);
+    this.handlers = {
+        crosswordShared: 'shareSucceeded',
+        fillCell: 'fillCell',
+        selectionChanged: 'selectionChanged',
+        gridJoined: 'gridJoined',
+        solversChanged: 'solversChanged'
+    };
+    for (let [action, callback] of Object.entries(this.handlers)) {
+        this.$options.socket.on(action, msg => self[callback](msg));
+    }
     const pathParts = window.location.pathname.split('/');
     if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
         this.gridid = pathParts[2];
@@ -189,33 +242,20 @@ export default Vue.extend({
     };
   },
   methods: {
-    isSelected(clueid) {
-        if (clueid == this.selectedid) {
-            return true;
-        }
-        const refs = this.crossword.clues[clueid].refIds;
-        if (refs) {
-            for (var i = 0; i < refs.length; i++) {
-                if (refs[i] == this.selectedid) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    },
     snackbarMessage(msg) {
         this.$refs.snackbarContainer.createSnackbar({
             message: msg,
             duration: this.snackbarDuration
         });
     },
+    renderCrossword() {
+        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+    },
     crosswordEdited() {
         const self = this;
         clearTimeout(self.editDebounce)
         self.editDebounce = setTimeout(
-           () => {
-              self.crossword = parser.parse(self.crosswordSource, true);
-           },
+           self.renderCrossword,
            500
         );
     },
@@ -227,11 +267,17 @@ export default Vue.extend({
             this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
         }
     },
-    fillCell(clueid, offset, value) {
-        this.crossword.clues[clueid].cells[offset].contents = value;
+    solversChanged(msg) {
+        this.solvers = msg.solvers;
+    },
+    fillCell(msg) {
+        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
+    },
+    sendUpdate(event) {
+        this.$options.socket.emit(event.action, event);
     },
     sendFillCell(event) {
-        this.$options.client.sendUpdate({
+        this.sendUpdate({
             action: 'fillCell',
             solverid: this.solverid,
             clueid: event.clueid,
@@ -239,38 +285,47 @@ export default Vue.extend({
             value: event.value
         });
     },
-    gridJoined(msg, solvers) {
-        this.crossword = parser.parse(msg.crossword, false);
-        this.solvers = solvers;
+    gridJoined(msg) {
+        this.solvers = msg.solvers;
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
         this.state.joining = false;
         this.joinLoading = false;
         this.state.colluding = true;
+        this.state.compiling = false;
+
+        this.renderCrossword();
+
+        for (let i = 0; i < msg.events.length; i++) {
+            const event = msg.events[i];
+            if (event.action == 'fillCell') {
+                this.fillCell(event);
+            } else if (event.action == 'selectionChanged') {
+                this.selectionChanged(event);
+            }
+        }
     },
     joinClicked(name) {
         this.joinLoading = true;
-        const self = this;
-        this.$options.client.joinGrid(this.gridid, name, function (msg) {
-            self.gridJoined(msg);
-        });
+        this.$options.socket.emit('joinGrid', {gridid: this.gridid, name: name});
     },
     shareClicked(name) {
         const self = this;
+        this.state.compiling = false;
+        this.renderCrossword();
         this.shareLoading = true;
-        this.$options.client.shareCrossword(this.crosswordSource, name, function (msg) {
-            self.shareSucceeded(msg);
-        });
+        this.$options.socket.emit('shareCrossword', {crossword: this.crosswordSource, name: name});
     },
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
+        this.solvers = msg.solvers;
         window.history.replaceState(null, 'anagrind.com', '/grid/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
-        this.crossword = parser.parse(this.crosswordSource, true);
+        this.renderCrossword();
     },
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);

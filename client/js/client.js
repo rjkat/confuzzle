@@ -1,24 +1,15 @@
-import io from 'socket.io-client';
+
 
 export class AnagrindClient {
     constructor(app, hostname) {
         const self = this;
-        const socket = io(hostname);
+        
         this.app = app;
         socket.on('noSuchGrid', gridid => {
             console.log('no such grid: ' + gridid);
         });
 
-        this.handlers = {
-            crosswordShared: 'onShareSuccess',
-            fillCell: 'fillCell',
-            selectionChanged: 'selectionChanged',
-            gridJoined: 'gridJoined',
-            solversChanged: 'solversChanged'
-        };
-        for (let [action, callback] of Object.entries(this.handlers)) {
-            socket.on(action, msg => self[callback](msg));
-        }
+        
         this.socket = socket;
     }
 
@@ -29,7 +20,7 @@ export class AnagrindClient {
 
     shareCrossword(crossword, name, onShareSuccess) {
         this.onShareSuccess = onShareSuccess;
-        this.socket.emit('shareCrossword', {crossword: crossword, name: name});
+        
     }
 
     gridJoined(msg) {
@@ -50,12 +41,12 @@ export class AnagrindClient {
     }
 
     solversChanged(msg) {
-        // console.log('solversChanged: ' + JSON.stringify(msg));
-        this.app.solvers = msg.solvers;
+        console.log('solversChanged: ' + JSON.stringify(msg));
+        this.app.solversChanged(msg.solvers);
     }
 
     selectionChanged(msg) {
-        // console.log('got selectionChanged' + JSON.stringify(msg));
+        console.log('got selectionChanged' + JSON.stringify(msg));
         this.app.selectionChanged(msg);
     }
 

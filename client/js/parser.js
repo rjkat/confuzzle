@@ -113,7 +113,7 @@ function buildGrid(cw, compiling) {
         contents: '',
         acrossMask: 0,
         downMask: 0,
-        highlighted: false
+        highlightMask: 0
       };
       if (shading) {
         shading.forEach(rule => {
@@ -357,7 +357,7 @@ export function parse(input, compiling, options) {
   cw.acrossClues = [];
   cw.downClues = [];
   for (let [clueid, clue] of Object.entries(cw.clues)) {
-      clue.highlighted = false;
+      clue.highlightMask = 0;
       clue.selected = false;
       clue.deselect = function (solverid) {
         this.selected = false;
@@ -366,13 +366,13 @@ export function parse(input, compiling, options) {
       clue.select = function (solverid) {
         for (let [otherid, other] of Object.entries(cw.clues)) {
           if (otherid != clueid)
-            other.deselect();
+            other.deselect(solverid);
         }
         this.selected = true;
         this.highlight(solverid);
       };
       clue.highlight = function(solverid) {
-        this.highlighted = true;
+        this.highlightMask |= (1 << solverid);
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
           if (this.isAcross) {
@@ -380,23 +380,20 @@ export function parse(input, compiling, options) {
           } else {
             cell.downMask |= (1 << solverid);
           }
-          cell.highlighted = (cell.acrossMask | cell.downMask);
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
       };
       clue.clearHighlight = function(solverid) {
-        let anyHighlighted = false;
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
           if (this.isAcross) {
             cell.acrossMask &= ~(1 << solverid);
-            anyHighlighted |= cell.acrossMask;
           } else {
             cell.downMask &= ~(1 << solverid);
-            anyHighlighted |= cell.downMask;
           }
-          cell.highlighted = (cell.acrossMask | cell.downMask);
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
-        this.highlighted = anyHighlighted;
+        this.highlightMask &= ~(1 << solverid);
       };
       if (clue.isAcross) {
           cw.acrossClues.push(clue);
