@@ -123,8 +123,8 @@ body {
 
 import Vue from 'vue';
 
-import 'keen-ui/src/bootstrap';
-import KeenUI from 'keen-ui/src';
+import KeenUI from 'keen-ui';
+import 'keen-ui/dist/keen-ui.css';
 
 Vue.use(KeenUI);
 
