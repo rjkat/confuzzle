@@ -289,12 +289,14 @@ export default Vue.extend({
         this.solvers = msg.solvers;
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
+
+        this.crosswordSource = msg.crossword;
+        this.crossword = parser.parse(msg.crossword, false);
+
         this.state.joining = false;
         this.joinLoading = false;
         this.state.colluding = true;
         this.state.compiling = false;
-
-        this.renderCrossword();
 
         for (let i = 0; i < msg.events.length; i++) {
             const event = msg.events[i];
@@ -312,7 +314,7 @@ export default Vue.extend({
     shareClicked(name) {
         const self = this;
         this.state.compiling = false;
-        this.renderCrossword();
+        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {crossword: this.crosswordSource, name: name});
     },
@@ -325,7 +327,7 @@ export default Vue.extend({
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
-        this.renderCrossword();
+        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
     },
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);
