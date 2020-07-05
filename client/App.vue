@@ -36,6 +36,8 @@
                 <ana-crossword-editor id="editor"
                     v-model="crosswordSource"
                     :loading="renderLoading"
+                    :errorText="errorText"
+                    :errorMessage="errorMessage"
                     @input="crosswordEdited()">
                 </ana-crossword-editor>
             </template>
@@ -90,9 +92,8 @@ body {
 #editor {
     margin-left: $displayPadding;
     margin-top: $displayPadding;
-    max-height: 30em;
+    max-height: 70vh;
     overflow-x: scroll;
-    width: 100vw;
     border: 1px solid #000;
 }
 
@@ -140,8 +141,9 @@ import AnaSolverList from './components/AnaSolverList.vue'
 
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
+import {EnoError} from 'enolib'
 
-import io from 'socket.io-client';
+import io from 'socket.io-client'
 
 const defaultCrossword = parser.parse(parser.sampleCrossword(), false);
 export default Vue.extend({
@@ -174,6 +176,8 @@ export default Vue.extend({
     shareLoading: false,
     renderLoading: false,
     solverName: "",
+    errorText: "",
+    errorMessage: "",
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -254,7 +258,21 @@ export default Vue.extend({
         });
     },
     renderCrossword() {
-        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+        let errorText = '';
+        let errorMessage = '';
+        try {
+            this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+        } catch (err) {
+            if (err instanceof EnoError) {
+                errorText = 'Line ' + err.cursor.line + ': ' + err.text;
+                errorMessage = err.snippet;
+            } else {
+                errorText = 'Unexpected parser error. Ensure the crossword is valid. For example, check that all clues fit within the grid.';
+                errorMessage = err.stack;
+            }
+        }
+        this.errorText = errorText;
+        this.errorMessage = errorMessage;
         this.renderLoading = false;
     },
     crosswordEdited() {
@@ -298,7 +316,7 @@ export default Vue.extend({
         this.gridid = msg.gridid;
 
         this.crosswordSource = msg.crossword;
-        this.crossword = parser.parse(msg.crossword, false);
+        this.renderCrossword();
 
         this.state.joining = false;
         this.joinLoading = false;
@@ -321,7 +339,7 @@ export default Vue.extend({
     shareClicked(name) {
         const self = this;
         this.state.compiling = false;
-        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+        this.renderCrossword();
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {crossword: this.crosswordSource, name: name});
     },
@@ -334,7 +352,7 @@ export default Vue.extend({
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
-        this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+        this.renderCrossword();
     },
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);

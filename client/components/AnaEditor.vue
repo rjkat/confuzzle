@@ -1,27 +1,18 @@
 <template>
-    <div class="line-numbers">
-        <textarea class="prism-live language-eno" id="crossword-source"
-                  ref="textarea"
-                  :value="source"
-                  @input="$emit('input', $event.target.value)">
-        </textarea>
-        <ui-progress-linear class="edit-progress" v-if="loading"></ui-progress-linear>
-    </div>
+  <div class="ana-editor-container">
+      <textarea class="prism-live language-eno line-numbers" id="crossword-source"
+                ref="textarea"
+                spellcheck="false"
+                :value="source"
+                @input="$emit('input', $event.target.value)">
+      </textarea>
+  </div>
 </template>
 
 <style lang="scss">
-.line-numbers {
-  height: 100%;
-  width: 100%;
-}
-.prism-live {
-  height: 100%;
-  width: 100%;
-}
-.edit-progress {
-  position: fixed;
-  margin-top: -0.25rem;
-}
+  .ana-editor-container {
+    overflow-y: scroll;
+  }
 </style>
 
 <script>
