@@ -10,10 +10,9 @@
           <ana-cell v-for="cell in row" ref="inputCells"
                     v-model="crossword.grid.cells[cell.row][cell.col]"
                     :solverid="solverid"
-                    @fill-grid-cell="fillCell($event)"
                     @blur-cell="deselectCell($event)"
                     @click.prevent="cellClicked($event, cell)"
-                    @keypress.prevent="handleKeypress($event, cell)"
+                    @keypress="handleKeypress($event, cell)"
                     @keydown="handleKeydown($event, cell)"
                     @mousedown.prevent>
           </ana-cell>
@@ -133,8 +132,8 @@ export default Vue.extend({
         this.selectCell(cell);
     },
     handleKeypress(e, cell) {
-        e.preventDefault();
         cell.contents = e.key;
+        this.fillCell(cell);
         this.moveInputCell(e.target, cell, 1);
     },
     handleKeydown(e, cell) {
@@ -147,6 +146,7 @@ export default Vue.extend({
             case KeyCode.KEY_BACK_SPACE:
                 e.preventDefault();
                 cell.contents = '';
+                this.fillCell(cell);
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInputCell(e.target, cell, -1);
