@@ -1,5 +1,5 @@
 <template>
-  <div class="ana-editor-container">
+  <div class="ana-editor-container prism-live">
       <textarea class="prism-live language-eno line-numbers" id="crossword-source"
                 ref="textarea"
                 spellcheck="false"
