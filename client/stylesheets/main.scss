@@ -22,3 +22,16 @@ body {
     flex-direction: column;
     align-items: stretch;
 }
+
+@media print {
+  .hidden-print {
+    display: none !important;
+  }
+}
+
+.visible-print {
+    display: none !important;
+    @media print {
+        display: block !important;
+    }
+}

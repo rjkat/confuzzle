@@ -1,5 +1,10 @@
 <template>
 <div>
+  <span class="visible-print">
+    <span class="crossword-meta-name">{{crossword.meta.name}}</span>
+    <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
+    <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
+  </span>
   <table class="crossword-grid" cell-spacing="0">
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"

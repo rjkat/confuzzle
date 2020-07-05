@@ -5,6 +5,7 @@
                   :value="source"
                   @input="$emit('input', $event.target.value)">
         </textarea>
+        <ui-progress-linear class="edit-progress" v-if="loading"></ui-progress-linear>
     </div>
 </template>
 
@@ -16,6 +17,10 @@
 .prism-live {
   height: 100%;
   width: 100%;
+}
+.edit-progress {
+  position: fixed;
+  margin-top: -0.25rem;
 }
 </style>
 
@@ -34,7 +39,8 @@ import Vue from 'vue';
 
 export default Vue.extend({
   props: {
-    source: String
+    source: String,
+    loading: Boolean,
   },
   model: {
     prop: 'source'

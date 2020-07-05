@@ -2,10 +2,15 @@
 <div>
     <ana-editor
         :source="source"
+        :loading="loading"
         @input="$emit('input', $event)">
     </ana-editor>
 </div>
 </template>
+
+<style lang="scss" scoped>
+
+</style>
 
 <script>
 import Vue from "vue";
@@ -17,6 +22,8 @@ export default Vue.extend({
   },
   props: {
     source: String,
+    loading: Boolean,
+    errorText: String
   },
   model: {
     prop: 'source'

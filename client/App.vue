@@ -6,6 +6,7 @@
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
+        class="hidden-print"
         v-model="state"
         @share-clicked="shareClicked($event)"
         @download-clicked="downloadClicked()"
@@ -34,6 +35,7 @@
             <template v-if="state.compiling">
                 <ana-crossword-editor id="editor"
                     v-model="crosswordSource"
+                    :loading="renderLoading"
                     @input="crosswordEdited()">
                 </ana-crossword-editor>
             </template>
@@ -95,18 +97,20 @@ body {
 }
 
 #grid {
-    padding-top: $displayPadding;
+    @media screen {
+        padding-top: $displayPadding;
+    }
     flex: none;
 }
 #clues {
-    margin-top: $displayPadding;
-    padding-top: $displayPadding;
     min-width: 20em;
     height: 100%;
     overflow-y: scroll;
     background-color: #fff;
+    margin-top: $displayPadding;
 
     @media screen {
+        padding-top: $displayPadding;
         margin-left: $displayPadding;
         border: 1px solid #000;
     }
@@ -168,6 +172,7 @@ export default Vue.extend({
     },
     joinLoading: false,
     shareLoading: false,
+    renderLoading: false,
     solverName: "",
     crossword: {
         type: Object,
@@ -250,10 +255,12 @@ export default Vue.extend({
     },
     renderCrossword() {
         this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+        this.renderLoading = false;
     },
     crosswordEdited() {
         const self = this;
         clearTimeout(self.editDebounce)
+        this.renderLoading = true;
         self.editDebounce = setTimeout(
            self.renderCrossword,
            500
