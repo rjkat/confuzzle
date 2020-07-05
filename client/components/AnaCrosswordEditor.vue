@@ -20,7 +20,7 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
   
   .ana-crossword-editor-container {
     display: flex;
