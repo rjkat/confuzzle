@@ -264,7 +264,7 @@ export default Vue.extend({
             this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
         } catch (err) {
             if (err instanceof EnoError) {
-                errorText = 'Line ' + err.cursor.line + ': ' + err.text;
+                errorText = 'Line ' + (err.cursor.line + 1) + ': ' + err.text;
                 errorMessage = err.snippet;
             } else {
                 errorText = 'Unexpected parser error. Ensure the crossword is valid. For example, check that all clues fit within the grid.';
