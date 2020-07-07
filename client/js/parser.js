@@ -271,11 +271,11 @@ function parseRef(cw, ref) {
     refSeparators.push(sep[i]);
   }
 
-
+  cw.clues[clueid].refLengths = refLengths;
+  cw.clues[clueid].refSeparators = refSeparators;
+  cw.clues[clueid].refIds = refIds;
   for (var i = 0; i < refIds.length; i++) {
-    cw.clues[refIds[i]].refLengths = refLengths;
-    cw.clues[refIds[i]].refSeparators = refSeparators;
-    cw.clues[refIds[i]].refIds = refIds;
+    cw.clues[refIds[i]].primaryId = clueid;
   }
 }
 
@@ -359,6 +359,14 @@ export function parse(input, compiling, options) {
   for (let [clueid, clue] of Object.entries(cw.clues)) {
       clue.highlightMask = 0;
       clue.selected = false;
+      clue.refs = [];
+      if (clue.primaryId && clue.primaryId != clueid)
+        clue.primary = cw.clues[clue.primaryId];
+      for (let i = 0; i < clue.refIds.length; i++) {
+        if (clue.refIds[i] != clueid) {
+          clue.refs.push(cw.clues[clue.refIds[i]]);
+        }
+      }
       clue.deselect = function (solverid) {
         this.selected = false;
         this.clearHighlight(solverid);
@@ -371,7 +379,7 @@ export function parse(input, compiling, options) {
         this.selected = true;
         this.highlight(solverid);
       };
-      clue.highlight = function(solverid) {
+      clue.highlight = function(solverid, recursive) {
         this.highlightMask |= (1 << solverid);
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
@@ -382,8 +390,17 @@ export function parse(input, compiling, options) {
           }
           cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
+        if (!recursive) {
+          if (this.primary) {
+            this.primary.highlight(solverid, true);
+          } else {
+            for (let j = 0; j < this.refs.length; j++) {
+              this.refs[j].highlight(solverid, true);
+            }
+          }
+        }
       };
-      clue.clearHighlight = function(solverid) {
+      clue.clearHighlight = function(solverid, recursive) {
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
           if (this.isAcross) {
@@ -394,6 +411,15 @@ export function parse(input, compiling, options) {
           cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
         this.highlightMask &= ~(1 << solverid);
+        if (!recursive) {
+          if (this.primary) {
+            this.primary.clearHighlight(solverid, true);
+          } else {
+            for (let j = 0; j < this.refs.length; j++) {
+              this.refs[j].clearHighlight(solverid, true);
+            }
+          }
+        }
       };
       if (clue.isAcross) {
           cw.acrossClues.push(clue);

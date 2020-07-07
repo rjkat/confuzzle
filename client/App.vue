@@ -53,6 +53,14 @@
             </template>
         </template>
     </div>
+    <ui-fab v-if="exploding"
+        icon="close"
+        tooltip="Make it stop"
+        tooltiPosition="top-end"
+        class="cancel-explosion-button"
+        @click="cancelExplosions()"
+        >
+    </ui-fab>
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
 </div>
 </template>
@@ -60,6 +68,15 @@
 <style lang="scss">
 body {
     background-color: rgb(240, 248, 255);
+}
+
+.cancel-explosion-button {
+    position: fixed;
+    left: 50%;
+    bottom: $displayPadding;
+}
+.tippy-popper {
+    font-family: $clueFontFamily;
 }
 
 .crossword-name-input {
@@ -175,6 +192,7 @@ export default Vue.extend({
     joinLoading: false,
     shareLoading: false,
     renderLoading: false,
+    exploding: false,
     solverName: "",
     errorText: "",
     errorMessage: "",
@@ -199,6 +217,18 @@ export default Vue.extend({
             }
         }
         return undefined;
+    },
+    gridComplete() {
+        const grid = this.crossword.grid;
+        for (let row = 0; row < grid.height; row++) {
+            for (let col = 0; col < grid.width; col++) {
+                if (!grid.cells[row][col].empty
+                    && grid.cells[row][col].contents == '') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
   },
   watch: {
@@ -218,6 +248,22 @@ export default Vue.extend({
                 solverid: this.solverid,
                 selected: true
             });
+        }
+    },
+    gridComplete(complete) {
+        if (complete && !this.$options.explosions) {
+            if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 5) {
+                this.$options.explosions = emojisplosions({
+                    emojis: this.crossword.meta.emoji,
+                });
+            } else {
+                this.$options.explosions = emojisplosions();
+            }
+            this.exploding = true;
+        } else if (this.$options.explosions) {
+            this.exploding = false;
+            this.$options.explosions.cancel();
+            this.$options.explosions = undefined;
         }
     }
   },
@@ -251,6 +297,10 @@ export default Vue.extend({
     };
   },
   methods: {
+    cancelExplosions() {
+        this.exploding = false;
+        this.$options.explosions.cancel();
+    },
     snackbarMessage(msg) {
         this.$refs.snackbarContainer.createSnackbar({
             message: msg,

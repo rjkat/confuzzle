@@ -1,6 +1,6 @@
 <template>
     <li class=clue-item
-        :class="{highlighted: selected}"
+        :class="{highlighted: selected || highlighted}"
         :data-solver-mask="solverMask"
         ref="item">
         <span class="clue-directions" @click="directionsClicked()">
@@ -20,7 +20,7 @@
                            @keydown="handleKeydown($event, i)"
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
-                           :class="{highlighted: selected}"
+                           :class="{highlighted: selected || highlighted}"
                            v-model="clue.cells[i].contents">
                     </input><span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
                 </template>
@@ -111,6 +111,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    highlighted() {
+        return this.clue.highlightMask & this.solverMask;
+    },
     selected() {
         return this.clue.selected;
     },
