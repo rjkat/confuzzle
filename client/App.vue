@@ -251,7 +251,7 @@ export default Vue.extend({
         }
     },
     gridComplete(complete) {
-        if (complete && !this.$options.explosions) {
+        if (complete && !this.state.compiling && !this.$options.explosions) {
             if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 5) {
                 this.$options.explosions = emojisplosions({
                     emojis: this.crossword.meta.emoji,
