@@ -10,9 +10,8 @@
           <ana-cell v-for="cell in row" ref="inputCells"
                     :cell="crossword.grid.cells[cell.row][cell.col]"
                     :solverid="solverid"
-                    v-model="cell.contents"
                     @blur-cell="deselectCell(cell)"
-                    @click.prevent="cellClicked($event, cell)"
+                    @cell-clicked="cellClicked($event, cell)"
                     @keypress.prevent="handleKeypress($event, cell)"
                     @keydown="handleKeydown($event, cell)"
                     @mousedown.prevent>

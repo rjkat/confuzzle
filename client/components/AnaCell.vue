@@ -5,7 +5,7 @@
     :data-down-separator="cell.downSeparator"
     :data-empty="cell.empty"
     :style="{backgroundColor: cell.shadingColor}"
-    v-on="$listeners">
+    @click.prevent="$emit('cell-clicked', $event)">
     <input
         v-if="editable && !cell.empty"
         ref="input"
