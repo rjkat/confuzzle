@@ -344,6 +344,14 @@ export default Vue.extend({
     },
     solversChanged(msg) {
         this.solvers = msg.solvers;
+        if (msg.joined) {
+            this.snackbarMessage(msg.joined.name + ' joined the crossword');
+        } else if (msg.disconnected) {
+            for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+                clue.clearHighlight(msg.disconnected.solverid);
+            }
+            this.snackbarMessage(msg.disconnected.name + ' left the crossword');
+        }
     },
     fillCell(msg) {
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;

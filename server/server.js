@@ -153,15 +153,20 @@ io.on('connection', function(socket) {
         socket.join(args.gridid, function() {
             // console.log('join ' + args.name + ' to grid: ' + args.gridid);
             const grid = joinGrid(socket.id, args.name, args.gridid);
+            const solver = grid.solvers[socket.id];
             // hack: just replay all the packets to everyone who joins
             socket.emit('gridJoined', {
                 gridid: args.gridid,
-                solverid: grid.solvers[socket.id].solverid,
+                solverid: solver.solverid,
                 solvers: grid.solvers,
                 crossword: grid.crossword,
                 events: grid.eventLog
             });
-            event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
+            event = {
+                action: 'solversChanged',
+                solvers: JSON.parse(JSON.stringify(grid.solvers)),
+                joined: solver
+            };
             socket.to(args.gridid).emit(event.action, event);
             grid.eventLog.push(event);
         });
@@ -172,12 +177,17 @@ io.on('connection', function(socket) {
         if (grid && grid.solvers) {
             const solverid = grid.solvers[socket.id].solverid;
             grid.solverMask = clearSolverId(grid.solverMask, solverid);
+            const solver = grid.solvers[socket.id];
             delete grid.solvers[socket.id];
             if (Object.keys(grid.solvers).length == 0) {
                 // console.log("delete grid: " + gridid);
                 delete grids[gridid];
             } else {
-                event = {action: 'solversChanged', solvers: JSON.parse(JSON.stringify(grid.solvers))};
+                event = {
+                    action: 'solversChanged',
+                    solvers: JSON.parse(JSON.stringify(grid.solvers)),
+                    disconnected: solver
+                };
                 socket.to(gridid).emit(event.action, event);
                 grid.eventLog.push(event);
             }
