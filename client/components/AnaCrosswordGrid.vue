@@ -8,11 +8,12 @@
   <table class="crossword-grid" cell-spacing="0">
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
-                    v-model="crossword.grid.cells[cell.row][cell.col]"
+                    :cell="crossword.grid.cells[cell.row][cell.col]"
                     :solverid="solverid"
-                    @blur-cell="deselectCell($event)"
+                    v-model="cell.contents"
+                    @blur-cell="deselectCell(cell)"
                     @click.prevent="cellClicked($event, cell)"
-                    @keypress="handleKeypress($event, cell)"
+                    @keypress.prevent="handleKeypress($event, cell)"
                     @keydown="handleKeydown($event, cell)"
                     @mousedown.prevent>
           </ana-cell>

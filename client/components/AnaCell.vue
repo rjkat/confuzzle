@@ -10,9 +10,9 @@
         v-if="editable && !cell.empty"
         ref="input"
         class="crossword-grid-input"
-        v-model="cell.contents"
+        :value="cell.contents"
+        v-on="$listeners"
         maxlength="1"
-        @blur="onBlur()"
     >
     </input>
     <span v-else>
@@ -137,11 +137,8 @@ export default Vue.extend({
         default: true
     },
   },
-  model: {
-    prop: 'cell'
-  },
   computed: {
-    solverMask: function () {
+    solverMask() {
         let v = (this.cell.acrossMask | this.cell.downMask);
         // can only show 4 overlapping solvers...
         while (nBitsSet(v) > 4) {
@@ -151,11 +148,11 @@ export default Vue.extend({
     },
   },
   methods: {
-    onBlur: function() {
-        let haveFocus = this.$refs.input === document.activeElement;
-        if (!haveFocus)
-            this.$emit('blur-cell', this.cell);
-    },
+    // onBlur: function() {
+    //     let haveFocus = this.$refs.input === document.activeElement;
+    //     if (!haveFocus)
+    //         this.$emit('blur-cell', this.cell);
+    // },
     select() {
         if (!this.editable)
             return;
