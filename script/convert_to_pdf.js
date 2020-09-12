@@ -41,9 +41,10 @@ async function convert_all() {
         for (const source of files) {
             if (!source.endsWith('.eno'))
                 continue;
-            const eno = fs.readFileSync(path.join(dir, source), 'utf8').toString();
             const pdf_path = path.join(dir, path.basename(source, '.eno') + '-anagrind.pdf');
-            console.log(pdf_path);
+            if (fs.existsSync(pdf_path))
+                continue;
+            const eno = fs.readFileSync(path.join(dir, source), 'utf8').toString();
             await convert_to_pdf(page, eno, pdf_path)
         };
     });
