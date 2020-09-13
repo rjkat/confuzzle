@@ -1,11 +1,11 @@
 <template>
-<div>
+<div :style="gridStyle">
   <span class="visible-print">
     <span class="crossword-meta-name">{{crossword.meta.name}}</span>
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
-  <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
+  <table class="crossword-grid" cell-spacing="0">
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
                     :cell="crossword.grid.cells[cell.row][cell.col]"
@@ -56,12 +56,9 @@ export default Vue.extend({
   },
   computed: {
     scale() {
-      const cellWidth = 29;
+      const cellWidth = 28;
       const ncols = Math.min(this.crossword.grid.width, this.crossword.grid.height);
-      const s = Math.min(1, this.screenWidth / (cellWidth * (ncols + 1)));
-      console.log("screenWidth: " + this.screenWidth);
-      console.log("ncols: " + ncols);
-      console.log("scale: " + s);
+      const s = Math.min(1, this.screenWidth / (cellWidth * ncols));
       return s;
     },
     gridStyle() {
