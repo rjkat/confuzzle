@@ -54,7 +54,8 @@
     "typeface-bree-serif": "0.0.72",
     "uniqid": "^5.2.0",
     "vue": "^2.6.11",
-    "vue-hot-reload-api": "^2.3.4"
+    "vue-hot-reload-api": "^2.3.4",
+    "vue-responsive": "^1.1.0"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.1.2",

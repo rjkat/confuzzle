@@ -33,7 +33,7 @@
                 @fill-cell="sendFillCell($event)">
             </ana-crossword-grid>
             <template v-if="state.compiling">
-                <ana-crossword-editor id="editor"
+                <ana-crossword-editor id="editor" v-responsive.md.lg.xl
                     v-model="crosswordSource"
                     :loading="renderLoading"
                     :errorText="errorText"
@@ -42,7 +42,7 @@
                 </ana-crossword-editor>
             </template>
             <template v-else>
-                <div id="clue-container">
+                <div id="clue-container" v-responsive.md.lg.xl>
                     <ana-solver-list v-if="state.colluding" class="hidden-print" :solvers="solvers"></ana-solver-list>
                     <ana-crossword-clues id="clues"
                         :solverid="solverid"
@@ -149,6 +149,10 @@ import KeenUI from 'keen-ui';
 import 'keen-ui/dist/keen-ui.css';
 
 Vue.use(KeenUI);
+
+import responsive from 'vue-responsive'
+
+Vue.use(responsive);
 
 import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
 import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
@@ -293,7 +297,7 @@ export default Vue.extend({
       shortUrl: 'https://anagr.in/d/',
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
-      snackbarDuration: 3000
+      snackbarDuration: 3000,
     };
   },
   methods: {

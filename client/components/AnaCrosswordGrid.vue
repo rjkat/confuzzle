@@ -5,7 +5,7 @@
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
-  <table class="crossword-grid" cell-spacing="0">
+  <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
       <tr v-for="(row, r) in crossword.grid.cells">
           <ana-cell v-for="cell in row" ref="inputCells"
                     :cell="crossword.grid.cells[cell.row][cell.col]"
@@ -53,6 +53,23 @@ export default Vue.extend({
       default: true
     },
     solverid: Number
+  },
+  computed: {
+    scale() {
+      const cellWidth = 29;
+      const ncols = Math.min(this.crossword.grid.width, this.crossword.grid.height);
+      const s = Math.min(1, this.screenWidth / (cellWidth * (ncols + 1)));
+      console.log("screenWidth: " + this.screenWidth);
+      console.log("ncols: " + ncols);
+      console.log("scale: " + s);
+      return s;
+    },
+    gridStyle() {
+      return {
+        'transform': 'scale(' + this.scale + ')',
+        'transform-origin': 'top left'
+      }
+    }
   },
   methods: {
     deselectCell(cell) {
@@ -159,11 +176,17 @@ export default Vue.extend({
         }
     },
   },
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.screenWidth = Math.min(window.screen.height, window.screen.width);
+    })
+  },
   data() {
     return {
       bundler: "Parcel",
       inputAcross: true,
-      lastClicked: undefined
+      lastClicked: undefined,
+      screenWidth: Math.min(window.screen.height, window.screen.width)
     };
   }
 });
