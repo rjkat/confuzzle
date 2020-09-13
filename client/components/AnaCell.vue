@@ -15,9 +15,9 @@
         maxlength="1"
     >
     </input>
-    <span v-else>
+    <div v-else>
         {{cell.contents}}
-    </span>
+    </div>
     <div class="cell-highlight-border" v-if="cell.highlightMask" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
 </td>
 </template>
@@ -50,10 +50,9 @@ td {
     min-height: $gridCellSize;
     height: $gridCellSize;
     max-height: $gridCellSize;
-    line-height: 1ch;
     position: relative;
     text-align: center;
-    vertical-align: middle;
+    vertical-align: baseline;
     border: $gridBorderWidth solid;
 
     &[data-number]:before {
@@ -93,20 +92,22 @@ td {
     }
 
     .crossword-grid-input {
-        position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
-        font-size: $gridFontSize;
         font-family: $answerFontFamily;
         border: 0;
+        padding: 0;
+        margin: 0;
         background: none;
         outline: none;
-        min-width: $gridCellSize;
-        max-width: $gridCellSize;
-        height: $gridCellSize;
-        line-height: $gridCellSize;
+        /*font-size: $gridFontSize;*/
+        font-size: 90%;
+        min-width: 100%;
+        max-width: 100%;
+        height: 100%;
+        line-height: 100%;
         position: absolute;
         text-align: center;
         vertical-align: middle;

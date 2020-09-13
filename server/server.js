@@ -6,7 +6,6 @@ const compression = require('compression')
 const favicon = require('serve-favicon');
 
 const app = express()
-app.use(secure)
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 const robots = require('express-robots-txt')
@@ -21,12 +20,14 @@ let server;
 var env = process.argv[2] || 'dev';
 switch (env) {
    case 'aws':
+        app.use(secure);
         server = https.createServer({
             key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
             cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
         }, app);
         break;
     case 'heroku':
+        app.use(secure);
     case 'dev':
     default:
         server = http.createServer(app);
