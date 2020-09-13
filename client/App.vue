@@ -14,7 +14,7 @@
         @puz-file-uploaded="puzFileUploaded($event)"
     >
     </ana-toolbar>
-    <div id="app-content">
+    <div id="app-content" v-responsive.class>
         <template v-if="state.joining">
             <ui-modal ref="joinModal" title="Join Crossword" :dismissible="false">
                 <div style="text-align: center;">
@@ -104,6 +104,14 @@ body {
     @media print {
         display: block !important;
     }
+}
+
+#app-content.bs4-sm {
+    overflow-x: hidden;
+}
+
+#app-content.bs4-xs {
+    overflow-x: hidden;
 }
 
 #editor {
