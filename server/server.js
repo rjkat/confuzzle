@@ -13,7 +13,7 @@ const fs = require('fs')
 const path = require('path')
 const keyFile = path.join(__dirname, 'server.key')
 const certFile = path.join(__dirname, 'server.cert')
-const shortid = require('shortid')
+const {hri} = require('human-readable-ids');
 
 let server;
 
@@ -138,7 +138,7 @@ function joinGrid(socketid, name, gridid) {
 
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
-        const gridid = shortid.generate();
+        const gridid = hri.random();
         const grid = createGrid(args.crossword, gridid);
         joinGrid(socket.id, args.name, gridid);
         socket.join(gridid, function() {

@@ -1,5 +1,6 @@
 <template>
 <div>
+    <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers" ></ana-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="ana-clue-list-container">
         <ana-clue-list
@@ -24,13 +25,23 @@
 
 <style lang="scss">
 .author-note {
-    text-align: center;
     width: 100%;
     font-family: $clueFontFamily;
-    padding-left: .5em;
     padding-right: .5em;
+    padding-left: .5em;
+    padding-top: .5em;
+    padding-bottom: $displayPadding;
+    &:before {
+        content: 'NOTE';
+        font-weight: bold;
+        padding-right: .5em;
+    }
+}
+
+#solvers {
     padding-bottom: $displayPadding;
 }
+
 .ana-clue-list-container {
     display: flex;
     flex: 1 1 auto;
@@ -61,13 +72,17 @@ import Vue from "vue";
 const sanitizeHtml = require('sanitize-html');
 
 import AnaClueList from './AnaClueList.vue'
+import AnaSolverList from './AnaSolverList.vue'
 
 export default Vue.extend({
   components: {
-    AnaClueList
+    AnaClueList,
+    AnaSolverList
   },
   props: {
     crossword: Object,
+    state: Object,
+    solvers: Object,
     solverid: {
         type: Number,
         default: 0

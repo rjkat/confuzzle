@@ -18,11 +18,8 @@ ul {
     vertical-align: middle;
     list-style-type: none;
     background-color: #fff;
-    border: 1px solid #000;
     margin: 0;
     padding: 0;
-    margin-left: $displayPadding;
-    margin-top: $displayPadding;
     display: flex;
     li {
         display: flex;
@@ -50,6 +47,8 @@ ul {
         text-transform: uppercase;
         box-sizing: content-box;
         border-right: 1px solid #000;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
         cursor: pointer;
     }
 

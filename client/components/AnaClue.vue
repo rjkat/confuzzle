@@ -14,7 +14,7 @@
                     <input ref="inputs"
                            maxlength="1"
                            @click.prevent="select($event.target)"
-                           @keypress.prevent="handleKeypress($event, i)"
+                           @keypress.prevent
                            @blur="focusChanged()"
                            @focus="focusChanged()"
                            @keydown="handleKeydown($event, i)"
@@ -104,7 +104,7 @@ export default Vue.extend({
   watch: {
     selected: function(val) {
         if (val && !this.wasClicked) {
-            this.$refs.item.scrollIntoView({behavior: 'smooth'});
+            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
         if (!val) {
             this.wasClicked = false;
@@ -230,34 +230,40 @@ export default Vue.extend({
         cell.contents = value;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
     },
-    handleKeypress: function(event, offset) {
-        this.fillCell(offset, event.key);
-        this.moveInput(event.target, offset + 1);
-    },
     handleKeydown: function (event, offset) {
+        var handled = false;
         const input = event.target;
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
                 this.moveInput(input, offset + 1);
-                event.preventDefault();
+                handled = true;
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
-                event.preventDefault();
+                handled = true;
                 break;
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInput(input, offset - 1);
-                event.preventDefault();
+                handled = true;
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
                 input.blur();
-                event.preventDefault();
+                handled = true;
                 break;
+        }
+        if (!handled)
+        {
+            this.fillCell(offset, event.key);
+            this.moveInput(event.target, offset + 1);
+        }
+        else
+        {
+            event.preventDefault();
         }
     }
   },

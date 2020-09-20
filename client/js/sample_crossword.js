@@ -10,7 +10,7 @@ export function sampleCrossword() {
 # meta
 
 > mandatory fields
-name: Example crossword
+name: Example
 author: RK
 
 > optional fields
@@ -21,7 +21,7 @@ identifier: 2020/04/07
 copyright: Please respect copyright when using this site
 
 > a subset of HTML is supported for formatting
-note: <b>Note:</b> select <i>Edit</i> from the menu above to edit this crossword.
+note: On a desktop, select <i>Edit</i> from the menu above to edit this crossword.
 
 > answer scrambling, can be anything, defaults to "none".
 > "base64" is understood by the crossword engine.

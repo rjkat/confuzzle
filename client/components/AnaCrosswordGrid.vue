@@ -13,8 +13,8 @@
                       :solverid="solverid"
                       @blur-cell="deselectCell(cell)"
                       @cell-clicked="cellClicked($event, cell)"
-                      @keypress.prevent="handleKeypress($event, cell)"
                       @keydown="handleKeydown($event, cell)"
+                      @keypress.prevent
                       @mousedown.prevent>
             </ana-cell>
         </tr>
@@ -148,17 +148,14 @@ export default Vue.extend({
         }
         this.selectCell(cell);
     },
-    handleKeypress(e, cell) {
-        cell.contents = e.key;
-        this.fillCell(cell);
-        this.moveInputCell(e.target, cell, 1);
-    },
     handleKeydown(e, cell) {
+        var handled = false;
         switch (e.keyCode) {
             case KeyCode.KEY_SPACE:
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
                 this.moveInputCell(e.target, cell, 1);
+                handled = true;
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 e.preventDefault();
@@ -167,12 +164,20 @@ export default Vue.extend({
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInputCell(e.target, cell, -1);
+                handled = true;
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
                 this.deselectCell(cell);
                 e.target.blur();
+                handled = true;
                 break;
+        }
+        if (!handled)
+        {
+          cell.contents = e.key;
+          this.fillCell(cell);
+          this.moveInputCell(e.target, cell, 1);
         }
     },
   },

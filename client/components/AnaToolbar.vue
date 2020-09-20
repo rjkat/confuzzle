@@ -4,16 +4,17 @@
         <span style="{display: inline-flex; align-items: center;}">
             <span class="crossword-meta-name">{{metadata.name}}</span>
             <span class="crossword-meta-author">by {{metadata.author}}</span>
-            <span class="crossword-meta-identifier" v-if="metadata.identifier">{{metadata.identifier}}</span>
+            <span class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</span>
         </span>
     </template>
-    <div slot="actions" class="hidden-print" v-responsive.md.lg.xl>
+    <div slot="actions" class="hidden-print">
         <ui-icon-button
             color="white"
             has-dropdown
             icon="print"
             size="large"
             @click="printClicked()"
+            v-responsive.md.lg.xl
         >
         </ui-icon-button>
         <ui-icon-button
@@ -32,7 +33,7 @@
         </ana-share-modal>
 
         <input type="file" ref="fileInput"
-            accept="application/x-crossword"
+            accept=".puz"
             @change="handleFiles()"
             style="display: none">
         </input>
@@ -50,6 +51,16 @@
                 :options="menuOptions"
                 @select="selectMenuOption($event)"
                 @close="$refs.menuDropdown.closeDropdown()"
+                v-responsive.md.lg.xl
+            ></ui-menu>
+            <ui-menu
+                contain-focus
+                has-icons
+                slot="dropdown"
+                :options="mobileMenuOptions"
+                @select="selectMenuOption($event)"
+                @close="$refs.menuDropdown.closeDropdown()"
+                v-responsive.xs.sm
             ></ui-menu>
         </ui-icon-button>
 
@@ -95,6 +106,24 @@
 import Vue from "vue";
 
 import AnaShareModal from './AnaShareModal.vue'
+
+// https://gist.github.com/hanayashiki/8dac237671343e7f0b15de617b0051bd
+(function () {
+  if ('File' in self)
+    File.prototype.arrayBuffer = File.prototype.arrayBuffer || myArrayBuffer;
+  Blob.prototype.arrayBuffer = Blob.prototype.arrayBuffer || myArrayBuffer;
+
+  function myArrayBuffer() {
+    // this: File or Blob
+    return new Promise((resolve) => {
+      let fr = new FileReader();
+      fr.onload = () => {
+        resolve(fr.result);
+      };
+      fr.readAsArrayBuffer(this);
+    })
+  }
+})();
 
 export default Vue.extend({
   components: {
@@ -144,6 +173,45 @@ export default Vue.extend({
                 icon: 'visibility'
             },
             {
+                label: 'Upload .puz',
+                icon: 'publish'
+            },
+            {
+                label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        }
+    },
+    mobileMenuOptions() {
+        if (this.state.colluding) {
+            return [
+            {
+                label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        } else if (!this.state.compiling) {
+            return [{
+                label: 'Upload .puz',
+                icon: 'publish'
+            },
+            {
+                label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'About',
+                icon: 'info'
+            }];
+        } else {
+            return [{
                 label: 'Upload .puz',
                 icon: 'publish'
             },

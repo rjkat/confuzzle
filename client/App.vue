@@ -43,8 +43,9 @@
             </template>
             <template v-else>
                 <div id="clue-container">
-                    <ana-solver-list v-if="state.colluding" class="hidden-print" :solvers="solvers"></ana-solver-list>
                     <ana-crossword-clues id="clues"
+                        :state="state"
+                        :solvers="solvers"
                         :solverid="solverid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
@@ -160,7 +161,6 @@ body {
     }
 }
 #clue-container {
-    display: flex;
     flex: 1 1 50%;
 }
 </style>
@@ -182,7 +182,6 @@ import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
 import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
 import AnaCrosswordEditor from './components/AnaCrosswordEditor.vue'
 import AnaToolbar from './components/AnaToolbar.vue'
-import AnaSolverList from './components/AnaSolverList.vue'
 
 const parser = require('./js/parser.js');
 import {readEno, enoToPuz} from './js/eno.js'
@@ -196,8 +195,7 @@ export default Vue.extend({
     AnaCrosswordClues,
     AnaCrosswordGrid,
     AnaCrosswordEditor,
-    AnaToolbar,
-    AnaSolverList
+    AnaToolbar
   },
   props: {
     gridid: String,
@@ -443,7 +441,7 @@ export default Vue.extend({
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);
         const puzbytes = puz.toBytes();
-        const blob = new Blob([puzbytes], {type: "application/x-crossword"});
+        const blob = new Blob([puzbytes], {type: "application/octet-stream"});
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         const filename = this.crossword.meta.name + '.puz';
