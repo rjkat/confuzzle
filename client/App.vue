@@ -80,6 +80,7 @@ body {
 .cancel-explosion-button {
     position: fixed;
     left: 50%;
+    margin-left: -1.75rem;
     bottom: $displayPadding;
 }
 .tippy-popper {

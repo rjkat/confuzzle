@@ -14,10 +14,10 @@
                     <input ref="inputs"
                            maxlength="1"
                            @click.prevent="select($event.target)"
-                           @keypress.prevent
                            @blur="focusChanged()"
                            @focus="focusChanged()"
                            @keydown="handleKeydown($event, i)"
+                           @input="handleInput($event, i)"
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
                            :class="{highlighted: selected || highlighted}"
@@ -230,40 +230,37 @@ export default Vue.extend({
         cell.contents = value;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
     },
+    handleInput(event, offset) {
+        const input = event.target;
+        this.fillCell(offset, input.value);
+        if (input.value)
+        {
+          this.moveInput(input, offset + 1);
+        }
+    },
     handleKeydown: function (event, offset) {
-        var handled = false;
         const input = event.target;
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
                 this.moveInput(input, offset + 1);
-                handled = true;
+                event.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
-                handled = true;
                 break;
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInput(input, offset - 1);
-                handled = true;
+                event.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
                 input.blur();
-                handled = true;
+                event.preventDefault();
                 break;
-        }
-        if (!handled)
-        {
-            this.fillCell(offset, event.key);
-            this.moveInput(event.target, offset + 1);
-        }
-        else
-        {
-            event.preventDefault();
         }
     }
   },
