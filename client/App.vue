@@ -110,8 +110,8 @@ body {
 
 #app-content {
     display: flex;
-    flex-wrap: wrap;
     &.bs4-xs, &.bs4-sm {
+        flex-wrap: wrap;
         overflow-y: scroll;
         overflow-x: hidden;
         padding-bottom: 15em;
