@@ -42,12 +42,13 @@
                 </ana-crossword-editor>
             </template>
             <template v-else>
-                <div id="clue-container" v-responsive.md.lg.xl>
+                <div id="clue-container">
                     <ana-solver-list v-if="state.colluding" class="hidden-print" :solvers="solvers"></ana-solver-list>
                     <ana-crossword-clues id="clues"
                         :solverid="solverid"
                         v-model="crossword" 
-                        @fill-cell="sendFillCell($event)">
+                        @fill-cell="sendFillCell($event)"
+                        v-responsive.class>
                     </ana-crossword-clues>
                 </div>
             </template>
@@ -68,6 +69,11 @@
 <style lang="scss">
 body {
     background-color: rgb(240, 248, 255);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    padding-right: $displayPadding;
+    top: 0px;
 }
 
 .cancel-explosion-button {
@@ -98,28 +104,31 @@ body {
     font-family: $clueFontFamily;
 }
 
+#app-container {
+    height: 100vh;
+}
+
 #app-content {
     display: flex;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    &.bs4-xs, &.bs4-sm {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        padding-bottom: 15em;
+    }
+    height: 100%;
+    width: 100%;
     @media print {
         display: block !important;
     }
 }
 
-#app-content.bs4-sm {
-    overflow-x: hidden;
-}
-
-#app-content.bs4-xs {
-    overflow-x: hidden;
-}
-
 #editor {
-    margin-left: $displayPadding;
     margin-top: $displayPadding;
-    max-height: 70vh;
     overflow-x: scroll;
+    height: calc(100vh - 3.5rem - #{2 * $displayPadding});
     border: 1px solid #000;
+    flex: 1 1 50%;
 }
 
 #grid {
@@ -127,25 +136,32 @@ body {
         padding-top: $displayPadding;
     }
     flex: none;
+    margin-right: $displayPadding;
+    overflow-y: hidden;
 }
 #clues {
     min-width: 20em;
-    height: 100%;
     overflow-y: scroll;
+    &.bs4-md, &.bs4-lg, &.bs4-xl {
+        width: 100%;
+        height: calc(100vh - 3.5rem - #{2 * $displayPadding});
+    }
+    &.bs4-xs, &.bs4-sm {
+        position: fixed;
+        height: 10em;
+        bottom: $displayPadding / 2;
+        margin-right: $displayPadding / 2;
+    }
     background-color: #fff;
     margin-top: $displayPadding;
-
     @media screen {
         padding-top: $displayPadding;
-        margin-left: $displayPadding;
         border: 1px solid #000;
     }
 }
 #clue-container {
-    align-items: stretch;
-    @media screen {
-        max-height: 70vh;
-    }
+    display: flex;
+    flex: 1 1 50%;
 }
 </style>
 

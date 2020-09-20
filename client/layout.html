@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<style>
+
+body {
+    background-color: rgb(240, 248, 255);
+    font-family: Arial;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#toolbar {
+    background-color: #003264;
+    height: 4em;
+    width: 100%;
+}
+
+#app-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+#grid {
+    display: inline-flex;
+    background-color: #000;
+    margin-top: 1em;
+    margin-right: 18px;
+    flex: none;
+    height: 435px;
+    width: 435px;
+}
+
+#clues {
+    min-width: 20em;
+    overflow-y: scroll;
+    background-color: #fff;
+    margin-top: 1em;
+    border: 1px solid #000;
+}
+
+#clue-container {
+    display: flex;
+    flex: 1 1 50%;
+}
+
+.clue-list-container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+}
+
+.author-note {
+    text-align: center;
+    width: 100%;
+    padding-left: .5em;
+    padding-right: .5em;
+    padding-bottom: 1em;
+}
+
+.author-note:before {
+    content: 'Note:';
+    font-weight: bold;
+    padding: .5em;
+}
+
+.clue-list {
+    flex: 50%;
+    margin: 0 auto;
+    min-width: 15em;
+}
+
+.clue-list[data-across]:before {
+    content: 'ACROSS';
+    font-weight: bold;
+    padding: .5em;
+}
+
+.clue-list[data-down]:before {
+    content: 'DOWN';
+    font-weight: bold;
+    padding: .5em;
+}
+</style>
+<title>anagrind.com</title>
+</head>
+<body>
+    <div id="toolbar"></div>
+    <div id="app-content">
+        <div id="grid"></div>
+        <div id="clue-container">
+            <div id="clues">
+                <div class="author-note">Lorem ipsum dolor sit amet</div>
+                <div class="clue-list-container">
+                    <div class="clue-list" data-across>
+                        <ol>
+                            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                            <li>Praesent sed mattis ex. In sit amet ultricies eros.</li>
+                            <li>Proin dui ligula, auctor id feugiat at, faucibus at leo.</li>
+                            <li>Ut venenatis risus nec est consequat, et volutpat tortor maximus.</li>
+                        </ol>
+                    </div>
+                    <div class="clue-list" data-down>
+                        <ol>
+                            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                            <li>Praesent sed mattis ex. In sit amet ultricies eros.</li>
+                            <li>Proin dui ligula, auctor id feugiat at, faucibus at leo.</li>
+                            <li>Ut venenatis risus nec est consequat, et volutpat tortor maximus.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

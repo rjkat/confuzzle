@@ -1,24 +1,26 @@
 <template>
-<div :style="gridStyle">
-  <span class="visible-print">
-    <span class="crossword-meta-name">{{crossword.meta.name}}</span>
-    <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
-    <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
-  </span>
-  <table class="crossword-grid" cell-spacing="0">
-      <tr v-for="(row, r) in crossword.grid.cells">
-          <ana-cell v-for="cell in row" ref="inputCells"
-                    :cell="crossword.grid.cells[cell.row][cell.col]"
-                    :solverid="solverid"
-                    @blur-cell="deselectCell(cell)"
-                    @cell-clicked="cellClicked($event, cell)"
-                    @keypress.prevent="handleKeypress($event, cell)"
-                    @keydown="handleKeydown($event, cell)"
-                    @mousedown.prevent>
-          </ana-cell>
-      </tr>
-  </table>
-  <div class="copyright-text">{{crossword.meta.copyright}}</div>
+<div class="grid-container">
+  <div :style="gridStyle">
+    <span class="visible-print">
+      <span class="crossword-meta-name">{{crossword.meta.name}}</span>
+      <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
+      <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
+    </span>
+    <table class="crossword-grid" cell-spacing="0">
+        <tr v-for="(row, r) in crossword.grid.cells">
+            <ana-cell v-for="cell in row" ref="inputCells"
+                      :cell="crossword.grid.cells[cell.row][cell.col]"
+                      :solverid="solverid"
+                      @blur-cell="deselectCell(cell)"
+                      @cell-clicked="cellClicked($event, cell)"
+                      @keypress.prevent="handleKeypress($event, cell)"
+                      @keydown="handleKeydown($event, cell)"
+                      @mousedown.prevent>
+            </ana-cell>
+        </tr>
+    </table>
+    <div class="copyright-text">{{crossword.meta.copyright}}</div>
+  </div>
 </div>
 </template>
 
@@ -56,9 +58,10 @@ export default Vue.extend({
   },
   computed: {
     scale() {
-      const cellWidth = 28;
+      const cellWidth = 29;
+      const bodyPadding = 18;
       const ncols = Math.min(this.crossword.grid.width, this.crossword.grid.height);
-      const s = Math.min(1, this.screenWidth / (cellWidth * ncols));
+      const s = Math.min(1, this.screenWidth / (cellWidth * ncols + bodyPadding));
       return s;
     },
     gridStyle() {

@@ -27,6 +27,8 @@
     text-align: center;
     width: 100%;
     font-family: $clueFontFamily;
+    padding-left: .5em;
+    padding-right: .5em;
     padding-bottom: $displayPadding;
 }
 .ana-clue-list-container {
