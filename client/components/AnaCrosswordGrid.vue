@@ -1,12 +1,12 @@
 <template>
-<div class="grid-container">
-  <div :style="gridStyle">
-    <span class="visible-print">
-      <span class="crossword-meta-name">{{crossword.meta.name}}</span>
-      <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
-      <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
-    </span>
-    <table class="crossword-grid" cell-spacing="0">
+<div>
+  <span class="visible-print">
+    <span class="crossword-meta-name">{{crossword.meta.name}}</span>
+    <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
+    <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
+  </span>
+  <div class="crossword-grid-container" :style="gridContainerStyle">
+    <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
         <tr v-for="(row, r) in crossword.grid.cells">
             <ana-cell v-for="cell in row" ref="inputCells"
                       :cell="crossword.grid.cells[cell.row][cell.col]"
@@ -19,17 +19,18 @@
             </ana-cell>
         </tr>
     </table>
-    <div class="copyright-text">{{crossword.meta.copyright}}</div>
   </div>
+  <div class="copyright-text">{{crossword.meta.copyright}}</div>
 </div>
 </template>
 
 <style lang="scss">
 .crossword-grid {
-    text-transform: uppercase;
-    background-color: $gridBlankColor;
-    display:inline-block;
-    border-collapse: collapse;
+  flex: none;
+  text-transform: uppercase;
+  background-color: $gridBlankColor;
+  display:inline-block;
+  border-collapse: collapse;
 }
 .copyright-text {
   font-family: $clueFontFamily;
@@ -50,6 +51,11 @@ export default Vue.extend({
   },
   props: {
     crossword: Object,
+    gridSize: Number,
+    isMobile: {
+      type: Boolean,
+      default: false
+    },
     editable: {
       type: Boolean,
       default: true
@@ -57,17 +63,22 @@ export default Vue.extend({
     solverid: Number
   },
   computed: {
-    scale() {
-      const cellWidth = 29;
-      const bodyPadding = 18;
+    gridWidth() {
       const ncols = Math.min(this.crossword.grid.width, this.crossword.grid.height);
-      const s = Math.min(1, this.screenWidth / (cellWidth * ncols + bodyPadding));
-      return s;
+      return (this.cellWidth * ncols + this.bodyPadding);
     },
     gridStyle() {
+      const scale = Math.min(1, this.gridSize / this.gridWidth);
       return {
-        'transform': 'scale(' + this.scale + ')',
-        'transform-origin': 'top left'
+        'transform': 'scale(' + scale + ')',
+        'transform-origin': 'top left',
+      }
+    },
+    gridContainerStyle() {
+      return {
+        'overflow': 'hidden',
+       'height': Math.min(this.gridWidth, this.gridSize) + 'px',
+       'width': Math.min(this.gridWidth, this.gridSize) + 'px'
       }
     }
   },
@@ -178,17 +189,13 @@ export default Vue.extend({
         }
     },
   },
-  mounted() {
-    window.addEventListener('resize', () => {
-      this.screenWidth = Math.min(window.screen.height, window.screen.width);
-    })
-  },
   data() {
     return {
       bundler: "Parcel",
       inputAcross: true,
       lastClicked: undefined,
-      screenWidth: Math.min(window.screen.height, window.screen.width)
+      cellWidth: 29,
+      bodyPadding: 18
     };
   }
 });

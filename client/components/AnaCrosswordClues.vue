@@ -1,7 +1,9 @@
 <template>
 <div>
     <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers" ></ana-solver-list>
-    <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
+    <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML">
+        
+    </div>
     <div class="ana-clue-list-container">
         <ana-clue-list
             class="clue-list"
@@ -26,6 +28,7 @@
 <style lang="scss">
 .author-note {
     width: 100%;
+    display: block;
     font-family: $clueFontFamily;
     padding-right: .5em;
     padding-left: .5em;

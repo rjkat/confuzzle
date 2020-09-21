@@ -21,11 +21,9 @@
 </template>
 
 <style lang="scss">
-  
   .ana-crossword-editor-container {
     display: flex;
     flex-direction: column;
-    position: relative;
     .ui-alert__icon {
       margin: auto;
     }

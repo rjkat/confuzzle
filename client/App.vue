@@ -14,7 +14,7 @@
         @puz-file-uploaded="puzFileUploaded($event)"
     >
     </ana-toolbar>
-    <div id="app-content" v-responsive.class>
+    <div id="app-content" ref="appContent" :data-portrait="isPortrait">
         <template v-if="state.joining">
             <ui-modal ref="joinModal" title="Join Crossword" :dismissible="false">
                 <div style="text-align: center;">
@@ -30,26 +30,30 @@
             <ana-crossword-grid id="grid"
                 v-model="crossword"
                 :solverid="solverid"
+                :gridSize="gridSize"
+                :isPortrait="isPortrait"
                 @fill-cell="sendFillCell($event)">
             </ana-crossword-grid>
-            <template v-if="state.compiling">
-                <ana-crossword-editor id="editor" v-responsive.md.lg.xl
+            <template v-if="state.compiling && !isPortrait">
+                <ana-crossword-editor id="editor"
                     v-model="crosswordSource"
                     :loading="renderLoading"
                     :errorText="errorText"
                     :errorMessage="errorMessage"
-                    @input="crosswordEdited()">
+                    @input="crosswordEdited()"
+                    v-responsive.class>
                 </ana-crossword-editor>
             </template>
             <template v-else>
-                <div id="clue-container">
+                <div id="clue-container" :data-portrait="isPortrait">
                     <ana-crossword-clues id="clues"
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
-                        v-responsive.class>
+                        v-responsive.class
+                        >
                     </ana-crossword-clues>
                 </div>
             </template>
@@ -73,8 +77,8 @@ body {
     height: 100%;
     width: 100%;
     position: fixed;
-    padding-right: $displayPadding;
     top: 0px;
+    margin: 8px;
 }
 
 .cancel-explosion-button {
@@ -107,18 +111,24 @@ body {
 }
 
 #app-container {
-    height: 100vh;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#app-toolbar {
+    flex: none;
+    margin-right: $displayPadding;
 }
 
 #app-content {
     display: flex;
-    &.bs4-xs, &.bs4-sm {
-        flex-wrap: wrap;
-        overflow-y: scroll;
-        overflow-x: hidden;
-        padding-bottom: 15em;
+    width: 100%;
+    &[data-portrait] {
+        min-height: 0;
+        flex-direction: column;
     }
-    height: 100%;
     width: 100%;
     @media print {
         display: block !important;
@@ -126,43 +136,38 @@ body {
 }
 
 #editor {
+    margin-right: $displayPadding;
     margin-top: $displayPadding;
     overflow-x: scroll;
-    height: calc(100vh - 3.5rem - #{2 * $displayPadding});
     border: 1px solid #000;
     flex: 1 1 50%;
+    &.bs4-md, &.bs4-lg, &.bs4-xl {
+        height: 80vh;
+    }
 }
 
 #grid {
     @media screen {
         padding-top: $displayPadding;
     }
-    flex: none;
-    margin-right: $displayPadding;
-    overflow-y: hidden;
 }
 #clues {
-    min-width: 20em;
-    overflow-y: scroll;
-    &.bs4-md, &.bs4-lg, &.bs4-xl {
-        width: 100%;
-        height: calc(100vh - 3.5rem - #{2 * $displayPadding});
-    }
-    &.bs4-xs, &.bs4-sm {
-        position: fixed;
-        height: 10em;
-        bottom: $displayPadding / 2;
-        margin-right: $displayPadding / 2;
-    }
-    background-color: #fff;
-    margin-top: $displayPadding;
-    @media screen {
-        padding-top: $displayPadding;
-        border: 1px solid #000;
-    }
+    padding-top: $displayPadding;
 }
 #clue-container {
     flex: 1 1 50%;
+    min-height: 0;
+    overflow-y: scroll;
+    margin-top: $displayPadding;
+    margin-bottom: $displayPadding;
+    margin-right: $displayPadding;
+    @media screen {
+        border: 1px solid #000;
+    }
+    &:not([data-portrait]) {
+        height: 80vh;
+    }
+    background-color: #fff;
 }
 </style>
 
@@ -200,6 +205,7 @@ export default Vue.extend({
   },
   props: {
     gridid: String,
+    gridSize: Number,
     solverid: {
         type: Number,
         default: 0,
@@ -216,6 +222,7 @@ export default Vue.extend({
             };
         }
     },
+    isPortrait: false,
     joinLoading: false,
     shareLoading: false,
     renderLoading: false,
@@ -315,15 +322,38 @@ export default Vue.extend({
         Vue.nextTick(() => self.$refs.joinModal.open());
     }
   },
+  mounted() {
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('orientationchange', this.handleOrientationChange);
+    this.handleOrientationChange();
+    this.handleResize();
+  },
   data() {
     return {
       shortUrl: 'https://anagr.in/d/',
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
+      windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+      windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
     };
   },
   methods: {
+    // https://stackoverflow.com/a/11744120
+    handleResize() {
+        this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        this.windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        const w = this.windowWidth;
+        const h = this.windowHeight;
+        this.isPortrait = h > w;
+        this.gridSize = this.isPortrait ? w : h;
+    },
+    handleOrientationChange() {
+        const w = this.windowWidth;
+        const h = this.windowHeight;
+        this.isPortrait = !(window.orientation == -90 || window.orientation == 90);
+        this.gridSize = this.isPortrait ? w : h;
+    },
     cancelExplosions() {
         this.exploding = false;
         this.$options.explosions.cancel();

@@ -8,8 +8,8 @@
             <span class="clue-text" v-html="sanitizedText"></span>
             <span class="clue-length">{{lengthText}}</span>
         </span>
-        <div class="crossword-answer-container" v-if="clue" ref="answer" v-responsive.class>
-            <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}" v-responsive.class>
+        <div class="crossword-answer-container" v-if="clue" ref="answer">
+            <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
                 <template v-for="(cell, i) in clue.cells">
                     <input ref="inputs"
                            maxlength="1"
@@ -191,8 +191,6 @@ export default Vue.extend({
         return sanitizeHtml(sep, this.htmlOptions);
     },
     directionsClicked: function() {
-        const cls = this.$refs.answer.classList;
-        const isMobile = cls.contains("bs4-xs") || cls.contains("bs4-sm");
         this.$refs.inputs[0].click();
         this.wasClicked = true;
     },
