@@ -102,7 +102,7 @@ export default Vue.extend({
   watch: {
     selected: function(val) {
         if (val && !this.wasClicked) {
-            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'center'});
+            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'start'});
         }
         if (!val) {
             this.wasClicked = false;
