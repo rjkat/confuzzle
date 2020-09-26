@@ -199,7 +199,7 @@ export default Vue.extend({
     cell(val) {
         if (this.popper)
             this.popper.destroy();
-        this.createPopper();
+        Vue.nextTick(() => this.createPopper());
     }
   },
   computed: {
@@ -231,22 +231,22 @@ export default Vue.extend({
 
         Vue.nextTick(() => {
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
-          placement: 'top',
-          modifiers: [
-            {
-              name: 'offset',
-              options: {
-                offset: [0, 5],
-              },
-            },
-            {
-              name: 'preventOverflow',
-              options: {
-                boundary: this.$refs.tableCell.parentElement.parentElement
-              }
-            }
-          ],
-        });
+              placement: 'top',
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, 5],
+                  },
+                },
+                {
+                  name: 'preventOverflow',
+                  options: {
+                    boundary: this.$refs.tableCell.parentElement.parentElement
+                  }
+                }
+              ],
+            });
         });
     },
     onClick(event) {
