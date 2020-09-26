@@ -40,7 +40,8 @@
     text-transform: none;
     white-space: nowrap;
     z-index: 10;
-    background: #fff;
+    background: #333;
+    color: #fff;
     border-radius: 4px;
     font-family: $clueFontFamily;
     display: none;
@@ -60,7 +61,7 @@
 .cell-tooltip-arrow::before {
   content: '';
   transform: rotate(45deg);
-  background: #fff;
+  background: #333;
 }
 
 .cell-tooltip[data-popper-placement^='top'] > .cell-tooltip-arrow {
@@ -227,13 +228,15 @@ export default Vue.extend({
     createPopper() {
         if (!this.$refs.tooltip)
             return;
-        this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
+
+        Vue.nextTick(() => {
+            this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
           placement: 'top',
           modifiers: [
             {
               name: 'offset',
               options: {
-                offset: [0, 12],
+                offset: [0, 5],
               },
             },
             {
@@ -243,6 +246,7 @@ export default Vue.extend({
               }
             }
           ],
+        });
         });
     },
     onClick(event) {
