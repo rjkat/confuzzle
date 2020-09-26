@@ -272,7 +272,9 @@ export default Vue.extend({
         
         if (document.activeElement !== this.$refs.input) {
             this.$refs.input.focus();
-            this.$refs.input.select();
+            if (this.cell.contents) {
+                this.$refs.input.select();
+            }
         }
     },
   },
