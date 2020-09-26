@@ -66,6 +66,7 @@
 
 .cell-tooltip[data-popper-placement^='top'] > .cell-tooltip-arrow {
   bottom: -4px;
+  left: -4px !important;
 }
 
 .cell-tooltip[data-popper-placement^='bottom'] > .cell-tooltip-arrow {
@@ -236,7 +237,7 @@ export default Vue.extend({
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, 5],
+                    offset: [0, 6],
                   },
                 },
                 {

@@ -388,7 +388,11 @@ export default Vue.extend({
         }
         this.errorText = errorText;
         this.errorMessage = errorMessage;
+        this.gridSizeLocked = false;
+        this.handleResize();
+        this.gridSizeLocked = true;
         this.renderLoading = false;
+
     },
     crosswordEdited() {
         const self = this;

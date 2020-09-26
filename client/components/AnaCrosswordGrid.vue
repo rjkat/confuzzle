@@ -63,7 +63,7 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      const ncols = Math.min(this.crossword.grid.width, this.crossword.grid.height);
+      const ncols = Math.max(this.crossword.grid.width, this.crossword.grid.height);
       return (this.cellWidth * ncols + this.bodyPadding);
     },
     gridStyle() {
