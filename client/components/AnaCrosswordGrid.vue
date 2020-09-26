@@ -11,7 +11,6 @@
             <ana-cell v-for="cell in row" ref="inputCells"
                       :cell="crossword.grid.cells[cell.row][cell.col]"
                       :solverid="solverid"
-                      @blur-cell="deselectCell(cell)"
                       @cell-clicked="cellClicked($event, cell)"
                       @keydown="handleKeydown($event, cell)"
                       @input="handleInput($event, cell)"
@@ -20,7 +19,7 @@
         </tr>
     </table>
   </div>
-  <div class="copyright-text">{{crossword.meta.copyright}}</div>
+  <div class="copyright-text" v-if="!isPortrait">{{crossword.meta.copyright}}</div>
 </div>
 </template>
 
@@ -52,7 +51,7 @@ export default Vue.extend({
   props: {
     crossword: Object,
     gridSize: Number,
-    isMobile: {
+    isPortrait: {
       type: Boolean,
       default: false
     },
@@ -80,9 +79,44 @@ export default Vue.extend({
        'height': Math.min(this.gridWidth, this.gridSize) + 'px',
        'width': Math.min(this.gridWidth, this.gridSize) + 'px'
       }
+    },
+    selectedClue() {
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            if (clue.selected) {
+                return clue;
+            }
+        }
+        return undefined;
+    }
+  },
+  watch: {
+    selectedClue(newVal, oldVal) {
+      if (oldVal) {
+        this.hidePopover(oldVal);
+      }
+      if (newVal) {
+        this.showPopover(newVal);
+      }
     }
   },
   methods: {
+    showPopover(clue) {
+      const cell = clue.cells[0];
+      const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col]
+      if (inputCell) {
+          inputCell.showPopover();
+      }
+    },
+    getInputCell(cell) {
+      return this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col];
+    },
+    hidePopover(clue) {
+       const cell = clue.cells[0];
+       const inputCell = this.getInputCell(cell);
+       if (inputCell) {
+          inputCell.hidePopover();
+       }
+    },
     deselectCell(cell) {
        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
        if (clue) {
@@ -97,12 +131,12 @@ export default Vue.extend({
         if (!(cell.clues.across && cell.clues.down)) {
             this.inputAcross = Boolean(cell.clues.across);
         }
-        const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col]
-        if (inputCell)
-          inputCell.select();
-
         const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
         clue.select(this.solverid);
+        const inputCell = this.getInputCell(cell);
+        if (inputCell)
+          inputCell.select();
+        this.showPopover(clue);
     },
     fillCell(cell) {
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
@@ -119,7 +153,6 @@ export default Vue.extend({
           // if it's the same as the last clicked cell, switch directions
           if (cell == this.lastClicked) {
             this.inputAcross = !this.inputAcross;
-
           // clicked on a first letter, change direction to match
           // the clue with the first letter
           } else if (cell.offsets.across == 0 || cell.offsets.down == 0) {
@@ -132,6 +165,7 @@ export default Vue.extend({
     moveInputCell(input, cell, direction) {
         let row, col;
         const cells = this.crossword.grid.cells;
+        this.deselectCell(cell);
         if (this.inputAcross) {
             row = cell.row;
             col = cell.col + direction;
@@ -195,7 +229,7 @@ export default Vue.extend({
       inputAcross: true,
       lastClicked: undefined,
       cellWidth: 29,
-      bodyPadding: 18
+      bodyPadding: 18,
     };
   }
 });

@@ -1,6 +1,7 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
+const sanitizeHtml = require('sanitize-html');
 
 import {EMOJI_DICT} from './words_to_emoji.js';
 
@@ -8,6 +9,18 @@ enolib.register(enotype);
 
 export function sampleCrossword() {
   return sample.sampleCrossword();
+}
+
+const SANITIZE_HTML_OPTIONS_KEEP_ALLOWED = {
+    allowedTags: [ 
+        'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
+        'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
+    ]
+}
+
+const SANITIZE_HTML_OPTIONS_STRIP_ALL = {
+  allowedTags: [],
+  allowedAttributes: {}
 }
 
 function forEachCell(clue, cells, cellFn) {
@@ -85,8 +98,10 @@ function populateCells(cw, cells, clues, compiling) {
         const sep = clue.separators[word];
         if (clue.isAcross) {
           clue.cells[i].acrossSeparator = sep;
+          clue.cells[i].sanitizedAcrossSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
         } else {
           clue.cells[i].downSeparator = sep;
+          clue.cells[i].sanitizedDownSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
         }
         word++;
         wordpos = 0;
@@ -191,6 +206,8 @@ function parseClue(cw, clue) {
     id: clueid,
     isAcross: clueid.slice(-1) == 'A',
     text: parsedText,
+    sanitizedText: sanitizeHtml(parsedText, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED),
+    plainText: sanitizeHtml(parsedText, SANITIZE_HTML_OPTIONS_STRIP_ALL),
     separators: sep,
     verbatim: x.optionalEmpty('verbatim') ? true : false,
     lengths: lengths,

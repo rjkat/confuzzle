@@ -5,24 +5,79 @@
     :data-down-separator="cell.downSeparator"
     :data-empty="cell.empty"
     :style="{backgroundColor: cell.shadingColor}"
-    @click.prevent="$emit('cell-clicked', $event)">
-    <input
-        v-if="editable && !cell.empty"
-        ref="input"
-        class="crossword-grid-input"
-        :value="cell.contents"
-        v-on="$listeners"
-        maxlength="1"
+    @click.prevent="onClick($event)"
+    ref="tableCell"
     >
-    </input>
-    <div v-else>
-        {{cell.contents}}
+    <div v-if="!cell.empty && (
+                 (cell.clues.across && cell == cell.clues.across.cells[0]) || 
+                 (cell.clues.down && cell == cell.clues.down.cells[0])
+               )"
+        class="cell-tooltip" ref="tooltip">
+        {{tooltipText}}
+        <div class="cell-tooltip-arrow" data-popper-arrow></div>
     </div>
+    <template v-if="editable && !cell.empty">
+        <input
+            ref="input"
+            class="crossword-grid-input"
+            :value="cell.contents"
+            v-on="$listeners"
+            maxlength="1"
+        >
+        </input>
+    </template>
+    <template v-else>
+        <div>{{cell.contents}}</div>
+    </template>
     <div class="cell-highlight-border" v-if="cell.highlightMask" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
 </td>
 </template>
 
 <style lang="scss">
+.cell-tooltip {
+    padding: 4px 8px;
+    font-size: 13px;
+    text-transform: none;
+    white-space: nowrap;
+    z-index: 10;
+    background: #fff;
+    border-radius: 4px;
+    font-family: $clueFontFamily;
+    display: none;
+
+    &[data-show] {
+        display: block !important;
+    }
+}
+.cell-tooltip-arrow,
+.cell-tooltip-arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: -1;
+}
+
+.cell-tooltip-arrow::before {
+  content: '';
+  transform: rotate(45deg);
+  background: #fff;
+}
+
+.cell-tooltip[data-popper-placement^='top'] > .cell-tooltip-arrow {
+  bottom: -4px;
+}
+
+.cell-tooltip[data-popper-placement^='bottom'] > .cell-tooltip-arrow {
+  top: -4px;
+}
+
+.cell-tooltip[data-popper-placement^='left'] > .cell-tooltip-arrow {
+  right: -4px;
+}
+
+.cell-tooltip[data-popper-placement^='right'] > .cell-tooltip-arrow {
+  left: -4px;
+}
 .cell-highlight-border {
     content: '';
     position: absolute;
@@ -119,6 +174,7 @@ td {
 <script>
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
+import { createPopper } from '@popperjs/core';
 
 // https://graphics.stanford.edu/~seander/bithacks.html
 function nBitsSet(v) {
@@ -136,7 +192,14 @@ export default Vue.extend({
     editable: {
         type: Boolean,
         default: true
-    },
+    }
+  },
+  watch: {
+    cell(val) {
+        if (this.popper)
+            this.popper.destroy();
+        this.createPopper();
+    }
   },
   computed: {
     solverMask() {
@@ -147,23 +210,74 @@ export default Vue.extend({
         }
         return v;
     },
+    tooltipText() {
+        var text = '';
+        if (!this.cell.clues)
+            return text;
+        const acrossClue = this.cell.clues.across;
+        const downClue = this.cell.clues.down;
+        if (acrossClue)
+            text = acrossClue.plainText;
+        if (downClue && (!acrossClue || downClue.selected))
+            text = downClue.plainText
+        return text;
+    }
   },
   methods: {
-    // onBlur: function() {
-    //     let haveFocus = this.$refs.input === document.activeElement;
-    //     if (!haveFocus)
-    //         this.$emit('blur-cell', this.cell);
-    // },
+    createPopper() {
+        if (!this.$refs.tooltip)
+            return;
+        this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
+          placement: 'top',
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 12],
+              },
+            },
+            {
+              name: 'preventOverflow',
+              options: {
+                boundary: this.$refs.tableCell.parentElement.parentElement
+              }
+            }
+          ],
+        });
+    },
+    onClick(event) {
+        this.$emit('cell-clicked', event);
+    },
+    showPopover() {
+        if (this.$refs.tooltip);
+            this.$refs.tooltip.setAttribute('data-show', '');
+
+        if (this.popper)
+            this.popper.update();
+    },
+    hidePopover() {
+        if (this.$refs.tooltip)
+            this.$refs.tooltip.removeAttribute('data-show');
+        if (this.popper)
+            this.popper.update();
+    },
     select() {
         if (!this.editable)
             return;
-        this.$refs.input.focus();
-        this.$refs.input.select();
+        
+        if (document.activeElement !== this.$refs.input) {
+            this.$refs.input.focus();
+            this.$refs.input.select();
+        }
     },
+  },
+  mounted() {
+    this.createPopper();
   },
   data() {
     return {
       bundler: "Parcel",
+      popper: null
     };
   },
 });

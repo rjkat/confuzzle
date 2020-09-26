@@ -47,6 +47,7 @@
             <template v-else>
                 <div id="clue-container" :data-portrait="isPortrait">
                     <ana-crossword-clues id="clues"
+                        :data-portrait="isPortrait"
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
@@ -152,19 +153,22 @@ body {
     }
 }
 #clues {
-    padding-top: $displayPadding;
+    &:not([data-portrait]) {
+        padding-top: $displayPadding;
+    }
 }
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
     overflow-y: scroll;
-    margin-top: $displayPadding;
+   
     margin-bottom: $displayPadding;
     margin-right: $displayPadding;
     @media screen {
         border: 1px solid #000;
     }
     &:not([data-portrait]) {
+        margin-top: $displayPadding;
         height: 80vh;
     }
     background-color: #fff;

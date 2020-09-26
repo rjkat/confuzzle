@@ -5,7 +5,7 @@
         ref="item">
         <span class="clue-directions" @click="directionsClicked()">
             <span class="clue-id">{{idText}}<span class="hidden-print" v-if="showDirection">{{clue.isAcross ? 'A' : 'D'}}</span> </span>
-            <span class="clue-text" v-html="sanitizedText"></span>
+            <span class="clue-text" v-html="clue.sanitizedText"></span>
             <span class="clue-length">{{lengthText}}</span>
         </span>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
@@ -87,8 +87,6 @@
 <script>
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
-
-const sanitizeHtml = require('sanitize-html');
 
 export default Vue.extend({
   props: {
@@ -172,23 +170,17 @@ export default Vue.extend({
         lengthText += ')';
         return lengthText;
     },
-    sanitizedText: function () {
-        if (!this.clue) {
-            return '';
-        }
-        return sanitizeHtml(this.clue.text, this.htmlOptions);
-    }
   },
   methods: {
     separator: function (cell) {
-        let sep = this.clue.isAcross ? cell.acrossSeparator : cell.downSeparator;
+        let sep = this.clue.isAcross ? cell.sanitizedAcrossSeparator : cell.sanitizedDownSeparator;
         if (!sep) {
             return null;
         }
         if (sep == ',') {
             sep = "&nbsp;";
         }
-        return sanitizeHtml(sep, this.htmlOptions);
+        return sep;
     },
     directionsClicked: function() {
         this.$refs.inputs[0].click();
@@ -265,13 +257,7 @@ export default Vue.extend({
   data() {
     return {
         bundler: "Parcel",
-        wasClicked: false,
-        htmlOptions: {
-            allowedTags: [ 
-                'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'ul', 'ol', 'nl',
-                'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
-            ]
-        }
+        wasClicked: false
     };
   }
 });

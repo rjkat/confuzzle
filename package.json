@@ -28,6 +28,7 @@
   "dependencies": {
     "@babel/core": "^7.9.0",
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@popperjs/core": "^2.5.2",
     "babel-types": "^6.26.0",
     "blissfuljs": "^1.0.6",
     "compression": "^1.7.4",
