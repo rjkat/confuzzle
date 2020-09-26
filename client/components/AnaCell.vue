@@ -48,6 +48,9 @@
 
     &[data-show] {
         display: block !important;
+        @media print {
+            display: none !important;
+        }
     }
 }
 .cell-tooltip-arrow,
