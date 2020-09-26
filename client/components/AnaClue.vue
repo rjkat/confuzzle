@@ -195,7 +195,7 @@ export default Vue.extend({
         haveFocus ? this.clue.select(this.solverid) : this.clue.deselect(this.solverid);
     },
     shadingColor: function(i) {
-        if (this.clue)
+        if (this.clue && this.clue.shadingColor)
             return this.clue.shadingColor;
         if (this.clue.cells[i])
             return this.clue.cells[i].shadingColor;
