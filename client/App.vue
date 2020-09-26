@@ -331,6 +331,7 @@ export default Vue.extend({
     window.addEventListener('orientationchange', this.handleOrientationChange);
     this.handleOrientationChange();
     this.handleResize();
+    this.gridSizeLocked = true;
   },
   data() {
     return {
@@ -339,7 +340,8 @@ export default Vue.extend({
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
-      windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+      windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
+      gridSizeLocked: false
     };
   },
   methods: {
@@ -350,13 +352,15 @@ export default Vue.extend({
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = h > w;
-        this.gridSize = this.isPortrait ? w : h;
+        if (!this.gridSizeLocked)
+            this.gridSize = this.isPortrait ? w : h;
     },
     handleOrientationChange() {
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = !(window.orientation == -90 || window.orientation == 90);
-        this.gridSize = this.isPortrait ? w : h;
+        if (!this.gridSizeLocked)
+            this.gridSize = this.isPortrait ? w : h;
     },
     cancelExplosions() {
         this.exploding = false;
