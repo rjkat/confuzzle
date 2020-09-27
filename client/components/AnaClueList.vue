@@ -17,9 +17,11 @@
 <style lang="scss" scoped>
 @import '../stylesheets/solvers';
 
-@include each-solver using ($color, $lightColor, $sel) {
-    li.highlighted#{$sel} {
-        color: $lightColor
+@media screen {
+    @include each-solver using ($color, $lightColor, $sel) {
+        li.highlighted#{$sel} {
+            color: $lightColor
+        }
     }
 }
 
