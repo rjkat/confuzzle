@@ -103,7 +103,6 @@ td {
     box-sizing: border-box;
     font-family: $answerFontFamily;
     
-
     border-color: $gridBgColor;
     min-width: $gridCellSize;
     max-width: $gridCellSize;
@@ -147,8 +146,8 @@ td {
         border-bottom: 3px #000 solid;
     }
 
-    &[data-empty] {
-        background: $gridBgColor;
+    &:not([data-empty]) {
+        background: $gridBlankColor;
     }
 
     .crossword-grid-input {
@@ -257,7 +256,7 @@ export default Vue.extend({
         this.$emit('cell-clicked', event);
     },
     showPopover() {
-        if (this.$refs.tooltip);
+        if (this.$refs.tooltip)
             this.$refs.tooltip.setAttribute('data-show', '');
 
         if (this.popper)
@@ -273,7 +272,7 @@ export default Vue.extend({
         if (!this.editable)
             return;
         
-        if (document.activeElement !== this.$refs.input) {
+        if (this.$refs.input && document.activeElement !== this.$refs.input) {
             this.$refs.input.focus();
             if (this.cell.contents) {
                 this.$refs.input.select();

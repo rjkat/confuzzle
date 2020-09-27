@@ -63,7 +63,7 @@
     <ui-fab v-if="exploding"
         icon="close"
         tooltip="Make it stop"
-        tooltiPosition="top-end"
+        tooltipPosition="top"
         class="cancel-explosion-button"
         @click="cancelExplosions()"
         >
