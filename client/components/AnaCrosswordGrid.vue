@@ -27,7 +27,7 @@
 .crossword-grid {
   flex: none;
   text-transform: uppercase;
-  background-color: $gridBlankColor;
+  background-color: $gridBgColor;
   display:inline-block;
   border-collapse: collapse;
 }
@@ -63,21 +63,26 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      const ncols = Math.max(this.crossword.grid.width, this.crossword.grid.height);
-      return (this.cellWidth * ncols + this.bodyPadding);
+      return (this.cellWidth * this.crossword.grid.width + this.bodyPadding);
+    },
+    gridHeight() {
+      return (this.cellWidth * this.crossword.grid.height + this.bodyPadding);
+    },
+    gridScale() {
+      const scaleDim = this.isPortrait ? this.gridHeight : this.gridWidth;
+      return Math.min(1, this.gridSize / scaleDim);
     },
     gridStyle() {
-      const scale = Math.min(1, this.gridSize / this.gridWidth);
       return {
-        'transform': 'scale(' + scale + ')',
+        'transform': 'scale(' + this.gridScale + ')',
         'transform-origin': 'top left',
       }
     },
     gridContainerStyle() {
       return {
         'overflow': 'hidden',
-       'height': Math.min(this.gridWidth, this.gridSize) + 'px',
-       'width': Math.min(this.gridWidth, this.gridSize) + 'px'
+       'height': this.gridScale * this.gridHeight + 'px',
+       'width': this.gridScale * this.gridWidth + 'px'
       }
     },
     selectedClue() {
@@ -102,13 +107,13 @@ export default Vue.extend({
   methods: {
     showPopover(clue) {
       const cell = clue.cells[0];
-      const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col]
+      const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col]
       if (inputCell) {
           inputCell.showPopover();
       }
     },
     getInputCell(cell) {
-      return this.$refs.inputCells[cell.row*this.crossword.grid.height + cell.col];
+      return this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col];
     },
     hidePopover(clue) {
        const cell = clue.cells[0];
