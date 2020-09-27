@@ -240,6 +240,7 @@ export default Vue.extend({
             case KeyCode.KEY_BACK_SPACE:
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
+                event.preventDefault();
                 break;
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:

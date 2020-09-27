@@ -36,7 +36,7 @@
 <style lang="scss">
 .cell-tooltip {
     padding: 4px 8px;
-    font-size: 13px;
+    font-size: 18px;
     text-transform: none;
     white-space: nowrap;
     z-index: 10;

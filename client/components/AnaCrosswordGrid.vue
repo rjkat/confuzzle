@@ -170,7 +170,7 @@ export default Vue.extend({
     moveInputCell(input, cell, direction) {
         let row, col;
         const cells = this.crossword.grid.cells;
-        this.deselectCell(cell);
+        
         if (this.inputAcross) {
             row = cell.row;
             col = cell.col + direction;
@@ -179,15 +179,15 @@ export default Vue.extend({
             col = cell.col;
         }
         const backspace = direction == -1;
+        if (!backspace)
+          this.deselectCell(cell);
         // we've run off the end or hit an empty square
         if (   row < 0 || row >= cells.length
             || col < 0 || col >= cells[row].length
             || cells[row][col].empty) {
             // make it so that backspace doesn't hide the input
-            if (!backspace) {
-                this.deselectCell(cell);
+            if (!backspace)
                 input.blur();
-            }
             return;
         }
         cell = cells[row][col];
@@ -219,6 +219,7 @@ export default Vue.extend({
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 this.moveInputCell(e.target, cell, -1);
+                e.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
