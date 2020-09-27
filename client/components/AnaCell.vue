@@ -12,10 +12,7 @@
                  (cell.clues.across && cell == cell.clues.across.cells[0]) || 
                  (cell.clues.down && cell == cell.clues.down.cells[0])
                )"
-        class="cell-tooltip" ref="tooltip">
-        {{tooltipText}}
-        <div class="cell-tooltip-arrow" data-popper-arrow></div>
-    </div>
+        class="cell-tooltip" ref="tooltip">{{tooltipText}}<div class="cell-tooltip-arrow" data-popper-arrow></div></div>
     <template v-if="editable && !cell.empty">
         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             ref="input"
@@ -38,13 +35,14 @@
     padding: 4px 8px;
     font-size: 18px;
     text-transform: none;
-    white-space: nowrap;
     z-index: 10;
     background: #333;
     color: #fff;
     border-radius: 4px;
     font-family: $clueFontFamily;
     display: none;
+    text-align: left;
+    white-space: pre;
 
     &[data-show] {
         display: block !important;
@@ -224,7 +222,18 @@ export default Vue.extend({
             text = acrossClue.plainText;
         if (downClue && (!acrossClue || downClue.selected))
             text = downClue.plainText
-        return text;
+
+        var wrappedText = '';
+        var lastWrap = 0;
+        for (var i = 0; i < text.length; i++) {
+            if ((i - lastWrap) > this.clueWrapChars && text[i] == ' ') {
+                wrappedText += '\n';
+                lastWrap = i;
+            } else {
+                wrappedText += text[i];
+            }
+        }
+        return wrappedText;
     }
   },
   methods: {
@@ -286,7 +295,8 @@ export default Vue.extend({
   data() {
     return {
       bundler: "Parcel",
-      popper: null
+      popper: null,
+      clueWrapChars: 40
     };
   },
 });
