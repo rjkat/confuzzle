@@ -17,7 +17,7 @@
         <div class="cell-tooltip-arrow" data-popper-arrow></div>
     </div>
     <template v-if="editable && !cell.empty">
-        <input
+        <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             ref="input"
             class="crossword-grid-input"
             :value="cell.contents"

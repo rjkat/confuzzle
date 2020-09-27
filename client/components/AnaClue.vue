@@ -12,6 +12,10 @@
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
                 <template v-for="(cell, i) in clue.cells">
                     <input ref="inputs"
+                           autocomplete="off"
+                           autocorrect="off"
+                           autocapitalize="off"
+                           spellcheck="false"
                            maxlength="1"
                            @click.prevent="select($event.target)"
                            @blur="focusChanged()"
