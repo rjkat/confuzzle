@@ -1,12 +1,33 @@
 # anagrind
 
 ## Disclaimer
-- this is still a work in progress
-- lots of cleanup still required (particularly stylesheets)
+- this is still a work in progress, see below
 
 ## Known issues
-- more than 7 solvers breaks everything
-- no ability to put emphasis in clues
+- in multiplayer mode, sometimes the socket connection times out. no notification is provided to the user.
+- when clicking "share", all the answers in the grid are lost
+- more than 7 simultaneous solvers breaks everything
+- changing the size of the grid in editing mode breaks things
+
+## Features that would be good
+### Solving
+- screen reader/accessibility support
+- hints
+- checking for correct solution
+- timer
+- anagram exploder
+- ability to toggle tooltip in grid
+
+### Compiling
+- ability to scramble answers automatically
+- better system for laying out the grid
+- eno file upload/download
+- better syntax guide
+
+## Features that are out of scope
+- chat (moderation is hard)
+- saved crosswords (copyright is hard)
+- user accounts (I don't want your information)
 
 ## Attributions
 * The creation of this software would not be possible without the work of others. See [this file](licenses/README.md) for the full list. In particular I would like to acknowledge:
