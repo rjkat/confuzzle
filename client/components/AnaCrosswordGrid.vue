@@ -20,7 +20,7 @@
     </table>
   </div>
   <div v-if="!isPortrait" :style="gridControlStyle">
-    <div class="copyright-text">&copy; {{crossword.meta.copyright}}</div>
+    <div class="copyright-text">{{copyrightText}}</div>
     <ui-switch v-model="showTooltipOverride" class="tooltip-toggle hidden-print" @change="showTooltipToggled($event)">Tooltips</ui-switch>
   </div>
 </div>
@@ -41,8 +41,6 @@
 .tooltip-toggle {
   font-family: $clueFontFamily;
   margin-right: $displayPadding;
-
-  align-self: flex-end;
 }
 </style>
 
@@ -72,6 +70,11 @@ export default Vue.extend({
     solverid: Number
   },
   computed: {
+    copyrightText() {
+      if (this.crossword.meta.copyright.includes('©'))
+        return this.crossword.meta.copyright;
+      return '© ' + this.crossword.meta.copyright;
+    },
     gridWidth() {
       return (this.cellWidth * this.crossword.grid.width + this.bodyPadding);
     },
@@ -98,6 +101,8 @@ export default Vue.extend({
     gridControlStyle() {
       return {
         'display': 'flex',
+        'justify-content': 'space-between',
+        'align-items': 'center',
        'width': this.gridScale * this.gridWidth + 'px'
       }
     },
