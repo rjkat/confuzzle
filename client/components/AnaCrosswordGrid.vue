@@ -19,7 +19,10 @@
         </tr>
     </table>
   </div>
-  <div class="copyright-text" v-if="!isPortrait">{{crossword.meta.copyright}}</div>
+  <div v-if="!isPortrait" :style="gridControlStyle">
+    <div class="copyright-text">&copy; {{crossword.meta.copyright}}</div>
+    <ui-switch v-model="showTooltipOverride" class="tooltip-toggle hidden-print" @change="showTooltipToggled($event)">Tooltips</ui-switch>
+  </div>
 </div>
 </template>
 
@@ -33,6 +36,13 @@
 }
 .copyright-text {
   font-family: $clueFontFamily;
+  margin-right: $displayPadding;
+}
+.tooltip-toggle {
+  font-family: $clueFontFamily;
+  margin-right: $displayPadding;
+
+  align-self: flex-end;
 }
 </style>
 
@@ -85,6 +95,12 @@ export default Vue.extend({
        'width': this.gridScale * this.gridWidth + 'px'
       }
     },
+    gridControlStyle() {
+      return {
+        'display': 'flex',
+       'width': this.gridScale * this.gridWidth + 'px'
+      }
+    },
     selectedClue() {
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             if (clue.selected) {
@@ -105,10 +121,17 @@ export default Vue.extend({
     }
   },
   methods: {
+    showTooltipToggled(val) {
+      if (!val) {
+        this.hidePopover(this.selectedClue);
+      } else {
+        this.showPopover(this.selectedClue);
+      }
+    },
     showPopover(clue) {
       const cell = clue.cells[0];
       const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col]
-      if (inputCell) {
+      if (inputCell && (this.showTooltipOverride || this.isPortrait)) {
           inputCell.showPopover();
       }
     },
@@ -236,6 +259,7 @@ export default Vue.extend({
       lastClicked: undefined,
       cellWidth: 29,
       bodyPadding: 18,
+      showTooltipOverride: true
     };
   }
 });

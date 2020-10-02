@@ -156,9 +156,7 @@ body {
     }
 }
 #clues {
-    &:not([data-portrait]) {
-        padding-top: $displayPadding;
-    }
+    padding-top: $displayPadding;
 }
 #clue-container {
     flex: 1 1 50%;
