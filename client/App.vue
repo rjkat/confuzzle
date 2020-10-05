@@ -80,9 +80,11 @@ body {
     position: fixed;
     top: 0px;
     margin: 8px;
+/*  
     @media print {
         padding: 1.5cm !important;
     }
+*/
 }
 
 .cancel-explosion-button {
