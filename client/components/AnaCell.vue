@@ -1,6 +1,7 @@
 <template>
 <td :data-solver-mask="solverMask"
     :data-number="cell.number"
+    :data-selected=cell.selected
     :data-across-separator="cell.acrossSeparator"
     :data-down-separator="cell.downSeparator"
     :data-empty="cell.empty"
@@ -282,9 +283,10 @@ export default Vue.extend({
             return;
         
         if (this.$refs.input && document.activeElement !== this.$refs.input) {
-            this.$refs.input.focus();
             if (this.cell.contents) {
                 this.$refs.input.select();
+            } else {
+                this.$refs.input.focus();
             }
         }
     },

@@ -134,8 +134,7 @@ export default Vue.extend({
       }
     },
     showPopover(clue) {
-      const cell = clue.cells[0];
-      const inputCell = this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col]
+      const inputCell = this.getInputCell(clue.cells[0]);
       if (inputCell && (this.showTooltipOverride || this.isPortrait)) {
           inputCell.showPopover();
       }

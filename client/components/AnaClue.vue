@@ -216,8 +216,11 @@ export default Vue.extend({
     },
     select: function(input) {
         this.wasClicked = true;
-        input.focus();
-        input.select();
+        if (input.value) {
+            input.select();
+        } else {
+            input.focus();
+        }
     },
     fillCell: function(offset, value) {
         const cell = this.clue.cells[offset];
