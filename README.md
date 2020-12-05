@@ -5,7 +5,6 @@
 
 ## Known issues
 - in multiplayer mode, sometimes the socket connection times out. no notification is provided to the user.
-- when clicking "share", all the answers in the grid are lost
 - more than 7 simultaneous solvers breaks everything
 - changing the size of the grid in editing mode breaks things
 
@@ -16,7 +15,6 @@
 - checking for correct solution
 - timer
 - anagram exploder
-- ability to toggle tooltip in grid
 
 ### Compiling
 - ability to scramble answers automatically
