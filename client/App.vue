@@ -344,7 +344,8 @@ export default Vue.extend({
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-      gridSizeLocked: false
+      gridSizeLocked: false,
+      eventLog: []
     };
   },
   methods: {
@@ -429,7 +430,10 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
     },
     sendUpdate(event) {
-        this.$options.socket.emit(event.action, event);
+        this.eventLog.push(event);
+        if (this.$options.socket) {
+            this.$options.socket.emit(event.action, event);
+        }
     },
     sendFillCell(event) {
         this.sendUpdate({
@@ -448,11 +452,6 @@ export default Vue.extend({
         this.crosswordSource = msg.crossword;
         this.renderCrossword();
 
-        this.state.joining = false;
-        this.joinLoading = false;
-        this.state.colluding = true;
-        this.state.compiling = false;
-
         for (let i = 0; i < msg.events.length; i++) {
             const event = msg.events[i];
             if (event.action == 'fillCell') {
@@ -461,17 +460,30 @@ export default Vue.extend({
                 this.selectionChanged(event);
             }
         }
+        this.state.joining = false;
+        this.joinLoading = false;
+        this.state.colluding = true;
+        this.state.compiling = false;
     },
     joinClicked(name) {
         this.joinLoading = true;
-        this.$options.socket.emit('joinGrid', {gridid: this.gridid, name: name});
+        this.$options.socket.emit('joinGrid', {
+            gridid: this.gridid,
+            name: name
+        });
     },
     shareClicked(name) {
         const self = this;
-        this.state.compiling = false;
-        this.renderCrossword();
+        if (this.state.compiling) {
+            this.state.compiling = false;
+            this.renderCrossword();
+        }
         this.shareLoading = true;
-        this.$options.socket.emit('shareCrossword', {crossword: this.crosswordSource, name: name});
+        this.$options.socket.emit('shareCrossword', {
+            crossword: this.crosswordSource,
+            name: name,
+            eventLog: this.eventLog
+        });
     },
     shareSucceeded(msg) {
         this.gridid = msg.gridid;

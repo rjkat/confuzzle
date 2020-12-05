@@ -112,11 +112,14 @@ function clearSolverId(mask, solverid) {
     return mask;
 }
 
-function createGrid(crossword, gridid) {
+function createGrid(crossword, gridid, eventLog) {
+    if (!eventLog) {
+        eventLog = []
+    }
     const grid = {
         crossword: crossword,
         solvers: {},
-        eventLog: [],
+        eventLog: eventLog,
         solverMask: 0
     };
     grids[gridid] = grid;
@@ -139,7 +142,7 @@ function joinGrid(socketid, name, gridid) {
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
         const gridid = hri.random();
-        const grid = createGrid(args.crossword, gridid);
+        const grid = createGrid(args.crossword, gridid, args.eventLog);
         joinGrid(socket.id, args.name, gridid);
         socket.join(gridid, function() {
             socket.emit('crosswordShared', {gridid: gridid, solvers: grid.solvers, solverid: 0});
@@ -155,7 +158,7 @@ io.on('connection', function(socket) {
             // console.log('join ' + args.name + ' to grid: ' + args.gridid);
             const grid = joinGrid(socket.id, args.name, args.gridid);
             const solver = grid.solvers[socket.id];
-            // hack: just replay all the packets to everyone who joins
+            // just replay all the packets to everyone who joins
             socket.emit('gridJoined', {
                 gridid: args.gridid,
                 solverid: solver.solverid,
