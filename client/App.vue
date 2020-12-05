@@ -237,8 +237,14 @@ export default Vue.extend({
     solverName: "",
     errorText: "",
     errorMessage: "",
-    crossword: Object,
-    crosswordSource: defaultCrossword,
+    crossword: {
+        type: Object,
+        default: function () { return defaultCrossword; }
+    },
+    crosswordSource: {
+        type: String,
+        default: parser.sampleCrossword()
+    },
     client: Object
   },
   computed: {
