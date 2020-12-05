@@ -237,14 +237,8 @@ export default Vue.extend({
     solverName: "",
     errorText: "",
     errorMessage: "",
-    crossword: {
-        type: Object,
-        default: function () { return defaultCrossword; }
-    },
-    crosswordSource: {
-        type: String,
-        default: parser.sampleCrossword()
-    },
+    crossword: Object,
+    crosswordSource: defaultCrossword,
     client: Object
   },
   computed: {
@@ -252,6 +246,8 @@ export default Vue.extend({
         return !this.gridid ? "" : this.shortUrl + this.gridid;
     },
     selectedClue() {
+        if (!this.crossword)
+            return undefined;
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             if (clue.selected) {
                 return clue;
@@ -260,6 +256,8 @@ export default Vue.extend({
         return undefined;
     },
     gridComplete() {
+        if (!this.crossword)
+            return false;
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
@@ -327,6 +325,18 @@ export default Vue.extend({
         this.state.joining = true;
         const self = this;
         Vue.nextTick(() => self.$refs.joinModal.open());
+    } else {
+        if (!localStorage.eventLog) {
+            localStorage.eventLog = JSON.stringify(this.eventLog);
+        }
+        if (localStorage.crosswordSource) {
+            this.crosswordSource = localStorage.crosswordSource;
+            this.renderCrossword();
+            this.eventLog = JSON.parse(localStorage.eventLog);
+            this.replayEvents(this.eventLog, true);
+        } else {
+            this.renderCrossword();
+        }
     }
   },
   mounted() {
@@ -338,14 +348,14 @@ export default Vue.extend({
   },
   data() {
     return {
+      eventLog: [],
       shortUrl: 'https://anagr.in/d/',
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-      gridSizeLocked: false,
-      eventLog: []
+      gridSizeLocked: false
     };
   },
   methods: {
@@ -401,6 +411,9 @@ export default Vue.extend({
     crosswordEdited() {
         const self = this;
         clearTimeout(self.editDebounce)
+        this.eventLog = [];
+        localStorage.eventLog = JSON.stringify(this.eventLog);
+        localStorage.crosswordSource = this.crosswordSource;
         this.renderLoading = true;
         self.editDebounce = setTimeout(
            self.renderCrossword,
@@ -431,6 +444,7 @@ export default Vue.extend({
     },
     sendUpdate(event) {
         this.eventLog.push(event);
+        localStorage.eventLog = JSON.stringify(this.eventLog);
         if (this.$options.socket) {
             this.$options.socket.emit(event.action, event);
         }
@@ -444,6 +458,18 @@ export default Vue.extend({
             value: event.value
         });
     },
+    replayEvents(eventLog, contentOnly) {
+        if (!eventLog)
+            return;
+        for (let i = 0; i < eventLog.length; i++) {
+            const event = eventLog[i];
+            if (event.action == 'fillCell') {
+                this.fillCell(event);
+            } else if (event.action == 'selectionChanged' && !contentOnly) {
+                this.selectionChanged(event);
+            }
+        }
+    },
     gridJoined(msg) {
         this.solvers = msg.solvers;
         this.solverid = msg.solverid;
@@ -451,15 +477,8 @@ export default Vue.extend({
 
         this.crosswordSource = msg.crossword;
         this.renderCrossword();
+        this.replayEvents(msg.events);
 
-        for (let i = 0; i < msg.events.length; i++) {
-            const event = msg.events[i];
-            if (event.action == 'fillCell') {
-                this.fillCell(event);
-            } else if (event.action == 'selectionChanged') {
-                this.selectionChanged(event);
-            }
-        }
         this.state.joining = false;
         this.joinLoading = false;
         this.state.colluding = true;
@@ -494,7 +513,14 @@ export default Vue.extend({
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
+        if (this.crosswordSource != localStorage.crosswordSource)
+        {
+            localStorage.crosswordSource = this.crosswordSource;
+            this.eventLog = [];
+            localStorage.eventLog = JSON.stringify(this.eventLog);
+        }
         this.renderCrossword();
+        this.replayEvents(this.eventLog, true);
     },
     downloadClicked() {
         const puz = enoToPuz(this.crosswordSource);
