@@ -17,6 +17,7 @@
                            autocapitalize="off"
                            spellcheck="false"
                            maxlength="1"
+                           :data-cell-index="i"
                            @click.prevent="select($event.target)"
                            @blur="focusChanged()"
                            @focus="focusChanged()"
@@ -187,7 +188,11 @@ export default Vue.extend({
         return sep;
     },
     directionsClicked: function() {
-        this.$refs.inputs[0].click();
+        for (let i = 0; i < this.$refs.inputs.length; i++) {
+            if (this.$refs.inputs[i].dataset.cellIndex == 0) {
+                this.$refs.inputs[i].click();
+            }
+        }
         this.wasClicked = true;
     },
     focusChanged: function() {
@@ -206,7 +211,12 @@ export default Vue.extend({
         return '';
     },
     moveInput: function(input, pos) {
-        const nextinput = this.$refs.inputs[pos];
+        let nextinput = undefined;
+        for (let i = 0; i < this.$refs.inputs.length; i++) {
+            if (this.$refs.inputs[i].dataset.cellIndex == pos) {
+                nextinput = this.$refs.inputs[i];
+            }
+        }
         if (nextinput) {
             this.select(nextinput);
         } else if (pos >= 0) {
