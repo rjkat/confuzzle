@@ -33,7 +33,7 @@
         </ana-share-modal>
 
         <input type="file" ref="fileInput"
-            accept=".puz"
+            accept=".puz,.eno"
             @change="handleFiles()"
             style="display: none">
         </input>
@@ -147,6 +147,10 @@ export default Vue.extend({
                 icon: 'get_app'
             },
             {
+                label: 'Download .eno',
+                icon: 'get_app'
+            },
+            {
                 label: 'About',
                 icon: 'info'
             }];
@@ -156,11 +160,15 @@ export default Vue.extend({
                 icon: 'edit'
             },
             {
-                label: 'Upload .puz',
+                label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
             {
                 label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'Download .eno',
                 icon: 'get_app'
             },
             {
@@ -173,11 +181,15 @@ export default Vue.extend({
                 icon: 'visibility'
             },
             {
-                label: 'Upload .puz',
+                label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
             {
                 label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'Download .eno',
                 icon: 'get_app'
             },
             {
@@ -194,16 +206,24 @@ export default Vue.extend({
                 icon: 'get_app'
             },
             {
+                label: 'Download .eno',
+                icon: 'get_app'
+            },
+            {
                 label: 'About',
                 icon: 'info'
             }];
         } else if (!this.state.compiling) {
             return [{
-                label: 'Upload .puz',
+                label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
             {
                 label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'Download .eno',
                 icon: 'get_app'
             },
             {
@@ -212,11 +232,15 @@ export default Vue.extend({
             }];
         } else {
             return [{
-                label: 'Upload .puz',
+                label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
             {
                 label: 'Download .puz',
+                icon: 'get_app'
+            },
+            {
+                label: 'Download .eno',
                 icon: 'get_app'
             },
             {
@@ -236,10 +260,16 @@ export default Vue.extend({
     handleFiles() {
         const self = this;
         let files = this.$refs.fileInput.files;
-        files = [...files];
-        files.forEach(file => file.arrayBuffer().then(
-            buffer => self.$emit('puz-file-uploaded', buffer)
-        ));
+        const file = files[0];
+        if (file.name.endsWith('.eno')) {
+            file.arrayBuffer().then(
+                buffer => self.$emit('eno-file-uploaded', buffer)
+            )
+        } else {
+            file.arrayBuffer().then(
+                buffer => self.$emit('puz-file-uploaded', buffer)
+            )
+        }
     },
     printClicked() {
         this.state.printing = true;
@@ -250,8 +280,12 @@ export default Vue.extend({
         if (option.label == 'Edit' || option.label == 'Preview') {
             this.state.compiling = !this.state.compiling;
         } else if (option.label == 'Download .puz') {
-            this.$emit('download-clicked');
-        } else if (option.label == 'Upload .puz') {
+            console.log('download-puz-clicked!')
+            this.$emit('download-puz-clicked');
+        } else if (option.label == 'Download .eno') {
+            console.log('download-eno-clicked!')
+            this.$emit('download-eno-clicked');
+        } else if (option.label == 'Upload .puz/.eno') {
             this.$refs.fileInput.click();
         } else if (option.label == 'About') {
             this.openModal('aboutModal');

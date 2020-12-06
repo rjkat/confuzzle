@@ -9,12 +9,21 @@
         class="hidden-print"
         v-model="state"
         @share-clicked="shareClicked($event)"
-        @download-clicked="downloadClicked()"
+        @download-puz-clicked="downloadPuzClicked()"
+        @download-eno-clicked="downloadEnoClicked()"
         @copy-clicked="copyClicked()"
         @puz-file-uploaded="puzFileUploaded($event)"
+        @eno-file-uploaded="enoFileUploaded($event)"
     >
     </ana-toolbar>
-    <div id="app-content" ref="appContent" :data-portrait="isPortrait">
+    <div id="app-content" ref="appContent" :data-portrait="isPortrait"
+         @dragenter="dragEnterHandler"
+         @dragover="dragOverHandler"
+         @dragleave="dragLeaveHandler"
+         @drop="dropHandler">
+        <div id="drop-area" ref="dropArea">
+            <h1>Drop here to solve</h1>
+        </div>
         <template v-if="state.joining">
             <ui-modal ref="joinModal" title="Join Crossword" :dismissible="false">
                 <div style="text-align: center;">
@@ -152,6 +161,24 @@ body {
     }
 }
 
+#drop-area {
+    position: absolute;
+    width: calc(100% - #{$displayPadding});
+    margin: 0;
+    background: #fff;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    z-index: 99;
+    pointer-events: none;
+    &[data-drop-visible] {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
 #grid {
     @media screen {
         padding-top: $displayPadding;
@@ -160,6 +187,7 @@ body {
 #clues {
     padding-top: $displayPadding;
 }
+
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
@@ -361,7 +389,8 @@ export default Vue.extend({
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-      gridSizeLocked: false
+      gridSizeLocked: false,
+      dragCount: 0
     };
   },
   methods: {
@@ -517,8 +546,49 @@ export default Vue.extend({
         this.state.colluding = true;
         this.shareLoading = false;
     },
+    dragEnterHandler(event) {
+        this.dragCount++;
+        this.$refs.dropArea.dataset.dropVisible = "";
+        event.preventDefault();
+        event.stopPropagation();
+    },
+    dragOverHandler(event) {
+        event.preventDefault();
+        event.stopPropagation();
+    },
+    dragLeaveHandler(event) {
+        this.dragCount--;
+        if (this.dragCount <= 0) {
+            this.$refs.dropArea.removeAttribute('data-drop-visible');
+            this.dragCount = 0;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    },
+    dropHandler(event) {
+        if (!event.dataTransfer.files)
+            return;
+        const file = event.dataTransfer.files[0];
+        const self = this;
+        if (file.name.endsWith('.eno')) {
+            file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
+        } else {
+            file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
+        }
+        this.dragCount = 0;
+        this.$refs.dropArea.removeAttribute('data-drop-visible');
+        event.preventDefault();
+    },
+    enoFileUploaded(buf) {
+        this.crosswordSource = Buffer.from(buf).toString('utf8');
+        console.log(this.crosswordSource);
+        this.postUpload();
+    },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
+        this.postUpload();
+    },
+    postUpload() {
         if (this.crosswordSource != localStorage.crosswordSource)
         {
             localStorage.crosswordSource = this.crosswordSource;
@@ -528,13 +598,24 @@ export default Vue.extend({
         this.renderCrossword();
         this.replayEvents(this.eventLog, true);
     },
-    downloadClicked() {
+    downloadPuzClicked() {
+        console.log('downloadPuzClicked!')
         const puz = enoToPuz(this.crosswordSource);
         const puzbytes = puz.toBytes();
         const blob = new Blob([puzbytes], {type: "application/octet-stream"});
+        this.downloadCrossword(blob, '.puz');
+    },
+    downloadEnoClicked() {
+        console.log('downloadEnoClicked!')
+
+        const blob = new Blob([this.crosswordSource], {type: "text/plain"});
+        this.downloadCrossword(blob, '.eno')
+    },
+    downloadCrossword(blob, extension) {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        const filename = this.crossword.meta.name + '.puz';
+        const basename = this.crossword.meta.name + ' by ' + this.crossword.meta.author;
+        const filename = basename + extension;
         link.download = filename;
         link.click();
     },
