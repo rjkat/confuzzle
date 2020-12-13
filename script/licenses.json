@@ -1,11 +1,19 @@
 {
+  "@babel/code-frame@7.10.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/LICENSE"
+  },
   "@babel/code-frame@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-code-frame",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/code-frame",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/code-frame/LICENSE"
   },
   "@babel/compat-data@7.9.6": {
     "licenses": "MIT",
@@ -15,21 +23,29 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/compat-data",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/compat-data/LICENSE"
   },
-  "@babel/core@7.9.6": {
+  "@babel/core@7.12.10": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-core",
+    "repository": "https://github.com/babel/babel",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
     "path": "/Users/ro/anagrind/node_modules/@babel/core",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/LICENSE"
+  },
+  "@babel/generator@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator/LICENSE"
   },
   "@babel/generator@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-generator",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/generator",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/generator/LICENSE"
   },
   "@babel/helper-annotate-as-pure@7.8.3": {
     "licenses": "MIT",
@@ -83,17 +99,29 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/helper-explode-assignable-expression",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-explode-assignable-expression/LICENSE"
   },
+  "@babel/helper-function-name@7.10.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-function-name",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-function-name/LICENSE"
+  },
   "@babel/helper-function-name@7.9.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-function-name",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-function-name",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-function-name/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-function-name",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-function-name/LICENSE"
+  },
+  "@babel/helper-get-function-arity@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-get-function-arity",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-get-function-arity/LICENSE"
   },
   "@babel/helper-get-function-arity@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-get-function-arity",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-function-name/node_modules/@babel/helper-get-function-arity",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-function-name/node_modules/@babel/helper-get-function-arity/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-get-function-arity",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-get-function-arity/LICENSE"
   },
   "@babel/helper-hoist-variables@7.8.3": {
     "licenses": "MIT",
@@ -101,35 +129,65 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/helper-hoist-variables",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-hoist-variables/LICENSE"
   },
+  "@babel/helper-member-expression-to-functions@7.12.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Justin Ridgewell",
+    "email": "justin@ridgewell.name",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-member-expression-to-functions",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-member-expression-to-functions/LICENSE"
+  },
   "@babel/helper-member-expression-to-functions@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-member-expression-to-functions",
     "publisher": "Justin Ridgewell",
     "email": "justin@ridgewell.name",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers/node_modules/@babel/helper-member-expression-to-functions",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers/node_modules/@babel/helper-member-expression-to-functions/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-member-expression-to-functions",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-member-expression-to-functions/LICENSE"
+  },
+  "@babel/helper-module-imports@7.12.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Logan Smyth",
+    "email": "loganfsmyth@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-imports",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-imports/LICENSE"
   },
   "@babel/helper-module-imports@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-module-imports",
     "publisher": "Logan Smyth",
     "email": "loganfsmyth@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-module-imports",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-module-imports/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-module-imports",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-module-imports/LICENSE"
+  },
+  "@babel/helper-module-transforms@7.12.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Logan Smyth",
+    "email": "loganfsmyth@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/LICENSE"
   },
   "@babel/helper-module-transforms@7.9.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-module-transforms",
     "publisher": "Logan Smyth",
     "email": "loganfsmyth@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-module-transforms",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-module-transforms/LICENSE"
+  },
+  "@babel/helper-optimise-call-expression@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-optimise-call-expression",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-optimise-call-expression/LICENSE"
   },
   "@babel/helper-optimise-call-expression@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-optimise-call-expression",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers/node_modules/@babel/helper-optimise-call-expression",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers/node_modules/@babel/helper-optimise-call-expression/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-optimise-call-expression",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-optimise-call-expression/LICENSE"
   },
   "@babel/helper-plugin-utils@7.8.3": {
     "licenses": "MIT",
@@ -151,31 +209,57 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/helper-remap-async-to-generator",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-remap-async-to-generator/LICENSE"
   },
+  "@babel/helper-replace-supers@7.12.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-replace-supers",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-replace-supers/LICENSE"
+  },
   "@babel/helper-replace-supers@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-replace-supers",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-replace-supers/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-replace-supers",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-replace-supers/LICENSE"
+  },
+  "@babel/helper-simple-access@7.12.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Logan Smyth",
+    "email": "loganfsmyth@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-simple-access",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-simple-access/LICENSE"
   },
   "@babel/helper-simple-access@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-simple-access",
     "publisher": "Logan Smyth",
     "email": "loganfsmyth@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-simple-access",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-module-transforms/node_modules/@babel/helper-simple-access/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-simple-access",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-simple-access/LICENSE"
+  },
+  "@babel/helper-split-export-declaration@7.11.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-split-export-declaration",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-split-export-declaration/LICENSE"
   },
   "@babel/helper-split-export-declaration@7.8.3": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-split-export-declaration",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-split-export-declaration",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/@babel/helper-split-export-declaration/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-split-export-declaration",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-split-export-declaration/LICENSE"
+  },
+  "@babel/helper-validator-identifier@7.10.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-validator-identifier",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helper-validator-identifier/LICENSE"
   },
   "@babel/helper-validator-identifier@7.9.5": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-validator-identifier",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/@babel/helper-validator-identifier",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/@babel/helper-validator-identifier/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helper-validator-identifier",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-validator-identifier/LICENSE"
   },
   "@babel/helper-wrap-function@7.8.3": {
     "licenses": "MIT",
@@ -183,29 +267,45 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/helper-wrap-function",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helper-wrap-function/LICENSE"
   },
-  "@babel/helpers@7.9.6": {
+  "@babel/helpers@7.12.5": {
     "licenses": "MIT",
-    "repository": "https://github.com/babel/babel/tree/master/packages/babel-helpers",
+    "repository": "https://github.com/babel/babel",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helpers",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/helpers/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/helpers",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/helpers/LICENSE"
+  },
+  "@babel/highlight@7.10.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "suchipi",
+    "email": "me@suchipi.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/highlight",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/highlight/LICENSE"
   },
   "@babel/highlight@7.9.0": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-highlight",
     "publisher": "suchipi",
     "email": "me@suchipi.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/highlight",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/highlight/LICENSE"
+  },
+  "@babel/parser@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/parser",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/parser/LICENSE"
   },
   "@babel/parser@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-parser",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/parser",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/parser/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/parser",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/parser/LICENSE"
   },
   "@babel/plugin-proposal-async-generator-functions@7.8.3": {
     "licenses": "MIT",
@@ -566,29 +666,53 @@
     "path": "/Users/ro/anagrind/node_modules/@babel/runtime",
     "licenseFile": "/Users/ro/anagrind/node_modules/@babel/runtime/LICENSE"
   },
+  "@babel/template@7.12.7": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/template",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/template/LICENSE"
+  },
   "@babel/template@7.8.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-template",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/template",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/template/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/template",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/template/LICENSE"
+  },
+  "@babel/traverse@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/LICENSE"
   },
   "@babel/traverse@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-traverse",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/traverse",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/traverse/LICENSE"
+  },
+  "@babel/types@7.12.10": {
+    "licenses": "MIT",
+    "repository": "https://github.com/babel/babel",
+    "publisher": "Sebastian McKenzie",
+    "email": "sebmck@gmail.com",
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types/LICENSE"
   },
   "@babel/types@7.9.6": {
     "licenses": "MIT",
     "repository": "https://github.com/babel/babel/tree/master/packages/babel-types",
     "publisher": "Sebastian McKenzie",
     "email": "sebmck@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@babel/types",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/types/LICENSE"
   },
   "@bcoe/v8-coverage@0.2.3": {
     "licenses": "MIT",
@@ -607,7 +731,7 @@
     "path": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/sane/node_modules/@cnakazawa/watch",
     "licenseFile": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/sane/node_modules/@cnakazawa/watch/LICENSE"
   },
-  "@fortawesome/fontawesome-free@5.13.0": {
+  "@fortawesome/fontawesome-free@5.15.1": {
     "licenses": "(CC-BY-4.0 AND OFL-1.1 AND MIT)",
     "repository": "https://github.com/FortAwesome/Font-Awesome",
     "publisher": "Dave Gandy",
@@ -748,7 +872,7 @@
     "path": "/Users/ro/anagrind/node_modules/@parcel/workers",
     "licenseFile": "/Users/ro/anagrind/node_modules/@parcel/workers/LICENSE"
   },
-  "@popperjs/core@2.5.2": {
+  "@popperjs/core@2.5.4": {
     "licenses": "MIT",
     "repository": "https://github.com/popperjs/popper-core",
     "publisher": "Federico Zivolo",
@@ -762,8 +886,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@sindresorhus/is",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@sindresorhus/is/license"
+    "path": "/Users/ro/anagrind/node_modules/@sindresorhus/is",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@sindresorhus/is/license"
   },
   "@sinonjs/commons@1.7.2": {
     "licenses": "BSD-3-Clause",
@@ -775,8 +899,8 @@
     "licenses": "MIT",
     "repository": "https://github.com/szmarczak/http-timer",
     "publisher": "Szymon Marczak",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@szmarczak/http-timer",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@szmarczak/http-timer/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/@szmarczak/http-timer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@szmarczak/http-timer/LICENSE"
   },
   "@types/babel__core@7.1.7": {
     "licenses": "MIT",
@@ -805,8 +929,8 @@
   "@types/color-name@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/@types/color-name",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/@types/color-name/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/expect/node_modules/ansi-styles/node_modules/@types/color-name",
+    "licenseFile": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/expect/node_modules/ansi-styles/node_modules/@types/color-name/LICENSE"
   },
   "@types/graceful-fs@4.1.3": {
     "licenses": "MIT",
@@ -874,7 +998,7 @@
     "path": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/types/node_modules/@types/yargs",
     "licenseFile": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/types/node_modules/@types/yargs/LICENSE"
   },
-  "@vue/component-compiler-utils@3.1.2": {
+  "@vue/component-compiler-utils@3.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/vuejs/component-compiler-utils",
     "publisher": "Evan You",
@@ -894,8 +1018,8 @@
     "repository": "https://github.com/isaacs/abbrev-js",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch/node_modules/nopt/node_modules/abbrev",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch/node_modules/nopt/node_modules/abbrev/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/abbrev",
+    "licenseFile": "/Users/ro/anagrind/node_modules/abbrev/LICENSE"
   },
   "accepts@1.3.7": {
     "licenses": "MIT",
@@ -961,8 +1085,8 @@
     "licenses": "ISC",
     "repository": "https://github.com/nexdrew/ansi-align",
     "publisher": "nexdrew",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/ansi-align",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/ansi-align/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/ansi-align",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ansi-align/LICENSE"
   },
   "ansi-escapes@4.3.1": {
     "licenses": "MIT",
@@ -1006,8 +1130,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/strip-ansi/node_modules/ansi-regex",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/strip-ansi/node_modules/ansi-regex/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/ansi-regex",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/ansi-regex/license"
   },
   "ansi-styles@2.2.1": {
     "licenses": "MIT",
@@ -1024,8 +1148,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles/license"
+    "path": "/Users/ro/anagrind/node_modules/ansi-styles",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ansi-styles/license"
   },
   "ansi-styles@4.2.1": {
     "licenses": "MIT",
@@ -1033,8 +1157,17 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/license"
+    "path": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/expect/node_modules/ansi-styles",
+    "licenseFile": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/expect/node_modules/ansi-styles/license"
+  },
+  "ansi-styles@4.3.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/ansi-styles",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/ansi-styles",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/ansi-styles/license"
   },
   "ansi-to-html@0.6.14": {
     "licenses": "MIT",
@@ -1058,8 +1191,8 @@
     "repository": "https://github.com/micromatch/anymatch",
     "publisher": "Elan Shanker",
     "url": "https://github.com/es128",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/anymatch",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/anymatch/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/anymatch",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/anymatch/LICENSE"
   },
   "argparse@1.0.10": {
     "licenses": "MIT",
@@ -1296,8 +1429,8 @@
   "backo2@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/mokesmokes/backo",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/backo2",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/backo2/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/backo2",
+    "licenseFile": "/Users/ro/anagrind/node_modules/backo2/Readme.md"
   },
   "balanced-match@1.0.0": {
     "licenses": "MIT",
@@ -1307,6 +1440,15 @@
     "url": "http://juliangruber.com",
     "path": "/Users/ro/anagrind/node_modules/balanced-match",
     "licenseFile": "/Users/ro/anagrind/node_modules/balanced-match/LICENSE.md"
+  },
+  "base64-arraybuffer@0.1.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/niklasvh/base64-arraybuffer",
+    "publisher": "Niklas von Hertzen",
+    "email": "niklasvh@gmail.com",
+    "url": "http://hertzen.com",
+    "path": "/Users/ro/anagrind/node_modules/base64-arraybuffer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/base64-arraybuffer/LICENSE-MIT"
   },
   "base64-arraybuffer@0.1.5": {
     "licenses": "MIT",
@@ -1352,8 +1494,8 @@
     "repository": "https://github.com/visionmedia/better-assert",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs/node_modules/better-assert",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs/node_modules/better-assert/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/better-assert",
+    "licenseFile": "/Users/ro/anagrind/node_modules/better-assert/Readme.md"
   },
   "binary-extensions@1.13.1": {
     "licenses": "MIT",
@@ -1364,14 +1506,14 @@
     "path": "/Users/ro/anagrind/node_modules/binary-extensions",
     "licenseFile": "/Users/ro/anagrind/node_modules/binary-extensions/license"
   },
-  "binary-extensions@2.0.0": {
+  "binary-extensions@2.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/binary-extensions",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/is-binary-path/node_modules/binary-extensions",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/is-binary-path/node_modules/binary-extensions/license"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/binary-extensions",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/binary-extensions/license"
   },
   "bindings@1.5.0": {
     "licenses": "MIT",
@@ -1448,8 +1590,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/license"
   },
   "brace-expansion@1.1.11": {
     "licenses": "MIT",
@@ -1473,8 +1615,8 @@
     "repository": "https://github.com/micromatch/braces",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/braces",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/braces/LICENSE"
   },
   "brfs@1.6.1": {
     "licenses": "MIT",
@@ -1648,8 +1790,8 @@
     "publisher": "Luke Childs",
     "email": "lukechilds123@gmail.com",
     "url": "http://lukechilds.co.uk",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/cacheable-request",
+    "licenseFile": "/Users/ro/anagrind/node_modules/cacheable-request/LICENSE"
   },
   "call-me-maybe@1.0.1": {
     "licenses": "MIT",
@@ -1682,8 +1824,8 @@
     "licenses": "MIT*",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs/node_modules/better-assert/node_modules/callsite",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs/node_modules/better-assert/node_modules/callsite/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/callsite",
+    "licenseFile": "/Users/ro/anagrind/node_modules/callsite/Readme.md"
   },
   "callsites@2.0.0": {
     "licenses": "MIT",
@@ -1752,14 +1894,14 @@
   "chalk@2.4.2": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/chalk",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/license"
+    "path": "/Users/ro/anagrind/node_modules/chalk",
+    "licenseFile": "/Users/ro/anagrind/node_modules/chalk/license"
   },
   "chalk@3.0.0": {
     "licenses": "MIT",
     "repository": "https://github.com/chalk/chalk",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/chalk",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/chalk/license"
   },
   "chokidar@2.1.8": {
     "licenses": "MIT",
@@ -1769,13 +1911,13 @@
     "path": "/Users/ro/anagrind/node_modules/chokidar",
     "licenseFile": "/Users/ro/anagrind/node_modules/chokidar/README.md"
   },
-  "chokidar@3.4.0": {
+  "chokidar@3.4.3": {
     "licenses": "MIT",
     "repository": "https://github.com/paulmillr/chokidar",
     "publisher": "Paul Miller",
     "url": "https://paulmillr.com",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/chokidar",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/chokidar/LICENSE"
   },
   "ci-info@2.0.0": {
     "licenses": "MIT",
@@ -1783,8 +1925,8 @@
     "publisher": "Thomas Watson Steen",
     "email": "w@tson.dk",
     "url": "https://twitter.com/wa7son",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-ci/node_modules/ci-info",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-ci/node_modules/ci-info/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/ci-info",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ci-info/LICENSE"
   },
   "cipher-base@1.0.4": {
     "licenses": "MIT",
@@ -1802,14 +1944,14 @@
     "path": "/Users/ro/anagrind/node_modules/class-utils",
     "licenseFile": "/Users/ro/anagrind/node_modules/class-utils/LICENSE"
   },
-  "cli-boxes@2.2.0": {
+  "cli-boxes@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/cli-boxes",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/cli-boxes",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/cli-boxes/license"
+    "url": "https://sindresorhus.com",
+    "path": "/Users/ro/anagrind/node_modules/cli-boxes",
+    "licenseFile": "/Users/ro/anagrind/node_modules/cli-boxes/license"
   },
   "cli-cursor@2.1.0": {
     "licenses": "MIT",
@@ -1857,8 +1999,8 @@
     "publisher": "Luke Childs",
     "email": "lukechilds123@gmail.com",
     "url": "http://lukechilds.co.uk",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/clone-response",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/clone-response/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/clone-response",
+    "licenseFile": "/Users/ro/anagrind/node_modules/clone-response/LICENSE"
   },
   "clone@1.0.4": {
     "licenses": "MIT",
@@ -1912,32 +2054,32 @@
     "repository": "https://github.com/Qix-/color-convert",
     "publisher": "Heather Arthur",
     "email": "fayearthur@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/color-convert",
+    "licenseFile": "/Users/ro/anagrind/node_modules/color-convert/LICENSE"
   },
   "color-convert@2.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Qix-/color-convert",
     "publisher": "Heather Arthur",
     "email": "fayearthur@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/color-convert",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/color-convert/LICENSE"
   },
   "color-name@1.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/dfcreative/color-name",
     "publisher": "DY",
     "email": "dfcreative@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/node_modules/color-name",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/node_modules/color-name/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/color-name",
+    "licenseFile": "/Users/ro/anagrind/node_modules/color-name/LICENSE"
   },
   "color-name@1.1.4": {
     "licenses": "MIT",
     "repository": "https://github.com/colorjs/color-name",
     "publisher": "DY",
     "email": "dfcreative@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/node_modules/color-name",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/ansi-styles/node_modules/color-convert/node_modules/color-name/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/color-name",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/color-name/LICENSE"
   },
   "color-string@1.5.3": {
     "licenses": "MIT",
@@ -1980,14 +2122,14 @@
   "component-bind@1.0.0": {
     "licenses": "MIT*",
     "repository": "https://github.com/component/bind",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/component-bind",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/component-bind/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/component-bind",
+    "licenseFile": "/Users/ro/anagrind/node_modules/component-bind/Readme.md"
   },
   "component-emitter@1.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/component/emitter",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/component-emitter",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/component-emitter/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/component-emitter",
+    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/component-emitter/LICENSE"
   },
   "component-emitter@1.3.0": {
     "licenses": "MIT",
@@ -1998,8 +2140,8 @@
   "component-inherit@0.0.3": {
     "licenses": "MIT*",
     "repository": "https://github.com/component/inherit",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/component-inherit",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/component-inherit/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/component-inherit",
+    "licenseFile": "/Users/ro/anagrind/node_modules/component-inherit/Readme.md"
   },
   "compressible@2.0.18": {
     "licenses": "MIT",
@@ -2036,8 +2178,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/license"
+    "path": "/Users/ro/anagrind/node_modules/configstore",
+    "licenseFile": "/Users/ro/anagrind/node_modules/configstore/license"
   },
   "console-browserify@1.2.0": {
     "licenses": "MIT",
@@ -2086,8 +2228,8 @@
     "publisher": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
     "url": "http://thlorenz.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/convert-source-map",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/convert-source-map/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/convert-source-map",
+    "licenseFile": "/Users/ro/anagrind/node_modules/convert-source-map/LICENSE"
   },
   "cookie-signature@1.0.6": {
     "licenses": "MIT",
@@ -2200,8 +2342,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/unique-string/node_modules/crypto-random-string",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/unique-string/node_modules/crypto-random-string/license"
+    "path": "/Users/ro/anagrind/node_modules/crypto-random-string",
+    "licenseFile": "/Users/ro/anagrind/node_modules/crypto-random-string/license"
   },
   "css-color-names@0.0.4": {
     "licenses": "MIT",
@@ -2422,10 +2564,10 @@
     "repository": "https://github.com/visionmedia/debug",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/engine.io-client/node_modules/debug",
+    "licenseFile": "/Users/ro/anagrind/node_modules/engine.io-client/node_modules/debug/LICENSE"
   },
-  "debug@3.2.6": {
+  "debug@3.2.7": {
     "licenses": "MIT",
     "repository": "https://github.com/visionmedia/debug",
     "publisher": "TJ Holowaychuk",
@@ -2438,8 +2580,8 @@
     "repository": "https://github.com/visionmedia/debug",
     "publisher": "TJ Holowaychuk",
     "email": "tj@vision-media.ca",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/debug",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/debug/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/debug",
+    "licenseFile": "/Users/ro/anagrind/node_modules/debug/LICENSE"
   },
   "decamelize@1.2.0": {
     "licenses": "MIT",
@@ -2462,16 +2604,16 @@
   "decompress-response@3.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/decompress-response",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/decompress-response",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/decompress-response/license"
+    "path": "/Users/ro/anagrind/node_modules/decompress-response",
+    "licenseFile": "/Users/ro/anagrind/node_modules/decompress-response/license"
   },
   "deep-extend@0.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/unclechu/node-deep-extend",
     "publisher": "Viacheslav Lotsmanov",
     "email": "lotsmanov89@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/node_modules/deep-extend",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/node_modules/deep-extend/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/deep-extend",
+    "licenseFile": "/Users/ro/anagrind/node_modules/deep-extend/LICENSE"
   },
   "deep-is@0.1.3": {
     "licenses": "MIT",
@@ -2507,8 +2649,8 @@
     "licenses": "MIT",
     "repository": "https://github.com/szmarczak/defer-to-connect",
     "publisher": "Szymon Marczak",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@szmarczak/http-timer/node_modules/defer-to-connect",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/@szmarczak/http-timer/node_modules/defer-to-connect/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/defer-to-connect",
+    "licenseFile": "/Users/ro/anagrind/node_modules/defer-to-connect/LICENSE"
   },
   "define-properties@1.1.3": {
     "licenses": "MIT",
@@ -2611,6 +2753,14 @@
     "path": "/Users/ro/anagrind/node_modules/dom-serializer",
     "licenseFile": "/Users/ro/anagrind/node_modules/dom-serializer/LICENSE"
   },
+  "dom-serializer@1.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/cheeriojs/dom-renderer",
+    "publisher": "Felix Boehm",
+    "email": "me@feedic.com",
+    "path": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/dom-serializer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/dom-serializer/LICENSE"
+  },
   "domain-browser@1.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/bevry/domain-browser",
@@ -2636,6 +2786,14 @@
     "path": "/Users/ro/anagrind/node_modules/dom-serializer/node_modules/domelementtype",
     "licenseFile": "/Users/ro/anagrind/node_modules/dom-serializer/node_modules/domelementtype/LICENSE"
   },
+  "domelementtype@2.0.2": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/fb55/domelementtype",
+    "publisher": "Felix Boehm",
+    "email": "me@feedic.com",
+    "path": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/domelementtype",
+    "licenseFile": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/domelementtype/LICENSE"
+  },
   "domexception@1.0.1": {
     "licenses": "MIT",
     "repository": "https://github.com/jsdom/domexception",
@@ -2653,9 +2811,9 @@
     "path": "/Users/ro/anagrind/node_modules/domhandler",
     "licenseFile": "/Users/ro/anagrind/node_modules/domhandler/LICENSE"
   },
-  "domhandler@3.0.0": {
+  "domhandler@3.2.0": {
     "licenses": "BSD-2-Clause",
-    "repository": "https://github.com/fb55/DomHandler",
+    "repository": "https://github.com/fb55/domhandler",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
     "path": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/domhandler",
@@ -2669,7 +2827,7 @@
     "path": "/Users/ro/anagrind/node_modules/domutils",
     "licenseFile": "/Users/ro/anagrind/node_modules/domutils/LICENSE"
   },
-  "domutils@2.1.0": {
+  "domutils@2.4.1": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/fb55/domutils",
     "publisher": "Felix Boehm",
@@ -2714,8 +2872,8 @@
     "publisher": "Conrad Pankoff",
     "email": "deoxxa@fknsrs.biz",
     "url": "http://www.fknsrs.biz/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/duplexer3",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/duplexer3/LICENSE.md"
+    "path": "/Users/ro/anagrind/node_modules/duplexer3",
+    "licenseFile": "/Users/ro/anagrind/node_modules/duplexer3/LICENSE.md"
   },
   "ecc-jsbn@0.1.2": {
     "licenses": "MIT",
@@ -2763,8 +2921,8 @@
     "repository": "https://github.com/mathiasbynens/emoji-regex",
     "publisher": "Mathias Bynens",
     "url": "https://mathiasbynens.be/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/emoji-regex",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/emoji-regex/LICENSE-MIT.txt"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/emoji-regex",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/emoji-regex/LICENSE-MIT.txt"
   },
   "emojisplosion@1.2.0": {
     "licenses": "MIT",
@@ -2785,20 +2943,26 @@
     "repository": "https://github.com/mafintosh/end-of-stream",
     "publisher": "Mathias Buus",
     "email": "mathiasbuus@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream/node_modules/pump/node_modules/end-of-stream",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream/node_modules/pump/node_modules/end-of-stream/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/end-of-stream",
+    "licenseFile": "/Users/ro/anagrind/node_modules/end-of-stream/LICENSE"
   },
-  "engine.io-client@3.4.1": {
+  "engine.io-client@3.4.4": {
     "licenses": "MIT",
     "repository": "https://github.com/socketio/engine.io-client",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/engine.io-client",
+    "licenseFile": "/Users/ro/anagrind/node_modules/engine.io-client/LICENSE"
   },
   "engine.io-parser@2.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/socketio/engine.io-parser",
     "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/engine.io/node_modules/engine.io-parser",
     "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/engine.io/node_modules/engine.io-parser/LICENSE"
+  },
+  "engine.io-parser@2.2.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/socketio/engine.io-parser",
+    "path": "/Users/ro/anagrind/node_modules/engine.io-parser",
+    "licenseFile": "/Users/ro/anagrind/node_modules/engine.io-parser/LICENSE"
   },
   "engine.io@3.4.1": {
     "licenses": "MIT",
@@ -2840,6 +3004,14 @@
     "path": "/Users/ro/anagrind/node_modules/dom-serializer/node_modules/entities",
     "licenseFile": "/Users/ro/anagrind/node_modules/dom-serializer/node_modules/entities/LICENSE"
   },
+  "entities@2.0.3": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/fb55/entities",
+    "publisher": "Felix Boehm",
+    "email": "me@feedic.com",
+    "path": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/entities",
+    "licenseFile": "/Users/ro/anagrind/node_modules/sanitize-html/node_modules/entities/LICENSE"
+  },
   "envinfo@7.5.1": {
     "licenses": "MIT",
     "repository": "https://github.com/tabrindle/envinfo",
@@ -2876,8 +3048,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/pupa/node_modules/escape-goat",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/pupa/node_modules/escape-goat/license"
+    "path": "/Users/ro/anagrind/node_modules/escape-goat",
+    "licenseFile": "/Users/ro/anagrind/node_modules/escape-goat/license"
   },
   "escape-html@1.0.3": {
     "licenses": "MIT",
@@ -2891,8 +3063,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/escape-string-regexp",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/escape-string-regexp/license"
+    "path": "/Users/ro/anagrind/node_modules/escape-string-regexp",
+    "licenseFile": "/Users/ro/anagrind/node_modules/escape-string-regexp/license"
   },
   "escodegen@1.14.1": {
     "licenses": "BSD-2-Clause",
@@ -3157,8 +3329,8 @@
     "repository": "https://github.com/jonschlinkert/fill-range",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/fill-range",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/fill-range/LICENSE"
   },
   "finalhandler@1.1.2": {
     "licenses": "MIT",
@@ -3280,8 +3452,8 @@
   "fsevents@2.1.3": {
     "licenses": "MIT",
     "repository": "https://github.com/fsevents/fsevents",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/fsevents",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/fsevents/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/fsevents",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/fsevents/LICENSE"
   },
   "function-bind@1.1.1": {
     "licenses": "MIT",
@@ -3300,12 +3472,13 @@
     "path": "/Users/ro/anagrind/node_modules/fuzzysearch",
     "licenseFile": "/Users/ro/anagrind/node_modules/fuzzysearch/LICENSE"
   },
-  "gensync@1.0.0-beta.1": {
+  "gensync@1.0.0-beta.2": {
     "licenses": "MIT",
+    "repository": "https://github.com/loganfsmyth/gensync",
     "publisher": "Logan Smyth",
     "email": "loganfsmyth@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/gensync",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/gensync/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/gensync",
+    "licenseFile": "/Users/ro/anagrind/node_modules/gensync/LICENSE"
   },
   "get-caller-file@2.0.5": {
     "licenses": "ISC",
@@ -3329,8 +3502,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/get-stream",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/get-stream/license"
+    "path": "/Users/ro/anagrind/node_modules/get-stream",
+    "licenseFile": "/Users/ro/anagrind/node_modules/get-stream/license"
   },
   "get-stream@5.1.0": {
     "licenses": "MIT",
@@ -3338,8 +3511,17 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream/license"
+    "path": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-changed-files/node_modules/execa/node_modules/get-stream",
+    "licenseFile": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-changed-files/node_modules/execa/node_modules/get-stream/license"
+  },
+  "get-stream@5.2.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sindresorhus/get-stream",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "https://sindresorhus.com",
+    "path": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/get-stream",
+    "licenseFile": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/get-stream/license"
   },
   "get-value@2.0.6": {
     "licenses": "MIT",
@@ -3371,8 +3553,8 @@
     "publisher": "Gulp Team",
     "email": "team@gulpjs.com",
     "url": "https://gulpjs.com/",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/glob-parent",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/glob-parent/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/glob-parent",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/glob-parent/LICENSE"
   },
   "glob-to-regexp@0.3.0": {
     "licenses": "BSD*",
@@ -3397,8 +3579,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/global-dirs",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/global-dirs/license"
+    "path": "/Users/ro/anagrind/node_modules/global-dirs",
+    "licenseFile": "/Users/ro/anagrind/node_modules/global-dirs/license"
   },
   "globals@11.12.0": {
     "licenses": "MIT",
@@ -3406,8 +3588,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/globals",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/traverse/node_modules/globals/license"
+    "path": "/Users/ro/anagrind/node_modules/globals",
+    "licenseFile": "/Users/ro/anagrind/node_modules/globals/license"
   },
   "good-listener@1.2.2": {
     "licenses": "MIT",
@@ -3418,8 +3600,8 @@
   "got@9.6.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/got",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/license"
+    "path": "/Users/ro/anagrind/node_modules/got",
+    "licenseFile": "/Users/ro/anagrind/node_modules/got/license"
   },
   "graceful-fs@4.2.4": {
     "licenses": "ISC",
@@ -3483,8 +3665,8 @@
     "publisher": "Nathan Rajlich",
     "email": "nathan@tootallnate.net",
     "url": "http://n8.io/",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/has-cors",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/has-cors/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/has-cors",
+    "licenseFile": "/Users/ro/anagrind/node_modules/has-cors/Readme.md"
   },
   "has-flag@1.0.0": {
     "licenses": "MIT",
@@ -3501,8 +3683,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/supports-color/node_modules/has-flag",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/supports-color/node_modules/has-flag/license"
+    "path": "/Users/ro/anagrind/node_modules/has-flag",
+    "licenseFile": "/Users/ro/anagrind/node_modules/has-flag/license"
   },
   "has-flag@4.0.0": {
     "licenses": "MIT",
@@ -3510,8 +3692,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/supports-color/node_modules/has-flag",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/supports-color/node_modules/has-flag/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/has-flag",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/has-flag/license"
   },
   "has-symbols@1.0.1": {
     "licenses": "MIT",
@@ -3560,8 +3742,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/has-yarn",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/has-yarn/license"
+    "path": "/Users/ro/anagrind/node_modules/has-yarn",
+    "licenseFile": "/Users/ro/anagrind/node_modules/has-yarn/license"
   },
   "has@1.0.3": {
     "licenses": "MIT",
@@ -3706,8 +3888,8 @@
     "publisher": "Kornel Lesiński",
     "email": "kornel@geekhood.net",
     "url": "https://kornel.ski/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/http-cache-semantics",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/http-cache-semantics/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/http-cache-semantics",
+    "licenseFile": "/Users/ro/anagrind/node_modules/http-cache-semantics/LICENSE"
   },
   "http-errors@1.7.2": {
     "licenses": "MIT",
@@ -3776,7 +3958,7 @@
     "path": "/Users/ro/anagrind/node_modules/express/node_modules/body-parser/node_modules/iconv-lite",
     "licenseFile": "/Users/ro/anagrind/node_modules/express/node_modules/body-parser/node_modules/iconv-lite/LICENSE"
   },
-  "iconv-lite@0.5.1": {
+  "iconv-lite@0.5.2": {
     "licenses": "MIT",
     "repository": "https://github.com/ashtuchkin/iconv-lite",
     "publisher": "Alexander Shtuchkin",
@@ -3805,8 +3987,8 @@
     "repository": "https://github.com/novemberborn/ignore-by-default",
     "publisher": "Mark Wubben",
     "url": "https://novemberborn.net/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/ignore-by-default",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/ignore-by-default/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/ignore-by-default",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ignore-by-default/LICENSE"
   },
   "import-fresh@2.0.0": {
     "licenses": "MIT",
@@ -3823,8 +4005,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/import-lazy",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/import-lazy/license"
+    "path": "/Users/ro/anagrind/node_modules/import-lazy",
+    "licenseFile": "/Users/ro/anagrind/node_modules/import-lazy/license"
   },
   "import-local@3.0.2": {
     "licenses": "MIT",
@@ -3841,8 +4023,8 @@
     "publisher": "Jens Taylor",
     "email": "jensyt@gmail.com",
     "url": "https://github.com/homebrewing",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic/node_modules/imurmurhash",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic/node_modules/imurmurhash/README.md"
+    "path": "/Users/ro/anagrind/node_modules/imurmurhash",
+    "licenseFile": "/Users/ro/anagrind/node_modules/imurmurhash/README.md"
   },
   "indexes-of@1.0.1": {
     "licenses": "MIT",
@@ -3855,8 +4037,8 @@
   },
   "indexof@0.0.1": {
     "licenses": "MIT*",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/indexof",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/indexof/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/indexof",
+    "licenseFile": "/Users/ro/anagrind/node_modules/indexof/Readme.md"
   },
   "inflight@1.0.6": {
     "licenses": "ISC",
@@ -3885,14 +4067,14 @@
     "path": "/Users/ro/anagrind/node_modules/express/node_modules/send/node_modules/http-errors/node_modules/inherits",
     "licenseFile": "/Users/ro/anagrind/node_modules/express/node_modules/send/node_modules/http-errors/node_modules/inherits/LICENSE"
   },
-  "ini@1.3.5": {
+  "ini@1.3.8": {
     "licenses": "ISC",
     "repository": "https://github.com/isaacs/ini",
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
     "url": "http://blog.izs.me/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/global-dirs/node_modules/ini",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/global-dirs/node_modules/ini/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/ini",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ini/LICENSE"
   },
   "invariant@2.2.4": {
     "licenses": "MIT",
@@ -3984,8 +4166,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/is-binary-path",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/is-binary-path/license"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/is-binary-path",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/is-binary-path/license"
   },
   "is-buffer@1.1.6": {
     "licenses": "MIT",
@@ -4011,8 +4193,8 @@
     "publisher": "Thomas Watson Steen",
     "email": "w@tson.dk",
     "url": "https://twitter.com/wa7son",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-ci",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-ci/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/is-ci",
+    "licenseFile": "/Users/ro/anagrind/node_modules/is-ci/LICENSE"
   },
   "is-color-stop@1.1.0": {
     "licenses": "MIT",
@@ -4117,8 +4299,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/is-fullwidth-code-point",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/is-fullwidth-code-point/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/is-fullwidth-code-point",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/is-fullwidth-code-point/license"
   },
   "is-generator-fn@2.1.0": {
     "licenses": "MIT",
@@ -4160,8 +4342,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/license"
+    "path": "/Users/ro/anagrind/node_modules/is-installed-globally",
+    "licenseFile": "/Users/ro/anagrind/node_modules/is-installed-globally/license"
   },
   "is-npm@4.0.0": {
     "licenses": "MIT",
@@ -4169,8 +4351,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-npm",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-npm/license"
+    "path": "/Users/ro/anagrind/node_modules/is-npm",
+    "licenseFile": "/Users/ro/anagrind/node_modules/is-npm/license"
   },
   "is-number@3.0.0": {
     "licenses": "MIT",
@@ -4185,8 +4367,8 @@
     "repository": "https://github.com/jonschlinkert/is-number",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range/node_modules/to-regex-range/node_modules/is-number",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range/node_modules/to-regex-range/node_modules/is-number/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/is-number",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/is-number/LICENSE"
   },
   "is-obj@2.0.0": {
     "licenses": "MIT",
@@ -4203,8 +4385,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/is-path-inside",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-installed-globally/node_modules/is-path-inside/license"
+    "path": "/Users/ro/anagrind/node_modules/is-path-inside",
+    "licenseFile": "/Users/ro/anagrind/node_modules/is-path-inside/license"
   },
   "is-plain-object@2.0.4": {
     "licenses": "MIT",
@@ -4311,8 +4493,8 @@
     "repository": "https://github.com/LitoMore/is-yarn-global",
     "publisher": "LitoMore",
     "url": "litomore@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-yarn-global",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/is-yarn-global/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/is-yarn-global",
+    "licenseFile": "/Users/ro/anagrind/node_modules/is-yarn-global/LICENSE"
   },
   "isarray@1.0.0": {
     "licenses": "MIT",
@@ -4588,8 +4770,8 @@
     "licenses": "MIT",
     "repository": "https://github.com/lydell/js-tokens",
     "publisher": "Simon Lydell",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/js-tokens",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/js-tokens/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/js-tokens",
+    "licenseFile": "/Users/ro/anagrind/node_modules/js-tokens/LICENSE"
   },
   "js-yaml@3.13.1": {
     "licenses": "MIT",
@@ -4631,8 +4813,8 @@
     "repository": "https://github.com/mathiasbynens/jsesc",
     "publisher": "Mathias Bynens",
     "url": "https://mathiasbynens.be/",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator/node_modules/jsesc",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/generator/node_modules/jsesc/LICENSE-MIT.txt"
+    "path": "/Users/ro/anagrind/node_modules/jsesc",
+    "licenseFile": "/Users/ro/anagrind/node_modules/jsesc/LICENSE-MIT.txt"
   },
   "json-buffer@3.0.0": {
     "licenses": "MIT",
@@ -4640,8 +4822,8 @@
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
     "url": "http://dominictarr.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/keyv/node_modules/json-buffer",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/keyv/node_modules/json-buffer/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/json-buffer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/json-buffer/LICENSE"
   },
   "json-parse-better-errors@1.0.2": {
     "licenses": "MIT",
@@ -4699,7 +4881,7 @@
     "path": "/Users/ro/anagrind/node_modules/jsprim",
     "licenseFile": "/Users/ro/anagrind/node_modules/jsprim/LICENSE"
   },
-  "keen-ui@1.3.0": {
+  "keen-ui@1.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/JosephusPaye/Keen-UI",
     "publisher": "Josephus Paye II",
@@ -4720,8 +4902,8 @@
     "publisher": "Luke Childs",
     "email": "lukechilds123@gmail.com",
     "url": "http://lukechilds.co.uk",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/keyv",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/keyv/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/keyv",
+    "licenseFile": "/Users/ro/anagrind/node_modules/keyv/LICENSE"
   },
   "kind-of@3.2.2": {
     "licenses": "MIT",
@@ -4779,8 +4961,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/license"
+    "path": "/Users/ro/anagrind/node_modules/latest-version",
+    "licenseFile": "/Users/ro/anagrind/node_modules/latest-version/license"
   },
   "leven@3.1.0": {
     "licenses": "MIT",
@@ -4925,8 +5107,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/responselike/node_modules/lowercase-keys",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/responselike/node_modules/lowercase-keys/license"
+    "path": "/Users/ro/anagrind/node_modules/lowercase-keys",
+    "licenseFile": "/Users/ro/anagrind/node_modules/lowercase-keys/license"
   },
   "lowercase-keys@2.0.0": {
     "licenses": "MIT",
@@ -4934,8 +5116,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/lowercase-keys",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/lowercase-keys/license"
+    "path": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/lowercase-keys",
+    "licenseFile": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/lowercase-keys/license"
   },
   "lru-cache@4.1.5": {
     "licenses": "ISC",
@@ -4958,8 +5140,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/make-dir",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/make-dir/license"
+    "path": "/Users/ro/anagrind/node_modules/make-dir",
+    "licenseFile": "/Users/ro/anagrind/node_modules/make-dir/license"
   },
   "makeerror@1.0.11": {
     "licenses": "BSD-3-Clause",
@@ -5130,8 +5312,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/mimic-response",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/mimic-response/license"
+    "path": "/Users/ro/anagrind/node_modules/mimic-response",
+    "licenseFile": "/Users/ro/anagrind/node_modules/mimic-response/license"
   },
   "minimalistic-assert@1.0.1": {
     "licenses": "ISC",
@@ -5162,8 +5344,8 @@
     "publisher": "James Halliday",
     "email": "mail@substack.net",
     "url": "http://substack.net",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/json5/node_modules/minimist",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/json5/node_modules/minimist/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/minimist",
+    "licenseFile": "/Users/ro/anagrind/node_modules/minimist/LICENSE"
   },
   "mixin-deep@1.3.2": {
     "licenses": "MIT",
@@ -5191,14 +5373,8 @@
   "ms@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/zeit/ms",
-    "path": "/Users/ro/anagrind/node_modules/express/node_modules/send/node_modules/ms",
-    "licenseFile": "/Users/ro/anagrind/node_modules/express/node_modules/send/node_modules/ms/license.md"
-  },
-  "ms@2.1.2": {
-    "licenses": "MIT",
-    "repository": "https://github.com/zeit/ms",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/debug/node_modules/ms",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/debug/node_modules/ms/license.md"
+    "path": "/Users/ro/anagrind/node_modules/ms",
+    "licenseFile": "/Users/ro/anagrind/node_modules/ms/license.md"
   },
   "nan@2.14.1": {
     "licenses": "MIT",
@@ -5296,7 +5472,7 @@
     "path": "/Users/ro/anagrind/node_modules/node-releases",
     "licenseFile": "/Users/ro/anagrind/node_modules/node-releases/LICENSE"
   },
-  "nodemon@2.0.3": {
+  "nodemon@2.0.6": {
     "licenses": "MIT",
     "repository": "https://github.com/remy/nodemon",
     "publisher": "Remy Sharp",
@@ -5310,8 +5486,8 @@
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
     "url": "http://blog.izs.me/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch/node_modules/nopt",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch/node_modules/nopt/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nopt",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nopt/LICENSE"
   },
   "normalize-html-whitespace@1.0.0": {
     "licenses": "MIT",
@@ -5361,8 +5537,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/normalize-url",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/normalize-url/license"
+    "path": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/normalize-url",
+    "licenseFile": "/Users/ro/anagrind/node_modules/cacheable-request/node_modules/normalize-url/license"
   },
   "npm-run-path@2.0.2": {
     "licenses": "MIT",
@@ -5419,8 +5595,8 @@
   },
   "object-component@0.0.3": {
     "licenses": "MIT*",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/object-component",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/object-component/Readme.md"
+    "path": "/Users/ro/anagrind/node_modules/object-component",
+    "licenseFile": "/Users/ro/anagrind/node_modules/object-component/Readme.md"
   },
   "object-copy@0.1.0": {
     "licenses": "MIT",
@@ -5577,8 +5753,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/p-cancelable",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/p-cancelable/license"
+    "path": "/Users/ro/anagrind/node_modules/p-cancelable",
+    "licenseFile": "/Users/ro/anagrind/node_modules/p-cancelable/license"
   },
   "p-each-series@2.1.0": {
     "licenses": "MIT",
@@ -5676,8 +5852,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/license"
+    "path": "/Users/ro/anagrind/node_modules/package-json",
+    "licenseFile": "/Users/ro/anagrind/node_modules/package-json/license"
   },
   "pako@0.2.9": {
     "licenses": "MIT",
@@ -5721,6 +5897,14 @@
     "path": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-resolve/node_modules/read-pkg-up/node_modules/read-pkg/node_modules/parse-json",
     "licenseFile": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-resolve/node_modules/read-pkg-up/node_modules/read-pkg/node_modules/parse-json/license"
   },
+  "parse-srcset@1.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/albell/parse-srcset",
+    "publisher": "Alex Bell",
+    "email": "alex@bellandwhistle.net",
+    "path": "/Users/ro/anagrind/node_modules/parse-srcset",
+    "licenseFile": "/Users/ro/anagrind/node_modules/parse-srcset/LICENSE"
+  },
   "parse5@5.1.0": {
     "licenses": "MIT",
     "repository": "https://github.com/inikulin/parse5",
@@ -5734,14 +5918,28 @@
     "licenses": "MIT",
     "repository": "https://github.com/get/querystring",
     "publisher": "Gal Koren",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseqs/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/parseqs",
+    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/parseqs/LICENSE"
+  },
+  "parseqs@0.0.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/get/querystring",
+    "publisher": "Gal Koren",
+    "path": "/Users/ro/anagrind/node_modules/parseqs",
+    "licenseFile": "/Users/ro/anagrind/node_modules/parseqs/LICENSE"
   },
   "parseuri@0.0.5": {
     "licenses": "MIT",
     "repository": "https://github.com/get/parseuri",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseuri",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/parseuri/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/parseuri",
+    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/parseuri/LICENSE"
+  },
+  "parseuri@0.0.6": {
+    "licenses": "MIT",
+    "repository": "https://github.com/get/parseuri",
+    "publisher": "Gal Koren",
+    "path": "/Users/ro/anagrind/node_modules/parseuri",
+    "licenseFile": "/Users/ro/anagrind/node_modules/parseuri/LICENSE"
   },
   "parseurl@1.3.3": {
     "licenses": "MIT",
@@ -5823,8 +6021,8 @@
     "repository": "https://github.com/jbgutierrez/path-parse",
     "publisher": "Javier Blanco",
     "email": "http://jbgutierrez.info",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/resolve/node_modules/path-parse",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/resolve/node_modules/path-parse/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/path-parse",
+    "licenseFile": "/Users/ro/anagrind/node_modules/path-parse/LICENSE"
   },
   "path-to-regexp@0.1.7": {
     "licenses": "MIT",
@@ -5859,8 +6057,8 @@
     "repository": "https://github.com/micromatch/picomatch",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/anymatch/node_modules/picomatch",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/anymatch/node_modules/picomatch/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/picomatch",
+    "licenseFile": "/Users/ro/anagrind/node_modules/picomatch/LICENSE"
   },
   "pirates@4.0.1": {
     "licenses": "MIT",
@@ -6275,8 +6473,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/url-parse-lax/node_modules/prepend-http",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/url-parse-lax/node_modules/prepend-http/license"
+    "path": "/Users/ro/anagrind/node_modules/prepend-http",
+    "licenseFile": "/Users/ro/anagrind/node_modules/prepend-http/license"
   },
   "prettier@1.19.1": {
     "licenses": "MIT",
@@ -6293,7 +6491,7 @@
     "path": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/pretty-format",
     "licenseFile": "/Users/ro/anagrind/node_modules/jest/node_modules/@jest/core/node_modules/jest-runner/node_modules/jest-jasmine2/node_modules/pretty-format/LICENSE"
   },
-  "prismjs@1.21.0": {
+  "prismjs@1.22.0": {
     "licenses": "MIT",
     "repository": "https://github.com/PrismJS/prism",
     "publisher": "Lea Verou",
@@ -6357,11 +6555,12 @@
     "path": "/Users/ro/anagrind/node_modules/psl",
     "licenseFile": "/Users/ro/anagrind/node_modules/psl/LICENSE"
   },
-  "pstree.remy@1.1.7": {
+  "pstree.remy@1.1.8": {
     "licenses": "MIT",
+    "repository": "https://github.com/remy/pstree",
     "publisher": "Remy Sharp",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/pstree.remy",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/pstree.remy/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/pstree.remy",
+    "licenseFile": "/Users/ro/anagrind/node_modules/pstree.remy/LICENSE"
   },
   "public-encrypt@4.0.3": {
     "licenses": "MIT",
@@ -6375,8 +6574,8 @@
     "repository": "https://github.com/mafintosh/pump",
     "publisher": "Mathias Buus Madsen",
     "email": "mathiasbuus@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream/node_modules/pump",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/get-stream/node_modules/pump/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/pump",
+    "licenseFile": "/Users/ro/anagrind/node_modules/pump/LICENSE"
   },
   "punycode@1.3.2": {
     "licenses": "MIT",
@@ -6402,14 +6601,14 @@
     "path": "/Users/ro/anagrind/node_modules/punycode",
     "licenseFile": "/Users/ro/anagrind/node_modules/punycode/LICENSE-MIT.txt"
   },
-  "pupa@2.0.1": {
+  "pupa@2.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/pupa",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/pupa",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/pupa/license"
+    "path": "/Users/ro/anagrind/node_modules/pupa",
+    "licenseFile": "/Users/ro/anagrind/node_modules/pupa/license"
   },
   "purgecss@1.4.2": {
     "licenses": "MIT",
@@ -6500,8 +6699,8 @@
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",
     "url": "dominictarr.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/LICENSE.APACHE2"
+    "path": "/Users/ro/anagrind/node_modules/rc",
+    "licenseFile": "/Users/ro/anagrind/node_modules/rc/LICENSE.APACHE2"
   },
   "react-is@16.13.1": {
     "licenses": "MIT",
@@ -6548,14 +6747,14 @@
     "path": "/Users/ro/anagrind/node_modules/readdirp",
     "licenseFile": "/Users/ro/anagrind/node_modules/readdirp/LICENSE"
   },
-  "readdirp@3.4.0": {
+  "readdirp@3.5.0": {
     "licenses": "MIT",
     "repository": "https://github.com/paulmillr/readdirp",
     "publisher": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
     "url": "thlorenz.com",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/readdirp",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/readdirp/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/readdirp",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/readdirp/LICENSE"
   },
   "realpath-native@2.0.0": {
     "licenses": "MIT",
@@ -6621,13 +6820,13 @@
     "path": "/Users/ro/anagrind/node_modules/regexpu-core",
     "licenseFile": "/Users/ro/anagrind/node_modules/regexpu-core/LICENSE-MIT.txt"
   },
-  "registry-auth-token@4.1.1": {
+  "registry-auth-token@4.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/rexxars/registry-auth-token",
     "publisher": "Espen Hovlandsdal",
     "email": "espen@hovlandsdal.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/registry-auth-token",
+    "licenseFile": "/Users/ro/anagrind/node_modules/registry-auth-token/LICENSE"
   },
   "registry-url@5.1.0": {
     "licenses": "MIT",
@@ -6635,8 +6834,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-url",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-url/license"
+    "path": "/Users/ro/anagrind/node_modules/registry-url",
+    "licenseFile": "/Users/ro/anagrind/node_modules/registry-url/license"
   },
   "regjsgen@0.5.1": {
     "licenses": "MIT",
@@ -6767,15 +6966,15 @@
     "publisher": "James Halliday",
     "email": "mail@substack.net",
     "url": "http://substack.net",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/resolve",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/resolve/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/resolve",
+    "licenseFile": "/Users/ro/anagrind/node_modules/resolve/LICENSE"
   },
   "responselike@1.0.2": {
     "licenses": "MIT",
     "repository": "https://github.com/lukechilds/responselike",
     "publisher": "lukechilds",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/responselike",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/cacheable-request/node_modules/responselike/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/responselike",
+    "licenseFile": "/Users/ro/anagrind/node_modules/responselike/LICENSE"
   },
   "restore-cursor@2.0.0": {
     "licenses": "MIT",
@@ -6854,8 +7053,8 @@
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
     "url": "http://feross.org",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/convert-source-map/node_modules/safe-buffer",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/convert-source-map/node_modules/safe-buffer/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/convert-source-map/node_modules/safe-buffer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/convert-source-map/node_modules/safe-buffer/LICENSE"
   },
   "safe-buffer@5.2.0": {
     "licenses": "MIT",
@@ -6891,14 +7090,14 @@
     "path": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/sane",
     "licenseFile": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/sane/README.md"
   },
-  "sanitize-html@1.25.0": {
+  "sanitize-html@1.27.5": {
     "licenses": "MIT",
     "repository": "https://github.com/apostrophecms/sanitize-html",
     "publisher": "Apostrophe Technologies, Inc.",
     "path": "/Users/ro/anagrind/node_modules/sanitize-html",
     "licenseFile": "/Users/ro/anagrind/node_modules/sanitize-html/LICENSE"
   },
-  "sass@1.26.5": {
+  "sass@1.30.0": {
     "licenses": "MIT",
     "repository": "https://github.com/sass/dart-sass",
     "publisher": "Natalie Weizenbaum",
@@ -6943,20 +7142,20 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/semver-diff",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/semver-diff/license"
+    "path": "/Users/ro/anagrind/node_modules/semver-diff",
+    "licenseFile": "/Users/ro/anagrind/node_modules/semver-diff/license"
   },
   "semver@5.7.1": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/semver",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/semver/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/semver",
+    "licenseFile": "/Users/ro/anagrind/node_modules/semver/LICENSE"
   },
   "semver@6.3.0": {
     "licenses": "ISC",
     "repository": "https://github.com/npm/node-semver",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/make-dir/node_modules/semver",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/make-dir/node_modules/semver/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/make-dir/node_modules/semver",
+    "licenseFile": "/Users/ro/anagrind/node_modules/make-dir/node_modules/semver/LICENSE"
   },
   "semver@7.0.0": {
     "licenses": "ISC",
@@ -7156,14 +7355,20 @@
   "socket.io-client@2.3.0": {
     "licenses": "MIT",
     "repository": "https://github.com/Automattic/socket.io-client",
+    "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/socket.io-client",
+    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/socket.io-client/LICENSE"
+  },
+  "socket.io-client@2.3.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Automattic/socket.io-client",
     "path": "/Users/ro/anagrind/node_modules/socket.io-client",
     "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/LICENSE"
   },
-  "socket.io-parser@3.3.0": {
+  "socket.io-parser@3.3.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Automattic/socket.io-parser",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/socket.io-parser",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/socket.io-parser/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/socket.io/node_modules/socket.io-client/node_modules/socket.io-parser",
+    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io/node_modules/socket.io-client/node_modules/socket.io-parser/LICENSE"
   },
   "socket.io-parser@3.4.0": {
     "licenses": "MIT",
@@ -7271,15 +7476,6 @@
     "path": "/Users/ro/anagrind/node_modules/sprintf-js",
     "licenseFile": "/Users/ro/anagrind/node_modules/sprintf-js/LICENSE"
   },
-  "srcset@2.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/sindresorhus/srcset",
-    "publisher": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/srcset",
-    "licenseFile": "/Users/ro/anagrind/node_modules/srcset/license"
-  },
   "sshpk@1.16.1": {
     "licenses": "MIT",
     "repository": "https://github.com/joyent/node-sshpk",
@@ -7384,8 +7580,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/string-width",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/string-width/license"
   },
   "string.prototype.trimend@1.0.1": {
     "licenses": "MIT",
@@ -7457,8 +7653,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/strip-ansi",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/string-width/node_modules/strip-ansi/license"
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/strip-ansi",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/strip-ansi/license"
   },
   "strip-bom@4.0.0": {
     "licenses": "MIT",
@@ -7493,8 +7689,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/node_modules/strip-json-comments",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/node_modules/strip-json-comments/license"
+    "path": "/Users/ro/anagrind/node_modules/strip-json-comments",
+    "licenseFile": "/Users/ro/anagrind/node_modules/strip-json-comments/license"
   },
   "stylehacks@4.0.3": {
     "licenses": "MIT",
@@ -7529,8 +7725,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/supports-color",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/code-frame/node_modules/@babel/highlight/node_modules/chalk/node_modules/supports-color/license"
+    "path": "/Users/ro/anagrind/node_modules/supports-color",
+    "licenseFile": "/Users/ro/anagrind/node_modules/supports-color/license"
   },
   "supports-color@6.1.0": {
     "licenses": "MIT",
@@ -7547,8 +7743,17 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/supports-color",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/chalk/node_modules/supports-color/license"
+    "path": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/jest-worker/node_modules/supports-color",
+    "licenseFile": "/Users/ro/anagrind/node_modules/babel-jest/node_modules/@jest/transform/node_modules/jest-haste-map/node_modules/jest-worker/node_modules/supports-color/license"
+  },
+  "supports-color@7.2.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/chalk/supports-color",
+    "publisher": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com",
+    "path": "/Users/ro/anagrind/node_modules/boxen/node_modules/supports-color",
+    "licenseFile": "/Users/ro/anagrind/node_modules/boxen/node_modules/supports-color/license"
   },
   "supports-hyperlinks@2.1.0": {
     "licenses": "MIT",
@@ -7576,14 +7781,14 @@
     "path": "/Users/ro/anagrind/node_modules/symbol-tree",
     "licenseFile": "/Users/ro/anagrind/node_modules/symbol-tree/LICENSE"
   },
-  "term-size@2.2.0": {
+  "term-size@2.2.1": {
     "licenses": "MIT",
     "repository": "https://github.com/sindresorhus/term-size",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/term-size",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/term-size/license"
+    "url": "https://sindresorhus.com",
+    "path": "/Users/ro/anagrind/node_modules/term-size",
+    "licenseFile": "/Users/ro/anagrind/node_modules/term-size/license"
   },
   "terminal-link@2.1.1": {
     "licenses": "MIT",
@@ -7688,8 +7893,8 @@
     "repository": "https://github.com/Raynos/to-array",
     "publisher": "Raynos",
     "email": "raynos2@gmail.com",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/to-array",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/to-array/LICENCE"
+    "path": "/Users/ro/anagrind/node_modules/to-array",
+    "licenseFile": "/Users/ro/anagrind/node_modules/to-array/LICENCE"
   },
   "to-arraybuffer@1.0.1": {
     "licenses": "MIT",
@@ -7713,8 +7918,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types/node_modules/to-fast-properties",
-    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/@babel/types/node_modules/to-fast-properties/license"
+    "path": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/to-fast-properties",
+    "licenseFile": "/Users/ro/anagrind/node_modules/@babel/core/node_modules/to-fast-properties/license"
   },
   "to-object-path@0.3.0": {
     "licenses": "MIT",
@@ -7730,8 +7935,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/to-readable-stream",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/to-readable-stream/license"
+    "path": "/Users/ro/anagrind/node_modules/to-readable-stream",
+    "licenseFile": "/Users/ro/anagrind/node_modules/to-readable-stream/license"
   },
   "to-regex-range@2.1.1": {
     "licenses": "MIT",
@@ -7746,8 +7951,8 @@
     "repository": "https://github.com/micromatch/to-regex-range",
     "publisher": "Jon Schlinkert",
     "url": "https://github.com/jonschlinkert",
-    "path": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range/node_modules/to-regex-range",
-    "licenseFile": "/Users/ro/anagrind/node_modules/sass/node_modules/chokidar/node_modules/braces/node_modules/fill-range/node_modules/to-regex-range/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/to-regex-range",
+    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/to-regex-range/LICENSE"
   },
   "to-regex@3.0.2": {
     "licenses": "MIT",
@@ -7771,8 +7976,8 @@
     "publisher": "Isaac Z. Schlueter",
     "email": "i@izs.me",
     "url": "http://blog.izs.me/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/touch/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/touch",
+    "licenseFile": "/Users/ro/anagrind/node_modules/touch/LICENSE"
   },
   "tough-cookie@2.5.0": {
     "licenses": "BSD-3-Clause",
@@ -7864,8 +8069,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/type-fest",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/type-fest/license"
+    "path": "/Users/ro/anagrind/node_modules/type-fest",
+    "licenseFile": "/Users/ro/anagrind/node_modules/type-fest/license"
   },
   "type-is@1.6.18": {
     "licenses": "MIT",
@@ -7879,8 +8084,8 @@
     "publisher": "Feross Aboukhadijeh",
     "email": "feross@feross.org",
     "url": "http://feross.org/",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic/node_modules/typedarray-to-buffer",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic/node_modules/typedarray-to-buffer/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/typedarray-to-buffer",
+    "licenseFile": "/Users/ro/anagrind/node_modules/typedarray-to-buffer/LICENSE"
   },
   "typedarray@0.0.6": {
     "licenses": "MIT",
@@ -7899,7 +8104,7 @@
     "path": "/Users/ro/anagrind/node_modules/typeface-bree-serif",
     "licenseFile": "/Users/ro/anagrind/node_modules/typeface-bree-serif/README.md"
   },
-  "typescript@3.9.5": {
+  "typescript@3.9.7": {
     "licenses": "Apache-2.0",
     "repository": "https://github.com/Microsoft/TypeScript",
     "publisher": "Microsoft Corp.",
@@ -7917,8 +8122,8 @@
     "licenses": "MIT",
     "repository": "https://github.com/remy/undefsafe",
     "publisher": "Remy Sharp",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/undefsafe",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/undefsafe/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/undefsafe",
+    "licenseFile": "/Users/ro/anagrind/node_modules/undefsafe/LICENSE"
   },
   "unicode-canonical-property-names-ecmascript@1.0.4": {
     "licenses": "MIT",
@@ -7998,8 +8203,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/unique-string",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/unique-string/license"
+    "path": "/Users/ro/anagrind/node_modules/unique-string",
+    "licenseFile": "/Users/ro/anagrind/node_modules/unique-string/license"
   },
   "unpipe@1.0.0": {
     "licenses": "MIT",
@@ -8033,14 +8238,14 @@
     "path": "/Users/ro/anagrind/node_modules/upath",
     "licenseFile": "/Users/ro/anagrind/node_modules/upath/LICENSE"
   },
-  "update-notifier@4.1.0": {
+  "update-notifier@4.1.3": {
     "licenses": "BSD-2-Clause",
     "repository": "https://github.com/yeoman/update-notifier",
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "https://sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/license"
+    "path": "/Users/ro/anagrind/node_modules/update-notifier",
+    "licenseFile": "/Users/ro/anagrind/node_modules/update-notifier/license"
   },
   "uri-js@4.2.2": {
     "licenses": "BSD-2-Clause",
@@ -8063,8 +8268,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/url-parse-lax",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/got/node_modules/url-parse-lax/license"
+    "path": "/Users/ro/anagrind/node_modules/url-parse-lax",
+    "licenseFile": "/Users/ro/anagrind/node_modules/url-parse-lax/license"
   },
   "url@0.11.0": {
     "licenses": "MIT",
@@ -8215,7 +8420,7 @@
     "path": "/Users/ro/anagrind/node_modules/vue-responsive",
     "licenseFile": "/Users/ro/anagrind/node_modules/vue-responsive/LICENSE"
   },
-  "vue-template-compiler@2.6.11": {
+  "vue-template-compiler@2.6.12": {
     "licenses": "MIT",
     "repository": "https://github.com/vuejs/vue",
     "publisher": "Evan You",
@@ -8229,7 +8434,7 @@
     "path": "/Users/ro/anagrind/node_modules/vue-template-es2015-compiler",
     "licenseFile": "/Users/ro/anagrind/node_modules/vue-template-es2015-compiler/README.md"
   },
-  "vue@2.6.11": {
+  "vue@2.6.12": {
     "licenses": "MIT",
     "repository": "https://github.com/vuejs/vue",
     "publisher": "Evan You",
@@ -8331,8 +8536,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/widest-line",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/boxen/node_modules/widest-line/license"
+    "path": "/Users/ro/anagrind/node_modules/widest-line",
+    "licenseFile": "/Users/ro/anagrind/node_modules/widest-line/license"
   },
   "word-wrap@1.2.3": {
     "licenses": "MIT",
@@ -8375,8 +8580,8 @@
     "publisher": "Rebecca Turner",
     "email": "me@re-becca.org",
     "url": "http://re-becca.org",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/configstore/node_modules/write-file-atomic/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/write-file-atomic",
+    "licenseFile": "/Users/ro/anagrind/node_modules/write-file-atomic/LICENSE"
   },
   "ws@5.2.2": {
     "licenses": "MIT",
@@ -8393,8 +8598,8 @@
     "publisher": "Einar Otto Stangvik",
     "email": "einaros@gmail.com",
     "url": "http://2x.io",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/ws",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/ws/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/engine.io-client/node_modules/ws",
+    "licenseFile": "/Users/ro/anagrind/node_modules/engine.io-client/node_modules/ws/LICENSE"
   },
   "ws@6.2.1": {
     "licenses": "MIT",
@@ -8420,8 +8625,8 @@
     "publisher": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com",
-    "path": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/xdg-basedir",
-    "licenseFile": "/Users/ro/anagrind/node_modules/nodemon/node_modules/update-notifier/node_modules/xdg-basedir/license"
+    "path": "/Users/ro/anagrind/node_modules/xdg-basedir",
+    "licenseFile": "/Users/ro/anagrind/node_modules/xdg-basedir/license"
   },
   "xml-name-validator@3.0.0": {
     "licenses": "Apache-2.0",
@@ -8444,8 +8649,8 @@
     "licenses": "MIT",
     "repository": "https://github.com/mjwwit/node-XMLHttpRequest",
     "publisher": "Michael de Wit",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/xmlhttprequest-ssl",
+    "licenseFile": "/Users/ro/anagrind/node_modules/xmlhttprequest-ssl/LICENSE"
   },
   "xtend@4.0.2": {
     "licenses": "MIT",
@@ -8504,7 +8709,7 @@
     "licenses": "MIT",
     "repository": "https://github.com/unshiftio/yeast",
     "publisher": "Arnout Kazemier",
-    "path": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/yeast",
-    "licenseFile": "/Users/ro/anagrind/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/yeast/LICENSE"
+    "path": "/Users/ro/anagrind/node_modules/yeast",
+    "licenseFile": "/Users/ro/anagrind/node_modules/yeast/LICENSE"
   }
 }

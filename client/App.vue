@@ -173,6 +173,11 @@ body {
     opacity: 0;
     z-index: 99;
     pointer-events: none;
+    background: repeating-linear-gradient(
+      45deg,
+      $pageBgColor,
+      $pageBgColor 10px, $gridBlankColor 10px, $gridBlankColor 20px
+    ) !important;
     &[data-drop-visible] {
         opacity: 1;
         pointer-events: auto;
