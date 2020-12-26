@@ -376,21 +376,45 @@ export default Vue.extend({
         var haveState = false;
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             var ans = '';
-            var haveAns = false;
+            var nfilled = 0;
             for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
                 const c = clue.cells[i].contents;
                 if (c) {
-                    if (!haveState) {
-                        haveState = true;
-                        state = '\n# state\n';
-                    }
+                    nfilled++;
                     ans += c.toUpperCase();
-                    haveAns = true;
                 } else {
                     ans += '-';
                 }
             }
-            if (haveAns) {
+
+            /* if all cells are already in another clue with more filled-in
+             * cells, don't write this one */
+            var nneeded = nfilled;
+            for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
+                const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
+                if (!otherClue)
+                    continue;
+                var nother = 0;
+                for (var j = 0; j < otherClue.cells.length; j++) {
+                    if (otherClue.cells[j].contents) {
+                        nother++;
+                    }
+                }
+                if (nother > nfilled ) {
+                    nneeded--;
+                } else if (!clue.isAcross && nother == nfilled) {
+                    // tiebreak, prefer across clues to down
+                    nneeded--;
+                }
+            }
+
+            if (nneeded > 0) {
+                if (!haveState) {
+                    haveState = true;
+                    state = '\n# state\n';
+                }
                 state += '\n## ' + clueid + '\n';
                 state += 'ans: ' + ans + '\n';
             }
@@ -566,7 +590,8 @@ export default Vue.extend({
         }
     },
     fillCell(msg) {
-        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
+        const clue = this.crossword.clues[msg.clueid];
+        clue.cells[msg.offset].contents = msg.value;
     },
     sendUpdate(event) {
         if (this.$options.socket) {
