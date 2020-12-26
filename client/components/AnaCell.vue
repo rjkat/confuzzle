@@ -154,6 +154,8 @@ td {
         right: 0;
         bottom: 0;
         left: 0;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none; /* Disable selection/copy in UIWebView */
         font-family: $answerFontFamily;
         border: 0;
         padding: 0;
