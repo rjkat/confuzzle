@@ -1,5 +1,5 @@
 <template>
-    <ul>
+    <ul v-if="items.length">
         <li class="solvers-text">SOLVERS</li>
         <li v-for="item in items" class="highlighted" :data-solver-mask="(1 << item.solverid)">
             {{item.name[0]}}<ui-tooltip class="solver-tooltip">{{item.name}}</ui-tooltip>

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers" ></ana-solver-list>
+    <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></ana-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="ana-clue-list-container">
         <ana-clue-list
