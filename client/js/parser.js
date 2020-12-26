@@ -332,7 +332,7 @@ export function parse(input, compiling, options) {
   ['type', 'identifier', 'copyright', 'note', 'scramble'].forEach(field => {
     const f = meta.optionalField(field);
     if (f) {
-       cw.meta[field] = f.requiredStringValue()
+       cw.meta[field] = f.requiredStringValue();
     }
     if (field == 'type' && !cw.meta[field]) {
        cw.meta.type = 'cryptic';

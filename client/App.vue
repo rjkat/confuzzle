@@ -585,8 +585,7 @@ export default Vue.extend({
         event.preventDefault();
     },
     enoFileUploaded(buf) {
-        this.crosswordSource = Buffer.from(buf).toString('utf8');
-        console.log(this.crosswordSource);
+        this.crosswordSource = Buffer.from(buf).toString('utf8').split(/\n#\s+state\n/)[0];
         this.postUpload();
     },
     puzFileUploaded(buf) {
@@ -631,7 +630,7 @@ export default Vue.extend({
                         haveState = true;
                         state = '\n# state\n';
                     }
-                    ans += c;
+                    ans += c.toUpperCase();
                     haveAns = true;
                 } else {
                     ans += '-';

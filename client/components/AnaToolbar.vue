@@ -280,10 +280,8 @@ export default Vue.extend({
         if (option.label == 'Edit' || option.label == 'Preview') {
             this.state.compiling = !this.state.compiling;
         } else if (option.label == 'Download .puz') {
-            console.log('download-puz-clicked!')
             this.$emit('download-puz-clicked');
         } else if (option.label == 'Download .eno') {
-            console.log('download-eno-clicked!')
             this.$emit('download-eno-clicked');
         } else if (option.label == 'Upload .puz/.eno') {
             this.$refs.fileInput.click();
