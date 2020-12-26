@@ -174,11 +174,13 @@ export function enoToPuz(eno) {
     const meta = cw.meta;
     const grid = cw.grid;
     var solution = '';
+    var state = '';
     var clues = [];
     for (var row = 0; row < grid.height; row++) {
         for (var col = 0; col < grid.width; col++) {
             const cell = grid.cells[row][col];
             solution += cell.empty ? '.' : (cell.solution ? cell.solution : 'X');
+            state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
             if (!cell.number)
                 continue
             
@@ -190,6 +192,7 @@ export function enoToPuz(eno) {
             }
         }
     }
+
     return new PuzPayload({
             title: meta.name,
             author: meta.author,
@@ -199,6 +202,7 @@ export function enoToPuz(eno) {
             height: grid.height,
         },
         clues,
-        solution
+        solution,
+        state
     );
 }

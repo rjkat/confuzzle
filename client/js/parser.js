@@ -246,7 +246,6 @@ function parseClue(cw, clue) {
     clueText: clueText
   };
 
-
   if (cw.grid.shading) {
     cw.grid.shading.forEach(rule => {
       if (rule.clues && rule.clues.includes(clueid)) {
@@ -307,11 +306,6 @@ function parseFilled(cw, filled) {
   for (var i = 0; i < clue.cells.length; i++) {
     if (ans[i] != '-') {
       clue.cells[i].contents = ans[i];
-      cw.fillEvents.push({
-        clueid: clueid,
-        offset: i,
-        value: ans[i]
-      });
     }
   }
 }
@@ -393,7 +387,6 @@ export function parse(input, compiling, options) {
   let errors = buildGrid(cw, compiling);
 
   const filledClues = doc.optionalSection('state');
-  cw.fillEvents = [];
   if (filledClues) {
     filledClues.elements().forEach(clue => parseFilled(cw, clue));
   }
@@ -401,8 +394,6 @@ export function parse(input, compiling, options) {
   cw.acrossClues = [];
   cw.downClues = [];
   for (let [clueid, clue] of Object.entries(cw.clues)) {
-      clue.highlightMask = 0;
-      clue.selected = false;
       clue.refs = [];
       if (clue.primaryId && clue.primaryId != clueid)
         clue.primary = cw.clues[clue.primaryId];
@@ -411,60 +402,6 @@ export function parse(input, compiling, options) {
           clue.refs.push(cw.clues[clue.refIds[i]]);
         }
       }
-      clue.deselect = function (solverid) {
-        this.selected = false;
-        this.clearHighlight(solverid);
-      };
-      clue.select = function (solverid) {
-        for (let [otherid, other] of Object.entries(cw.clues)) {
-          if (otherid != clueid)
-            other.deselect(solverid);
-        }
-        this.selected = true;
-        this.highlight(solverid);
-      };
-      clue.highlight = function(solverid, recursive) {
-        this.highlightMask |= (1 << solverid);
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask |= (1 << solverid);
-          } else {
-            cell.downMask |= (1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.highlight(solverid, true);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-              this.refs[j].highlight(solverid, true);
-            }
-          }
-        }
-      };
-      clue.clearHighlight = function(solverid, recursive) {
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask &= ~(1 << solverid);
-          } else {
-            cell.downMask &= ~(1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        this.highlightMask &= ~(1 << solverid);
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.clearHighlight(solverid, true);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-              this.refs[j].clearHighlight(solverid, true);
-            }
-          }
-        }
-      };
       if (clue.isAcross) {
           cw.acrossClues.push(clue);
       } else {

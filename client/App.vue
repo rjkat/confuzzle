@@ -235,7 +235,70 @@ import {EnoError} from 'enolib'
 
 import io from 'socket.io-client'
 
-const defaultCrossword = parser.parse(parser.sampleCrossword(), false);
+function parseAndBuild(input, compiling, options) {
+    const cw = parser.parse(input, compiling, options);
+    for (let [clueid, clue] of Object.entries(cw.clues)) {
+      clue.highlightMask = 0;
+      clue.selected = false;
+      clue.deselect = function (solverid) {
+        this.selected = false;
+        this.clearHighlight(solverid);
+      };
+      clue.select = function (solverid) {
+        for (let [otherid, other] of Object.entries(cw.clues)) {
+          if (otherid != clueid)
+            other.deselect(solverid);
+        }
+        this.selected = true;
+        this.highlight(solverid);
+      };
+      clue.highlight = function(solverid, recursive) {
+        this.highlightMask |= (1 << solverid);
+        for (let i = 0; i < this.cells.length; i++) {
+          const cell = this.cells[i];
+          if (this.isAcross) {
+            cell.acrossMask |= (1 << solverid);
+          } else {
+            cell.downMask |= (1 << solverid);
+          }
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
+        }
+        if (!recursive) {
+          if (this.primary) {
+            this.primary.highlight(solverid, true);
+          } else {
+            for (let j = 0; j < this.refs.length; j++) {
+              this.refs[j].highlight(solverid, true);
+            }
+          }
+        }
+      };
+      clue.clearHighlight = function(solverid, recursive) {
+        for (let i = 0; i < this.cells.length; i++) {
+          const cell = this.cells[i];
+          if (this.isAcross) {
+            cell.acrossMask &= ~(1 << solverid);
+          } else {
+            cell.downMask &= ~(1 << solverid);
+          }
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
+        }
+        this.highlightMask &= ~(1 << solverid);
+        if (!recursive) {
+          if (this.primary) {
+            this.primary.clearHighlight(solverid, true);
+          } else {
+            for (let j = 0; j < this.refs.length; j++) {
+              this.refs[j].clearHighlight(solverid, true);
+            }
+          }
+        }
+      };
+    }
+    return cw;
+}
+
+const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
 export default Vue.extend({
   components: {
     AnaCrosswordClues,
@@ -307,9 +370,41 @@ export default Vue.extend({
             }
         }
         return true;
+    },
+    crosswordState() {
+        var state = '';
+        var haveState = false;
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            var ans = '';
+            var haveAns = false;
+            for (var i = 0; i < clue.cells.length; i++) {
+                const c = clue.cells[i].contents;
+                if (c) {
+                    if (!haveState) {
+                        haveState = true;
+                        state = '\n# state\n';
+                    }
+                    ans += c.toUpperCase();
+                    haveAns = true;
+                } else {
+                    ans += '-';
+                }
+            }
+            if (haveAns) {
+                state += '\n## ' + clueid + '\n';
+                state += 'ans: ' + ans + '\n';
+            }
+        }
+        return state;
     }
   },
   watch: {
+    crosswordSource(newValue, oldValue) {
+        localStorage.crosswordSource = newValue;
+    },
+    crosswordState(newValue, oldValue) {
+        localStorage.crosswordState = newValue;
+    },
     selectedClue(newValue, oldValue) {
         if (oldValue) {
             this.sendUpdate({
@@ -365,17 +460,10 @@ export default Vue.extend({
         const self = this;
         Vue.nextTick(() => self.$refs.joinModal.open());
     } else {
-        if (!localStorage.eventLog) {
-            localStorage.eventLog = JSON.stringify(this.eventLog);
-        }
         if (localStorage.crosswordSource) {
-            this.crosswordSource = localStorage.crosswordSource;
-            this.renderCrossword();
-            this.eventLog = JSON.parse(localStorage.eventLog);
-            this.replayEvents(this.eventLog, true);
-        } else {
-            this.renderCrossword();
+            this.crosswordSource = localStorage.crosswordSource + localStorage.crosswordState;
         }
+        this.renderCrossword();
     }
   },
   mounted() {
@@ -387,7 +475,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      eventLog: [],
       shortUrl: 'https://anagr.in/d/',
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
@@ -430,7 +517,7 @@ export default Vue.extend({
         let errorText = '';
         let errorMessage = '';
         try {
-            this.crossword = parser.parse(this.crosswordSource, this.state.compiling);
+            this.crossword = parseAndBuild(this.crosswordSource, this.state.compiling);
         } catch (err) {
             if (err instanceof EnoError) {
                 errorText = 'Line ' + (err.cursor.line + 1) + ': ' + err.text;
@@ -447,13 +534,12 @@ export default Vue.extend({
         this.gridSizeLocked = true;
         this.renderLoading = false;
 
+        // strip any state from the source, we have rendered it now
+        this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];
     },
     crosswordEdited() {
         const self = this;
         clearTimeout(self.editDebounce)
-        this.eventLog = [];
-        localStorage.eventLog = JSON.stringify(this.eventLog);
-        localStorage.crosswordSource = this.crosswordSource;
         this.renderLoading = true;
         self.editDebounce = setTimeout(
            self.renderCrossword,
@@ -483,8 +569,6 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
     },
     sendUpdate(event) {
-        this.eventLog.push(event);
-        localStorage.eventLog = JSON.stringify(this.eventLog);
         if (this.$options.socket) {
             this.$options.socket.emit(event.action, event);
         }
@@ -498,15 +582,13 @@ export default Vue.extend({
             value: event.value
         });
     },
-    replayEvents(eventLog, contentOnly) {
+    replayEvents(eventLog) {
         if (!eventLog)
             return;
         for (let i = 0; i < eventLog.length; i++) {
             const event = eventLog[i];
             if (event.action == 'selectionChanged') {
-                if (!contentOnly) {
-                    this.selectionChanged(event);
-                }
+                this.selectionChanged(event);
             } else {
                 this.fillCell(event);
             }
@@ -517,7 +599,7 @@ export default Vue.extend({
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
 
-        this.crosswordSource = msg.crossword;
+        this.crosswordSource = msg.crossword.source + msg.crossword.state;
         this.renderCrossword();
         this.replayEvents(msg.events);
 
@@ -541,9 +623,11 @@ export default Vue.extend({
         }
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {
-            crossword: this.crosswordSource,
-            name: name,
-            eventLog: this.eventLog
+            crossword: {
+                source: this.crosswordSource,
+                state: this.crosswordState
+            },
+            name: name
         });
     },
     shareSucceeded(msg) {
@@ -588,63 +672,20 @@ export default Vue.extend({
     },
     enoFileUploaded(buf) {
         this.crosswordSource = Buffer.from(buf).toString('utf8');
-        this.postUpload();
+        this.renderCrossword();
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
-        this.postUpload();
-    },
-    postUpload() {
         this.renderCrossword();
-        this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];
-        if (this.crosswordSource != localStorage.crosswordSource)
-        {
-            localStorage.crosswordSource = this.crosswordSource;
-            this.eventLog = this.crossword.fillEvents;
-            localStorage.eventLog = JSON.stringify(this.eventLog);
-        }
-        this.replayEvents(this.eventLog, true);
     },
     downloadPuzClicked() {
-        const puz = enoToPuz(this.crosswordSource);
-        var state = '';
-        const grid = this.crossword.grid;
-        for (var row = 0; row < grid.height; row++) {
-            for (var col = 0; col < grid.width; col++) {
-                const cell = grid.cells[row][col];
-                state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
-            }
-        }
-        puz.state = state;
+        const puz = enoToPuz(this.crosswordSource + this.crosswordState);
         const puzbytes = puz.toBytes();
         const blob = new Blob([puzbytes], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
-        var state = '';
-        var haveState = false;
-        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            var ans = '';
-            var haveAns = false;
-            for (var i = 0; i < clue.cells.length; i++) {
-                const c = clue.cells[i].contents;
-                if (c) {
-                    if (!haveState) {
-                        haveState = true;
-                        state = '\n# state\n';
-                    }
-                    ans += c.toUpperCase();
-                    haveAns = true;
-                } else {
-                    ans += '-';
-                }
-            }
-            if (haveAns) {
-                state += '\n## ' + clueid + '\n';
-                state += 'ans: ' + ans + '\n';
-            }
-        }
-        const blob = new Blob([this.crosswordSource + state], {type: "text/plain"});
+        const blob = new Blob([this.crosswordSource + this.crosswordState], {type: "text/plain"});
         this.downloadCrossword(blob, '.eno')
     },
     downloadCrossword(blob, extension) {
