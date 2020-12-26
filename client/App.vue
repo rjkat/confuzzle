@@ -604,16 +604,45 @@ export default Vue.extend({
         this.replayEvents(this.eventLog, true);
     },
     downloadPuzClicked() {
-        console.log('downloadPuzClicked!')
         const puz = enoToPuz(this.crosswordSource);
+        var state = '';
+        const grid = this.crossword.grid;
+        for (var row = 0; row < grid.height; row++) {
+            for (var col = 0; col < grid.width; col++) {
+                const cell = grid.cells[row][col];
+                state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
+            }
+        }
+        puz.state = state;
         const puzbytes = puz.toBytes();
         const blob = new Blob([puzbytes], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
-        console.log('downloadEnoClicked!')
-
-        const blob = new Blob([this.crosswordSource], {type: "text/plain"});
+        var state = '';
+        var haveState = false;
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            var ans = '';
+            var haveAns = false;
+            for (var i = 0; i < clue.cells.length; i++) {
+                const c = clue.cells[i].contents;
+                if (c) {
+                    if (!haveState) {
+                        haveState = true;
+                        state = '\n# state\n';
+                    }
+                    ans += c;
+                    haveAns = true;
+                } else {
+                    ans += '-';
+                }
+            }
+            if (haveAns) {
+                state += '\n## ' + clueid + '\n';
+                state += 'ans: ' + ans + '\n';
+            }
+        }
+        const blob = new Blob([this.crosswordSource + state], {type: "text/plain"});
         this.downloadCrossword(blob, '.eno')
     },
     downloadCrossword(blob, extension) {

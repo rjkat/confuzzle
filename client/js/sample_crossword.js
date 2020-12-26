@@ -122,6 +122,13 @@ clues:
 separators:
     - /
 
+> grid state of any partially filled answers (optional, as for .puz files)
+
+# state
+
+## 1A
+ans: O--A-----
+
 > bug reports and suggestions for new features are absolutely welcome:
 > https://github.com/rjkat/anagrind/issues/new
 

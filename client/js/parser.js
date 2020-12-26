@@ -296,6 +296,21 @@ function parseRef(cw, ref) {
   }
 }
 
+function parseFilled(cw, filled) {
+  const clueid = filled.stringKey();
+  if (!cw.clues[clueid]) {
+    throw "Unknown clue in state section: " + clueid;
+  }
+  const x = filled.toSection();
+  const ans = x.requiredField('ans').requiredStringValue();
+  const clue = cw.clues[clueid];
+  for (var i = 0; i < clue.cells.length; i++) {
+    if (ans[i] != '-') {
+      clue.cells[i].contents = ans[i];
+    }
+  }
+}
+
 export function parse(input, compiling, options) {
   const cw = {
     meta: {
@@ -369,7 +384,13 @@ export function parse(input, compiling, options) {
   if (refs) {
     refs.elements().forEach(ref => parseRef(cw, ref));
   }
+  
   let errors = buildGrid(cw, compiling);
+
+  const filledClues = doc.optionalSection('state');
+  if (filledClues) {
+    filledClues.elements().forEach(clue => parseFilled(cw, clue));
+  }
 
   cw.acrossClues = [];
   cw.downClues = [];
