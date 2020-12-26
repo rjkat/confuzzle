@@ -477,7 +477,10 @@ export default Vue.extend({
         solversChanged: 'solversChanged'
     };
     for (let [action, callback] of Object.entries(this.handlers)) {
-        this.$options.socket.on(action, msg => self[callback](msg));
+        this.$options.socket.on(action, msg => {
+            // console.log(msg);
+            self[callback](msg);
+        });
     }
     const pathParts = window.location.pathname.split('/');
     if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
@@ -592,8 +595,7 @@ export default Vue.extend({
         }
     },
     fillCell(msg) {
-        const clue = this.crossword.clues[msg.clueid];
-        clue.cells[msg.offset].contents = msg.value;
+        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
     },
     sendUpdate(event) {
         if (this.$options.socket) {

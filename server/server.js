@@ -200,13 +200,15 @@ io.on('connection', function(socket) {
 
     function makeBroadcastEventHandler(socket, name) {
         socket.on(name, function(event) {
-            // console.log(name + ' event: ' + JSON.stringify(event));
-            const rooms = Object.keys(socket.rooms);
-            if (rooms.length <= 1) {
+            let gridid = '';
+            for (let room of socket.rooms) {
+                if (room != socket.id) {
+                    gridid = room;
+                }
+            } 
+            if (!gridid) {
                 return;
             }
-            const gridid = rooms[1];
-            // console.log('grid ' + gridid);
             grids[gridid].eventLog.push(event);
             socket.to(gridid).emit(name, event);
         });
