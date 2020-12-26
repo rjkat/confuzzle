@@ -235,6 +235,8 @@ import {EnoError} from 'enolib'
 
 import io from 'socket.io-client'
 
+import {emojisplosions} from "emojisplosion";
+
 function parseAndBuild(input, compiling, options) {
     const cw = parser.parse(input, compiling, options);
     for (let [clueid, clue] of Object.entries(cw.clues)) {
@@ -614,7 +616,7 @@ export default Vue.extend({
             const event = eventLog[i];
             if (event.action == 'selectionChanged') {
                 this.selectionChanged(event);
-            } else {
+            } else if (event.action == 'fillCell') {
                 this.fillCell(event);
             }
         }

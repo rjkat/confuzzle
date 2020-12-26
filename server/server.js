@@ -35,7 +35,9 @@ switch (env) {
 }
 
 
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  pingTimeout: 60000,
+});
 const grids = {};
 const socketGrids = {};
 
@@ -144,36 +146,33 @@ io.on('connection', function(socket) {
         const gridid = hri.random();
         const grid = createGrid(args.crossword, gridid, args.eventLog);
         joinGrid(socket.id, args.name, gridid);
-        socket.join(gridid, function() {
-            socket.emit('crosswordShared', {gridid: gridid, solvers: grid.solvers, solverid: 0});
-        });
+        socket.join(gridid);
+        socket.emit('crosswordShared', {gridid: gridid, solvers: grid.solvers, solverid: 0});
     });
     socket.on('joinGrid', function(args) {
-        let grid = queryGrid(args.gridid);
-        if (!grid) {
+        let found = queryGrid(args.gridid);
+        if (!found) {
             socket.emit('noSuchGrid', args.gridid);
             return;
         }
-        socket.join(args.gridid, function() {
-            // console.log('join ' + args.name + ' to grid: ' + args.gridid);
-            const grid = joinGrid(socket.id, args.name, args.gridid);
-            const solver = grid.solvers[socket.id];
-            // just replay all the packets to everyone who joins
-            socket.emit('gridJoined', {
-                gridid: args.gridid,
-                solverid: solver.solverid,
-                solvers: grid.solvers,
-                crossword: grid.crossword,
-                events: grid.eventLog
-            });
-            event = {
-                action: 'solversChanged',
-                solvers: JSON.parse(JSON.stringify(grid.solvers)),
-                joined: solver
-            };
-            socket.to(args.gridid).emit(event.action, event);
-            grid.eventLog.push(event);
+        socket.join(args.gridid);
+        const grid = joinGrid(socket.id, args.name, args.gridid);
+        const solver = grid.solvers[socket.id];
+        // just replay all the packets to everyone who joins
+        socket.emit('gridJoined', {
+            gridid: args.gridid,
+            solverid: solver.solverid,
+            solvers: grid.solvers,
+            crossword: grid.crossword,
+            events: grid.eventLog
         });
+        event = {
+            action: 'solversChanged',
+            solvers: JSON.parse(JSON.stringify(grid.solvers)),
+            joined: solver
+        };
+        socket.to(args.gridid).emit(event.action, event);
+        grid.eventLog.push(event);
     });
     socket.on('disconnect', (reason) => {
         const gridid = socketGrids[socket.id];
