@@ -307,6 +307,11 @@ function parseFilled(cw, filled) {
   for (var i = 0; i < clue.cells.length; i++) {
     if (ans[i] != '-') {
       clue.cells[i].contents = ans[i];
+      cw.fillEvents.push({
+        clueid: clueid,
+        offset: i,
+        value: ans[i]
+      });
     }
   }
 }
@@ -388,6 +393,7 @@ export function parse(input, compiling, options) {
   let errors = buildGrid(cw, compiling);
 
   const filledClues = doc.optionalSection('state');
+  cw.fillEvents = [];
   if (filledClues) {
     filledClues.elements().forEach(clue => parseFilled(cw, clue));
   }

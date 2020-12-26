@@ -503,10 +503,12 @@ export default Vue.extend({
             return;
         for (let i = 0; i < eventLog.length; i++) {
             const event = eventLog[i];
-            if (event.action == 'fillCell') {
+            if (event.action == 'selectionChanged') {
+                if (!contentOnly) {
+                    this.selectionChanged(event);
+                }
+            } else {
                 this.fillCell(event);
-            } else if (event.action == 'selectionChanged' && !contentOnly) {
-                this.selectionChanged(event);
             }
         }
     },
@@ -585,7 +587,7 @@ export default Vue.extend({
         event.preventDefault();
     },
     enoFileUploaded(buf) {
-        this.crosswordSource = Buffer.from(buf).toString('utf8').split(/\n#\s+state\n/)[0];
+        this.crosswordSource = Buffer.from(buf).toString('utf8');
         this.postUpload();
     },
     puzFileUploaded(buf) {
@@ -593,13 +595,14 @@ export default Vue.extend({
         this.postUpload();
     },
     postUpload() {
+        this.renderCrossword();
+        this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];
         if (this.crosswordSource != localStorage.crosswordSource)
         {
             localStorage.crosswordSource = this.crosswordSource;
-            this.eventLog = [];
+            this.eventLog = this.crossword.fillEvents;
             localStorage.eventLog = JSON.stringify(this.eventLog);
         }
-        this.renderCrossword();
         this.replayEvents(this.eventLog, true);
     },
     downloadPuzClicked() {

@@ -35,6 +35,7 @@ function getClues(p) {
     const nrows = p.height;
     const ncols = p.width;
     const grid = p.solution;
+    const state = p.state;
     var row, col;
     var number = 1;
     var clues = [];
@@ -67,6 +68,7 @@ function getClues(p) {
                 clues.push({
                     number: number,
                     solution: aSoln,
+                    state: acrossSoln(state, row, ncols, col),
                     row: row,
                     col: col,
                     isDown: false,
@@ -77,6 +79,7 @@ function getClues(p) {
                 clues.push({
                     number: number,
                     solution: dSoln,
+                    state: downSoln(state, row, ncols, col),
                     row: row,
                     col: col,
                     isDown: true,
@@ -128,6 +131,36 @@ export function puzToEno(p) {
         }
         eno += "ans: " + Buffer.from(clue.solution).toString('base64') + "\n";
         eno += "lengths:\n    - " + clue.length + "\n";
+    }
+
+    var haveState = false;
+    var state = '';
+
+    for (var i = 0; i < clues.length; i++) {
+        const clue = clues[i];
+        var ans = '';
+        var haveAns = false;
+        for (var j = 0; j < clue.state.length; j++) {
+            const c = clue.state[j];
+            if (c != '-' && c != '.') {
+                if (!haveState) {
+                    haveState = true;
+                    state = '\n# state\n';
+                }
+                ans += c.toUpperCase();
+                haveAns = true;
+            } else {
+                ans += '-';
+            }
+        }
+        if (haveAns) {
+            state += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
+            state += 'ans: ' + ans + '\n';
+        }
+    }
+
+    if (haveState) {
+        eno += state;
     }
     return eno;
 }
