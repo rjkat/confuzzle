@@ -1,9 +1,9 @@
 <template>
-    <ui-modal ref="modal" title="Share Crossword">
+    <ui-modal ref="modal" @reveal="onReveal()" title="Share Crossword">
         <div style="text-align: center;">
             <template v-if="!link">
                 <p class="share-info-text">Get a shared link to this crossword and collude with others in real time.</p>
-                <ui-textbox class="crossword-name-input" v-model="solverName">
+                <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="shareClicked()">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>
                 <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="shareClicked()">Share</ui-button>
@@ -76,6 +76,9 @@ export default Vue.extend({
     copyClicked() {
         navigator.clipboard.writeText(this.link);
         this.$emit('copy-clicked');
+    },
+    onReveal() {
+        this.$refs.nameBox.focus();
     },
     open() {
         this.$refs.modal.open();

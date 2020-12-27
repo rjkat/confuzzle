@@ -3,11 +3,6 @@
 ## Disclaimer
 - this is still a work in progress, see below
 
-## Known issues
-- in multiplayer mode, sometimes the socket connection times out. no notification is provided to the user.
-- more than 7 simultaneous solvers breaks everything
-- changing the size of the grid in editing mode breaks things
-
 ## Features that would be good
 ### Solving
 - screen reader/accessibility support
@@ -19,7 +14,6 @@
 ### Compiling
 - ability to scramble answers automatically
 - better system for laying out the grid
-- eno file upload/download
 - better syntax guide
 
 ## Features that are out of scope

@@ -122,7 +122,7 @@ export default Vue.extend({
         return this.clue.selected;
     },
     solverMask: function () {
-        return (1 << this.solverid);
+        return (1 << (this.solverid % 8));
     },
     isPrimaryRef: function () {
         const clue = this.clue;

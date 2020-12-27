@@ -35,10 +35,10 @@
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" title="Join Crossword" :dismissible="false">
+            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join Crossword" :dismissible="false">
                 <div style="text-align: center;">
                     <p class="join-info-text">Join this crossword and collude with others in real time.</p>
-                    <ui-textbox class="crossword-name-input" v-model="solverName">
+                    <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="joinClicked(solverName)">
                             <b>0A</b> Your name ({{solverName ? solverName.length : 0}})
                     </ui-textbox> 
                     <ui-button :loading="joinLoading" color="primary" :disabled="!solverName" @click="joinClicked(solverName)">Join</ui-button>
@@ -254,10 +254,12 @@ function parseAndBuild(input, compiling, options) {
       clue.highlightMask = 0;
       clue.selected = false;
       clue.deselect = function (solverid) {
+        solverid %= 8;
         this.selected = false;
         this.clearHighlight(solverid);
       };
       clue.select = function (solverid) {
+        solverid %= 8;
         for (let [otherid, other] of Object.entries(cw.clues)) {
           if (otherid != clueid)
             other.deselect(solverid);
@@ -266,6 +268,7 @@ function parseAndBuild(input, compiling, options) {
         this.highlight(solverid);
       };
       clue.highlight = function(solverid, recursive) {
+        solverid %= 8;
         this.highlightMask |= (1 << solverid);
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
@@ -287,6 +290,7 @@ function parseAndBuild(input, compiling, options) {
         }
       };
       clue.clearHighlight = function(solverid, recursive) {
+        solverid %= 8;
         for (let i = 0; i < this.cells.length; i++) {
           const cell = this.cells[i];
           if (this.isAcross) {
@@ -534,7 +538,9 @@ export default Vue.extend({
         if (!this.gridSizeLocked)
             this.gridSize = this.isPortrait ? w : h;
     },
-
+    onJoinReveal() {
+        this.$refs.nameBox.focus();
+    },
     createSocket() {
         const self = this;
         this.$options.manager = new Manager(window.location.host, {
@@ -618,6 +624,10 @@ export default Vue.extend({
         );
     },
     lostConnection() {
+        if (this.$options.socket) {
+            this.$options.socket.close();
+            this.$options.socket = null;
+        }
         if (this.state.reconnecting) {
             this.reconnectFailed = true;
             this.joinLoading = false;
