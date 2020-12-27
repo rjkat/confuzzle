@@ -3,11 +3,13 @@
     <ana-disconnected-modal
         ref="disconnectedModal"
         :reconnecting="joinLoading"
-        @stay-offline-clicked='stayOfflineClicked($event)'
+        :reconnectFailed="reconnectFailed"
+        @stay-offline-clicked='goOffline()'
         @reconnect-clicked='reconnectClicked($event)'>
     </ana-disconnected-modal>
     <ana-toolbar
         id="app-toolbar"
+        ref="toolbar"
         v-if="!state.joining"
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
@@ -15,6 +17,7 @@
         class="hidden-print"
         v-model="state"
         @share-clicked="shareClicked($event)"
+        @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
         @copy-clicked="copyClicked()"
@@ -342,6 +345,7 @@ export default Vue.extend({
     joinLoading: false,
     shareLoading: false,
     renderLoading: false,
+    reconnectFailed: false,
     exploding: false,
     solverName: "",
     errorText: "",
@@ -479,7 +483,6 @@ export default Vue.extend({
   },
   created() {
     
-    this.createSocket();
     const pathParts = window.location.pathname.split('/');
     if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
         this.gridid = pathParts[2];
@@ -531,6 +534,7 @@ export default Vue.extend({
         if (!this.gridSizeLocked)
             this.gridSize = this.isPortrait ? w : h;
     },
+
     createSocket() {
         const self = this;
         this.$options.manager = new Manager(window.location.host, {
@@ -540,6 +544,12 @@ export default Vue.extend({
             this.lostConnection();
         });
         this.$options.socket = this.$options.manager.socket('/');
+        this.$options.socket.on('disconnect', (reason) => {
+          if (reason === 'io server disconnect') {
+            this.lostConnection();
+          }
+        });
+
         this.handlers = {
             crosswordShared: 'shareSucceeded',
             fillCell: 'fillCell',
@@ -600,15 +610,28 @@ export default Vue.extend({
         );
     },
     lostConnection() {
-        for (let [socketid, solver] of Object.entries(this.solvers)) {
-            for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-                if (solver.solverid != this.solverid) {
-                    clue.clearHighlight(solver.solverid);
-                } 
-            }
+        if (this.state.reconnecting) {
+            this.reconnectFailed = true;
+            this.joinLoading = false;
+            return;
         }
-        this.solvers = {};
-        this.snackbarMessage('you left the crossword');
+        if (!(this.shareLoading || this.state.colluding)) {
+            return;
+        }
+        if (this.shareLoading) {
+            this.$refs.toolbar.closeModal('shareModal');
+            this.shareLoading = false;
+        }
+        if (this.state.colluding) {
+            for (let [socketid, solver] of Object.entries(this.solvers)) {
+                for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+                    if (solver.solverid != this.solverid) {
+                        clue.clearHighlight(solver.solverid);
+                    } 
+                }
+            }
+            this.solvers = {};
+        }
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
     },
@@ -677,14 +700,13 @@ export default Vue.extend({
 
         if (this.state.reconnecting) {
             this.$refs.disconnectedModal.close();
+            this.reconnectFailed = false;
             this.state.reconnecting = false;
-        } else {
-            this.$options.socket.close();
-            this.lostConnection();
-        }
+        } 
     },
     joinClicked(name) {
         this.joinLoading = true;
+        this.createSocket();
         this.$options.socket.emit('joinGrid', {
             gridid: this.gridid,
             name: name
@@ -696,6 +718,7 @@ export default Vue.extend({
             this.state.compiling = false;
             this.renderCrossword();
         }
+        this.createSocket();
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {
             crossword: {
@@ -712,10 +735,13 @@ export default Vue.extend({
         this.state.colluding = true;
         this.shareLoading = false;
     },
-    stayOfflineClicked(event) {
+    goOffline() {
+        this.gridid = '';
+        this.state.colluding = false;
         window.history.replaceState(null, 'anagrind.com', '/');
         this.$options.socket.close();
         this.$refs.disconnectedModal.close();
+        this.snackbarMessage('You left the crossword');
     },
     reconnectClicked(event) {
         this.state.reconnecting = true;

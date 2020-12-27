@@ -1,11 +1,14 @@
 <template>
     <ui-modal ref="modal" title="Lost Connection" :dismissible="canClose">
         <div style="text-align: center;">
-                <p class="disconnect-info-text">
+                <p class="disconnect-info-text" v-if="!reconnectFailed">
                     Your connection was interrupted. How would you like to 
                     proceed?
                 </p>
-                <ui-button @click="stayOfflineClicked()">Stay offline</ui-button>
+                <p class="disconnect-info-text" v-else>
+                    Unable to reconnect. How would you like to proceed?
+                </p>
+                <ui-button :disabled="reconnecting" @click="stayOfflineClicked()">Stay offline</ui-button>
                 <ui-button :loading="reconnecting" color="primary" @click="reconnectClicked()">Reconnect</ui-button>
         </div>
     </ui-modal>
@@ -38,6 +41,7 @@ export default Vue.extend({
   },
   props: {
     reconnecting: false,
+    reconnectFailed: false
   },
   methods: {
     reconnectClicked() {
@@ -47,6 +51,7 @@ export default Vue.extend({
         this.$emit('stay-offline-clicked');
     },
     open() {
+        this.canClose = false;
         this.$refs.modal.open();
     },
     close() {

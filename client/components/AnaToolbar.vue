@@ -151,6 +151,10 @@ export default Vue.extend({
                 icon: 'get_app'
             },
             {
+                label: 'Go offline',
+                icon: 'exit_to_app'
+            },
+            {
                 label: 'About',
                 icon: 'info'
             }];
@@ -208,6 +212,10 @@ export default Vue.extend({
             {
                 label: 'Download .eno',
                 icon: 'get_app'
+            },
+            {
+                label: 'Go offline',
+                icon: 'exit_to_app'
             },
             {
                 label: 'About',
@@ -283,6 +291,8 @@ export default Vue.extend({
             this.$emit('download-puz-clicked');
         } else if (option.label == 'Download .eno') {
             this.$emit('download-eno-clicked');
+        } else if (option.label == 'Go offline') {
+            this.$emit('go-offline-clicked');
         } else if (option.label == 'Upload .puz/.eno') {
             this.$refs.fileInput.click();
         } else if (option.label == 'About') {
