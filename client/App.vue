@@ -770,7 +770,9 @@ export default Vue.extend({
         this.gridid = '';
         this.state.colluding = false;
         window.history.replaceState(null, window.location.hostname, '/');
-        this.$options.socket.close();
+        if (this.$options.socket) {
+            this.$options.socket.close();
+        }
         this.$options.socket = null;
         this.$refs.disconnectedModal.close();
         this.snackbarMessage('You left the crossword');
@@ -782,7 +784,9 @@ export default Vue.extend({
     },
     dragEnterHandler(event) {
         this.dragCount++;
-        this.$refs.dropArea.dataset.dropVisible = "";
+        if (!this.state.colluding) {
+            this.$refs.dropArea.dataset.dropVisible = "";
+        }
         event.preventDefault();
         event.stopPropagation();
     },
@@ -802,15 +806,19 @@ export default Vue.extend({
     dropHandler(event) {
         if (!event.dataTransfer.files)
             return;
-        const file = event.dataTransfer.files[0];
-        const self = this;
-        if (file.name.endsWith('.eno')) {
-            file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
-        } else {
-            file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
+
+        if (!this.state.colluding) {
+            const file = event.dataTransfer.files[0];
+            const self = this;
+            if (file.name.endsWith('.eno')) {
+                file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
+            } else {
+                file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
+            }
+            this.dragCount = 0;
+            this.$refs.dropArea.removeAttribute('data-drop-visible');
         }
-        this.dragCount = 0;
-        this.$refs.dropArea.removeAttribute('data-drop-visible');
+        
         event.preventDefault();
     },
     enoFileUploaded(buf) {
