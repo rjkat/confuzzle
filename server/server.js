@@ -59,31 +59,6 @@ function queryGrid(gridid) {
     return undefined;
 }
 
-app.get('*', function(req, res, next) {
-    if (req.hostname == 'anagr.in') {
-        res.redirect('https://anagrind.com' + req.url);
-    }
-    next('route');
-});
-
-app.get("/d/:gridid", function(req, res, next) {
-    let gridid = req.params ? req.params.gridid : undefined;
-    if (!queryGrid(gridid)) {
-        res.sendStatus(404);
-        return;
-    }
-    res.redirect('/grid/' + gridid + '#join');
-});
-
-app.get("/grid/:gridid", function(req, res, next) {
-    let gridid = req.params ? req.params.gridid : undefined;
-    if (!queryGrid(gridid)) {
-        res.sendStatus(404);
-        return;
-    }
-    req.url = '/';
-    next('route');
-});
 
 app.use(robots({UserAgent: '*', Disallow: '/'}))
 
@@ -92,12 +67,18 @@ if (env == 'dev') {
   const bundler = new Bundler('client/index.html');
   app.use(bundler.middleware());
 } else {
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../dist/index.html'));
-  });
   app.use(compression());
   app.use(express.static(__dirname + '/../dist'));
 }
+
+app.get("/:gridid", (req, res, next) => {
+    let gridid = req.params ? req.params.gridid : undefined;
+    if (!queryGrid(gridid)) {
+        res.sendStatus(404);
+        return;
+    }
+    res.sendFile(path.join(__dirname + '/../dist/index.html'));
+});
 
 function firstSolverId(mask) {
     let i = 1;

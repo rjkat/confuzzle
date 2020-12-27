@@ -366,7 +366,7 @@ export default Vue.extend({
   },
   computed: {
     shareLink() {
-        return !this.gridid ? "" : this.shortUrl + this.gridid;
+        return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
     selectedClue() {
         if (!this.crossword)
@@ -489,11 +489,8 @@ export default Vue.extend({
     var shouldJoin = false;
     if (window.location.pathname != "/") {
         const pathParts = window.location.pathname.split('/');
-        if (window.location.hostname == 'xword.party' && pathParts.length > 1) {
+        if (pathParts.length > 1) {
             this.gridid = pathParts[1];
-            shouldJoin = true;
-        } else if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
-            this.gridid = pathParts[2];
             shouldJoin = true;
         }
     } else {
@@ -517,7 +514,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      shortUrl: (window.location.hostname == 'anagrind.com' || window.location.hostname == 'xword.party') ? 'https://xword.party/' : window.location.origin + '/grid/',
+      shortUrl: window.location.hostname == 'anagrind.com' ? 'https://xword.party' : window.location.origin,
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
@@ -761,7 +758,7 @@ export default Vue.extend({
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
-        window.history.replaceState(null, window.location.hostname, '/grid/' + msg.gridid);
+        window.history.replaceState(null, window.location.hostname, '/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
     },
