@@ -518,7 +518,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      shortUrl: window.location.hostname == 'anagrind.com' ? 'https://xword.party' : window.location.origin,
+      shortUrl: window.location.hostname == 'anagrind.com' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,

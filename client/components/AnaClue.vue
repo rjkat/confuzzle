@@ -38,6 +38,10 @@
 <style lang="scss">
 @import '../stylesheets/solvers';
 
+.crossword-answer-container {
+    cursor: default;
+}
+
 .clue-item {
     .clue-directions {
         cursor: pointer;
@@ -52,6 +56,7 @@
     }
 
     input {
+        cursor: pointer;
         font-size: $gridFontSize;
         font-family: $answerFontFamily;
         padding: $gridBorderWidth 0 0 $gridBorderWidth;
@@ -73,7 +78,7 @@
     }
 
     input:focus {
-        background-color: #0075eb;
+        background-color: #0075eb !important;
         color: #fff;
     }
 

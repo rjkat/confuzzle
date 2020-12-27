@@ -146,10 +146,12 @@ td {
     }
 
     &:not([data-empty]) {
+        cursor: pointer;
         background: $gridBlankColor;
     }
 
     .crossword-grid-input {
+        cursor: pointer;
         top: 0;
         right: 0;
         bottom: 0;
