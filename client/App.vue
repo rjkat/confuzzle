@@ -486,18 +486,25 @@ export default Vue.extend({
     }
   },
   created() {
-    
     const pathParts = window.location.pathname.split('/');
-    if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
+    var shouldJoin = false;
+    document.title = window.location.hostname + ' - beta';
+    if (window.location.hostname == 'xword.party' && pathParts.length > 1) {
+        this.gridid = pathParts[1];
+        shouldJoin = true;
+    } else if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
         this.gridid = pathParts[2];
-        this.state.joining = true;
-        const self = this;
-        Vue.nextTick(() => self.$refs.joinModal.open());
+        shouldJoin = true;
     } else {
         if (localStorage.crosswordSource) {
             this.crosswordSource = localStorage.crosswordSource + localStorage.crosswordState;
         }
         this.renderCrossword();
+    }
+    if (shouldJoin) {
+        this.state.joining = true;
+        const self = this;
+        Vue.nextTick(() => self.$refs.joinModal.open());
     }
   },
   mounted() {
@@ -509,7 +516,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      shortUrl: 'https://anagr.in/d/',
+      shortUrl: (window.location.hostname == 'anagrind.com' || window.location.hostname == 'xword.party') ? 'https://xword.party/' : window.location.origin + '/grid/',
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
@@ -753,14 +760,14 @@ export default Vue.extend({
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
-        window.history.replaceState(null, 'anagrind.com', '/grid/' + msg.gridid);
+        window.history.replaceState(null, window.location.hostname, '/grid/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
     },
     goOffline() {
         this.gridid = '';
         this.state.colluding = false;
-        window.history.replaceState(null, 'anagrind.com', '/');
+        window.history.replaceState(null, window.location.hostname, '/');
         this.$options.socket.close();
         this.$options.socket = null;
         this.$refs.disconnectedModal.close();
