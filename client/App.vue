@@ -495,7 +495,10 @@ export default Vue.extend({
         }
     } else {
         if (localStorage.crosswordSource) {
-            this.crosswordSource = localStorage.crosswordSource + localStorage.crosswordState;
+            this.crosswordSource = localStorage.crosswordSource;
+            if (localStorage.crosswordState) {
+                this.crosswordSource += localStorage.crosswordState;
+            }
         }
         this.renderCrossword();
     }
@@ -648,9 +651,7 @@ export default Vue.extend({
         if (this.state.colluding) {
             for (let [socketid, solver] of Object.entries(this.solvers)) {
                 for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-                    if (solver.solverid != this.solverid) {
-                        clue.clearHighlight(solver.solverid);
-                    } 
+                    clue.clearHighlight(solver.solverid);
                 }
             }
             this.solvers = {};
@@ -719,7 +720,10 @@ export default Vue.extend({
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
 
-        this.crosswordSource = msg.crossword.source + msg.crossword.state;
+        this.crosswordSource = msg.crossword.source;
+        if (msg.crossword.state) {
+            this.crosswordSource += msg.crossword.state;
+        }
         this.renderCrossword();
         this.replayEvents(msg.events);
 
