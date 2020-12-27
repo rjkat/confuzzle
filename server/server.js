@@ -71,8 +71,8 @@ if (env == 'dev') {
   app.use(express.static(__dirname + '/../dist'));
 }
 
-app.get("/:gridid", (req, res, next) => {
-    let gridid = req.params ? req.params.gridid : undefined;
+app.use(function (req, res, next) {
+    let gridid = req.url.split('/')[1];
     if (!queryGrid(gridid)) {
         res.sendStatus(404);
         return;

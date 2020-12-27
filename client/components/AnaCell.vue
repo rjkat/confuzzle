@@ -158,6 +158,7 @@ td {
         -webkit-user-select: none; /* Disable selection/copy in UIWebView */
         font-family: $answerFontFamily;
         border: 0;
+        border-radius: 0;
         padding: 0;
         margin: 0;
         background: none;

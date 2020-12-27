@@ -450,6 +450,7 @@ export default Vue.extend({
     crosswordState(newValue, oldValue) {
         localStorage.crosswordState = newValue;
     },
+    
     selectedClue(newValue, oldValue) {
         if (oldValue) {
             this.sendUpdate({
@@ -525,7 +526,8 @@ export default Vue.extend({
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
       gridSizeLocked: false,
       dragCount: 0,
-      solverid: 0
+      solverid: 0,
+      socketid: ''
     };
   },
   methods: {
@@ -560,10 +562,14 @@ export default Vue.extend({
         this.$options.socket = this.$options.manager.socket('/');
 
         this.$options.socket.on('connect', () => {
-            this.$options.socket.emit('joinGrid', {
-                gridid: self.gridid,
-                name: self.solverName
-            });
+            if (!this.shareLoading) {
+                this.$options.socket.emit('joinGrid', {
+                    gridid: this.gridid,
+                    name: this.solverName,
+                    oldsocketid: this.socketid
+                });
+            }
+            this.socketid = this.$options.socket.id;
         });
 
         this.$options.socket.on('disconnect', (reason) => {
@@ -577,6 +583,7 @@ export default Vue.extend({
             fillCell: 'fillCell',
             selectionChanged: 'selectionChanged',
             gridJoined: 'gridJoined',
+            noSuchGrid: 'lostConnection',
             solversChanged: 'solversChanged'
         };
         for (let [action, callback] of Object.entries(this.handlers)) {
@@ -649,11 +656,6 @@ export default Vue.extend({
             this.shareLoading = false;
         }
         if (this.state.colluding) {
-            for (let [socketid, solver] of Object.entries(this.solvers)) {
-                for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-                    clue.clearHighlight(solver.solverid);
-                }
-            }
             this.solvers = {};
         }
         const self = this;
@@ -709,7 +711,8 @@ export default Vue.extend({
         for (let i = 0; i < eventLog.length; i++) {
             const event = eventLog[i];
             if (event.action == 'selectionChanged') {
-                this.selectionChanged(event);
+                // disable replaying selections for now
+                // this.selectionChanged(event);
             } else if (event.action == 'fillCell') {
                 this.fillCell(event);
             }
@@ -750,6 +753,7 @@ export default Vue.extend({
             this.renderCrossword();
         }
         this.createSocket();
+        this.solverName = name;
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {
             crossword: {

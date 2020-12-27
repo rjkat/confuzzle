@@ -23,6 +23,7 @@
                            @focus="focusChanged()"
                            @keydown="handleKeydown($event, i)"
                            @input="handleInput($event, i)"
+                           @mousedown.prevent
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
                            :class="{highlighted: selected || highlighted}"
@@ -68,6 +69,12 @@
         vertical-align: middle;
         text-transform: uppercase;
         box-sizing: border-box;
+        -webkit-user-select: none; 
+    }
+
+    input:focus {
+        background-color: #0075eb;
+        color: #fff;
     }
 
 
@@ -233,8 +240,6 @@ export default Vue.extend({
         }
     },
     fillCell: function(offset, value) {
-        const cell = this.clue.cells[offset];
-        cell.contents = value;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
     },
     handleInput(event, offset) {
@@ -255,6 +260,7 @@ export default Vue.extend({
                 event.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
+                this.clue.cells[offset].contents = '';
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
                 event.preventDefault();
