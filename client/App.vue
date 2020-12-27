@@ -486,15 +486,16 @@ export default Vue.extend({
     }
   },
   created() {
-    const pathParts = window.location.pathname.split('/');
     var shouldJoin = false;
-    document.title = window.location.hostname + ' - beta';
-    if (window.location.hostname == 'xword.party' && pathParts.length > 1) {
-        this.gridid = pathParts[1];
-        shouldJoin = true;
-    } else if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
-        this.gridid = pathParts[2];
-        shouldJoin = true;
+    if (window.location.pathname != "/") {
+        const pathParts = window.location.pathname.split('/');
+        if (window.location.hostname == 'xword.party' && pathParts.length > 1) {
+            this.gridid = pathParts[1];
+            shouldJoin = true;
+        } else if (pathParts.length > 2 && (pathParts[1] == 'grid' || pathParts[1] == 'd')) {
+            this.gridid = pathParts[2];
+            shouldJoin = true;
+        }
     } else {
         if (localStorage.crosswordSource) {
             this.crosswordSource = localStorage.crosswordSource + localStorage.crosswordState;
