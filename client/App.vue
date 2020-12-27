@@ -544,6 +544,14 @@ export default Vue.extend({
             this.lostConnection();
         });
         this.$options.socket = this.$options.manager.socket('/');
+
+        this.$options.socket.on('connect', () => {
+            this.$options.socket.emit('joinGrid', {
+                gridid: self.gridid,
+                name: self.solverName
+            });
+        });
+
         this.$options.socket.on('disconnect', (reason) => {
           if (reason === 'io server disconnect') {
             this.lostConnection();
@@ -659,7 +667,15 @@ export default Vue.extend({
     },
     sendUpdate(event) {
         if (this.$options.socket) {
-            this.$options.socket.emit(event.action, event);
+            if (!this.$options.socket.connected) {
+                this.lostConnection();
+            } else {
+                try {
+                    this.$options.socket.emit(event.action, event);
+                } catch (err) {
+                    this.lostConnection();
+                }
+            }
         }
     },
     sendFillCell(event) {
@@ -707,10 +723,6 @@ export default Vue.extend({
     joinClicked(name) {
         this.joinLoading = true;
         this.createSocket();
-        this.$options.socket.emit('joinGrid', {
-            gridid: this.gridid,
-            name: name
-        });
     },
     shareClicked(name) {
         const self = this;
@@ -740,6 +752,7 @@ export default Vue.extend({
         this.state.colluding = false;
         window.history.replaceState(null, 'anagrind.com', '/');
         this.$options.socket.close();
+        this.$options.socket = null;
         this.$refs.disconnectedModal.close();
         this.snackbarMessage('You left the crossword');
     },
