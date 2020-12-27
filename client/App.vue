@@ -551,7 +551,7 @@ export default Vue.extend({
     },
     createSocket() {
         const self = this;
-        this.$options.manager = new Manager(window.location.host, {
+        this.$options.manager = new Manager(window.location.origin, {
             reconnectionAttempts: 5
         });
         this.$options.manager.on('reconnect_failed', (err) => {
