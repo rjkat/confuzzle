@@ -68,16 +68,20 @@ if (env == 'dev') {
   app.use(bundler.middleware());
 } else {
   app.use(compression());
-  app.use(express.static(__dirname + '/../dist'));
-}
-
-app.use(function (req, res, next) {
+  app.use(function (req, res, next) {
+    console.log(req.hostname)
     if (req.hostname == 'anagr.in' ||
         req.hostname == 'anagrind.com' ||
         req.hostname == 'xword.party') {
         res.redirect(301, 'https://confuzzle.me' + req.url);
         return;
     }
+    next();    
+  });
+  app.use(express.static(__dirname + '/../dist'));
+}
+
+app.use(function (req, res, next) {
     let gridid = req.url.split('/')[1];
     if (!queryGrid(gridid)) {
         res.sendStatus(404);
