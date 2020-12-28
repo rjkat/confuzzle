@@ -49,6 +49,7 @@
             <ana-crossword-grid id="grid"
                 ref="grid"
                 v-model="crossword"
+                :data-portrait="isPortrait"
                 :solverid="solverid"
                 :gridSize="gridSize"
                 :isPortrait="isPortrait"
@@ -145,8 +146,16 @@ body {
     font-family: $clueFontFamily;
 }
 
+#app {
+    position: fixed;
+    top: $displayPadding;
+    bottom: 0;
+    width: 100%;
+}
+
 #app-container {
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -158,15 +167,11 @@ body {
 
 #app-content {
     display: flex;
-    width: 100%;
     &[data-portrait] {
-        min-height: 0;
-        height: 85vh;
         flex-direction: column;
     }
-    &:not([data-show-grid])[data-portrait] {
-    }
     width: 100%;
+    height: calc(100% - 3.5rem - #{$displayPadding} - 8px);
     @media print {
         display: block !important;
     }
@@ -178,9 +183,8 @@ body {
     overflow-x: scroll;
     border: 1px solid #000;
     flex: 1 1 50%;
-    &.bs4-md, &.bs4-lg, &.bs4-xl {
-        height: 80vh;
-    }
+    min-height: 0;
+    max-height: calc(100% - #{$displayPadding});
 }
 
 #drop-area {
@@ -210,29 +214,30 @@ body {
     @media screen {
         padding-top: $displayPadding;
     }
+
+    &:not([data-portrait]) {
+        margin-bottom: $displayPadding;
+    }
 }
 
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
+    max-height: calc(100% - #{$displayPadding});
     overflow-y: scroll;
-   
-    margin-bottom: $displayPadding;
     margin-right: $displayPadding;
     @media screen {
         border: 1px solid #000;
     }
 
-    &:not([data-portrait]) {
-        margin-top: $displayPadding;
-        height: 80vh;
-    }
     &:not([data-show-grid])[data-portrait] {
         margin-top: $displayPadding;
-        height: 100% !important;
     }
+    &:not([data-portrait]) {
+        margin-top: $displayPadding;
+    }
+    height: 100%;
     background-color: #fff;
-    padding-bottom: 5em;
 }
 </style>
 
