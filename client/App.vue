@@ -391,7 +391,7 @@ export default Vue.extend({
             for (let col = 0; col < grid.width; col++) {
                 const cell = grid.cells[row][col];
                 if (!cell.empty &&
-                    (!cell.contents || (cell.solution && cell.solution != cell.contents))) {
+                    (!cell.contents || (cell.solution && cell.solution.toUpperCase() != cell.contents.toUpperCase()))) {
                     return false;
                 }
             }
