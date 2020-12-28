@@ -52,7 +52,9 @@
                 :solverid="solverid"
                 :gridSize="gridSize"
                 :isPortrait="isPortrait"
-                @fill-cell="sendFillCell($event)">
+                :showTooltips="showTooltips"
+                @fill-cell="sendFillCell($event)"
+                v-if="showGrid">
             </ana-crossword-grid>
             <template v-if="state.compiling && !isPortrait">
                 <ana-crossword-editor id="editor"
@@ -65,16 +67,18 @@
                 </ana-crossword-editor>
             </template>
             <template v-else>
-                <div id="clue-container" :data-portrait="isPortrait">
+                <div id="clue-container" :data-portrait="isPortrait" :data-show-grid="showGrid">
                     <ana-crossword-clues id="clues" ref="clues"
                         :data-portrait="isPortrait"
+                        :data-show-grid="showGrid"
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
                         :showDelete="!state.colluding"
+                        :showTooltipToggle="!isPortrait && showGrid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
-                        @show-tooltip-toggled="$refs.grid.showTooltipToggled($event)"
+                        @toggles-changed="togglesChanged($event)"
                         @check-answer-clicked="checkAnswerClicked()"
                         @reveal-answer-clicked="revealAnswerClicked()"
                         @delete-all-clicked="deleteAllClicked()"
@@ -142,7 +146,6 @@ body {
 }
 
 #app-container {
-    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -158,7 +161,10 @@ body {
     width: 100%;
     &[data-portrait] {
         min-height: 0;
+        height: 85vh;
         flex-direction: column;
+    }
+    &:not([data-show-grid])[data-portrait] {
     }
     width: 100%;
     @media print {
@@ -216,11 +222,17 @@ body {
     @media screen {
         border: 1px solid #000;
     }
+
     &:not([data-portrait]) {
         margin-top: $displayPadding;
         height: 80vh;
     }
+    &:not([data-show-grid])[data-portrait] {
+        margin-top: $displayPadding;
+        height: 100% !important;
+    }
     background-color: #fff;
+    padding-bottom: 5em;
 }
 </style>
 
@@ -373,6 +385,7 @@ export default Vue.extend({
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
+
     selectedClue() {
         if (!this.crossword)
             return undefined;
@@ -533,10 +546,17 @@ export default Vue.extend({
       gridSizeLocked: false,
       dragCount: 0,
       solverid: 0,
-      socketid: ''
+      socketid: '',
+      showGrid: true,
+      showTooltips: true,
+      toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}]
     };
   },
   methods: {
+    togglesChanged(toggles) {
+        this.showGrid = toggles.includes('grid');
+        this.showTooltips = toggles.includes('tooltips');
+    },
     // https://stackoverflow.com/a/11744120
     handleResize() {
         this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;

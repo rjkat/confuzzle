@@ -62,7 +62,8 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-    solverid: Number
+    solverid: Number,
+    showTooltips: Boolean
   },
   computed: {
     copyrightText() {
@@ -118,23 +119,22 @@ export default Vue.extend({
       if (newVal) {
         this.showPopover(newVal);
       }
-    }
-  },
-  methods: {
-    showTooltipToggled(val) {
-      this.showTooltipOverride = val;
+    },
+    showTooltips(newVal, oldVal) {
       if (!this.selectedClue) {
         return;
       }
-      if (!val) {
+      if (!newVal) {
         this.hidePopover(this.selectedClue);
       } else {
         this.showPopover(this.selectedClue);
       }
     },
+  },
+  methods: {
     showPopover(clue) {
       const inputCell = this.getInputCell(clue.cells[0]);
-      if (inputCell && (this.showTooltipOverride || this.isPortrait)) {
+      if (inputCell && (this.showTooltips || this.isPortrait)) {
           inputCell.showPopover();
       }
     },
@@ -263,8 +263,7 @@ export default Vue.extend({
       inputAcross: true,
       lastClicked: undefined,
       cellWidth: 29,
-      bodyPadding: 18,
-      showTooltipOverride: true
+      bodyPadding: 18
     };
   }
 });

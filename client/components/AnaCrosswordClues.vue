@@ -1,7 +1,8 @@
 <template>
 <div>
     <ui-toolbar class="ana-clue-list-toolbar hidden-print">
-        <ui-switch class="tooltip-toggle" slot="icon" v-model="showTooltipOverride" @change="$emit('show-tooltip-toggled', showTooltipOverride)" v-responsive.md.lg.xl>Tooltips</ui-switch>
+        <ui-checkbox-group class="toggle-checkboxes" :options="showTooltipToggle ? gridAndTooltips : gridOnly" v-model="toggles" @change="togglesChanged($event)" slot="icon"></ui-checkbox-group>
+            
         <div slot="brand">
             <ui-button
                 icon="playlist_add_check"
@@ -23,7 +24,7 @@
                 :color="deleting ? 'red' : 'default'"
                 @click="deleteClicked()"
                 v-if="showDelete"
-                v-responsive.md.lg.xl
+                v-responsive.lg.xl
             >
             {{deleteText}}
             </ui-button>
@@ -90,11 +91,11 @@
     z-index: 2;
 }
 
-.tooltip-toggle {
+.toggle-checkboxes {
     padding-left: $displayPadding;
 }
 
-.tooltip-toggle .ui-switch__label-text {
+.toggle-checkboxes .ui-checkbox__label-text {
     font-family: $titleFontFamily;
     font-size: 0.875rem !important;
     font-weight: 600 !important;
@@ -148,7 +149,8 @@ export default Vue.extend({
         type: Number,
         default: 0
     },
-    showDelete: false
+    showDelete: false,
+    showTooltipToggle: false
   },
   model: {
     prop: 'crossword'
@@ -167,7 +169,7 @@ export default Vue.extend({
     },
     deleteText() {
         return this.deleting ? 'Confirm' : 'Delete all'
-    }
+    },
   },
   methods: {
     cancelClicked() {
@@ -180,12 +182,22 @@ export default Vue.extend({
         } else {
             this.deleting = true;
         }
+    },
+    togglesChanged() {
+        // TODO: why doesn't toggling work properly
+        if (this.toggles.length == 0) {
+            this.toggles.push('tooltips');
+        }
+        this.$emit('toggles-changed', JSON.parse(JSON.stringify(this.toggles)));
     }
   },
   data() {
     return {
+      gridOnly: ['grid'],
+      gridAndTooltips: ['grid', 'tooltips'],
+      toggles: ['grid', 'tooltips'],
+      lastTooltipVal: true,
       bundler: "Parcel",
-      showTooltipOverride: true,
       deleting: false
     };
   }
