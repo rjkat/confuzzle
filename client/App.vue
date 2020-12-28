@@ -690,7 +690,7 @@ export default Vue.extend({
                 cell.contents = '';
             }
         }
-        renderCrossword();
+        this.renderCrossword();
     },
     checkAnswerClicked() {
         if (!this.selectedClue)
