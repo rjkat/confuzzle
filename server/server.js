@@ -69,14 +69,13 @@ if (env == 'dev') {
 } else {
   app.use(compression());
   app.use(function (req, res, next) {
-    console.log(req.hostname)
     if (req.hostname == 'anagr.in' ||
         req.hostname == 'anagrind.com' ||
         req.hostname == 'xword.party') {
         res.redirect(301, 'https://confuzzle.me' + req.url);
         return;
     }
-    next();    
+    next();
   });
   app.use(express.static(__dirname + '/../dist'));
 }

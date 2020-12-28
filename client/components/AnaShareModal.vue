@@ -2,7 +2,7 @@
     <ui-modal ref="modal" @reveal="onReveal()" title="Share Crossword">
         <div style="text-align: center;">
             <template v-if="!link">
-                <p class="share-info-text">Get a shared link to this crossword and collude with others in real time.</p>
+                <p class="share-info-text">Get a shared link to this crossword and solve with others in real time.</p>
                 <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="shareClicked()">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>

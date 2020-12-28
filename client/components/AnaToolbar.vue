@@ -18,9 +18,10 @@
         >
         </ui-icon-button>
         <ui-icon-button
-            color="white"
+            :color="state.colluding ? 'primary' : 'white'"
+            type="secondary"
             has-dropdown
-            icon="people"
+            :icon="state.colluding ? 'group_add' : 'share'"
             size="large"
             @click="openModal('shareModal')"
         >
@@ -158,7 +159,7 @@ export default Vue.extend({
                 icon: 'get_app'
             },
             {
-                label: 'Go offline',
+                label: 'Solve alone',
                 icon: 'exit_to_app'
             },
             {
@@ -221,7 +222,7 @@ export default Vue.extend({
                 icon: 'get_app'
             },
             {
-                label: 'Go offline',
+                label: 'Solve alone',
                 icon: 'exit_to_app'
             },
             {
@@ -298,7 +299,7 @@ export default Vue.extend({
             this.$emit('download-puz-clicked');
         } else if (option.label == 'Download .eno') {
             this.$emit('download-eno-clicked');
-        } else if (option.label == 'Go offline') {
+        } else if (option.label == 'Solve alone') {
             this.$emit('go-offline-clicked');
         } else if (option.label == 'Upload .puz/.eno') {
             this.$refs.fileInput.click();
