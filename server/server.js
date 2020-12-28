@@ -72,6 +72,12 @@ if (env == 'dev') {
 }
 
 app.use(function (req, res, next) {
+    if (req.hostname == 'anagr.in' ||
+        req.hostname == 'anagrind.com' ||
+        req.hostname == 'xword.party') {
+        res.redirect(301, 'https://confuzzle.me' + req.url);
+        return;
+    }
     let gridid = req.url.split('/')[1];
     if (!queryGrid(gridid)) {
         res.sendStatus(404);

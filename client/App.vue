@@ -661,6 +661,13 @@ export default Vue.extend({
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
     },
+    clearAllHighlighted() {
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            for (var i = 0; i < 8; i++) {
+                clue.clearHighlight(i);
+            }
+        }
+    },
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
@@ -779,6 +786,7 @@ export default Vue.extend({
         }
         this.$options.socket = null;
         this.$refs.disconnectedModal.close();
+        this.clearAllHighlighted();
         this.snackbarMessage('You left the crossword');
     },
     reconnectClicked(event) {
