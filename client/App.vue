@@ -639,6 +639,9 @@ export default Vue.extend({
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
                 const cell = grid.cells[row][col];
+                if (!cell.clues) {
+                    continue;
+                }
                 if (cell.clues.across) {
                     cell.clues.across.showCorrect = false;
                     cell.clues.across.showIncorrect = false;
