@@ -23,6 +23,7 @@
                 :color="deleting ? 'red' : 'default'"
                 @click="deleteClicked()"
                 v-if="showDelete"
+                v-responsive.md.lg.xl
             >
             {{deleteText}}
             </ui-button>

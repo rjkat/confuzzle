@@ -389,8 +389,9 @@ export default Vue.extend({
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
-                if (!grid.cells[row][col].empty
-                    && grid.cells[row][col].contents == '') {
+                const cell = grid.cells[row][col];
+                if (!cell.empty &&
+                    (!cell.contents || (cell.solution && cell.solution != cell.contents))) {
                     return false;
                 }
             }
@@ -667,7 +668,12 @@ export default Vue.extend({
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
     },
     deleteAllClicked() {
-        this.renderCrossword()
+        const grid = this.crossword.grid;
+        for (let row = 0; row < grid.height; row++) {
+            for (let col = 0; col < grid.width; col++) {
+                grid.cells[row][col].contents = '';
+            }
+        }
     },
     checkAnswerClicked() {
         if (!this.selectedClue)
