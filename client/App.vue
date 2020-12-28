@@ -634,6 +634,21 @@ export default Vue.extend({
         // strip any state from the source, we have rendered it now
         this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];
 
+
+        const grid = this.crossword.grid;
+        for (let row = 0; row < grid.height; row++) {
+            for (let col = 0; col < grid.width; col++) {
+                const cell = grid.cells[row][col];
+                if (cell.clues.across) {
+                    cell.clues.across.showCorrect = false;
+                    cell.clues.across.showIncorrect = false;
+                }
+                if (cell.clues.down) {
+                    cell.clues.down.showCorrect = false;
+                    cell.clues.down.showIncorrect = false;
+                }
+            }
+        }
     },
     crosswordEdited() {
         const self = this;
@@ -671,9 +686,11 @@ export default Vue.extend({
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
-                grid.cells[row][col].contents = '';
+                const cell = grid.cells[row][col];
+                cell.contents = '';
             }
         }
+        renderCrossword();
     },
     checkAnswerClicked() {
         if (!this.selectedClue)
