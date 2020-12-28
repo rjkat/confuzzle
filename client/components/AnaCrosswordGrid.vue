@@ -21,7 +21,6 @@
   </div>
   <div v-if="!isPortrait" :style="gridControlStyle">
     <div class="copyright-text">{{copyrightText}}</div>
-    <ui-switch v-model="showTooltipOverride" class="tooltip-toggle hidden-print" @change="showTooltipToggled($event)">Tooltips</ui-switch>
   </div>
 </div>
 </template>
@@ -35,10 +34,6 @@
   border-collapse: collapse;
 }
 .copyright-text {
-  font-family: $clueFontFamily;
-  margin-right: $displayPadding;
-}
-.tooltip-toggle {
   font-family: $clueFontFamily;
   margin-right: $displayPadding;
 }
@@ -127,6 +122,10 @@ export default Vue.extend({
   },
   methods: {
     showTooltipToggled(val) {
+      this.showTooltipOverride = val;
+      if (!this.selectedClue) {
+        return;
+      }
       if (!val) {
         this.hidePopover(this.selectedClue);
       } else {
@@ -173,6 +172,8 @@ export default Vue.extend({
     fillCell(cell) {
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
       const offset = this.inputAcross ? cell.offsets.across : cell.offsets.down;
+      clue.showCorrect = false;
+      clue.showIncorrect = false;
       this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents});
     },
     cellClicked(event, cell) {

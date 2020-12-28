@@ -1,8 +1,46 @@
 <template>
 <div>
+    <ui-toolbar class="ana-clue-list-toolbar hidden-print">
+        <ui-switch class="tooltip-toggle" slot="icon" v-model="showTooltipOverride" @change="$emit('show-tooltip-toggled', showTooltipOverride)" v-responsive.md.lg.xl>Tooltips</ui-switch>
+        <div slot="brand">
+            <ui-button
+                icon="playlist_add_check"
+                type="secondary"
+                @click="$emit('check-answer-clicked', $event)"
+            >
+            Check
+            </ui-button>
+            <ui-button
+                icon="visibility"
+                type="secondary"
+                @click="$emit('reveal-answer-clicked', $event)"
+            >
+            Reveal
+            </ui-button>
+            <ui-button
+                icon="delete"
+                type="secondary"
+                :color="deleting ? 'red' : 'default'"
+                @click="deleteClicked()"
+                v-if="showDelete"
+            >
+            {{deleteText}}
+            </ui-button>
+            <ui-button
+                icon="cancel"
+                type="secondary"
+                @click="cancelClicked()"
+                v-if="deleting"
+            >
+            Cancel
+            </ui-button>
+        </div>
+
+    </ui-toolbar>
     <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></ana-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="ana-clue-list-container">
+
         <ana-clue-list
             class="clue-list"
             data-across
@@ -41,6 +79,27 @@
 
 #solvers {
     padding-bottom: $displayPadding;
+}
+
+.ana-clue-list-toolbar {
+    position: sticky;
+    top: 0;
+    margin-bottom: $displayPadding;
+    background-color: #efefef;
+    z-index: 2;
+}
+
+.tooltip-toggle {
+    padding-left: $displayPadding;
+}
+
+.tooltip-toggle .ui-switch__label-text {
+    font-family: $titleFontFamily;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
 }
 
 .ana-clue-list-container {
@@ -87,7 +146,8 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
-    }
+    },
+    showDelete: false
   },
   model: {
     prop: 'crossword'
@@ -103,13 +163,29 @@ export default Vue.extend({
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
             ]
         });
+    },
+    deleteText() {
+        return this.deleting ? 'Confirm' : 'Delete all'
     }
   },
   methods: {
+    cancelClicked() {
+        this.deleting = false;
+    },
+    deleteClicked() {
+        if (this.deleting) {
+            this.$emit('delete-all-clicked');
+            this.deleting = false;
+        } else {
+            this.deleting = true;
+        }
+    }
   },
   data() {
     return {
-      bundler: "Parcel"
+      bundler: "Parcel",
+      showTooltipOverride: true,
+      deleting: false
     };
   }
 });

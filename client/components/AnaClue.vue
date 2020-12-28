@@ -30,6 +30,9 @@
                            v-model="clue.cells[i].contents">
                     </input><span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
                 </template>
+                
+                <ui-icon v-if="clue.showCorrect">check</ui-icon>
+                <ui-icon v-if="clue.showIncorrect">close</ui-icon>
             </div>
         </div>
     </li>
@@ -111,7 +114,7 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
-    },
+    }
   },
   model: {
     prop: 'clue'
@@ -119,7 +122,7 @@ export default Vue.extend({
   watch: {
     selected: function(val) {
         if (val && !this.wasClicked) {
-            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'start'});
+            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
         if (!val) {
             this.wasClicked = false;
@@ -213,7 +216,9 @@ export default Vue.extend({
             haveFocus |= this.$refs.inputs[i] === document.activeElement
         }
         this.wasClicked |= haveFocus;
-        haveFocus ? this.clue.select(this.solverid) : this.clue.deselect(this.solverid);
+        if (haveFocus) {
+            this.clue.select(this.solverid);
+        }
     },
     shadingColor: function(i) {
         if (this.clue && this.clue.shadingColor)
@@ -245,6 +250,8 @@ export default Vue.extend({
         }
     },
     fillCell: function(offset, value) {
+        this.clue.showCorrect = false;
+        this.clue.showIncorrect = false;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
     },
     handleInput(event, offset) {

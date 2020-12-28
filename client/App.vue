@@ -47,6 +47,7 @@
         </template>
         <template v-else>
             <ana-crossword-grid id="grid"
+                ref="grid"
                 v-model="crossword"
                 :solverid="solverid"
                 :gridSize="gridSize"
@@ -65,13 +66,18 @@
             </template>
             <template v-else>
                 <div id="clue-container" :data-portrait="isPortrait">
-                    <ana-crossword-clues id="clues"
+                    <ana-crossword-clues id="clues" ref="clues"
                         :data-portrait="isPortrait"
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
+                        :showDelete="!state.colluding"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
+                        @show-tooltip-toggled="$refs.grid.showTooltipToggled($event)"
+                        @check-answer-clicked="checkAnswerClicked()"
+                        @reveal-answer-clicked="revealAnswerClicked()"
+                        @delete-all-clicked="deleteAllClicked()"
                         v-responsive.class
                         >
                     </ana-crossword-clues>
@@ -199,9 +205,6 @@ body {
         padding-top: $displayPadding;
     }
 }
-#clues {
-    padding-top: $displayPadding;
-}
 
 #clue-container {
     flex: 1 1 50%;
@@ -253,6 +256,8 @@ function parseAndBuild(input, compiling, options) {
     for (let [clueid, clue] of Object.entries(cw.clues)) {
       clue.highlightMask = 0;
       clue.selected = false;
+      clue.showCorrect = false;
+      clue.showIncorrect = false;
       clue.deselect = function (solverid) {
         solverid %= 8;
         this.selected = false;
@@ -661,6 +666,38 @@ export default Vue.extend({
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
     },
+    deleteAllClicked() {
+        this.renderCrossword()
+    },
+    checkAnswerClicked() {
+        if (!this.selectedClue)
+            return;
+
+        var correct = true;
+        for (var i = 0; i < this.selectedClue.cells.length; i++) {
+            const cell = this.selectedClue.cells[i];
+            if (cell.contents.toUpperCase() != cell.solution.toUpperCase()) {
+                correct = false;
+                break;
+            }
+        }
+
+        this.selectedClue.showCorrect = correct;
+        this.selectedClue.showIncorrect = !correct;
+    },
+    revealAnswerClicked() {
+        if (!this.selectedClue)
+            return;
+
+        for (var i = 0; i < this.selectedClue.cells.length; i++) {
+            const cell = this.selectedClue.cells[i];
+            if (cell.solution) {
+                cell.contents = cell.solution;
+            }
+        }
+        this.selectedClue.showIncorrect = false;
+        this.selectedClue.showCorrect = false;
+    },
     clearAllHighlighted() {
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             for (var i = 0; i < 8; i++) {
@@ -688,6 +725,8 @@ export default Vue.extend({
         }
     },
     fillCell(msg) {
+        this.crossword.clues[msg.clueid].showIncorrect = false;
+        this.crossword.clues[msg.clueid].showCorrect = false;
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
     },
     sendUpdate(event) {

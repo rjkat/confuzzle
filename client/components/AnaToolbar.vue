@@ -18,7 +18,7 @@
         >
         </ui-icon-button>
         <ui-icon-button
-            :color="state.colluding ? 'primary' : 'white'"
+            :color="state.colluding ? 'green' : 'white'"
             type="secondary"
             has-dropdown
             :icon="state.colluding ? 'group_add' : 'share'"

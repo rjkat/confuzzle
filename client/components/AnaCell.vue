@@ -224,10 +224,20 @@ export default Vue.extend({
             return text;
         const acrossClue = this.cell.clues.across;
         const downClue = this.cell.clues.down;
-        if (acrossClue)
-            text = acrossClue.plainText;
-        if (downClue && (!acrossClue || downClue.selected))
-            text = downClue.plainText
+        var clue;
+        if (acrossClue) {
+            clue = acrossClue;
+        }
+        if (downClue && (!acrossClue || downClue.selected)) {
+            clue = downClue;
+        }
+        text = clue.plainText;
+        if (clue.showCorrect) {
+            text += ' ✅'
+        }
+        if (clue.showIncorrect) {
+            text += ' ❌'
+        }
 
         var wrappedText = '';
         var lastWrap = 0;
