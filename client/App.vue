@@ -59,12 +59,16 @@
             </ana-crossword-grid>
             <template v-if="state.compiling && !isPortrait">
                 <ana-crossword-editor id="editor"
+                    ref="editor"
                     v-model="crosswordSource"
                     :loading="renderLoading"
                     :errorText="errorText"
                     :errorMessage="errorMessage"
+                    :scrambled='crossword.meta.scramble != "none"'
                     @input="crosswordEdited()"
                     @preview-clicked="previewClicked()"
+                    @scramble-clicked="scrambleClicked()"
+                    @unscramble-clicked="unscrambleClicked()"
                     v-responsive.class>
                 </ana-crossword-editor>
             </template>
@@ -264,7 +268,7 @@ import AnaToolbar from './components/AnaToolbar.vue'
 import AnaDisconnectedModal from './components/AnaDisconnectedModal.vue'
 
 const parser = require('./js/parser.js');
-import {readEno, enoToPuz} from './js/eno.js'
+import {readEno, enoToPuz, enoState, exportEno} from './js/eno.js'
 import {EnoError} from 'enolib'
 
 const {Manager} = require("socket.io-client");
@@ -420,54 +424,7 @@ export default Vue.extend({
         return true;
     },
     crosswordState() {
-        var state = '';
-        var haveState = false;
-        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            var ans = '';
-            var nfilled = 0;
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
-                const c = clue.cells[i].contents;
-                if (c) {
-                    nfilled++;
-                    ans += c.toUpperCase();
-                } else {
-                    ans += '-';
-                }
-            }
-
-            /* if all cells are already in another clue with more filled-in
-             * cells, don't write this one */
-            var nneeded = nfilled;
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
-                const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
-                if (!otherClue)
-                    continue;
-                var nother = 0;
-                for (var j = 0; j < otherClue.cells.length; j++) {
-                    if (otherClue.cells[j].contents) {
-                        nother++;
-                    }
-                }
-                if (nother > nfilled ) {
-                    nneeded--;
-                } else if (!clue.isAcross && nother == nfilled) {
-                    // tiebreak, prefer across clues to down
-                    nneeded--;
-                }
-            }
-
-            if (nneeded > 0) {
-                if (!haveState) {
-                    haveState = true;
-                    state = '\n# state\n';
-                }
-                state += '\n## ' + clueid + '\n';
-                state += 'ans: ' + ans + '\n';
-            }
-        }
-        return state;
+        return enoState(this.crossword.clues);
     }
   },
   watch: {
@@ -695,6 +652,19 @@ export default Vue.extend({
     },
     editSourceClicked() {
         this.state.compiling = true;
+    },
+    redrawEditor() {
+        Vue.nextTick(() => this.$refs.editor.redraw());
+    },
+    scrambleClicked() {
+        this.crosswordSource = exportEno(this.crossword, true);
+        this.renderCrossword();
+        this.redrawEditor();
+    },
+    unscrambleClicked() {
+        this.crosswordSource = exportEno(this.crossword, false);
+        this.renderCrossword();
+        this.redrawEditor();
     },
     lostConnection() {
         if (this.$options.socket) {
@@ -940,10 +910,12 @@ export default Vue.extend({
     enoFileUploaded(buf) {
         this.crosswordSource = Buffer.from(buf).toString('utf8');
         this.renderCrossword();
+        this.redrawEditor();
     },
     puzFileUploaded(buf) {
         this.crosswordSource = readEno(new Uint8Array(buf));
         this.renderCrossword();
+        this.redrawEditor();
     },
     downloadPuzClicked() {
         const puz = enoToPuz(this.crosswordSource + this.crosswordState);

@@ -11,7 +11,23 @@
           </ui-button>
         </form>
         <div slot="brand">
-            <ui-button
+          <ui-button
+                icon="lock"
+                type="secondary"
+                @click="$emit('scramble-clicked', $event)"
+                v-if="!scrambled"
+            >
+            Scramble
+          </ui-button>
+          <ui-button
+                icon="lock_open"
+                type="secondary"
+                @click="$emit('unscramble-clicked', $event)"
+                v-if="scrambled"
+            >
+            Unscramble
+          </ui-button>
+          <ui-button
                 icon="visibility"
                 type="secondary"
                 @click="$emit('preview-clicked', $event)"
@@ -21,6 +37,7 @@
         </div>
     </ui-toolbar>
       <ana-editor
+          ref="editor"
           :source="source"
           :loading="loading"
           @input="$emit('input', $event)">
@@ -96,7 +113,8 @@ export default Vue.extend({
     source: String,
     loading: Boolean,
     errorText: String,
-    errorMessage: String
+    errorMessage: String,
+    scrambled: Boolean
   },
   watch: {
     errorText() {
@@ -109,6 +127,9 @@ export default Vue.extend({
   methods: {
     dismissError() {
       this.errorDismissed = true;
+    },
+    redraw() {
+      this.$refs.editor.redraw();
     }
   },
   data() {

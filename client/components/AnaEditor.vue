@@ -36,13 +36,19 @@ export default Vue.extend({
   model: {
     prop: 'source'
   },
+  methods: {
+    redraw() {
+      this.prismObj.update();
+    }
+  },
   data() {
     return {
       bundler: "Parcel",
+      prismObj: Object
     };
   },
   mounted() {
-    new Prism.Live(this.$refs.textarea);
+    this.prismObj = new Prism.Live(this.$refs.textarea);
   }
 });
 </script>

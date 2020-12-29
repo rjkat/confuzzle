@@ -92,6 +92,124 @@ function getClues(p) {
     return clues;
 }
 
+function enoClues(clues, scramble) {
+    var eno = "\n# clues\n";
+    for (let [clueid, clue] of Object.entries(clues)) {
+        const ans = scramble ? Buffer.from(clue.solution).toString('base64') : clue.solution;
+        eno += "\n## " + clue.id + "\n"
+        eno += "row: " + clue.row + "\n";
+        eno += "col: " + clue.col + "\n";
+        eno += "text: " + clue.text + "\n";
+        if (clue.text.match(/\(\d+.*?\)\s*$/)) {
+            eno += "verbatim\n"
+        }
+        eno += "ans: " + ans + "\n";
+        eno += 'lengths:\n    - ' + clue.lengths.join('\n    - ') + '\n';
+        if (clue.separators && clue.separators.length > 0) {
+            eno += 'separators:\n    - ' + clue.separators.join('\n    - ') + '\n';
+        }
+    }
+    return eno;
+}
+
+function enoMeta(meta, scramble) {
+    var eno = "# meta\n";
+    eno += "name: " + meta.name + "\n";
+    eno += "author: " + meta.author + "\n";
+
+    if (meta.type)
+        eno += "type: " + meta.type + "\n";
+    if (meta.identifier)
+        eno += "identifier: " + meta.identifier + "\n";   
+    if (meta.copyright)
+        eno += "copyright: " + meta.copyright + "\n";   
+
+    if (meta.note) {
+        eno += "--note\n"
+        eno += meta.note + "\n";
+        eno += "--note\n"
+    }
+    eno += "scramble: " + (scramble ? "base64" : "none") + "\n";
+    
+    return eno;
+}
+
+function enoGrid(grid) {
+    var eno = "\n# grid\n";
+    eno += "width: " + grid.width + "\n";
+    eno += "height: " + grid.height + "\n";
+    return eno;
+}
+
+function enoRefs(clues) {
+    var refs = '';
+    for (let [clueid, clue] of Object.entries(clues)) {
+        if (clue.refIds.length == 0) {
+            continue;
+        }
+        refs += '## ' + clue.id + '\n';
+        refs += 'clues:\n    - ' + clue.refIds.join('\n    - ') + '\n';
+        refs += 'separators:\n';
+        if (clue.refSeparators && clue.refSeparators.length > 0) {
+            refs += '    - ' + clue.refSeparators.join('\n    - ') + '\n';
+        }
+        refs += '\n';
+    }
+    
+    if (refs)
+        refs = '\n# references\n\n' + refs;
+    return refs;
+}
+
+export function enoState(clues) {
+    var state = '';
+    for (let [clueid, clue] of Object.entries(clues)) {
+        var ans = '';
+        var nfilled = 0;
+        for (var i = 0; i < clue.cells.length; i++) {
+            const cell = clue.cells[i];
+            const c = clue.cells[i].contents;
+            if (c) {
+                nfilled++;
+                ans += c.toUpperCase();
+            } else {
+                ans += '-';
+            }
+        }
+
+        /* if all cells are already in another clue with more filled-in
+         * cells, don't write this one */
+        var nneeded = nfilled;
+        for (var i = 0; i < clue.cells.length; i++) {
+            const cell = clue.cells[i];
+            const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
+            if (!otherClue)
+                continue;
+            var nother = 0;
+            for (var j = 0; j < otherClue.cells.length; j++) {
+                if (otherClue.cells[j].contents) {
+                    nother++;
+                }
+            }
+            if (nother > nfilled ) {
+                nneeded--;
+            } else if (!clue.isAcross && nother == nfilled) {
+                // tiebreak, prefer across clues to down
+                nneeded--;
+            }
+        }
+
+        if (nneeded > 0) {
+            if (!state) {
+                state = '\n# state\n';
+            }
+            state += '\n## ' + clueid + '\n';
+            state += 'ans: ' + ans + '\n';
+        }
+    }
+    return state;
+}
+
 export function puzToEno(p) {
     const clues = getClues(p);
 
@@ -162,6 +280,23 @@ export function puzToEno(p) {
     if (haveState) {
         eno += state;
     }
+    return eno;
+}
+
+export function exportEno(crossword, scramble) {
+    var eno = enoMeta(crossword.meta, scramble);
+    
+    eno += enoGrid(crossword.grid);
+    eno += enoClues(crossword.clues, scramble);
+
+    var refs = enoRefs(crossword.clues);
+    if (refs)
+        eno += refs;
+
+    var state = enoState(crossword.clues);
+    if (state)
+        eno += state;
+
     return eno;
 }
 
