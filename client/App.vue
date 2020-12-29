@@ -744,6 +744,11 @@ export default Vue.extend({
             const cell = this.selectedClue.cells[i];
             if (cell.solution) {
                 cell.contents = cell.solution;
+                this.sendFillCell({
+                    clueid: this.selectedClue.id,
+                    offset: i,
+                    value: cell.solution
+                });
             }
         }
         this.selectedClue.showIncorrect = false;
