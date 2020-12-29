@@ -654,7 +654,7 @@ export default Vue.extend({
         this.state.compiling = true;
     },
     redrawEditor() {
-        Vue.nextTick(() => this.$refs.editor.redraw());
+        Vue.nextTick(() => this.$refs.editor && this.$refs.editor.redraw());
     },
     scrambleClicked() {
         this.crosswordSource = exportEno(this.crossword, true);

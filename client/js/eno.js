@@ -100,9 +100,8 @@ function enoClues(clues, scramble) {
         eno += "row: " + clue.row + "\n";
         eno += "col: " + clue.col + "\n";
         eno += "text: " + clue.text + "\n";
-        if (clue.text.match(/\(\d+.*?\)\s*$/)) {
+        if (clue.verbatim)
             eno += "verbatim\n"
-        }
         eno += "ans: " + ans + "\n";
         eno += 'lengths:\n    - ' + clue.lengths.join('\n    - ') + '\n';
         if (clue.separators && clue.separators.length > 0) {
@@ -138,6 +137,21 @@ function enoGrid(grid) {
     var eno = "\n# grid\n";
     eno += "width: " + grid.width + "\n";
     eno += "height: " + grid.height + "\n";
+
+    if (grid.shading) {
+        eno += '\n## shading\n'
+        for (var i = 0; i < grid.shading.length; i++) {
+            const rule = grid.shading[i];
+            eno += '\n### ' + rule.name + '\n';
+            eno += 'color: ' + rule.color + '\n';
+            if (rule.clues) {
+                eno += 'clues:\n    - ' + rule.clues.join('\n    - ') + '\n';
+            } else {
+                eno += 'row: ' + rule.row + '\n';
+                eno += 'col: ' + rule.col + '\n';
+            }
+        }
+    }
     return eno;
 }
 
@@ -241,14 +255,40 @@ export function puzToEno(p) {
         eno += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
         eno += "row: " + (clue.row + 1) + "\n";
         eno += "col: " + (clue.col + 1) + "\n";
-        eno += "text: " + p.clues[i] + "\n";
+        
 
-        // the length is in the clue, mark it as verbatim
-        if (p.clues[i].match(/\(\d+.*?\)\s*$/)) {
-            eno += "verbatim\n"
+        var text = p.clues[i];
+        var separators = null;
+        var lengths = [clue.length];
+        const toks = text.match(/^(.*) \((.*)\)\s*$/);
+        var verbatim = false;
+        
+        if (toks) {
+            // looks like a multiple-word clue, see if the lengths add up
+            lengths = toks[2].match(/\b\d+\b/g).map(x => parseInt(x));
+            var totLen = 0;
+            for (var j = 0; j < lengths.length; j++) {
+                totLen += lengths[j];
+            }
+
+            // if they don't, ignore and treat clue as verbatim
+            if (totLen != clue.length) {
+                lengths = [clue.length];
+                verbatim = true;
+            } else {
+                text = toks[1];
+                separators = toks[2].match(/[^\d\s]/g);
+            }
         }
+
+        eno += "text: " + text + "\n";
+        if (verbatim)
+            eno += "verbatim\n"
         eno += "ans: " + Buffer.from(clue.solution).toString('base64') + "\n";
-        eno += "lengths:\n    - " + clue.length + "\n";
+        eno += 'lengths:\n    - ' + lengths.join('\n    - ') + '\n';
+        if (separators) {
+            eno += 'separators:\n    - ' + separators.join('\n    - ') + '\n';
+        }
     }
 
     var haveState = false;
@@ -304,6 +344,25 @@ export function readEno(buf) {
     return puzToEno(PuzPayload.from(buf));
 }
 
+function puzText(clue) {
+    var text = clue.text;
+    if (!clue.verbatim) {
+        text += ' ('
+        for (var i = 0; i < clue.lengths.length; i++) {
+            if (i > 0) {
+                if (clue.separators) {
+                    text += clue.separators[i - 1]
+                } else {
+                    text += ','
+                }
+            }
+            text += clue.lengths[i];
+        }
+        text += ')'
+    }
+    return text;
+}
+
 export function enoToPuz(eno) {
     const cw = parser.parse(eno);
     const meta = cw.meta;
@@ -320,10 +379,10 @@ export function enoToPuz(eno) {
                 continue
             
             if (cell.clues.across && cell.offsets.across == 0) {
-                clues.push(cell.clues.across.text);
+                clues.push(puzText(cell.clues.across));
             }
             if (cell.clues.down && cell.offsets.down == 0) {
-                clues.push(cell.clues.down.text);
+                clues.push(puzText(cell.clues.down));
             }
         }
     }

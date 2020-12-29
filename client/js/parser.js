@@ -353,11 +353,13 @@ export function parse(input, compiling, options) {
         const shadingEls = section.elements(); {
           shadingEls.forEach(el => {
               const x = el.toSection();
+              const ruleName = el.stringKey();
               const color = x.requiredField('color').requiredColorValue();
               let colorClues = x.optionalList('clues');
               if (colorClues) {
                 colorClues = colorClues.requiredStringValues();
                 cw.grid.shading.push({
+                  name: ruleName,
                   color: color,
                   clues: colorClues
                 });
@@ -365,6 +367,7 @@ export function parse(input, compiling, options) {
                 const row = x.requiredField('row').requiredIntegerValue();
                 const col = x.requiredField('col').requiredIntegerValue();
                 cw.grid.shading.push({
+                  name: ruleName,
                   color: color,
                   row: row,
                   col: col,
