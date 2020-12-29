@@ -188,7 +188,10 @@ class PuzPayload {
             strings += this.clues[i] + '\x00';
 
         if (this.note)
-            strings += this.note + '\x00';
+            strings += this.note;
+
+        /* need a null terminator even if notes are empty */
+        strings += '\x00';
 
         return puzEncode(strings);
     }
