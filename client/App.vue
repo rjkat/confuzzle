@@ -15,7 +15,7 @@
         :shareLoading="shareLoading"
         :shareLink="shareLink"
         class="hidden-print"
-        v-model="state"
+        :state="state"
         @share-clicked="shareClicked($event)"
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
@@ -64,6 +64,7 @@
                     :errorText="errorText"
                     :errorMessage="errorMessage"
                     @input="crosswordEdited()"
+                    @preview-clicked="previewClicked()"
                     v-responsive.class>
                 </ana-crossword-editor>
             </template>
@@ -75,12 +76,13 @@
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
-                        :showDelete="!state.colluding"
+                        :showDelete="false"
                         :showTooltipToggle="!isPortrait && showGrid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
                         @toggles-changed="togglesChanged($event)"
                         @check-answer-clicked="checkAnswerClicked()"
+                        @edit-source-clicked="editSourceClicked()"
                         @reveal-answer-clicked="revealAnswerClicked()"
                         @delete-all-clicked="deleteAllClicked()"
                         v-responsive.class
@@ -686,6 +688,12 @@ export default Vue.extend({
            self.renderCrossword,
            500
         );
+    },
+    previewClicked() {
+        this.state.compiling = false;
+    },
+    editSourceClicked() {
+        this.state.compiling = true;
     },
     lostConnection() {
         if (this.$options.socket) {

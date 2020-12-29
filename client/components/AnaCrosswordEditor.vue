@@ -1,5 +1,25 @@
 <template>
 <div class="ana-crossword-editor-container">
+      <ui-toolbar class="ana-editor-toolbar hidden-print">
+
+        <form action="/syntax" target="_blank" slot="icon">
+          <ui-button
+                  icon="help"
+                  type="secondary"
+              >
+              Syntax guide
+          </ui-button>
+        </form>
+        <div slot="brand">
+            <ui-button
+                icon="visibility"
+                type="secondary"
+                @click="$emit('preview-clicked', $event)"
+            >
+            Preview
+          </ui-button>
+        </div>
+    </ui-toolbar>
       <ana-editor
           :source="source"
           :loading="loading"
@@ -21,6 +41,12 @@
 </template>
 
 <style lang="scss">
+  .ana-editor-toolbar {
+      position: sticky;
+      top: 0;
+      background-color: #efefef;
+      z-index: 2;
+  }
   .ana-crossword-editor-container {
     display: flex;
     flex-direction: column;

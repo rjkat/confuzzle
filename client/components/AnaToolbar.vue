@@ -143,9 +143,6 @@ export default Vue.extend({
     shareLoading: false,
     shareLink: ""
   },
-  model: {
-    prop: 'state'
-  },
   computed: {
     menuOptions() {
         if (this.state.colluding) {
@@ -167,10 +164,7 @@ export default Vue.extend({
                 icon: 'info'
             }];
         } else if (!this.state.compiling) {
-            return [{
-                label: 'Edit',
-                icon: 'edit'
-            },
+            return [
             {
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
@@ -188,10 +182,7 @@ export default Vue.extend({
                 icon: 'info'
             }];
         } else {
-            return [{
-                label: 'Preview',
-                icon: 'visibility'
-            },
+            return [
             {
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
@@ -293,9 +284,7 @@ export default Vue.extend({
         Vue.nextTick(() => window.print());
     },
     selectMenuOption(option) {
-        if (option.label == 'Edit' || option.label == 'Preview') {
-            this.state.compiling = !this.state.compiling;
-        } else if (option.label == 'Download .puz') {
+        if (option.label == 'Download .puz') {
             this.$emit('download-puz-clicked');
         } else if (option.label == 'Download .eno') {
             this.$emit('download-eno-clicked');

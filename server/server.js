@@ -64,7 +64,7 @@ app.use(robots({UserAgent: '*', Disallow: '/'}))
 
 if (env == 'dev') {
   const Bundler = require('parcel-bundler');
-  const bundler = new Bundler('client/index.html');
+  const bundler = new Bundler(['client/index.html', 'client/syntax.html']);
   app.use(bundler.middleware());
 } else {
   app.use(compression());
@@ -81,6 +81,14 @@ if (env == 'dev') {
 }
 
 app.use(function (req, res, next) {
+    if (req.path == '/') {
+        res.sendFile(path.join(__dirname + '/../dist/index.html'));
+        return;
+    }
+    if (req.path == '/syntax') {
+        res.sendFile(path.join(__dirname + '/../dist/syntax.html'));
+        return;
+    }
     let gridid = req.url.split('/')[1];
     if (!queryGrid(gridid)) {
         res.sendStatus(404);

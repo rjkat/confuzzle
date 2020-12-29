@@ -19,6 +19,14 @@
             Reveal
             </ui-button>
             <ui-button
+                icon="edit"
+                type="secondary"
+                @click="$emit('edit-source-clicked', $event)"
+                v-responsive.lg.xl
+            >
+            Edit
+            </ui-button>
+            <ui-button
                 icon="delete"
                 type="secondary"
                 :color="deleting ? 'red' : 'default'"
@@ -86,6 +94,7 @@
 .ana-clue-list-toolbar {
     position: sticky;
     top: 0;
+    height: 2.25rem !important;
     margin-bottom: $displayPadding;
     background-color: #efefef;
     z-index: 2;
