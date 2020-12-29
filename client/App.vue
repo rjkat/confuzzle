@@ -77,6 +77,7 @@
                         :solvers="solvers"
                         :solverid="solverid"
                         :showDelete="false"
+                        :showEdit="!state.colluding"
                         :showTooltipToggle="!isPortrait && showGrid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"

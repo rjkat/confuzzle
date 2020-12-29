@@ -23,6 +23,7 @@
                 type="secondary"
                 @click="$emit('edit-source-clicked', $event)"
                 v-responsive.lg.xl
+                v-if="showEdit"
             >
             Edit
             </ui-button>
@@ -159,6 +160,7 @@ export default Vue.extend({
         default: 0
     },
     showDelete: false,
+    showEdit: true,
     showTooltipToggle: false
   },
   model: {
