@@ -81,6 +81,10 @@ lengths:
 separators:
     - -
 
+> boolean, specifies that word lengths in brackets will not automatically be added
+> when displaying the clue
+verbatim
+
 > custom numbering, of course you can have emoji 😉
 ### numbering
 clue: ❤️ [1A]
