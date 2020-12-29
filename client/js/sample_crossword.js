@@ -81,9 +81,6 @@ lengths:
 separators:
     - -
 
-> boolean, specifies that word lengths in brackets will not automatically be added
-> when displaying the clue
-verbatim
 
 > custom numbering, of course you can have emoji 😉
 ### numbering
@@ -106,6 +103,11 @@ row: 7
 col: 12
 ans: TWODOWN
 text: See 1D
+
+> boolean, specifies that word lengths in brackets will not automatically be added
+> when displaying the clue
+verbatim
+
 lengths:
     - 3
     - 4
@@ -127,11 +129,12 @@ separators:
     - /
 
 > grid state of any partially filled answers (optional, as for .puz files)
+> stripped at upload time (see syntax guide if missing)
 
-> # state
+# state
 
-> ## 1A
-> ans: O--A-----
+## 1A
+ans: O--A-----
 
 > bug reports and suggestions for new features are absolutely welcome:
 > https://github.com/rjkat/anagrind/issues/new
