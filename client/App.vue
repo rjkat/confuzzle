@@ -918,7 +918,11 @@ export default Vue.extend({
         this.redrawEditor();
     },
     downloadPuzClicked() {
-        const puz = enoToPuz(this.crosswordSource + this.crosswordState);
+        var eno = this.crosswordSource;
+        if (!this.state.compiling) {
+            eno += this.crosswordState;
+        }
+        const puz = enoToPuz(eno);
         const puzbytes = puz.toBytes();
         const blob = new Blob([puzbytes], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
