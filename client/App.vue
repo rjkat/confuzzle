@@ -924,7 +924,11 @@ export default Vue.extend({
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
-        const blob = new Blob([this.crosswordSource + this.crosswordState], {type: "text/plain"});
+        var eno = this.crosswordSource;
+        if (!this.state.compiling) {
+            eno += this.crosswordState;
+        }
+        const blob = new Blob([eno], {type: "text/plain"});
         this.downloadCrossword(blob, '.eno')
     },
     downloadCrossword(blob, extension) {
