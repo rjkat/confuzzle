@@ -79,7 +79,7 @@ function getClues(p) {
                 clues.push({
                     number: number,
                     solution: dSoln,
-                    state: downSoln(state, row, ncols, col),
+                    state: downSoln(state, nrows, row, ncols, col),
                     row: row,
                     col: col,
                     isDown: true,
@@ -177,6 +177,7 @@ function enoRefs(clues) {
 
 export function enoState(clues) {
     var state = '';
+    var written = {};
     for (let [clueid, clue] of Object.entries(clues)) {
         var ans = '';
         var nfilled = 0;
@@ -199,16 +200,7 @@ export function enoState(clues) {
             const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
             if (!otherClue)
                 continue;
-            var nother = 0;
-            for (var j = 0; j < otherClue.cells.length; j++) {
-                if (otherClue.cells[j].contents) {
-                    nother++;
-                }
-            }
-            if (nother > nfilled ) {
-                nneeded--;
-            } else if (!clue.isAcross && nother == nfilled) {
-                // tiebreak, prefer across clues to down
+            if (written[otherClue.id]) {
                 nneeded--;
             }
         }
@@ -219,6 +211,7 @@ export function enoState(clues) {
             }
             state += '\n## ' + clueid + '\n';
             state += 'ans: ' + ans + '\n';
+            written[clueid] = true;
         }
     }
     return state;
