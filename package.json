@@ -8,7 +8,7 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "build": "parcel build client/index.html client/syntax.html --no-source-maps --no-content-hash --no-cache",
+    "build": "parcel build client/index.html client/syntax.html --no-content-hash --no-cache",
     "postbuild": "workbox generateSW",
     "develop": "NODE_ENV=development nodemon server/index.js",
     "start": "node server/index.js"
