@@ -216,7 +216,7 @@ export default Vue.extend({
         var options = [];
         if (this.showInstall) {
             options.push({
-                label: 'Add to Home Screen',
+                label: 'Install app',
                 icon: 'add'
             });
         }
