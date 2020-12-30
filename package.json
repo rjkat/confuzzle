@@ -9,6 +9,7 @@
   "scripts": {
     "test": "jest",
     "build": "parcel build client/index.html client/syntax.html --no-source-maps --no-content-hash --no-cache",
+    "postbuild": "workbox generateSW",
     "develop": "NODE_ENV=development nodemon server/index.js",
     "start": "node server/index.js"
   },
@@ -66,6 +67,7 @@
     "jest": "^25.2.3",
     "nodemon": "^2.0.6",
     "typescript": "^3.9.7",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.6.12",
+    "workbox-cli": "^6.0.2"
   }
 }

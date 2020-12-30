@@ -24,6 +24,7 @@
             :icon="state.colluding ? 'group_add' : 'share'"
             size="large"
             @click="openModal('shareModal')"
+            v-if="isOnline"
         >
         </ui-icon-button>
         <ana-share-modal
@@ -158,11 +159,11 @@ export default Vue.extend({
         if (this.state.colluding) {
             options = options.concat([
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -176,15 +177,15 @@ export default Vue.extend({
         } else if (!this.state.compiling) {
             options = options.concat([
             {
-                label: 'Upload .puz/.eno',
-                icon: 'publish'
+                label: 'Open puzzle...',
+                icon: 'folder_open'
             },
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -194,15 +195,15 @@ export default Vue.extend({
         } else {
             options = options.concat([
             {
-                label: 'Upload .puz/.eno',
-                icon: 'publish'
+                label: 'Open puzzle...',
+                icon: 'folder_open'
             },
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -223,11 +224,11 @@ export default Vue.extend({
         if (this.state.colluding) {
             options = options.concat([
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -240,15 +241,15 @@ export default Vue.extend({
             }]);
         } else if (!this.state.compiling) {
             options = options.concat([{
-                label: 'Upload .puz/.eno',
-                icon: 'publish'
+                label: 'Open puzzle...',
+                icon: 'folder_open'
             },
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -257,15 +258,15 @@ export default Vue.extend({
             }]);
         } else {
             options = options.concat([{
-                label: 'Upload .puz/.eno',
-                icon: 'publish'
+                label: 'Open puzzle...',
+                icon: 'folder_open'
             },
             {
-                label: 'Download .puz',
+                label: 'Save as .puz',
                 icon: 'get_app'
             },
             {
-                label: 'Download .eno',
+                label: 'Save as .eno',
                 icon: 'get_app'
             },
             {
@@ -303,13 +304,13 @@ export default Vue.extend({
         Vue.nextTick(() => window.print());
     },
     selectMenuOption(option) {
-        if (option.label == 'Download .puz') {
+        if (option.label == 'Save as .puz') {
             this.$emit('download-puz-clicked');
-        } else if (option.label == 'Download .eno') {
+        } else if (option.label == 'Save as .eno') {
             this.$emit('download-eno-clicked');
         } else if (option.label == 'Solve alone') {
             this.$emit('go-offline-clicked');
-        } else if (option.label == 'Upload .puz/.eno') {
+        } else if (option.label == 'Open puzzle...') {
             this.$refs.fileInput.click();
         } else if (option.label == 'About') {
             this.openModal('aboutModal');
@@ -318,9 +319,19 @@ export default Vue.extend({
         }
     },
   },
+  mounted() {
+    this.isOnline = window.navigator.onLine;
+    window.addEventListener('online', () => {
+        this.isOnline = true;
+    });
+    window.addEventListener('offline', () => {
+        this.isOnline = false;
+    });
+  },
   data() {
     return {
-      bundler: "Parcel"
+      bundler: "Parcel",
+      isOnline: true
     };
   }
 });
