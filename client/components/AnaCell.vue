@@ -113,6 +113,10 @@ td {
     vertical-align: baseline;
     border: $gridBorderWidth solid;
 
+    ::selection {
+        background-color: transparent;
+    }
+
     &[data-number]:before {
         position: absolute;
         top: 0;

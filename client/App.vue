@@ -126,6 +126,11 @@ body {
 */
 }
 
+
+.ui-snackbar {
+    z-index: 99;
+}
+
 .cancel-explosion-button {
     position: fixed;
     left: 50%;

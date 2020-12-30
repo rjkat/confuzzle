@@ -56,6 +56,10 @@
 
     .crossword-clue-input {
         display: inline-block;
+
+        ::selection {
+            background-color: transparent;
+        }
     }
 
     input {
