@@ -500,13 +500,14 @@ export default Vue.extend({
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleOrientationChange);
     window.addEventListener('beforeinstallprompt', this.beforeInstall);
+    document.addEventListener('keydown', this.keyListener);
     this.handleOrientationChange();
     this.handleResize();
     this.gridSizeLocked = true;
   },
   data() {
     return {
-      shortUrl: window.location.hostname == 'anagrind.com' ? 'https://confuzzle.me' : window.location.origin,
+      shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
       snackbarDuration: 3000,
@@ -935,6 +936,16 @@ export default Vue.extend({
         this.crosswordSource = readEno(new Uint8Array(buf));
         this.renderCrossword();
         this.redrawEditor();
+    },
+    keyListener(e) {
+        // save .puz
+        if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.downloadPuzClicked();
+        } else if (e.key === "o" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.$refs.toolbar.openPuzzle();
+        }
     },
     downloadPuzClicked() {
         var eno = this.crosswordSource;

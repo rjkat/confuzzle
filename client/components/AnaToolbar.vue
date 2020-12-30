@@ -284,6 +284,9 @@ export default Vue.extend({
     closeModal(ref) {
         this.$refs[ref].close();
     },
+    openPuzzle() {
+        this.$refs.fileInput.click();
+    },
     handleFiles() {
         const self = this;
         let files = this.$refs.fileInput.files;
@@ -311,7 +314,7 @@ export default Vue.extend({
         } else if (option.label == 'Solve alone') {
             this.$emit('go-offline-clicked');
         } else if (option.label == 'Open puzzle...') {
-            this.$refs.fileInput.click();
+            this.openPuzzle();
         } else if (option.label == 'About') {
             this.openModal('aboutModal');
         } else if (option.label == 'Install app') {
