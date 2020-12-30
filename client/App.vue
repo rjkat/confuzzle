@@ -528,8 +528,16 @@ export default Vue.extend({
         this.installPrompt = e;
     },
     installClicked() {
-        if (this.installPrompt)
-            this.installPrompt.prompt();
+        if (!this.installPrompt)
+            return
+        
+        this.installPrompt.prompt();
+
+        this.installPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome == 'accepted') {
+            this.installPrompt = null;
+          }
+        });
     },
     togglesChanged(toggles) {
         this.showGrid = toggles.includes('grid');
