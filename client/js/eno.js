@@ -200,7 +200,16 @@ export function enoState(clues) {
             const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
             if (!otherClue)
                 continue;
-            if (written[otherClue.id]) {
+            var nother = 0;
+            for (var j = 0; j < otherClue.cells.length; j++) {
+                if (otherClue.cells[j].contents) {
+                    nother++;
+                }
+            }
+            if (nother > nfilled ) {
+                nneeded--;
+            } else if (!clue.isAcross && nother == nfilled) {
+                // tiebreak, prefer across clues to down
                 nneeded--;
             }
         }

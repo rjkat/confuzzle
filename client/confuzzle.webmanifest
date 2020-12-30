@@ -9,8 +9,8 @@
       "type": "image/png"
     }
   ],
-  "name": "confuzzle.me Crossword Collaborator",
-  "short_name": "confuzzle.me",
+  "name": "Confuzzle",
+  "short_name": "Confuzzle",
   "theme_color": "#003264",
   "scope": "/",
   "start_url": "/"

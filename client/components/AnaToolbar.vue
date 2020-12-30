@@ -151,7 +151,7 @@ export default Vue.extend({
         if (this.showInstall) {
             options.push({
                 label: 'Install app',
-                icon: 'add'
+                icon: 'add_circle_outline'
             });
         }
             
@@ -217,7 +217,7 @@ export default Vue.extend({
         if (this.showInstall) {
             options.push({
                 label: 'Install app',
-                icon: 'add'
+                icon: 'add_circle_outline'
             });
         }
         if (this.state.colluding) {

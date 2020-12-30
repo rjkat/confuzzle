@@ -534,9 +534,7 @@ export default Vue.extend({
         this.installPrompt.prompt();
 
         this.installPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome == 'accepted') {
             this.installPrompt = null;
-          }
         });
     },
     togglesChanged(toggles) {
