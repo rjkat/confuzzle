@@ -71,8 +71,9 @@ if (env == 'dev') {
   app.use(function (req, res, next) {
     if (req.hostname == 'anagr.in' ||
         req.hostname == 'anagrind.com' ||
-        req.hostname == 'xword.party') {
-        res.redirect(301, 'https://confuzzle.me' + req.url);
+        req.hostname == 'xword.party' ||
+        req.hostname == 'confuzzle.me') {
+        res.redirect(301, 'https://confuzzle.app' + req.url);
         return;
     }
     next();
