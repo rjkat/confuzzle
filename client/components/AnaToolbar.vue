@@ -69,7 +69,8 @@
             <div style="text-align: center;">
                 <p class="about-text">
                     This is a hobby project by <a href="https://rjk.at">Rowan</a>. <a href="https://github.com/rjkat/anagrind">Click here</a> to view
-                    the source code on github (MIT license).
+                    the source code on github (MIT license). 
+                    Install as a Chrome app or "Add to home screen" with Safari on iOS for quicker access to crosswords.
                 </p>
                 <form action="https://www.buymeacoffee.com/rjkat" target="_blank">
                     <ui-button color="primary" style="margin-top: 1em;">Buy me a coffee</ui-button>
@@ -141,12 +142,21 @@ export default Vue.extend({
     metadata: Object,
     state: Object,
     shareLoading: false,
-    shareLink: ""
+    shareLink: "",
+    showInstall: false
   },
   computed: {
     menuOptions() {
+        var options = [];
+        if (this.showInstall) {
+            options.push({
+                label: 'Install app',
+                icon: 'add'
+            });
+        }
+            
         if (this.state.colluding) {
-            return [
+            options = options.concat([
             {
                 label: 'Download .puz',
                 icon: 'get_app'
@@ -162,9 +172,9 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         } else if (!this.state.compiling) {
-            return [
+            options = options.concat([
             {
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
@@ -180,9 +190,9 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         } else {
-            return [
+            options = options.concat([
             {
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
@@ -198,12 +208,20 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         }
+        return options;
     },
     mobileMenuOptions() {
+        var options = [];
+        if (this.showInstall) {
+            options.push({
+                label: 'Add to Home Screen',
+                icon: 'add'
+            });
+        }
         if (this.state.colluding) {
-            return [
+            options = options.concat([
             {
                 label: 'Download .puz',
                 icon: 'get_app'
@@ -219,9 +237,9 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         } else if (!this.state.compiling) {
-            return [{
+            options = options.concat([{
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
@@ -236,9 +254,9 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         } else {
-            return [{
+            options = options.concat([{
                 label: 'Upload .puz/.eno',
                 icon: 'publish'
             },
@@ -253,8 +271,9 @@ export default Vue.extend({
             {
                 label: 'About',
                 icon: 'info'
-            }];
+            }]);
         }
+        return options;
     }
   },
   methods: {
@@ -294,6 +313,8 @@ export default Vue.extend({
             this.$refs.fileInput.click();
         } else if (option.label == 'About') {
             this.openModal('aboutModal');
+        } else if (option.label == 'Install app') {
+            this.$emit('install-clicked');
         }
     },
   },

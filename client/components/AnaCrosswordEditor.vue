@@ -61,6 +61,8 @@
   .ana-editor-toolbar {
       position: sticky;
       top: 0;
+      height: 2.25rem !important;
+      flex: none;
       background-color: #efefef;
       z-index: 2;
   }

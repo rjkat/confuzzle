@@ -1,0 +1,17 @@
+{
+  "background_color": "#F0F8FF",
+  "description": "Create and crack crosswords with co-cruciverbalists",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "name": "confuzzle.me Crossword Collaborator",
+  "short_name": "confuzzle.me",
+  "theme_color": "#003264",
+  "scope": "/",
+  "start_url": "/"
+}

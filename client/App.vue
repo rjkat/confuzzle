@@ -16,6 +16,8 @@
         :shareLink="shareLink"
         class="hidden-print"
         :state="state"
+        :showInstall="installPrompt"
+        @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
@@ -493,9 +495,11 @@ export default Vue.extend({
         Vue.nextTick(() => self.$refs.joinModal.open());
     }
   },
+  
   mounted() {
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleOrientationChange);
+    window.addEventListener('beforeinstallprompt', this.beforeInstall);
     this.handleOrientationChange();
     this.handleResize();
     this.gridSizeLocked = true;
@@ -514,10 +518,19 @@ export default Vue.extend({
       socketid: '',
       showGrid: true,
       showTooltips: true,
-      toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}]
+      toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
+      installPrompt: null
     };
   },
   methods: {
+    beforeInstall(e) {
+        e.preventDefault();
+        this.installPrompt = e;
+    },
+    installClicked() {
+        if (this.installPrompt)
+            this.installPrompt.prompt();
+    },
     togglesChanged(toggles) {
         this.showGrid = toggles.includes('grid');
         this.showTooltips = toggles.includes('tooltips');
