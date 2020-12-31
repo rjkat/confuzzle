@@ -3,7 +3,6 @@ module.exports = {
   globPatterns: [
     "**/*.{html,js,css,png,svg,jpg,gif,json,woff,woff2,eot,ico,webmanifest,map}"
   ],
-  swDest: "dist/service-worker.js",
-  clientsClaim: true,
-  skipWaiting: true
+  swSrc: "client/service-worker.js",
+  swDest: "dist/service-worker.js"
 };

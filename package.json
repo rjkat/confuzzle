@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "build": "parcel build client/index.html client/syntax.html --no-content-hash --no-cache",
-    "postbuild": "workbox generateSW",
+    "postbuild": "workbox injectManifest && workbox copyLibraries dist",
     "develop": "NODE_ENV=development nodemon server/index.js",
     "start": "node server/index.js"
   },
