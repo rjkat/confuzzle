@@ -110,7 +110,7 @@
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
 
     <div id="ios-install-prompt" v-if="iOSPrompt" @click="iOSPromptClicked()">
-        <div class="install-tooltip" data-show>Install Confuzzle on your iOS device - it also works offline.<br>Tap <img src="../server/public/images/share-apple.svg" height="20"> and then 'Add to Home Screen'.<ui-icon class="install-close-button">close</ui-icon></div>
+        <div class="install-tooltip" data-show>Install Confuzzle and solve offline.<br>Tap <img src="../server/public/images/share-apple.svg" height="25"> and then 'Add to Home Screen'.<ui-icon class="install-close-button">close</ui-icon></div>
         <div class="install-tooltip-arrow" data-popper-arrow></div>
     </div>
 
@@ -134,8 +134,8 @@ body {
 
 .install-tooltip {
     padding: 4px 8px;
-    padding-right: 1.5em;
-    font-size: 18px;
+    padding-right: 30px;
+    font-size: 14px;
     text-transform: none;
     z-index: 10;
     background: #333;
