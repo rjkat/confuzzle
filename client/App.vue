@@ -16,7 +16,7 @@
         :shareLink="shareLink"
         class="hidden-print"
         :state="state"
-        :showInstall="installPrompt"
+        :showInstall="installPrompt || (iOSSafari && !standalone)"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @go-offline-clicked='goOffline()'
@@ -108,6 +108,12 @@
         >
     </ui-fab>
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
+
+    <div id="ios-install-prompt" v-if="iOSPrompt" @click="iOSPromptClicked()">
+        <div class="install-tooltip" data-show>Install Confuzzle on your iOS device - it also works offline.<br>Tap <img src="../server/public/images/share-apple.svg" height="20"> and then 'Add to Home Screen'.<ui-icon class="install-close-button">close</ui-icon></div>
+        <div class="install-tooltip-arrow" data-popper-arrow></div>
+    </div>
+
 </div>
 </template>
 
@@ -126,6 +132,63 @@ body {
 */
 }
 
+.install-tooltip {
+    padding: 4px 8px;
+    padding-right: 1.5em;
+    font-size: 18px;
+    text-transform: none;
+    z-index: 10;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    font-family: $clueFontFamily;
+    display: none;
+    text-align: left;
+    white-space: pre;
+    text-align: center;
+    img {
+        vertical-align: middle;
+    }
+
+    .install-close-button {
+        position: fixed;
+        right: 0;
+        transform: translateY(-50%);
+    }
+
+    &[data-show] {
+        display: block !important;
+        @media print {
+            display: none !important;
+        }
+    }
+}
+.install-tooltip-arrow,
+.install-tooltip-arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: -1;
+}
+
+.install-tooltip-arrow {
+  bottom: -4px;
+  left: calc(50% - 4px);
+}
+
+.install-tooltip-arrow::before {
+  content: '';
+  transform: rotate(45deg);
+  background: #333;
+}
+
+#ios-install-prompt {
+    position: fixed;
+    bottom: 4px;
+    left: 50%;
+    transform: translate(-50%);
+    z-index: 90;
+}
 
 .ui-snackbar {
     z-index: 99;
@@ -382,6 +445,7 @@ export default Vue.extend({
         }
     },
     isPortrait: false,
+    standalone: false,
     joinLoading: false,
     shareLoading: false,
     renderLoading: false,
@@ -505,6 +569,14 @@ export default Vue.extend({
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleOrientationChange);
     window.addEventListener('beforeinstallprompt', this.beforeInstall);
+
+    // https://stackoverflow.com/a/29696509
+    const ua = window.navigator.userAgent;
+    const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+    const webkit = !!ua.match(/WebKit/i);
+    this.iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+
+    this.standalone = window.navigator.standalone;
     document.addEventListener('keydown', this.keyListener);
     this.handleOrientationChange();
     this.handleResize();
@@ -525,6 +597,8 @@ export default Vue.extend({
       showGrid: true,
       showTooltips: true,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
+      iOSSafari: false,
+      iOSPrompt: false,
       installPrompt: null
     };
   },
@@ -533,15 +607,22 @@ export default Vue.extend({
         e.preventDefault();
         this.installPrompt = e;
     },
+    iOSPromptClicked() {
+        this.iOSPrompt = false;
+    },
     installClicked() {
-        if (!this.installPrompt)
-            return
-        
-        this.installPrompt.prompt();
+        if (this.iOSSafari) {
+            this.iOSPrompt = true;
+        } else {
+            if (!this.installPrompt)
+                return
+            
+            this.installPrompt.prompt();
 
-        this.installPrompt.userChoice.then((choiceResult) => {
-            this.installPrompt = null;
-        });
+            this.installPrompt.userChoice.then((choiceResult) => {
+                this.installPrompt = null;
+            });
+        }
     },
     togglesChanged(toggles) {
         this.showGrid = toggles.includes('grid');
