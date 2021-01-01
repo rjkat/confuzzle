@@ -1,4 +1,4 @@
-import {PuzPayload} from './puz.js';
+import {PuzPayload, CLUE_ENCODING_MAGIC_CHAR} from './puz.js';
 const parser = require('./parser.js');
 
 const BLACK_SQUARE_CHAR = '.';
@@ -92,17 +92,18 @@ function getClues(p) {
     return clues;
 }
 
-function enoClues(clues, scramble) {
+function enoClues(clues, options) {
     var eno = "\n# clues\n";
     for (let [clueid, clue] of Object.entries(clues)) {
-        const ans = scramble ? Buffer.from(clue.solution).toString('base64') : clue.solution;
+        const ans = options.scramble ? Buffer.from(clue.solution).toString('base64') : clue.solution;
         eno += "\n## " + clue.id + "\n"
         eno += "row: " + clue.row + "\n";
         eno += "col: " + clue.col + "\n";
         eno += "text: " + clue.text + "\n";
         if (clue.verbatim)
             eno += "verbatim\n"
-        eno += "ans: " + ans + "\n";
+        if (!options.strip)
+            eno += "ans: " + ans + "\n";
         eno += 'lengths:\n    - ' + clue.lengths.join('\n    - ') + '\n';
         if (clue.separators && clue.separators.length > 0) {
             eno += 'separators:\n    - ' + clue.separators.join('\n    - ') + '\n';
@@ -111,7 +112,7 @@ function enoClues(clues, scramble) {
     return eno;
 }
 
-function enoMeta(meta, scramble) {
+function enoMeta(meta, options) {
     var eno = "# meta\n";
     eno += "name: " + meta.name + "\n";
     eno += "author: " + meta.author + "\n";
@@ -128,7 +129,9 @@ function enoMeta(meta, scramble) {
         eno += meta.note + "\n";
         eno += "--note\n"
     }
-    eno += "scramble: " + (scramble ? "base64" : "none") + "\n";
+
+    if (!options.strip)
+        eno += "scramble: " + (options.scramble ? "base64" : "none") + "\n";
     
     return eno;
 }
@@ -226,7 +229,8 @@ export function enoState(clues) {
     return state;
 }
 
-export function puzToEno(p) {
+export function puzToEno(p, options) {
+    const stripped = options && options.stripped;
     const clues = getClues(p);
 
     var eno = "# meta\n";
@@ -257,15 +261,17 @@ export function puzToEno(p) {
         eno += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
         eno += "row: " + (clue.row + 1) + "\n";
         eno += "col: " + (clue.col + 1) + "\n";
-        
 
         var text = p.clues[i];
         var separators = null;
         var lengths = [clue.length];
-        const toks = text.match(/^(.*) \((.*)\)\s*$/);
         var verbatim = false;
-        
-        if (toks) {
+        const toks = text.match(/^(.*) \((.*)\)\s*$/);
+
+        // add back in stripped length        
+        if (stripped && text[text.length - 1] == CLUE_ENCODING_MAGIC_CHAR) {
+            text = text.slice(0, text.length - 1)
+        } else if (toks) {
             // looks like a multiple-word clue, see if the lengths add up
             lengths = toks[2].match(/\b\d+\b/g).map(x => parseInt(x));
             var totLen = 0;
@@ -325,11 +331,11 @@ export function puzToEno(p) {
     return eno;
 }
 
-export function exportEno(crossword, scramble) {
-    var eno = enoMeta(crossword.meta, scramble);
+export function exportEno(crossword, options) {
+    var eno = enoMeta(crossword.meta, options);
     
     eno += enoGrid(crossword.grid);
-    eno += enoClues(crossword.clues, scramble);
+    eno += enoClues(crossword.clues, options);
 
     var refs = enoRefs(crossword.clues);
     if (refs)
@@ -342,13 +348,19 @@ export function exportEno(crossword, scramble) {
     return eno;
 }
 
-export function readEno(buf) {
-    return puzToEno(PuzPayload.from(buf));
+export function enoFromPuz(buf, options) {
+    return puzToEno(PuzPayload.from(buf, options), options);
 }
 
-function puzText(clue) {
+function puzText(clue, stripped) {
     var text = clue.text;
-    if (!clue.verbatim) {
+    if (clue.verbatim)
+        return text;
+
+    // if it's a one word clue, put magic char instead of length in brackets
+    if (stripped && clue.lengths.length == 1) {
+        text += CLUE_ENCODING_MAGIC_CHAR;
+    } else {
         text += ' ('
         for (var i = 0; i < clue.lengths.length; i++) {
             if (i > 0) {
@@ -362,10 +374,12 @@ function puzText(clue) {
         }
         text += ')'
     }
+
     return text;
 }
 
-export function enoToPuz(eno) {
+export function enoToPuz(eno, options) {
+    const stripped = options && options.stripped;
     const cw = parser.parse(eno);
     const meta = cw.meta;
     const grid = cw.grid;
@@ -381,10 +395,10 @@ export function enoToPuz(eno) {
                 continue
             
             if (cell.clues.across && cell.offsets.across == 0) {
-                clues.push(puzText(cell.clues.across));
+                clues.push(puzText(cell.clues.across, stripped));
             }
             if (cell.clues.down && cell.offsets.down == 0) {
-                clues.push(puzText(cell.clues.down));
+                clues.push(puzText(cell.clues.down, stripped));
             }
         }
     }

@@ -1,3 +1,7 @@
+
+import {CLUE_CODEBOOK} from './codebook.js';
+const CLUE_ENCODING_MAGIC_CHAR = '\u000d'
+
 const iconv = require('iconv-lite');
 
 // Strings in puz files are ISO-8859-1.
@@ -34,12 +38,34 @@ const PUZ_HEADER_CONSTANTS = {
     },
 };
 
+const STRIPPED_ENCODING = "utf-8";
+
+const STRIPPED_HEADER_CONSTANTS = {
+    offsets: {
+        WIDTH: 0x00,
+        HEIGHT: 0x01,
+        NUM_CLUES: 0x02,
+    },
+    lengths: {
+        HEADER: 0x04
+    }
+};
+
+
 // names of string fields
 const PUZ_STRING_FIELDS = ['title', 'author', 'copyright'];
 
 // http://code.google.com/p/puz/wiki/FileFormat
 // https://github.com/tedtate/puzzler/blob/master/lib/crossword.js
-function readHeader(buf) {
+function readHeader(buf, stripped) {
+    if (stripped) {
+        const x = STRIPPED_HEADER_CONSTANTS.offsets;
+        return {
+            WIDTH: buf.readUInt8(x.WIDTH),
+            HEIGHT: buf.readUInt8(x.HEIGHT),
+            NUM_CLUES: buf.readUInt16LE(x.NUM_CLUES)
+        }
+    }
     const i = PUZ_HEADER_CONSTANTS.offsets;
     const n = PUZ_HEADER_CONSTANTS.lengths;
     return {
@@ -59,10 +85,8 @@ function readHeader(buf) {
     }
 }
 
-function puzEncode(s, encoding) {
-    if (!encoding) {
-        encoding = PUZ_ENCODING;
-    }
+function puzEncode(s, options) {
+    const encoding = options && options.stripped ? STRIPPED_ENCODING : PUZ_ENCODING;
     return iconv.encode(s, encoding);
 }
 
@@ -89,28 +113,72 @@ function replaceWordChars(text) {
     return s;
 }
 
-function puzDecode(buf, start, end, encoding) {
-    if (!encoding) {
-        encoding = PUZ_ENCODING;
-    }
+function puzDecode(buf, start, end, options) {
+    const encoding = options && options.stripped ? STRIPPED_ENCODING : PUZ_ENCODING;
     const s = iconv.decode(buf.slice(start, end), encoding);
     return replaceWordChars(s);
 }
 
-function splitNulls(buf, encoding) {
+function splitNulls(buf, options) {
     let i = 0;
     let prev = 0;
     let parts = [];
     while (i < buf.length) {
         if (buf[i] == 0x0) {
-            parts.push(puzDecode(buf, prev, i, encoding));
+            parts.push(puzDecode(buf, prev, i, options));
             prev = i + 1;
         }
         i++;
     }
     if (i > prev)
-        parts.push(puzDecode(buf, prev, i, encoding));
+        parts.push(puzDecode(buf, prev, i, options));
     return parts;
+}
+
+function encodeClue(clue, stripped) {
+    if (!stripped) {
+        return clue;
+    }
+    const words = clue.split(" ");
+    var encoded = '';
+    for (var i = 0; i < words.length; i++) {
+        const w = CLUE_CODEBOOK.encode[words[i]];
+        if (w) {
+            encoded += CLUE_ENCODING_MAGIC_CHAR + btoa(String.fromCodePoint(w)).slice(0, 2)
+        } else {
+            encoded += (encoded ? ' ' : '') + words[i]
+        }
+    }
+    return encoded;
+}
+
+function decodeClue(clue, stripped) {
+    var decoded = '';
+    var i = 0;
+    while (i < clue.length) {
+        if (clue[i] == CLUE_ENCODING_MAGIC_CHAR && i < clue.length - 3) {
+            const sep = (decoded ? ' ' : '');
+            const b64 = clue.slice(i + 1, i + 3);
+            const word = CLUE_CODEBOOK.decode[atob(b64).codePointAt(0)];
+            decoded += sep + word;
+            i += 3;
+        } else {
+            decoded += clue[i];
+            i += 1
+        }
+    }
+    return decoded;
+}
+
+function decodeClues(clues, stripped) {
+    if (!stripped) {
+       return clues;
+    }
+    var decoded = [];
+    for (var i = 0; i < clues.length; i++) {
+        decoded.push(decodeClue(clues[i], stripped));
+    }
+    return decoded;
 }
 
 function checksum(base, c, len) {
@@ -156,16 +224,20 @@ function writeUInt16LE(buf, offset, val) {
 }
 
 class PuzPayload {
-    static from(x, encoding) {
+    static from(x, options) {
         const buf = Buffer.from(x);
-        let header = readHeader(buf);
+        const stripped = options && options.stripped;
+        let header = readHeader(buf, stripped);
         const ncells = header.WIDTH * header.HEIGHT;
-        let pos = PUZ_HEADER_CONSTANTS.lengths.HEADER;
-        const solution = puzDecode(buf, pos, pos + ncells, encoding);
+        let pos = stripped ? STRIPPED_HEADER_CONSTANTS.lengths.HEADER : PUZ_HEADER_CONSTANTS.lengths.HEADER;
+        const solution = puzDecode(buf, pos, pos + ncells, options);
         pos += ncells;
-        const state = puzDecode(buf, pos, pos + ncells, encoding);
-        pos += ncells;
-        const strings = splitNulls(buf.slice(pos), encoding);
+        var state = '';
+        if (!stripped) {
+            state = puzDecode(buf, pos, pos + ncells, options);
+            pos += ncells;
+        }
+        const strings = splitNulls(buf.slice(pos), options);
         const fields = PUZ_STRING_FIELDS;
         const meta = {};
         fields.forEach(function(f, i) {
@@ -174,18 +246,18 @@ class PuzPayload {
         meta.note = strings[fields.length + header.NUM_CLUES];
         meta.width = header.WIDTH;
         meta.height = header.HEIGHT;
-        const clues = strings.slice(fields.length, fields.length + header.NUM_CLUES);
+        const clues = decodeClues(strings.slice(fields.length, fields.length + header.NUM_CLUES), stripped);
         return new PuzPayload(meta, clues, solution, state);
     }
 
-    buildStrings() {
+    buildStrings(options) {
         let strings = '';
         const fields = PUZ_STRING_FIELDS;
         for (let i = 0; i < fields.length; i++)
             strings += this[fields[i]] + '\x00';
 
         for (let i = 0; i < this.clues.length; i++)
-            strings += this.clues[i] + '\x00';
+            strings += encodeClue(this.clues[i], options.stripped) + '\x00';
 
         if (this.note)
             strings += this.note;
@@ -193,7 +265,7 @@ class PuzPayload {
         /* need a null terminator even if notes are empty */
         strings += '\x00';
 
-        return puzEncode(strings);
+        return puzEncode(strings, options);
     }
 
     stringsChecksum(c) {
@@ -208,10 +280,12 @@ class PuzPayload {
         return c;
     }
 
-    buildBody() {
-        let body = puzEncode(this.solution);
-        body = concatBytes(body, puzEncode(this.state));
-        return concatBytes(body, this.buildStrings());
+    buildBody(options) {
+        let body = puzEncode(this.solution, options);
+        if (!options.stripped) {
+            body = concatBytes(body, puzEncode(this.state, options));
+        }
+        return concatBytes(body, this.buildStrings(options));
     }
 
     computeChecksums(header) {
@@ -228,7 +302,16 @@ class PuzPayload {
         }
     }
 
-    buildHeader() {
+    buildHeader(options) {
+        if (options.stripped) {
+            const i = STRIPPED_HEADER_CONSTANTS.offsets;
+            const header = new Uint8Array(STRIPPED_HEADER_CONSTANTS.lengths.HEADER);
+            header[i.WIDTH] = this.width;
+            header[i.HEIGHT] = this.height;
+            writeUInt16LE(header, i.NUM_CLUES, this.clues.length);
+            return header;
+        }
+        
         const i = PUZ_HEADER_CONSTANTS.offsets;
         const header = new Uint8Array(PUZ_HEADER_CONSTANTS.lengths.HEADER);
 
@@ -254,15 +337,15 @@ class PuzPayload {
         return header;
     }
 
-    toBytes() {
-        return concatBytes(this.buildHeader(), this.buildBody());
+    toBytes(stripped) {
+        const options = {stripped: stripped}
+        return concatBytes(this.buildHeader(options), this.buildBody(options));
     }
 
-    toBuffer() {
-        return Buffer.from(this.toBytes());
+    toBuffer(stripped) {
+        return Buffer.from(this.toBytes(stripped));
     }
-
-    /* state is optional */
+    
     constructor(metadata, clues, solution, state) {
         for (let [field, value] of Object.entries(metadata)) {
             this[field] = value;
@@ -276,6 +359,7 @@ class PuzPayload {
 }
 
 module.exports = {
-    PuzPayload: PuzPayload
+    PuzPayload: PuzPayload,
+    CLUE_ENCODING_MAGIC_CHAR: CLUE_ENCODING_MAGIC_CHAR
 }
 

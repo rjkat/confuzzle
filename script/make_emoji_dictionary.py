@@ -1,7 +1,10 @@
 # https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json
 
+import os
 import json
 import emoji
+
+__dir__ = os.path.abspath(os.path.dirname(__file__))
 
 with open('emoji.json') as fobj:
     emoji_dict = json.load(fobj)
@@ -36,7 +39,7 @@ class SetEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)  
 
 
-with open('client/js/words_to_emoji.js', 'w') as fobj:
+with open(os.path.join(__dir__, '..', 'client', 'js', 'words_to_emoji.js') 'w') as fobj:
     fobj.write('const EMOJI_DICT = ')
     json.dump(d, fobj, cls=SetEncoder)
     fobj.write(';\n')

@@ -23,7 +23,7 @@
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
         @copy-clicked="copyClicked()"
-        @export-link-clicked="exportLinkClicked()"
+        @export-eno-clicked="exportLinkClicked(getEnoParams())"
         @puz-file-uploaded="puzFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
     >
@@ -339,7 +339,7 @@ import AnaToolbar from './components/AnaToolbar.vue'
 import AnaDisconnectedModal from './components/AnaDisconnectedModal.vue'
 
 const parser = require('./js/parser.js');
-import {readEno, enoToPuz, enoState, exportEno} from './js/eno.js'
+import {enoFromPuz, enoToPuz, enoState, exportEno} from './js/eno.js'
 import {EnoError} from 'enolib'
 
 const {Manager} = require("socket.io-client");
@@ -347,6 +347,7 @@ const {Manager} = require("socket.io-client");
 import {emojisplosions} from "emojisplosion";
 
 import base64url from "base64url";
+const LZUTF8 = require('lzutf8');
 
 function parseAndBuild(input, compiling, options) {
     const cw = parser.parse(input, compiling, options);
@@ -415,6 +416,19 @@ function parseAndBuild(input, compiling, options) {
       };
     }
     return cw;
+}
+
+
+
+function compressURL(x) {
+    return base64url.fromBase64(LZUTF8.compress(x, {outputEncoding: "Base64"}));
+}
+
+function decompressURL(url, outputEncoding) {
+    if (!outputEncoding) {
+        outputEncoding = "String";
+    }
+    return LZUTF8.decompress(base64url.toBuffer(url), {outputEncoding: outputEncoding});
 }
 
 const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
@@ -552,8 +566,6 @@ export default Vue.extend({
             this.gridid = pathParts[1];
             shouldJoin = true;
         }
-    } else {
-        
     }
     if (shouldJoin) {
         this.state.joining = true;
@@ -581,13 +593,20 @@ export default Vue.extend({
 
     const params = new URLSearchParams(window.location.search);
     const enoSource = params.get('source');
+    const puz = params.get('puz');
+    const strippedPuz = params.get('s');
     if (enoSource) {
-        var eno = base64url.decode(enoSource);
+        var eno = decompressURL(enoSource);
         const enoState = params.get('state');
         if (enoState) {
-            eno += base64url.decode(enoState);
+            eno += decompressURL(enoState);
         }
         this.crosswordSource = eno;
+        this.renderCrossword();
+        this.scrambleClicked();
+    } else if (puz || strippedPuz) {
+        const buf = strippedPuz || puz;
+        this.crosswordSource = enoFromPuz(decompressURL(buf, "Buffer"), {stripped: !puz});
         this.sourceUpdated();
     } else if (localStorage.crosswordSource) {
         this.crosswordSource = localStorage.crosswordSource;
@@ -779,11 +798,11 @@ export default Vue.extend({
         Vue.nextTick(() => this.$refs.editor && this.$refs.editor.redraw());
     },
     scrambleClicked() {
-        this.crosswordSource = exportEno(this.crossword, true);
+        this.crosswordSource = exportEno(this.crossword, {scramble: true});
         this.sourceUpdated();
     },
     unscrambleClicked() {
-        this.crosswordSource = exportEno(this.crossword, false);
+        this.crosswordSource = exportEno(this.crossword, {scramble: false});
         this.sourceUpdated();
     },
     lostConnection() {
@@ -1032,7 +1051,7 @@ export default Vue.extend({
         this.sourceUpdated();
     },
     puzFileUploaded(buf) {
-        this.crosswordSource = readEno(new Uint8Array(buf));
+        this.crosswordSource = enoFromPuz(new Uint8Array(buf));
         this.sourceUpdated();
     },
     sourceUpdated() {
@@ -1044,19 +1063,34 @@ export default Vue.extend({
         if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             this.downloadPuzClicked();
+        // open .puz
         } else if (e.key === "o" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             this.$refs.toolbar.openPuzzle();
+        // export stripped .puz binary to clipboard
+        } else if (e.key === "b" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.exportLinkClicked(this.getStrippedParams())
+        // export full .puz binary to clipboard
+        } else if (e.key === "u" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.exportLinkClicked(this.getPuzParams())
+        // export eno to clipboard
+        } else if (e.key == "i" && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            this.exportLinkClicked(this.getEnoParams())
         }
     },
-    downloadPuzClicked() {
+    getPuz(stripped) {
         var eno = this.crosswordSource;
         if (!this.state.compiling) {
             eno += this.crosswordState;
         }
-        const puz = enoToPuz(eno);
-        const puzbytes = puz.toBytes();
-        const blob = new Blob([puzbytes], {type: "application/octet-stream"});
+        const puz = enoToPuz(eno, {stripped: stripped});
+        return puz;
+    },
+    downloadPuzClicked() {
+        const blob = new Blob([this.getPuz().toBytes(false)], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
@@ -1078,11 +1112,23 @@ export default Vue.extend({
     copyClicked() {
         this.snackbarMessage(this.copyMessage);
     },
-    exportLinkClicked() {
-        var link = window.location.origin + '?source=' + base64url(this.crosswordSource);
+    getEnoParams() {
+        var params = '?source=' + compressURL(this.crosswordSource);
         if (!this.state.compiling && this.crosswordState) {
-            link += '&state=' + base64url(this.crosswordState);
+            params += '&state=' + compressURL(this.crosswordState);
         }
+        return params;
+    },
+    getStrippedParams() {
+        const stripped = true;
+        return '?s=' + compressURL(this.getPuz(stripped).toBuffer(stripped));
+    },
+    getPuzParams() {
+        const stripped = false;
+        return '?puz=' + compressURL(this.getPuz(stripped).toBuffer(stripped));
+    },
+    exportLinkClicked(params) {
+        const link = window.location.origin.replace(/\/$/, "") + params;
         navigator.clipboard.writeText(link);
         this.snackbarMessage(this.exportMessage);
     }

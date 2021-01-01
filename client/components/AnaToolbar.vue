@@ -158,7 +158,7 @@ export default Vue.extend({
 
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
-        options.push(this.opt.EXPORT_LINK);
+        options.push(this.opt.EXPORT_ENO_LINK);
         options.push(this.opt.ABOUT);
 
         return options;
@@ -201,8 +201,8 @@ export default Vue.extend({
             this.$emit('download-puz-clicked');
         } else if (option.label == this.opt.SAVE_ENO.label) {
             this.$emit('download-eno-clicked');
-        } else if (option.label == this.opt.EXPORT_LINK.label) {
-            this.$emit('export-link-clicked');
+        } else if (option.label == this.opt.EXPORT_ENO_LINK.label) {
+            this.$emit('export-eno-clicked');
         } else if (option.label == this.opt.SOLVE_OFFLINE.label) {
             this.$emit('go-offline-clicked');
         } else if (option.label == this.opt.OPEN_PUZZLE.label) {
@@ -244,7 +244,7 @@ export default Vue.extend({
             label: 'Save as .eno',
             icon: 'get_app'
         },
-        EXPORT_LINK: {
+        EXPORT_ENO_LINK: {
             label: 'Export to clipboard',
             icon: 'content_copy'
         },

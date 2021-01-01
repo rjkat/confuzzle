@@ -7,7 +7,10 @@ workbox.setConfig({
 const {precacheAndRoute} = workbox.precaching;
 const {pageCache, imageCache, staticResourceCache} = workbox.recipes;
 
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(self.__WB_MANIFEST, {
+  // Ignore all URL parameters.
+  ignoreURLParametersMatching: [/.*/]
+});
 
 pageCache();
 

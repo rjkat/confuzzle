@@ -314,6 +314,7 @@ export function parse(input, compiling, options) {
   const cw = {
     meta: {
       emoji: [],
+      copyright: ''
     },
     grid: {},
     clues: {}
