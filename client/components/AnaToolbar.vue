@@ -147,132 +147,24 @@ export default Vue.extend({
   computed: {
     menuOptions() {
         var options = [];
-        if (this.showInstall) {
-            options.push({
-                label: 'Install app',
-                icon: 'add_circle_outline'
-            });
-        }
-            
+        if (this.showInstall)
+            options.push(this.opt.INSTALL);
+
         if (this.state.colluding) {
-            options = options.concat([
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'Solve alone',
-                icon: 'exit_to_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
-        } else if (!this.state.compiling) {
-            options = options.concat([
-            {
-                label: 'Open puzzle...',
-                icon: 'folder_open'
-            },
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
+            options.push(this.opt.SOLVE_OFFLINE);
         } else {
-            options = options.concat([
-            {
-                label: 'Open puzzle...',
-                icon: 'folder_open'
-            },
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
+            options.push(this.opt.OPEN_PUZZLE);
         }
+
+        options.push(this.opt.SAVE_PUZ);
+        options.push(this.opt.SAVE_ENO);
+        options.push(this.opt.EXPORT_LINK);
+        options.push(this.opt.ABOUT);
+
         return options;
     },
     mobileMenuOptions() {
-        var options = [];
-        if (this.showInstall) {
-            options.push({
-                label: 'Install app',
-                icon: 'add_circle_outline'
-            });
-        }
-        if (this.state.colluding) {
-            options = options.concat([
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'Solve alone',
-                icon: 'exit_to_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
-        } else if (!this.state.compiling) {
-            options = options.concat([{
-                label: 'Open puzzle...',
-                icon: 'folder_open'
-            },
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
-        } else {
-            options = options.concat([{
-                label: 'Open puzzle...',
-                icon: 'folder_open'
-            },
-            {
-                label: 'Save as .puz',
-                icon: 'get_app'
-            },
-            {
-                label: 'Save as .eno',
-                icon: 'get_app'
-            },
-            {
-                label: 'About',
-                icon: 'info'
-            }]);
-        }
-        return options;
+        return this.menuOptions;
     }
   },
   methods: {
@@ -305,17 +197,19 @@ export default Vue.extend({
         Vue.nextTick(() => window.print());
     },
     selectMenuOption(option) {
-        if (option.label == 'Save as .puz') {
+        if (option.label == this.opt.SAVE_PUZ.label) {
             this.$emit('download-puz-clicked');
-        } else if (option.label == 'Save as .eno') {
+        } else if (option.label == this.opt.SAVE_ENO.label) {
             this.$emit('download-eno-clicked');
-        } else if (option.label == 'Solve alone') {
+        } else if (option.label == this.opt.EXPORT_LINK.label) {
+            this.$emit('export-link-clicked');
+        } else if (option.label == this.opt.SOLVE_OFFLINE.label) {
             this.$emit('go-offline-clicked');
-        } else if (option.label == 'Open puzzle...') {
+        } else if (option.label == this.opt.OPEN_PUZZLE.label) {
             this.openPuzzle();
-        } else if (option.label == 'About') {
+        } else if (option.label == this.opt.ABOUT.label) {
             this.openModal('aboutModal');
-        } else if (option.label == 'Install app') {
+        } else if (option.label == this.opt.INSTALL.label) {
             this.$emit('install-clicked');
         }
     },
@@ -332,7 +226,37 @@ export default Vue.extend({
   data() {
     return {
       bundler: "Parcel",
-      isOnline: true
+      isOnline: true,
+      opt: {
+        INSTALL: {
+            label: 'Install app',
+            icon: 'add_circle_outline'
+        },
+        OPEN_PUZZLE: {
+            label: 'Open puzzle...',
+            icon: 'folder_open'
+        },
+        SAVE_PUZ: {
+            label: 'Save as .puz',
+            icon: 'get_app'
+        },
+        SAVE_ENO: {
+            label: 'Save as .eno',
+            icon: 'get_app'
+        },
+        EXPORT_LINK: {
+            label: 'Export to clipboard',
+            icon: 'content_copy'
+        },
+        SOLVE_OFFLINE: {
+            label: 'Solve alone',
+            icon: 'exit_to_app'
+        },
+        ABOUT: {
+            label: 'About',
+            icon: 'info'
+        }
+      }
     };
   }
 });

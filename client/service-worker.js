@@ -5,12 +5,12 @@ workbox.setConfig({
 });
 
 const {precacheAndRoute} = workbox.precaching;
-const {registerRoute} = workbox.routing;
-const {CacheFirst} = workbox.strategies;
+const {pageCache, imageCache, staticResourceCache} = workbox.recipes;
 
 precacheAndRoute(self.__WB_MANIFEST);
 
-registerRoute(
-  function () { return true; },
-  new CacheFirst()
-);
+pageCache();
+
+staticResourceCache();
+
+imageCache();
