@@ -348,6 +348,7 @@ import {emojisplosions} from "emojisplosion";
 
 import base64url from "base64url";
 const LZUTF8 = require('lzutf8');
+const ecoji = require('ecoji-js')
 
 function parseAndBuild(input, compiling, options) {
     const cw = parser.parse(input, compiling, options);
@@ -429,6 +430,17 @@ function decompressURL(url, outputEncoding) {
         outputEncoding = "String";
     }
     return LZUTF8.decompress(base64url.toBuffer(url), {outputEncoding: outputEncoding});
+}
+
+function compressEcoji(x) {
+    return ecoji.encode(LZUTF8.compress(x, {outputEncoding: "Base64"}))
+}
+
+function decompressEcoji(x) {
+    return LZUTF8.decompress(ecoji.decode(x), {
+            inputEncoding: "Base64",
+            outputEncoding: "Buffer"
+    })
 }
 
 const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
@@ -594,7 +606,7 @@ export default Vue.extend({
     const params = new URLSearchParams(window.location.search);
     const enoSource = params.get('source');
     const puz = params.get('puz');
-    const strippedPuz = params.get('s');
+    const strippedPuz = params.get('🧩');
     if (enoSource) {
         var eno = decompressURL(enoSource);
         const enoState = params.get('state');
@@ -604,9 +616,11 @@ export default Vue.extend({
         this.crosswordSource = eno;
         this.renderCrossword();
         this.scrambleClicked();
-    } else if (puz || strippedPuz) {
-        const buf = strippedPuz || puz;
-        this.crosswordSource = enoFromPuz(decompressURL(buf, "Buffer"), {stripped: !puz});
+    } else if (puz) {
+        this.crosswordSource = enoFromPuz(decompressURL(puz, "Buffer"), {stripped: false});
+        this.sourceUpdated();
+    } else if (strippedPuz) {
+        this.crosswordSource = enoFromPuz(decompressEcoji(strippedPuz), {stripped: true});
         this.sourceUpdated();
     } else if (localStorage.crosswordSource) {
         this.crosswordSource = localStorage.crosswordSource;
@@ -1067,10 +1081,10 @@ export default Vue.extend({
         } else if (e.key === "o" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             this.$refs.toolbar.openPuzzle();
-        // export stripped .puz binary to clipboard
+        // export as emoji to clipboard
         } else if (e.key === "b" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            this.exportLinkClicked(this.getStrippedParams())
+            this.exportLinkClicked(this.getEmojiParams())
         // export full .puz binary to clipboard
         } else if (e.key === "u" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
@@ -1119,9 +1133,9 @@ export default Vue.extend({
         }
         return params;
     },
-    getStrippedParams() {
+    getEmojiParams() {
         const stripped = true;
-        return '?s=' + compressURL(this.getPuz(stripped).toBuffer(stripped));
+        return '?🧩=' + compressEcoji(this.getPuz(stripped).toBuffer(stripped));
     },
     getPuzParams() {
         const stripped = false;
