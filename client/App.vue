@@ -1142,7 +1142,7 @@ export default Vue.extend({
         return '?puz=' + compressURL(this.getPuz(stripped).toBuffer(stripped));
     },
     exportLinkClicked(params) {
-        const link = window.location.origin.replace(/\/$/, "") + params;
+        const link = this.shortUrl + '/' + params;
         navigator.clipboard.writeText(link);
         this.snackbarMessage(this.exportMessage);
     }
