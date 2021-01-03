@@ -1,8 +1,9 @@
 
-import {CLUE_CODEBOOK} from './codebook.js';
-const CLUE_ENCODING_MAGIC_CHAR = '\u000d'
-
 const iconv = require('iconv-lite');
+
+import {ALL_EMOJIS, Mapping, convertBase} from './emojis.js';
+const base64url = require("base64url");
+import {MTFModel} from './compressjs/MTFModel.js'
 
 // Strings in puz files are ISO-8859-1.
 
@@ -12,6 +13,8 @@ const iconv = require('iconv-lite');
 // codes in this range. Windows-1252 has several characters, punctuation, arithmetic
 // and business symbols assigned to these code points.
 const PUZ_ENCODING = "windows-1252";
+
+const PUZ_BLACK_SQUARE_CHAR = '.';
 
 const PUZ_HEADER_CONSTANTS = {
     offsets: {
@@ -90,6 +93,12 @@ function puzEncode(s, options) {
     return iconv.encode(s, encoding);
 }
 
+function decodeEmoji(url) {
+    const map = new Mapping(ALL_EMOJIS);
+    const runes = Array.from(url.split('\u{200D}')[0].split(/[\ufe00-\ufe0f]/).join(''))
+    return runes.map(r => map.getId(r));
+}
+
 // http://blog.tatedavies.com/2012/08/28/replace-microsoft-chars-in-javascript/
 /**
  * Replace Word characters with Ascii equivalent
@@ -133,52 +142,6 @@ function splitNulls(buf, options) {
     if (i > prev)
         parts.push(puzDecode(buf, prev, i, options));
     return parts;
-}
-
-function encodeClue(clue, stripped) {
-    if (!stripped) {
-        return clue;
-    }
-    const words = clue.split(" ");
-    var encoded = '';
-    for (var i = 0; i < words.length; i++) {
-        const w = CLUE_CODEBOOK.encode[words[i]];
-        if (w) {
-            encoded += CLUE_ENCODING_MAGIC_CHAR + btoa(String.fromCodePoint(w)).slice(0, 2)
-        } else {
-            encoded += (encoded ? ' ' : '') + words[i]
-        }
-    }
-    return encoded;
-}
-
-function decodeClue(clue, stripped) {
-    var decoded = '';
-    var i = 0;
-    while (i < clue.length) {
-        if (clue[i] == CLUE_ENCODING_MAGIC_CHAR && i < clue.length - 3) {
-            const sep = (decoded ? ' ' : '');
-            const b64 = clue.slice(i + 1, i + 3);
-            const word = CLUE_CODEBOOK.decode[atob(b64).codePointAt(0)];
-            decoded += sep + word;
-            i += 3;
-        } else {
-            decoded += clue[i];
-            i += 1
-        }
-    }
-    return decoded;
-}
-
-function decodeClues(clues, stripped) {
-    if (!stripped) {
-       return clues;
-    }
-    var decoded = [];
-    for (var i = 0; i < clues.length; i++) {
-        decoded.push(decodeClue(clues[i], stripped));
-    }
-    return decoded;
 }
 
 function checksum(base, c, len) {
@@ -246,18 +209,114 @@ class PuzPayload {
         meta.note = strings[fields.length + header.NUM_CLUES];
         meta.width = header.WIDTH;
         meta.height = header.HEIGHT;
-        const clues = decodeClues(strings.slice(fields.length, fields.length + header.NUM_CLUES), stripped);
-        return new PuzPayload(meta, clues, solution, state);
+        const clueStrings = strings.slice(fields.length, fields.length + header.NUM_CLUES);
+        return new PuzPayload(meta, clueStrings, solution, state);
+    }
+
+    isBlackSquare(grid, row, col) {
+        return grid[row*this.width + col] === PUZ_BLACK_SQUARE_CHAR;
+    }
+
+    acrossSoln(grid, row, col) {
+        var pos = row * this.width + col;
+        var soln = '';
+        while (pos < (row + 1) * this.width) {
+            if (grid[pos] == PUZ_BLACK_SQUARE_CHAR)
+                break;
+            soln += grid[pos];
+            pos++;
+        }
+        return soln;
+    }
+
+    downSoln(grid, row, col) {
+        var pos = row * this.width + col;
+        var soln = '';
+        while (pos < this.height * this.width) {
+            if (grid[pos] === PUZ_BLACK_SQUARE_CHAR)
+                break;
+            soln += grid[pos];
+            pos += this.width;
+        }
+        return soln;
+    }
+
+    parseClues() {
+        var row, col;
+        var number = 1;
+        var clueIndex = 0;
+        this.clues = [];
+        const grid = this.solution;
+        for (row = 0; row < this.height; row++) {
+            for (col = 0; col < this.width; col++) {
+                if (this.isBlackSquare(grid, row, col))
+                    continue;
+                var numbered = false;
+                var isAcrossSpace, isDownSpace;
+                var isAcrossClue = false;
+                var isDownClue = false;
+                var aSoln, dSoln;
+                isAcrossSpace = col == 0 || this.isBlackSquare(grid, row, col - 1);
+                aSoln = this.acrossSoln(grid, row, col);
+                if (isAcrossSpace && aSoln.length > 1) {
+                    numbered = true;
+                    isAcrossClue = true;
+                }
+                isDownSpace = row == 0 || this.isBlackSquare(grid, row - 1, col);
+                dSoln = this.downSoln(grid, row, col);
+                if (isDownSpace && dSoln.length > 1) {
+                    numbered = true;
+                    isDownClue = true;
+                }
+                if (!numbered)
+                    continue;
+
+                // clues are arranged numerically, with across clues coming first
+                if (isAcrossClue) {
+                    const aState = this.acrossSoln(this.state, row, col);
+                    const aText = this.clueStrings[clueIndex];
+                    this.clues.push({
+                        number: number,
+                        text: aText,
+                        solution: aSoln,
+                        state: aState,
+                        row: row,
+                        col: col,
+                        isDown: false,
+                        length: aSoln.length
+                    });
+                    clueIndex++;
+                }
+                if (isDownClue) {
+                    const dState = this.downSoln(this.state, row, col);
+                    const dText = this.clueStrings[clueIndex];
+                    this.clues.push({
+                        number: number,
+                        text: dText,
+                        solution: dSoln,
+                        state: dState,
+                        row: row,
+                        col: col,
+                        isDown: true,
+                        length: dSoln.length
+                    });
+                    clueIndex++;
+                }
+                number++;
+            }
+        }
+        return this.clues;
     }
 
     buildStrings(options) {
         let strings = '';
         const fields = PUZ_STRING_FIELDS;
+        
         for (let i = 0; i < fields.length; i++)
             strings += this[fields[i]] + '\x00';
 
-        for (let i = 0; i < this.clues.length; i++)
-            strings += encodeClue(this.clues[i], options.stripped) + '\x00';
+        for (let i = 0; i < this.clueStrings.length; i++)
+            strings += this.clueStrings[i] + '\x00';
 
         if (this.note)
             strings += this.note;
@@ -272,8 +331,8 @@ class PuzPayload {
         c = checksum(puzEncode(this.title + '\x00'), c);
         c = checksum(puzEncode(this.author + '\x00'), c);
         c = checksum(puzEncode(this.copyright + '\x00'), c);
-        for (let i = 0; i < this.clues.length; i++)
-            c = checksum(puzEncode(this.clues[i]), c);
+        for (let i = 0; i < this.clueStrings.length; i++)
+            c = checksum(puzEncode(this.clueStrings[i]), c);
 
         if (this.note)
             c = checksum(puzEncode(this.note + '\x00'), c);
@@ -308,7 +367,7 @@ class PuzPayload {
             const header = new Uint8Array(STRIPPED_HEADER_CONSTANTS.lengths.HEADER);
             header[i.WIDTH] = this.width;
             header[i.HEIGHT] = this.height;
-            writeUInt16LE(header, i.NUM_CLUES, this.clues.length);
+            writeUInt16LE(header, i.NUM_CLUES, this.clueStrings.length);
             return header;
         }
         
@@ -322,7 +381,7 @@ class PuzPayload {
         // dimensions
         header[i.WIDTH] = this.width;
         header[i.HEIGHT] = this.height;
-        writeUInt16LE(header, i.NUM_CLUES, this.clues.length);
+        writeUInt16LE(header, i.NUM_CLUES, this.clueStrings.length);
 
         // magical random bitmask, causes across lite to crash if not set :S
         header[i.UNKNOWN_BITMASK] = 0x01;
@@ -345,21 +404,54 @@ class PuzPayload {
     toBuffer(stripped) {
         return Buffer.from(this.toBytes(stripped));
     }
+
+    toCompressed(stripped) {
+        const puzbytes = this.toBuffer(stripped)
+        const compressed = Buffer.from(MTFModel.compressFile(puzbytes));
+        return compressed;
+    }
+
+    static fromCompressed(compressed, stripped) {
+        const decompressed = MTFModel.decompressFile(compressed);
+        return PuzPayload.from(decompressed, {stripped: stripped});
+    }
+
+    toURL(stripped) {
+        return base64url(this.toCompressed(stripped))
+    }
+
+    fromURL(url, stripped) {
+        const compressed = base64url.toBuffer(url)
+        return PuzPayload.fromCompressed(compressed, stripped);
+    }
+
+    toEmoji(stripped) {
+        const map = new Mapping(ALL_EMOJIS);
+        const compressed = this.toCompressed(stripped);
+        const b1024 = convertBase(compressed, 8, 10, true);
+        const emoji = b1024.map(i => map.getEmoji(i));
+        return emoji.join('');
+    }
+
+    static fromEmoji(s, stripped) {
+        const b1024 = decodeEmoji(s);
+        const compressed = Buffer.from(convertBase(b1024, 10, 8, false))
+        return PuzPayload.fromCompressed(compressed, stripped);
+    }
     
-    constructor(metadata, clues, solution, state) {
+    constructor(metadata, clueStrings, solution, state) {
         for (let [field, value] of Object.entries(metadata)) {
             this[field] = value;
         }
-        this.clues = clues;
         this.solution = solution;
         this.state = state;
         if (!this.state)
             this.state = this.solution.replace(/[^\.]/g, '-');
+        this.clueStrings = clueStrings;
     }
 }
 
 module.exports = {
-    PuzPayload: PuzPayload,
-    CLUE_ENCODING_MAGIC_CHAR: CLUE_ENCODING_MAGIC_CHAR
+    PuzPayload: PuzPayload
 }
 

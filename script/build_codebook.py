@@ -21,6 +21,8 @@ all_words = [w for p in puz_files for w in get_words(p)]
 
 count = collections.Counter(all_words)
 
+scores = collections.Counter({word: len(word) * ntimes for (word, ntimes) in count.items()})
+
 codebook = {x[0]: i + 1 for (i, x) in enumerate(count.most_common(255))}
 lookup = {i: x for (x, i) in codebook.items()}
 
@@ -34,5 +36,5 @@ with open(os.path.join(__dir__, '..', 'client', 'js', 'codebook.js'), 'w') as fo
     fobj.write('\n}\n')
     fobj.write('module.exports = {CLUE_CODEBOOK: CLUE_CODEBOOK};\n');
 
-import pdb
-pdb.set_trace()
+# import ipdb
+# ipdb.set_trace()

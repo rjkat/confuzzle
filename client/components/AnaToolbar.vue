@@ -35,7 +35,7 @@
         </ana-share-modal>
 
         <input type="file" ref="fileInput"
-            accept=".puz,.eno"
+            accept=".puz,.eno,.confuz,.🧩"
             @change="handleFiles()"
             style="display: none">
         </input>
@@ -158,6 +158,7 @@ export default Vue.extend({
 
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
+        options.push(this.opt.SAVE_EMOJI);
         options.push(this.opt.EXPORT_ENO_LINK);
         options.push(this.opt.ABOUT);
 
@@ -181,9 +182,13 @@ export default Vue.extend({
         const self = this;
         let files = this.$refs.fileInput.files;
         const file = files[0];
-        if (file.name.endsWith('.eno')) {
+        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
             file.arrayBuffer().then(
                 buffer => self.$emit('eno-file-uploaded', buffer)
+            )
+        } else if (file.name.endsWith('.🧩')) {
+            file.arrayBuffer().then(
+                buffer => self.$emit('emoji-file-uploaded', buffer)
             )
         } else {
             file.arrayBuffer().then(
@@ -201,6 +206,8 @@ export default Vue.extend({
             this.$emit('download-puz-clicked');
         } else if (option.label == this.opt.SAVE_ENO.label) {
             this.$emit('download-eno-clicked');
+        } else if (option.label == this.opt.SAVE_EMOJI.label) {
+            this.$emit('download-emoji-clicked');
         } else if (option.label == this.opt.EXPORT_ENO_LINK.label) {
             this.$emit('export-eno-clicked');
         } else if (option.label == this.opt.SOLVE_OFFLINE.label) {
@@ -241,7 +248,11 @@ export default Vue.extend({
             icon: 'get_app'
         },
         SAVE_ENO: {
-            label: 'Save as .eno',
+            label: 'Save as .confuz',
+            icon: 'get_app'
+        },
+        SAVE_EMOJI: {
+            label: 'Save as .🧩',
             icon: 'get_app'
         },
         EXPORT_ENO_LINK: {

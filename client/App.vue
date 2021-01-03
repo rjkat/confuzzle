@@ -22,9 +22,11 @@
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
+        @download-emoji-clicked="downloadEmojiClicked()"
         @copy-clicked="copyClicked()"
         @export-eno-clicked="exportLinkClicked(getEnoParams())"
         @puz-file-uploaded="puzFileUploaded($event)"
+        @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
     >
     </ana-toolbar>
@@ -339,16 +341,16 @@ import AnaToolbar from './components/AnaToolbar.vue'
 import AnaDisconnectedModal from './components/AnaDisconnectedModal.vue'
 
 const parser = require('./js/parser.js');
-import {enoFromPuz, enoToPuz, enoState, exportEno} from './js/eno.js'
+
+const confuz = require('./js/confuz.js');
+
+import {PuzPayload} from './js/puz.js'
+
 import {EnoError} from 'enolib'
 
 const {Manager} = require("socket.io-client");
 
 import {emojisplosions} from "emojisplosion";
-
-import base64url from "base64url";
-const LZUTF8 = require('lzutf8');
-const ecoji = require('ecoji-js')
 
 function parseAndBuild(input, compiling, options) {
     const cw = parser.parse(input, compiling, options);
@@ -417,30 +419,6 @@ function parseAndBuild(input, compiling, options) {
       };
     }
     return cw;
-}
-
-
-
-function compressURL(x) {
-    return base64url.fromBase64(LZUTF8.compress(x, {outputEncoding: "Base64"}));
-}
-
-function decompressURL(url, outputEncoding) {
-    if (!outputEncoding) {
-        outputEncoding = "String";
-    }
-    return LZUTF8.decompress(base64url.toBuffer(url), {outputEncoding: outputEncoding});
-}
-
-function compressEcoji(x) {
-    return ecoji.encode(LZUTF8.compress(x, {outputEncoding: "Base64"}))
-}
-
-function decompressEcoji(x) {
-    return LZUTF8.decompress(ecoji.decode(x), {
-            inputEncoding: "Base64",
-            outputEncoding: "Buffer"
-    })
 }
 
 const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
@@ -524,7 +502,7 @@ export default Vue.extend({
         return true;
     },
     crosswordState() {
-        return enoState(this.crossword.clues);
+        return confuz.stateFromClues(this.crossword.clues);
     }
   },
   watch: {
@@ -608,19 +586,19 @@ export default Vue.extend({
     const puz = params.get('puz');
     const strippedPuz = params.get('🧩');
     if (enoSource) {
-        var eno = decompressURL(enoSource);
+        var eno = confuz.decompressURL(enoSource);
         const enoState = params.get('state');
         if (enoState) {
-            eno += decompressURL(enoState);
+            eno += confuz.decompressURL(enoState);
         }
         this.crosswordSource = eno;
         this.renderCrossword();
         this.scrambleClicked();
     } else if (puz) {
-        this.crosswordSource = enoFromPuz(decompressURL(puz, "Buffer"), {stripped: false});
+        this.crosswordSource = confuz.fromPuz(PuzPayload.fromURL(puz));
         this.sourceUpdated();
     } else if (strippedPuz) {
-        this.crosswordSource = enoFromPuz(decompressEcoji(strippedPuz), {stripped: true});
+        this.crosswordSource = confuz.fromPuz(PuzPayload.fromEmoji(strippedPuz, true));
         this.sourceUpdated();
     } else if (localStorage.crosswordSource) {
         this.crosswordSource = localStorage.crosswordSource;
@@ -812,11 +790,11 @@ export default Vue.extend({
         Vue.nextTick(() => this.$refs.editor && this.$refs.editor.redraw());
     },
     scrambleClicked() {
-        this.crosswordSource = exportEno(this.crossword, {scramble: true});
+        this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: true});
         this.sourceUpdated();
     },
     unscrambleClicked() {
-        this.crosswordSource = exportEno(this.crossword, {scramble: false});
+        this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: false});
         this.sourceUpdated();
     },
     lostConnection() {
@@ -1049,9 +1027,11 @@ export default Vue.extend({
         if (!this.state.colluding) {
             const file = event.dataTransfer.files[0];
             const self = this;
-            if (file.name.endsWith('.eno')) {
+            if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
                 file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
-            } else {
+            } else if (file.name.endsWith('.🧩')) {
+                file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
+            } else if (file.name.endsWith('.puz')) {
                 file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
             }
             this.dragCount = 0;
@@ -1064,8 +1044,13 @@ export default Vue.extend({
         this.crosswordSource = Buffer.from(buf).toString('utf8');
         this.sourceUpdated();
     },
+    emojiFileUploaded(buf) {
+        const emoji = Buffer.from(buf).toString('utf8');
+        this.crosswordSource = confuz.fromPuz(PuzPayload.fromEmoji(emoji, true));
+        this.sourceUpdated();
+    },
     puzFileUploaded(buf) {
-        this.crosswordSource = enoFromPuz(new Uint8Array(buf));
+        this.crosswordSource = confuz.fromPuz(PuzPayload.from(new Uint8Array(buf)));
         this.sourceUpdated();
     },
     sourceUpdated() {
@@ -1095,12 +1080,12 @@ export default Vue.extend({
             this.exportLinkClicked(this.getEnoParams())
         }
     },
-    getPuz(stripped) {
+    getPuz() {
         var eno = this.crosswordSource;
         if (!this.state.compiling) {
             eno += this.crosswordState;
         }
-        const puz = enoToPuz(eno, {stripped: stripped});
+        const puz = confuz.toPuz(eno);
         return puz;
     },
     downloadPuzClicked() {
@@ -1113,7 +1098,11 @@ export default Vue.extend({
             eno += this.crosswordState;
         }
         const blob = new Blob([eno], {type: "text/plain"});
-        this.downloadCrossword(blob, '.eno')
+        this.downloadCrossword(blob, '.confuz')
+    },
+    downloadEmojiClicked() {
+        const blob = new Blob([this.getPuz().toEmoji(true)], {type: "text/plain"});
+        this.downloadCrossword(blob, '.🧩')
     },
     downloadCrossword(blob, extension) {
         const link = document.createElement('a');
@@ -1127,19 +1116,19 @@ export default Vue.extend({
         this.snackbarMessage(this.copyMessage);
     },
     getEnoParams() {
-        var params = '?source=' + compressURL(this.crosswordSource);
+        var params = '?source=' + confuz.compressURL(this.crosswordSource);
         if (!this.state.compiling && this.crosswordState) {
-            params += '&state=' + compressURL(this.crosswordState);
+            params += '&state=' + confuz.compressURL(this.crosswordState);
         }
         return params;
     },
     getEmojiParams() {
         const stripped = true;
-        return '?🧩=' + compressEcoji(this.getPuz(stripped).toBuffer(stripped));
+        return '?🧩=' + this.getPuz().toEmoji(stripped);
     },
     getPuzParams() {
         const stripped = false;
-        return '?puz=' + compressURL(this.getPuz(stripped).toBuffer(stripped));
+        return '?puz=' + this.getPuz().toURL(stripped);
     },
     exportLinkClicked(params) {
         const link = window.location.origin.replace(/\/$/, "") + params;

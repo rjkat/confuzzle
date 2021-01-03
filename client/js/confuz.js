@@ -1,98 +1,20 @@
-import {PuzPayload, CLUE_ENCODING_MAGIC_CHAR} from './puz.js';
+import {PuzPayload} from './puz.js';
 const parser = require('./parser.js');
+const base64url = require("base64url");
+const LZUTF8 = require('lzutf8');
 
-const BLACK_SQUARE_CHAR = '.';
-
-function isBlackSquare(grid, row, ncols, col) {
-    return grid[row*ncols + col] === BLACK_SQUARE_CHAR;
+export function compressURL(source) {
+    return base64url.fromBase64(LZUTF8.compress(source, {outputEncoding: "Base64"}));
 }
 
-function acrossSoln(grid, row, ncols, col) {
-    var pos = row * ncols + col;
-    var soln = '';
-    while (pos < (row + 1) * ncols) {
-        if (grid[pos] == BLACK_SQUARE_CHAR)
-            break;
-        soln += grid[pos];
-        pos++;
+export function decompressURL(url, outputEncoding) {
+    if (!outputEncoding) {
+        outputEncoding = "String";
     }
-    return soln;
+    return LZUTF8.decompress(base64url.toBuffer(url), {outputEncoding: outputEncoding});
 }
 
-function downSoln(grid, nrows, row, ncols, col) {
-    var pos = row * ncols + col;
-    var soln = '';
-    while (pos < nrows * ncols) {
-        if (grid[pos] == BLACK_SQUARE_CHAR)
-            break;
-        soln += grid[pos];
-        pos += ncols;
-    }
-    return soln;
-}
-
-function getClues(p) {
-    const nrows = p.height;
-    const ncols = p.width;
-    const grid = p.solution;
-    const state = p.state;
-    var row, col;
-    var number = 1;
-    var clues = [];
-    for (row = 0; row < nrows; row++) {
-        for (col = 0; col < ncols; col++) {
-            if (isBlackSquare(grid, row, ncols, col))
-                continue;
-            var numbered = false;
-            var isAcrossSpace, isDownSpace;
-            var isAcrossClue = false;
-            var isDownClue = false;
-            var aSoln, dSoln;
-            isAcrossSpace = col == 0 || isBlackSquare(grid, row, ncols, col - 1);
-            aSoln = acrossSoln(grid, row, ncols, col);
-            if (isAcrossSpace && aSoln.length > 1) {
-                numbered = true;
-                isAcrossClue = true;
-            }
-            isDownSpace = row == 0 || isBlackSquare(grid, row - 1, ncols, col);
-            dSoln = downSoln(grid, nrows, row, ncols, col);
-            if (isDownSpace && dSoln.length > 1) {
-                numbered = true;
-                isDownClue = true;
-            }
-            if (!numbered)
-                continue;
-
-            // clues are arranged numerically, with across clues coming first
-            if (isAcrossClue) {
-                clues.push({
-                    number: number,
-                    solution: aSoln,
-                    state: acrossSoln(state, row, ncols, col),
-                    row: row,
-                    col: col,
-                    isDown: false,
-                    length: aSoln.length
-                });
-            }
-            if (isDownClue) {
-                clues.push({
-                    number: number,
-                    solution: dSoln,
-                    state: downSoln(state, nrows, row, ncols, col),
-                    row: row,
-                    col: col,
-                    isDown: true,
-                    length: dSoln.length
-                });
-            }
-            number++;
-        }
-    }
-    return clues;
-}
-
-function enoClues(clues, options) {
+function fuzClues(clues, options) {
     var eno = "\n# clues\n";
     for (let [clueid, clue] of Object.entries(clues)) {
         const ans = options.scramble ? Buffer.from(clue.solution).toString('base64') : clue.solution;
@@ -112,7 +34,7 @@ function enoClues(clues, options) {
     return eno;
 }
 
-function enoMeta(meta, options) {
+function fuzMeta(meta, options) {
     var eno = "# meta\n";
     eno += "name: " + meta.name + "\n";
     eno += "author: " + meta.author + "\n";
@@ -136,7 +58,7 @@ function enoMeta(meta, options) {
     return eno;
 }
 
-function enoGrid(grid) {
+function fuzGrid(grid) {
     var eno = "\n# grid\n";
     eno += "width: " + grid.width + "\n";
     eno += "height: " + grid.height + "\n";
@@ -158,7 +80,7 @@ function enoGrid(grid) {
     return eno;
 }
 
-function enoRefs(clues) {
+function fuzRefs(clues) {
     var refs = '';
     for (let [clueid, clue] of Object.entries(clues)) {
         if (clue.refIds.length == 0) {
@@ -178,7 +100,7 @@ function enoRefs(clues) {
     return refs;
 }
 
-export function enoState(clues) {
+export function stateFromClues(clues) {
     var state = '';
     var written = {};
     for (let [clueid, clue] of Object.entries(clues)) {
@@ -229,10 +151,8 @@ export function enoState(clues) {
     return state;
 }
 
-export function puzToEno(p, options) {
-    const stripped = options && options.stripped;
-    const clues = getClues(p);
-
+export function fromPuz(p) {
+    const clues = p.parseClues();
     var eno = "# meta\n";
     var name = p.title;
     var author = p.author;
@@ -262,16 +182,13 @@ export function puzToEno(p, options) {
         eno += "row: " + (clue.row + 1) + "\n";
         eno += "col: " + (clue.col + 1) + "\n";
 
-        var text = p.clues[i];
+        var text = clue.text;
         var separators = null;
         var lengths = [clue.length];
-        var verbatim = false;
-        const toks = text.match(/^(.*) \((.*)\)\s*$/);
+        var verbatim = true;
+        const toks = text.match(/^(.*) \((.*\b\d+\b.*)\)\s*$/);
 
-        // add back in stripped length        
-        if (stripped && text[text.length - 1] == CLUE_ENCODING_MAGIC_CHAR) {
-            text = text.slice(0, text.length - 1)
-        } else if (toks) {
+        if (toks) {
             // looks like a multiple-word clue, see if the lengths add up
             lengths = toks[2].match(/\b\d+\b/g).map(x => parseInt(x));
             var totLen = 0;
@@ -282,10 +199,10 @@ export function puzToEno(p, options) {
             // if they don't, ignore and treat clue as verbatim
             if (totLen != clue.length) {
                 lengths = [clue.length];
-                verbatim = true;
             } else {
                 text = toks[1];
                 separators = toks[2].match(/[^\d\s]/g);
+                verbatim = false;
             }
         }
 
@@ -331,55 +248,45 @@ export function puzToEno(p, options) {
     return eno;
 }
 
-export function exportEno(crossword, options) {
-    var eno = enoMeta(crossword.meta, options);
+export function fromCrossword(crossword, options) {
+    var eno = fuzMeta(crossword.meta, options);
     
-    eno += enoGrid(crossword.grid);
-    eno += enoClues(crossword.clues, options);
+    eno += fuzGrid(crossword.grid);
+    eno += fuzClues(crossword.clues, options);
 
-    var refs = enoRefs(crossword.clues);
+    var refs = fuzRefs(crossword.clues);
     if (refs)
         eno += refs;
 
-    var state = enoState(crossword.clues);
+    var state = stateFromClues(crossword.clues);
     if (state)
         eno += state;
 
     return eno;
 }
 
-export function enoFromPuz(buf, options) {
-    return puzToEno(PuzPayload.from(buf, options), options);
-}
-
-function puzText(clue, stripped) {
+function puzText(clue) {
     var text = clue.text;
     if (clue.verbatim)
         return text;
 
-    // if it's a one word clue, put magic char instead of length in brackets
-    if (stripped && clue.lengths.length == 1) {
-        text += CLUE_ENCODING_MAGIC_CHAR;
-    } else {
-        text += ' ('
-        for (var i = 0; i < clue.lengths.length; i++) {
-            if (i > 0) {
-                if (clue.separators) {
-                    text += clue.separators[i - 1]
-                } else {
-                    text += ','
-                }
+    text += ' ('
+    for (var i = 0; i < clue.lengths.length; i++) {
+        if (i > 0) {
+            if (clue.separators) {
+                text += clue.separators[i - 1]
+            } else {
+                text += ','
             }
-            text += clue.lengths[i];
         }
-        text += ')'
+        text += clue.lengths[i];
     }
+    text += ')'
 
     return text;
 }
 
-export function enoToPuz(eno, options) {
-    const stripped = options && options.stripped;
+export function toPuz(eno) {
     const cw = parser.parse(eno);
     const meta = cw.meta;
     const grid = cw.grid;
@@ -395,10 +302,10 @@ export function enoToPuz(eno, options) {
                 continue
             
             if (cell.clues.across && cell.offsets.across == 0) {
-                clues.push(puzText(cell.clues.across, stripped));
+                clues.push(puzText(cell.clues.across));
             }
             if (cell.clues.down && cell.offsets.down == 0) {
-                clues.push(puzText(cell.clues.down, stripped));
+                clues.push(puzText(cell.clues.down));
             }
         }
     }

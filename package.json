@@ -35,7 +35,6 @@
     "base64url": "^3.0.1",
     "blissfuljs": "^1.0.6",
     "compression": "^1.7.4",
-    "ecoji-js": "^1.1.2",
     "emojisplosion": "^2.5.0",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",

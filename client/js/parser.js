@@ -23,6 +23,10 @@ const SANITIZE_HTML_OPTIONS_STRIP_ALL = {
   allowedAttributes: {}
 }
 
+function fromb64(b) {
+    return Buffer.from(b, 'base64').toString()
+}
+
 function forEachCell(clue, cells, cellFn) {
   let offset = 0;
   if (clue.isAcross) {
@@ -180,7 +184,7 @@ function parseClue(cw, clue) {
   if (solution) {
     solution = solution.requiredStringValue();
     if (cw.meta.scramble == 'base64') {
-      solution = atob(solution);
+      solution = fromb64(solution);
     }
     var emoji = [];
     var wordStart = 0;

@@ -4,6 +4,10 @@
   "description": "",
   "main": "convert_to_pdf.js",
   "dependencies": {
+    "compressjs": "^1.0.3",
+    "ecoji-js": "^1.1.2",
+    "emojicoding": "^0.3.0",
+    "graphemer": "^1.1.1",
     "puppeteer": "^2.1.1"
   },
   "devDependencies": {},
