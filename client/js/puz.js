@@ -420,7 +420,7 @@ class PuzPayload {
         return base64url(this.toCompressed(stripped))
     }
 
-    fromURL(url, stripped) {
+    static fromURL(url, stripped) {
         const compressed = base64url.toBuffer(url)
         return PuzPayload.fromCompressed(compressed, stripped);
     }
