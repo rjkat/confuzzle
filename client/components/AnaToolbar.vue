@@ -74,6 +74,15 @@
                 <form action="https://www.buymeacoffee.com/rjkat" target="_blank">
                     <ui-button color="primary" style="margin-top: 1em;">Buy me a coffee</ui-button>
                 </form>
+                <ui-button class="emoji-button" @click="openModal('emojiModal')">🧩</ui-button>
+            </div>
+        </ui-modal>
+        <ui-modal ref="emojiModal" title="🧩">
+            <div style="text-align: center;">
+                <ui-textbox :value="emojiText" readonly></ui-textbox>
+                <ui-icon-button icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
+                <ui-textbox v-model="inputEmoji" style="margin-top: 1em;"></ui-textbox>
+                <ui-icon-button icon="forward" @click="importEmojiClicked()"></ui-icon-button>
             </div>
         </ui-modal>
     </div>
@@ -81,6 +90,10 @@
 </template>
 
 <style lang="scss">
+.emoji-button {
+    background: transparent !important;
+}
+
 .about-text {
     font-family: $clueFontFamily;
 }
@@ -142,7 +155,8 @@ export default Vue.extend({
     state: Object,
     shareLoading: false,
     shareLink: "",
-    showInstall: false
+    showInstall: false,
+    emojiText: ""
   },
   computed: {
     menuOptions() {
@@ -158,7 +172,6 @@ export default Vue.extend({
 
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
-        options.push(this.opt.SAVE_EMOJI);
         options.push(this.opt.EXPORT_ENO_LINK);
         options.push(this.opt.ABOUT);
 
@@ -196,6 +209,12 @@ export default Vue.extend({
             )
         }
     },
+    copyEmojiClicked() {
+        this.$emit('copy-emoji-clicked');
+    },
+    importEmojiClicked() {
+        this.$emit('import-emoji-clicked', this.inputEmoji);
+    },
     printClicked() {
         this.state.printing = true;
         this.state.compiling = false;
@@ -206,8 +225,6 @@ export default Vue.extend({
             this.$emit('download-puz-clicked');
         } else if (option.label == this.opt.SAVE_ENO.label) {
             this.$emit('download-eno-clicked');
-        } else if (option.label == this.opt.SAVE_EMOJI.label) {
-            this.$emit('download-emoji-clicked');
         } else if (option.label == this.opt.EXPORT_ENO_LINK.label) {
             this.$emit('export-eno-clicked');
         } else if (option.label == this.opt.SOLVE_OFFLINE.label) {
@@ -234,6 +251,7 @@ export default Vue.extend({
     return {
       bundler: "Parcel",
       isOnline: true,
+      inputEmoji: "",
       opt: {
         INSTALL: {
             label: 'Install app',
@@ -251,12 +269,8 @@ export default Vue.extend({
             label: 'Save as .confuz',
             icon: 'get_app'
         },
-        SAVE_EMOJI: {
-            label: 'Save as .🧩',
-            icon: 'get_app'
-        },
         EXPORT_ENO_LINK: {
-            label: 'Export to clipboard',
+            label: 'Copy as URL',
             icon: 'content_copy'
         },
         SOLVE_OFFLINE: {

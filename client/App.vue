@@ -14,6 +14,7 @@
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
+        :emojiText="emojiNotation"
         class="hidden-print"
         :state="state"
         :showInstall="installPrompt || (iOSSafari && !standalone)"
@@ -22,8 +23,8 @@
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
-        @download-emoji-clicked="downloadEmojiClicked()"
-        @copy-clicked="copyClicked()"
+        @copy-emoji-clicked="copyEmojiClicked()"
+        @import-emoji-clicked="importEmojiClicked($event)"
         @export-eno-clicked="exportLinkClicked(getEnoParams())"
         @puz-file-uploaded="puzFileUploaded($event)"
         @emoji-file-uploaded="emojiFileUploaded($event)"
@@ -475,7 +476,18 @@ export default Vue.extend({
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
-
+    puzPayload() {
+        var eno = this.crosswordSource;
+        var puz = confuz.toPuz(eno);
+        if (!puz.state && !this.state.compiling) {
+            eno += this.crosswordState;
+            puz = confuz.toPuz(eno);
+        }
+        return puz;
+    },
+    emojiNotation() {
+        return this.puzPayload.toEmoji(true);
+    },
     selectedClue() {
         if (!this.crossword)
             return undefined;
@@ -614,6 +626,7 @@ export default Vue.extend({
       bundler: "Parcel",
       copyMessage: 'Shared link copied to clipboard',
       exportMessage: 'Crossword exported to clipboard',
+      exportEmojiMessage: '🧩 ➡️ 📋 ✅',
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
@@ -1080,16 +1093,9 @@ export default Vue.extend({
             this.exportLinkClicked(this.getEnoParams())
         }
     },
-    getPuz() {
-        var eno = this.crosswordSource;
-        if (!this.state.compiling) {
-            eno += this.crosswordState;
-        }
-        const puz = confuz.toPuz(eno);
-        return puz;
-    },
+   
     downloadPuzClicked() {
-        const blob = new Blob([this.getPuz().toBytes(false)], {type: "application/octet-stream"});
+        const blob = new Blob([this.puzPayload.toBytes(false)], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
@@ -1099,10 +1105,6 @@ export default Vue.extend({
         }
         const blob = new Blob([eno], {type: "text/plain"});
         this.downloadCrossword(blob, '.confuz')
-    },
-    downloadEmojiClicked() {
-        const blob = new Blob([this.getPuz().toEmoji(true)], {type: "text/plain"});
-        this.downloadCrossword(blob, '.🧩')
     },
     downloadCrossword(blob, extension) {
         const link = document.createElement('a');
@@ -1124,11 +1126,19 @@ export default Vue.extend({
     },
     getEmojiParams() {
         const stripped = true;
-        return '?🧩=' + this.getPuz().toEmoji(stripped);
+        return '?🧩=' + this.puzPayload.toEmoji(stripped);
     },
     getPuzParams() {
         const stripped = false;
-        return '?puz=' + this.getPuz().toURL(stripped);
+        return '?puz=' + this.puzPayload.toURL(stripped);
+    },
+    copyEmojiClicked() {
+        navigator.clipboard.writeText(this.emojiNotation);
+        this.snackbarMessage(this.exportEmojiMessage);
+    },
+    importEmojiClicked(emoji) {
+        this.crosswordSource = confuz.fromPuz(PuzPayload.fromEmoji(emoji, true));
+        this.sourceUpdated();
     },
     exportLinkClicked(params) {
         const link = window.location.origin.replace(/\/$/, "") + params;

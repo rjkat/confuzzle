@@ -292,11 +292,14 @@ export function toPuz(eno) {
     const grid = cw.grid;
     var solution = '';
     var state = '';
+    var haveState = false;
     var clues = [];
     for (var row = 0; row < grid.height; row++) {
         for (var col = 0; col < grid.width; col++) {
             const cell = grid.cells[row][col];
             solution += cell.empty ? '.' : (cell.solution ? cell.solution : 'X');
+            if (!cell.empty && cell.contents)
+                haveState = true;
             state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
             if (!cell.number)
                 continue
@@ -320,6 +323,6 @@ export function toPuz(eno) {
         },
         clues,
         solution,
-        state
+        haveState ? state : ''
     );
 }

@@ -273,7 +273,7 @@ class PuzPayload {
 
                 // clues are arranged numerically, with across clues coming first
                 if (isAcrossClue) {
-                    const aState = this.acrossSoln(this.state, row, col);
+                    const aState = this.acrossSoln(this.stateString, row, col);
                     const aText = this.clueStrings[clueIndex];
                     this.clues.push({
                         number: number,
@@ -288,7 +288,7 @@ class PuzPayload {
                     clueIndex++;
                 }
                 if (isDownClue) {
-                    const dState = this.downSoln(this.state, row, col);
+                    const dState = this.downSoln(this.stateString, row, col);
                     const dText = this.clueStrings[clueIndex];
                     this.clues.push({
                         number: number,
@@ -342,7 +342,7 @@ class PuzPayload {
     buildBody(options) {
         let body = puzEncode(this.solution, options);
         if (!options.stripped) {
-            body = concatBytes(body, puzEncode(this.state, options));
+            body = concatBytes(body, puzEncode(this.stateString, options));
         }
         return concatBytes(body, this.buildStrings(options));
     }
@@ -351,11 +351,11 @@ class PuzPayload {
         const p = PUZ_HEADER_CONSTANTS;
         const h = checksum(header.slice(p.offsets.WIDTH, p.lengths.HEADER));
         let c = checksum(puzEncode(this.solution), h);
-        c = checksum(puzEncode(this.state), c);
+        c = checksum(puzEncode(this.stateString), c);
         return {
             header: h,
             solution: checksum(puzEncode(this.solution)),
-            state: checksum(puzEncode(this.state)),
+            state: checksum(puzEncode(this.stateString)),
             strings: this.stringsChecksum(),
             file: this.stringsChecksum(c)
         }
@@ -391,7 +391,7 @@ class PuzPayload {
         writeUInt16LE(header, i.FILE_CHECKSUM, c.file);
         writeUInt16LE(header, i.HEADER_CHECKSUM, c.header);
         writeCheatChecksum(header, i.ICHEATED_CHECKSUM, "ICHEATED", [
-            c.header, c.solution, c.state, c.strings
+            c.header, c.solution, c.stateString, c.strings
         ]);
         return header;
     }
@@ -445,8 +445,9 @@ class PuzPayload {
         }
         this.solution = solution;
         this.state = state;
-        if (!this.state)
-            this.state = this.solution.replace(/[^\.]/g, '-');
+        this.stateString = state;
+        if (!this.stateString)
+            this.stateString = this.solution.replace(/[^\.]/g, '-');
         this.clueStrings = clueStrings;
     }
 }

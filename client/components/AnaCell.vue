@@ -18,7 +18,7 @@
         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             ref="input"
             class="crossword-grid-input"
-            :value="cell.contents"
+            :value="cellContents"
             v-on="$listeners"
             maxlength="1"
         >
@@ -214,6 +214,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    cellContents() {
+        return this.cell.contents;
+    },
     solverMask() {
         let v = (this.cell.acrossMask | this.cell.downMask);
         // can only show 4 overlapping solvers...
