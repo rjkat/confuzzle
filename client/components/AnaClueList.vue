@@ -2,6 +2,7 @@
 <div class="crossword-clues">
     <ul>
         <li is="ana-clue"
+            ref="items"
             v-for="(clue, i) in clues"
             v-on="$listeners"
             v-model="clues[i]"
@@ -59,6 +60,16 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
+    }
+  },
+  methods: {
+    selectClue(clue) {
+        for (var i = 0; i < this.clues.length; i++) {
+            if (this.clues[i].id == clue.id) {
+                this.$refs.items[i].directionsClicked(true)
+                break;
+            }
+        }
     }
   },
   data() {

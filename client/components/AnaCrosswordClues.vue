@@ -54,16 +54,20 @@
 
         <ana-clue-list
             class="clue-list"
+            ref="acrossList"
             data-across
             :solverid="solverid"
+            @deselect-clue="clueDeselected($event)"
             v-model="crossword.acrossClues"
             v-on="$listeners"
         >
         </ana-clue-list>
         <ana-clue-list
             class="clue-list"
+            ref="downList"
             data-down
             :solverid="solverid"
+            @deselect-clue="clueDeselected($event)"
             v-model="crossword.downClues"
             v-on="$listeners"
         >
@@ -193,6 +197,14 @@ export default Vue.extend({
         } else {
             this.deleting = true;
         }
+    },
+    clueDeselected(clue) {
+        const next = clue.nextRef;
+        if (!next) {
+            return;
+        }
+        const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
+        nextList.selectClue(next);
     },
     togglesChanged() {
         // TODO: why doesn't toggling work properly

@@ -175,6 +175,35 @@ function addAllEmoji(cw, word) {
   }
 }
 
+function getLengthText(clue) {
+  // don't show lengths on referenced clues or verbatim clues
+  if (!clue || clue.verbatim)
+      return '';
+  if (clue.primaryId && clue.primaryId != clue.id)
+      return '';
+  let lengthText = ' (';
+  let lengths = clue.refLengths ? clue.refLengths : clue.lengths;
+  
+  // handle case where one clue has been split across multiple grid cells
+  if (clue.refLengths
+      && clue.refSeparators
+      && clue.refSeparators.length == 0) {
+      lengths = [clue.refLengths.reduce((acc, x) => acc + x)];
+  }
+  const sep = clue.refSeparators ? clue.refSeparators : clue.separators;
+  for (let i = 0; i < lengths.length; i++) {
+      if (i > 0) {
+          lengthText += sep[i - 1];
+      }
+      lengthText += lengths[i];
+  }
+  if (lengths.length - 1 < sep.length && !clue.refIds) {
+      lengthText += sep[lengths.length - 1];
+  }
+  lengthText += ')';
+  return lengthText;
+}
+
 function parseClue(cw, clue) {
   const clueid = clue.stringKey();
   const x = clue.toSection();
@@ -296,6 +325,7 @@ function parseRef(cw, ref) {
   cw.clues[clueid].refIds = refIds;
   for (var i = 0; i < refIds.length; i++) {
     cw.clues[refIds[i]].primaryId = clueid;
+    cw.clues[refIds[i]].refIds = refIds;
   }
 }
 
@@ -405,11 +435,16 @@ export function parse(input, compiling, options) {
       clue.refs = [];
       if (clue.primaryId && clue.primaryId != clueid)
         clue.primary = cw.clues[clue.primaryId];
+
+      var nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {
         if (clue.refIds[i] != clueid) {
           clue.refs.push(cw.clues[clue.refIds[i]]);
+        } else {
+          nextRefId = clue.refIds[i + 1];
         }
       }
+      clue.nextRef = nextRefId ? cw.clues[nextRefId] : null;
       if (clue.isAcross) {
           cw.acrossClues.push(clue);
       } else {
@@ -417,6 +452,9 @@ export function parse(input, compiling, options) {
       }
   }
 
+  for (let [clueid, clue] of Object.entries(cw.clues)) {
+    clue.lengthText = getLengthText(clue);
+  }
   return cw;
 };
 

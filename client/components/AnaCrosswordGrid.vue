@@ -89,7 +89,6 @@ export default Vue.extend({
     },
     gridContainerStyle() {
       return {
-        'overflow': 'hidden',
        'height': this.gridScale * this.gridHeight + 'px',
        'width': this.gridScale * this.gridWidth + 'px'
       }
@@ -167,7 +166,6 @@ export default Vue.extend({
         const inputCell = this.getInputCell(cell);
         if (inputCell)
           inputCell.select();
-        this.showPopover(clue);
     },
     fillCell(cell) {
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
@@ -207,17 +205,27 @@ export default Vue.extend({
             col = cell.col;
         }
         const backspace = direction == -1;
-        if (!backspace)
-          this.deselectCell(cell);
+        
         // we've run off the end or hit an empty square
         if (   row < 0 || row >= cells.length
             || col < 0 || col >= cells[row].length
             || cells[row][col].empty) {
             // make it so that backspace doesn't hide the input
-            if (!backspace)
-                input.blur();
+            if (!backspace) {
+              input.blur();
+              if (this.selectedClue && this.selectedClue.nextRef) {
+                  const next = this.selectedClue.nextRef;
+                  this.inputAcross = next.isAcross;
+                  this.selectCell(next.cells[0]);
+              } else {
+                this.deselectCell(cell);
+              }
+            }
             return;
         }
+
+        if (!backspace)
+          this.deselectCell(cell);
         cell = cells[row][col];
         // if the clue can only be either across or down,
         // change to its direction

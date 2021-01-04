@@ -6,7 +6,7 @@
         <span class="clue-directions" @click="directionsClicked()">
             <span class="clue-id">{{idText}}<span class="hidden-print" v-if="showDirection">{{clue.isAcross ? 'A' : 'D'}}</span> </span>
             <span class="clue-text" v-html="clue.sanitizedText"></span>
-            <span class="clue-length">{{lengthText}}</span>
+            <span class="clue-length">{{clue.lengthText}}</span>
         </span>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
@@ -126,11 +126,9 @@ export default Vue.extend({
   watch: {
     selected: function(val) {
         if (val && !this.wasClicked) {
-            this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'center'});
+            
         }
-        if (!val) {
-            this.wasClicked = false;
-        }
+        this.wasClicked = false;
     }
   },
   computed: {
@@ -165,37 +163,11 @@ export default Vue.extend({
     totalLength() {
         this.clue ? this.clue.totalLength : 0;
     },
-    lengthText: function () {
-        const clue = this.clue;
-        // don't show lengths on referenced clues or verbatim clues
-        if (!clue || clue.verbatim)
-            return '';
-        if (clue.refIds.length > 0 && clue.id != clue.refIds[0])
-            return '';
-        let lengthText = ' (';
-        let lengths = clue.refLengths ? clue.refLengths : clue.lengths;
-        
-        // handle case where one clue has been split across multiple grid cells
-        if (clue.refLengths
-            && clue.refSeparators
-            && clue.refSeparators.length == 0) {
-            lengths = [clue.refLengths.reduce((acc, x) => acc + x)];
-        }
-        const sep = clue.refSeparators ? clue.refSeparators : clue.separators;
-        for (let i = 0; i < lengths.length; i++) {
-            if (i > 0) {
-                lengthText += sep[i - 1];
-            }
-            lengthText += lengths[i];
-        }
-        if (lengths.length - 1 < sep.length && !clue.refIds) {
-            lengthText += sep[lengths.length - 1];
-        }
-        lengthText += ')';
-        return lengthText;
-    },
   },
   methods: {
+    scrollIntoView() {
+        Vue.nextTick(() => this.$refs.item.scrollIntoView({behavior: 'smooth', block: 'center'}));
+    },
     separator: function (cell) {
         let sep = this.clue.isAcross ? cell.sanitizedAcrossSeparator : cell.sanitizedDownSeparator;
         if (!sep) {
@@ -206,13 +178,19 @@ export default Vue.extend({
         }
         return sep;
     },
-    directionsClicked: function() {
+    directionsClicked: function(forced) {
         for (let i = 0; i < this.$refs.inputs.length; i++) {
             if (this.$refs.inputs[i].dataset.cellIndex == 0) {
                 this.$refs.inputs[i].click();
             }
         }
-        this.wasClicked = true;
+        if (forced) {
+            this.clue.select(this.solverid);
+
+            this.scrollIntoView();
+        } else {
+            this.wasClicked = true;
+        }
     },
     focusChanged: function() {
         let haveFocus = false;
@@ -243,6 +221,7 @@ export default Vue.extend({
         } else if (pos >= 0) {
             // only blur when going off the end
             input.blur();
+            this.$emit('deselect-clue', this.clue);
         }
     },
     select: function(input) {
@@ -293,6 +272,10 @@ export default Vue.extend({
                 break;
         }
     }
+  },
+  mounted () {
+    if (this.selected)
+        this.scrollIntoView()
   },
   data() {
     return {

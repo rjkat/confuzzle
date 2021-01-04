@@ -114,7 +114,7 @@
     <ui-snackbar-container ref="snackbarContainer" id="snackbar" position="center"></ui-snackbar-container>
 
     <div id="ios-install-prompt" v-if="iOSPrompt" @click="iOSPromptClicked()">
-        <div class="install-tooltip" data-show>Install Confuzzle and solve offline.<br>Tap <img src="../server/public/images/share-apple.svg" height="25"> and then 'Add to Home Screen'.<ui-icon class="install-close-button">close</ui-icon></div>
+        <div class="install-tooltip" data-show>Install Confuzzle and solve offline.<br>Tap <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" height="25" viewBox="0 0 50 50" enable-background="new 0 0 50 50"><path d="M30.3 13.7L25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7z"/><path d="M24 7h2v21h-2z"/><path d="M35 40H15c-1.7 0-3-1.3-3-3V19c0-1.7 1.3-3 3-3h7v2h-7c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V19c0-.6-.4-1-1-1h-7v-2h7c1.7 0 3 1.3 3 3v18c0 1.7-1.3 3-3 3z"/></svg> and then 'Add to Home Screen'.<ui-icon class="install-close-button">close</ui-icon></div>
         <div class="install-tooltip-arrow" data-popper-arrow></div>
     </div>
 
@@ -150,7 +150,7 @@ body {
     text-align: left;
     white-space: pre;
     text-align: center;
-    img {
+    svg {
         vertical-align: middle;
     }
 
@@ -353,8 +353,8 @@ const {Manager} = require("socket.io-client");
 
 import {emojisplosions} from "emojisplosion";
 
-function parseAndBuild(input, compiling, options) {
-    const cw = parser.parse(input, compiling, options);
+function parseAndBuild(input, compiling) {
+    const cw = parser.parse(input, compiling);
     for (let [clueid, clue] of Object.entries(cw.clues)) {
       clue.highlightMask = 0;
       clue.selected = false;
@@ -388,7 +388,7 @@ function parseAndBuild(input, compiling, options) {
         }
         if (!recursive) {
           if (this.primary) {
-            this.primary.highlight(solverid, true);
+            this.primary.highlight(solverid);
           } else {
             for (let j = 0; j < this.refs.length; j++) {
               this.refs[j].highlight(solverid, true);
@@ -410,7 +410,7 @@ function parseAndBuild(input, compiling, options) {
         this.highlightMask &= ~(1 << solverid);
         if (!recursive) {
           if (this.primary) {
-            this.primary.clearHighlight(solverid, true);
+            this.primary.clearHighlight(solverid);
           } else {
             for (let j = 0; j < this.refs.length; j++) {
               this.refs[j].clearHighlight(solverid, true);
@@ -476,17 +476,9 @@ export default Vue.extend({
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
-    puzPayload() {
-        var eno = this.crosswordSource;
-        var puz = confuz.toPuz(eno);
-        if (!puz.state && !this.state.compiling) {
-            eno += this.crosswordState;
-            puz = confuz.toPuz(eno);
-        }
-        return puz;
-    },
+    
     emojiNotation() {
-        return this.puzPayload.toEmoji(true);
+        return this.getPuzPayload().toEmoji(true);
     },
     selectedClue() {
         if (!this.crossword)
@@ -639,7 +631,8 @@ export default Vue.extend({
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
       iOSSafari: false,
       iOSPrompt: false,
-      installPrompt: null
+      installPrompt: null,
+      lastInputWasGrid: true
     };
   },
   methods: {
@@ -649,6 +642,15 @@ export default Vue.extend({
     },
     iOSPromptClicked() {
         this.iOSPrompt = false;
+    },
+    getPuzPayload() {
+        var eno = this.crosswordSource;
+        var puz = confuz.toPuz(eno);
+        if (!puz.state && !this.state.compiling) {
+            eno += this.crosswordState;
+            puz = confuz.toPuz(eno);
+        }
+        return puz;
     },
     installClicked() {
         if (this.iOSSafari) {
@@ -921,7 +923,8 @@ export default Vue.extend({
             }
         }
     },
-    sendFillCell(event) {
+    sendFillCell(event, wasGrid) {
+        this.lastInputWasGrid = wasGrid;
         this.sendUpdate({
             action: 'fillCell',
             solverid: this.solverid,
@@ -1095,7 +1098,7 @@ export default Vue.extend({
     },
    
     downloadPuzClicked() {
-        const blob = new Blob([this.puzPayload.toBytes(false)], {type: "application/octet-stream"});
+        const blob = new Blob([this.getPuzPayload().toBytes(false)], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
@@ -1126,11 +1129,11 @@ export default Vue.extend({
     },
     getEmojiParams() {
         const stripped = true;
-        return '?🧩=' + this.puzPayload.toEmoji(stripped);
+        return '?🧩=' + this.getPuzPayload().toEmoji(stripped);
     },
     getPuzParams() {
         const stripped = false;
-        return '?puz=' + this.puzPayload.toURL(stripped);
+        return '?puz=' + this.getPuzPayload().toURL(stripped);
     },
     copyEmojiClicked() {
         navigator.clipboard.writeText(this.emojiNotation);

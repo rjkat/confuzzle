@@ -1,4 +1,6 @@
-// taken from ecoji-js
+// from ecoji-js Copyright (c) 2019 Dmytro Borysovskyi
+// used here under the Apache License 2.0
+// https://github.com/dimabory/ecoji-js
 
 /** wget -qO- https://unicode.org/Public/emoji/11.0/emoji-test.txt | cut -f 1 -d ' ' | sort -u | sed '/^[#0]/ d' | sed '/^\s*$/d' | sed -e 's/^/'0x/' */
 
@@ -1029,6 +1031,7 @@ const ALL_EMOJIS = [
   '0x1F9D5',
 ]
 
+
 const padding = 0x2615;
 const padding40 = 0x269C;
 const padding41 = 0x1F3CD;
@@ -1083,7 +1086,9 @@ class Mapping {
     }
 }
 
-// emojicoding
+// from emojicoding Copyright (c) 2019 Ryan Shea
+// used here under the MIT License
+// https://github.com/shea256/emojicoding
 function convertBase(data, inBits, outBits, pad) {
   var value = 0
   var bits = 0

@@ -36,7 +36,7 @@
     padding: 4px 8px;
     font-size: 18px;
     text-transform: none;
-    z-index: 10;
+    z-index: 95;
     background: #333;
     color: #fff;
     border-radius: 4px;
@@ -208,14 +208,24 @@ export default Vue.extend({
   },
   watch: {
     cell(val) {
-        if (this.popper)
-            this.popper.destroy();
-        Vue.nextTick(() => this.createPopper());
+        this.refreshPopper();
+    },
+    downSelected(val) {
+        this.refreshPopper();
+    },
+    acrossSelected(val) {
+        this.refreshPopper();
     }
   },
   computed: {
     cellContents() {
         return this.cell.contents;
+    },
+    downSelected() {
+        return this.cell && this.cell.clues && this.cell.clues.down && this.cell.clues.down.selected;
+    },
+    acrossSelected() {
+        return this.cell && this.cell.clues && this.cell.clues.across && this.cell.clues.across.selected;
     },
     solverMask() {
         let v = (this.cell.acrossMask | this.cell.downMask);
@@ -238,7 +248,7 @@ export default Vue.extend({
         if (downClue && (!acrossClue || downClue.selected)) {
             clue = downClue;
         }
-        text = clue.plainText;
+        text = clue.plainText + clue.lengthText;
         if (clue.showCorrect) {
             text += ' ✅'
         }
@@ -248,26 +258,41 @@ export default Vue.extend({
 
         var wrappedText = '';
         var lastWrap = 0;
-        for (var i = 0; i < text.length; i++) {
-            if ((i - lastWrap) > this.clueWrapChars && text[i] == ' ') {
+        const words = text.split(' ');
+        var n = 0;
+        for (var i = 0; i < words.length; i++) {
+            if ((n + words[i].length - lastWrap) > this.clueWrapChars) {
                 wrappedText += '\n';
-                lastWrap = i;
+                lastWrap = n;
             } else {
-                wrappedText += text[i];
+                if (i > 0)
+                    wrappedText += ' ';
             }
+            wrappedText += words[i];
+            n += words[i].length;
         }
         return wrappedText;
     }
   },
   methods: {
-    createPopper() {
-        if (!this.$refs.tooltip)
+    refreshPopper() {
+        if (!this.$refs.tooltip || !this.$refs.input)
             return;
 
+        if (this.popper)
+            this.popper.destroy();
+
         Vue.nextTick(() => {
+            const fallbacks = this.downSelected ? ['left', 'right'] : ['bottom'];
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
               placement: 'top',
               modifiers: [
+                {
+                  name: 'flip',
+                  options: {
+                    fallbackPlacements: fallbacks,
+                  },
+                },
                 {
                   name: 'offset',
                   options: {
@@ -314,13 +339,13 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.createPopper();
+    this.refreshPopper();
   },
   data() {
     return {
       bundler: "Parcel",
       popper: null,
-      clueWrapChars: 40
+      clueWrapChars: 35
     };
   },
 });
