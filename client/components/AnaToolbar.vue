@@ -49,7 +49,9 @@
             <ui-menu
                 contain-focus
                 has-icons
+                class="ana-menu"
                 slot="dropdown"
+                position="bottom-end"
                 :options="menuOptions"
                 @select="selectMenuOption($event)"
                 @close="$refs.menuDropdown.closeDropdown()"
@@ -58,6 +60,8 @@
             <ui-menu
                 contain-focus
                 has-icons
+                class="ana-menu"
+                position="bottom-end"
                 slot="dropdown"
                 :options="mobileMenuOptions"
                 @select="selectMenuOption($event)"
@@ -124,6 +128,10 @@
 .crossword-meta-identifier {
     font-family: $titleFontFamily;
     margin-right: .5em;
+}
+
+.tippy-popper {
+    margin-right: #{1.25 * $displayPadding};
 }
 </style>
 

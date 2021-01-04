@@ -345,7 +345,7 @@ export default Vue.extend({
     return {
       bundler: "Parcel",
       popper: null,
-      clueWrapChars: 35
+      clueWrapChars: 30
     };
   },
 });
