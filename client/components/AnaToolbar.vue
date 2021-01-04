@@ -77,11 +77,15 @@
                 <ui-button class="emoji-button" @click="openModal('emojiModal')">🧩</ui-button>
             </div>
         </ui-modal>
-        <ui-modal ref="emojiModal" title="🧩">
+        <ui-modal ref="emojiModal" title="🧩 🔄 📋">
             <div style="text-align: center;">
                 <ui-textbox :value="emojiText" readonly></ui-textbox>
                 <ui-icon-button icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
-                <ui-textbox v-model="inputEmoji" style="margin-top: 1em;"></ui-textbox>
+                <ui-textbox
+                    v-model="inputEmoji"
+                    floating-label
+                    label="📋 ➡️ 🧩 ✨"
+                    style="margin-top: 1em;"></ui-textbox>
                 <ui-icon-button icon="forward" @click="importEmojiClicked()"></ui-icon-button>
             </div>
         </ui-modal>
