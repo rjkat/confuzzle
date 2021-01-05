@@ -854,12 +854,18 @@ export default Vue.extend({
             return;
 
         var correct = true;
-        for (var i = 0; i < this.selectedClue.cells.length; i++) {
-            const cell = this.selectedClue.cells[i];
-            if (cell.contents.toUpperCase() != cell.solution.toUpperCase()) {
-                correct = false;
-                break;
+
+        var clue = this.selectedClue;
+
+        while (clue) {
+            for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
+                if (cell.contents.toUpperCase() != cell.solution.toUpperCase()) {
+                    correct = false;
+                    break;
+                }
             }
+            clue = clue.nextRef;
         }
 
         this.selectedClue.showCorrect = correct;
@@ -869,16 +875,21 @@ export default Vue.extend({
         if (!this.selectedClue)
             return;
 
-        for (var i = 0; i < this.selectedClue.cells.length; i++) {
-            const cell = this.selectedClue.cells[i];
-            if (cell.solution) {
-                cell.contents = cell.solution;
-                this.sendFillCell({
-                    clueid: this.selectedClue.id,
-                    offset: i,
-                    value: cell.solution
-                });
+        var clue = this.selectedClue;
+
+        while (clue) {
+            for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
+                if (cell.solution) {
+                    cell.contents = cell.solution;
+                    this.sendFillCell({
+                        clueid: clue.id,
+                        offset: i,
+                        value: cell.solution
+                    });
+                }
             }
+            clue = clue.nextRef;
         }
         this.selectedClue.showIncorrect = false;
         this.selectedClue.showCorrect = false;
