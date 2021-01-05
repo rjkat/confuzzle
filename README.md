@@ -1,27 +1,15 @@
-# anagrind
+# Confuzzle
 
-## Disclaimer
-- this is still a work in progress, see below
+## About
 
-## Features that would be good
-### Solving
-- screen reader/accessibility support
-- hints
-- checking for correct solution
-- timer
-- anagram exploder
+Solve crosswords with your friends! Confuzzle is an interactive crossword editor and real-time collaboration app which also works offline in standalone mode. [See it in action here](https://confuzzle.app).
 
-### Compiling
-- ability to scramble answers automatically
-- better system for laying out the grid
-- better syntax guide
+## Contributing
 
-## Features that are out of scope
-- chat (moderation is hard)
-- saved crosswords (copyright is hard)
-- user accounts (I don't want your information)
+This is a hobby project which is slowly becoming more polished over time. Bug reports and feature requests are absolutely welcome. Pull requests are even better!
 
-## Attributions
+## Acknowledgements
+
 * The creation of this software would not be possible without the work of others. See [this file](licenses/README.md) for the full list. In particular I would like to acknowledge:
     - [eno](https://eno-lang.org/about) - Simon Repp
     - [libpuz](https://github.com/ccasin/hpuz/tree/master/contrib/libpuz) - Chris Casinghino and Josh Myer

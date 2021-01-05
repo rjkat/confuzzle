@@ -8,14 +8,14 @@
   <div class="crossword-grid-container" :style="gridContainerStyle">
     <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
         <tr v-for="(row, r) in crossword.grid.cells">
-            <ana-cell v-for="cell in row" ref="inputCells"
+            <cfz-cell v-for="cell in row" ref="inputCells"
                       :cell="crossword.grid.cells[cell.row][cell.col]"
                       :solverid="solverid"
                       @cell-clicked="cellClicked($event, cell)"
                       @keydown="handleKeydown($event, cell)"
                       @input="handleInput($event, cell)"
                       @mousedown.prevent>
-            </ana-cell>
+            </cfz-cell>
         </tr>
     </table>
   </div>
@@ -42,11 +42,11 @@
 <script>
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
-import AnaCell from './AnaCell.vue'
+import CfzCell from './CfzCell.vue'
 
 export default Vue.extend({
   components: {
-    AnaCell
+    CfzCell
   },
   model: {
     prop: 'crossword'

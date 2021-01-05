@@ -1,13 +1,13 @@
 <template>
 <div id="app-container">
-    <ana-disconnected-modal
+    <cfz-disconnected-modal
         ref="disconnectedModal"
         :reconnecting="joinLoading"
         :reconnectFailed="reconnectFailed"
         @stay-offline-clicked='goOffline()'
         @reconnect-clicked='reconnectClicked($event)'>
-    </ana-disconnected-modal>
-    <ana-toolbar
+    </cfz-disconnected-modal>
+    <cfz-toolbar
         id="app-toolbar"
         ref="toolbar"
         v-if="!state.joining"
@@ -31,7 +31,7 @@
         @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
     >
-    </ana-toolbar>
+    </cfz-toolbar>
    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
          @dragenter="dragEnterHandler"
@@ -53,7 +53,7 @@
             </ui-modal>
         </template>
         <template v-else>
-            <ana-crossword-grid id="grid"
+            <cfz-crossword-grid id="grid"
                 ref="grid"
                 v-model="crossword"
                 :data-portrait="isPortrait"
@@ -63,9 +63,9 @@
                 :showTooltips="showTooltips"
                 @fill-cell="sendFillCell($event)"
                 v-if="showGrid">
-            </ana-crossword-grid>
+            </cfz-crossword-grid>
             <template v-if="state.compiling && !isPortrait">
-                <ana-crossword-editor id="editor"
+                <cfz-crossword-editor id="editor"
                     ref="editor"
                     v-model="crosswordSource"
                     :loading="renderLoading"
@@ -77,11 +77,11 @@
                     @scramble-clicked="scrambleClicked()"
                     @unscramble-clicked="unscrambleClicked()"
                     v-responsive.class>
-                </ana-crossword-editor>
+                </cfz-crossword-editor>
             </template>
             <template v-else>
                 <div id="clue-container" :data-portrait="isPortrait" :data-show-grid="showGrid">
-                    <ana-crossword-clues id="clues" ref="clues"
+                    <cfz-crossword-clues id="clues" ref="clues"
                         :data-portrait="isPortrait"
                         :data-show-grid="showGrid"
                         :state="state"
@@ -99,7 +99,7 @@
                         @delete-all-clicked="deleteAllClicked()"
                         v-responsive.class
                         >
-                    </ana-crossword-clues>
+                    </cfz-crossword-clues>
                 </div>
             </template>
         </template>
@@ -337,11 +337,11 @@ import responsive from 'vue-responsive'
 
 Vue.use(responsive);
 
-import AnaCrosswordClues from './components/AnaCrosswordClues.vue'
-import AnaCrosswordGrid from './components/AnaCrosswordGrid.vue'
-import AnaCrosswordEditor from './components/AnaCrosswordEditor.vue'
-import AnaToolbar from './components/AnaToolbar.vue'
-import AnaDisconnectedModal from './components/AnaDisconnectedModal.vue'
+import CfzCrosswordClues from './components/CfzCrosswordClues.vue'
+import CfzCrosswordGrid from './components/CfzCrosswordGrid.vue'
+import CfzCrosswordEditor from './components/CfzCrosswordEditor.vue'
+import CfzToolbar from './components/CfzToolbar.vue'
+import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 
 const parser = require('./js/parser.js');
 
@@ -427,11 +427,11 @@ function parseAndBuild(input, compiling) {
 const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
 export default Vue.extend({
   components: {
-    AnaCrosswordClues,
-    AnaCrosswordGrid,
-    AnaCrosswordEditor,
-    AnaToolbar,
-    AnaDisconnectedModal
+    CfzCrosswordClues,
+    CfzCrosswordGrid,
+    CfzCrosswordEditor,
+    CfzToolbar,
+    CfzDisconnectedModal
   },
   props: {
     gridid: String,

@@ -1,6 +1,6 @@
 <template>
-<div class="ana-crossword-editor-container">
-      <ui-toolbar class="ana-editor-toolbar hidden-print">
+<div class="cfz-crossword-editor-container">
+      <ui-toolbar class="cfz-editor-toolbar hidden-print">
 
         <form action="/syntax" target="_blank" slot="icon">
           <ui-button
@@ -36,12 +36,12 @@
           </ui-button>
         </div>
     </ui-toolbar>
-      <ana-editor
+      <cfz-editor
           ref="editor"
           :source="source"
           :loading="loading"
           @input="$emit('input', $event)">
-      </ana-editor>
+      </cfz-editor>
       <ui-alert type="error" v-if="errorText && !errorDismissed" class="edit-error" @dismiss="dismissError()">
         <div class="edit-alert-body">
             <span class="edit-alert-text">{{errorText}}</span>
@@ -58,7 +58,7 @@
 </template>
 
 <style lang="scss">
-  .ana-editor-toolbar {
+  .cfz-editor-toolbar {
       position: sticky;
       top: 0;
       height: 2.25rem !important;
@@ -66,7 +66,7 @@
       background-color: #efefef;
       z-index: 2;
   }
-  .ana-crossword-editor-container {
+  .cfz-crossword-editor-container {
     display: flex;
     flex-direction: column;
     .ui-alert__icon {
@@ -105,11 +105,11 @@
 
 <script>
 import Vue from "vue";
-import AnaEditor from './AnaEditor.vue'
+import CfzEditor from './CfzEditor.vue'
 
 export default Vue.extend({
   components: {
-    AnaEditor
+    CfzEditor
   },
   props: {
     source: String,

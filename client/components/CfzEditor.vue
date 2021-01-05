@@ -1,5 +1,5 @@
 <template>
-  <div class="ana-editor-container prism-live">
+  <div class="cfz-editor-container prism-live">
       <textarea class="prism-live language-eno line-numbers" id="crossword-source"
                 ref="textarea"
                 spellcheck="false"
@@ -10,7 +10,7 @@
 </template>
 
 <style lang="scss">
-  .ana-editor-container {
+  .cfz-editor-container {
     overflow-y: scroll;
   }
 </style>

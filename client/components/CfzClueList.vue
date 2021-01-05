@@ -1,7 +1,7 @@
 <template>
 <div class="crossword-clues">
     <ul>
-        <li is="ana-clue"
+        <li is="cfz-clue"
             ref="items"
             v-for="(clue, i) in clues"
             v-on="$listeners"
@@ -43,11 +43,11 @@ ul {
 
 <script>
 import Vue from "vue";
-import AnaClue from './AnaClue.vue'
+import CfzClue from './CfzClue.vue'
 
 export default Vue.extend({
   components: {
-    AnaClue
+    CfzClue
   },
   model: {
     prop: 'clues'

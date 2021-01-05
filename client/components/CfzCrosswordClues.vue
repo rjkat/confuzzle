@@ -1,6 +1,6 @@
 <template>
 <div>
-    <ui-toolbar class="ana-clue-list-toolbar hidden-print">
+    <ui-toolbar class="cfz-clue-list-toolbar hidden-print">
         <ui-checkbox-group class="toggle-checkboxes" :options="showTooltipToggle ? gridAndTooltips : gridOnly" v-model="toggles" @change="togglesChanged($event)" slot="icon"></ui-checkbox-group>
             
         <div slot="brand">
@@ -48,11 +48,11 @@
         </div>
 
     </ui-toolbar>
-    <ana-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></ana-solver-list>
+    <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
-    <div class="ana-clue-list-container">
+    <div class="cfz-clue-list-container">
 
-        <ana-clue-list
+        <cfz-clue-list
             class="clue-list"
             ref="acrossList"
             data-across
@@ -61,8 +61,8 @@
             v-model="crossword.acrossClues"
             v-on="$listeners"
         >
-        </ana-clue-list>
-        <ana-clue-list
+        </cfz-clue-list>
+        <cfz-clue-list
             class="clue-list"
             ref="downList"
             data-down
@@ -71,7 +71,7 @@
             v-model="crossword.downClues"
             v-on="$listeners"
         >
-        </ana-clue-list>
+        </cfz-clue-list>
     </div>
 </div>
 </template>
@@ -96,7 +96,7 @@
     padding-bottom: $displayPadding;
 }
 
-.ana-clue-list-toolbar {
+.cfz-clue-list-toolbar {
     position: sticky;
     top: 0;
     height: 2.25rem !important;
@@ -118,7 +118,7 @@
     line-height: 1;
 }
 
-.ana-clue-list-container {
+.cfz-clue-list-container {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
@@ -147,13 +147,13 @@
 import Vue from "vue";
 const sanitizeHtml = require('sanitize-html');
 
-import AnaClueList from './AnaClueList.vue'
-import AnaSolverList from './AnaSolverList.vue'
+import CfzClueList from './CfzClueList.vue'
+import CfzSolverList from './CfzSolverList.vue'
 
 export default Vue.extend({
   components: {
-    AnaClueList,
-    AnaSolverList
+    CfzClueList,
+    CfzSolverList
   },
   props: {
     crossword: Object,

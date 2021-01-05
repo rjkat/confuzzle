@@ -27,12 +27,12 @@
             v-if="isOnline"
         >
         </ui-icon-button>
-        <ana-share-modal
+        <cfz-share-modal
             ref="shareModal"
             :loading="shareLoading"
             :link="shareLink"
             v-on="$listeners">
-        </ana-share-modal>
+        </cfz-share-modal>
 
         <input type="file" ref="fileInput"
             accept=".puz,.eno,.confuz,.🧩"
@@ -49,7 +49,7 @@
             <ui-menu
                 contain-focus
                 has-icons
-                class="ana-menu"
+                class="cfz-menu"
                 slot="dropdown"
                 position="bottom-end"
                 :options="menuOptions"
@@ -60,7 +60,7 @@
             <ui-menu
                 contain-focus
                 has-icons
-                class="ana-menu"
+                class="cfz-menu"
                 position="bottom-end"
                 slot="dropdown"
                 :options="mobileMenuOptions"
@@ -138,7 +138,7 @@
 <script>
 import Vue from "vue";
 
-import AnaShareModal from './AnaShareModal.vue'
+import CfzShareModal from './CfzShareModal.vue'
 
 // https://gist.github.com/hanayashiki/8dac237671343e7f0b15de617b0051bd
 (function () {
@@ -160,7 +160,7 @@ import AnaShareModal from './AnaShareModal.vue'
 
 export default Vue.extend({
   components: {
-    AnaShareModal
+    CfzShareModal
   },
   props: {
     metadata: Object,
