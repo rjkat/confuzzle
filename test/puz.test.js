@@ -3,6 +3,8 @@ const path = require('path');
 const PuzPayload = require('../client/js/puz.js').PuzPayload;
 const confuz = require('../client/js/confuz.js');
 
+import {forward_bwt, inverse_bwt} from '../client/js/bwt.js'
+
 test('weekday', () => {
     const source = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz');
     const buf = fs.readFileSync(source);
@@ -11,6 +13,14 @@ test('weekday', () => {
     const puzbytes = puz.toBytes();
     fs.writeFileSync('test.eno', eno);
     fs.writeFileSync('test.puz', puzbytes);
+});
+
+
+test('bwt', () => {
+    const s = 'abracadabra';
+    const bwt = forward_bwt(Buffer.from(s));
+    const inv = inverse_bwt(bwt).toString();
+    expect(inv).toBe(s);
 });
 
 

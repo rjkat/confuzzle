@@ -5,6 +5,8 @@ import {ALL_EMOJIS, Mapping, convertBase} from './emojis.js';
 const base64url = require("base64url");
 import {MTFModel} from './compressjs/MTFModel.js'
 
+import {forward_bwt, inverse_bwt} from './bwt.js'
+
 // Strings in puz files are ISO-8859-1.
 
 // From https://www.i18nqa.com/debug/table-iso8859-1-vs-windows-1252.html:
@@ -407,13 +409,15 @@ class PuzPayload {
 
     toCompressed(stripped) {
         const puzbytes = this.toBuffer(stripped)
-        const compressed = Buffer.from(MTFModel.compressFile(puzbytes));
+        const bwt = forward_bwt(puzbytes);
+        const compressed = MTFModel.compressFile(bwt);
         return compressed;
     }
 
     static fromCompressed(compressed, stripped) {
         const decompressed = MTFModel.decompressFile(compressed);
-        return PuzPayload.from(decompressed, {stripped: stripped});
+        const inv = inverse_bwt(Buffer.from(decompressed));
+        return PuzPayload.from(inv, {stripped: stripped});
     }
 
     toURL(stripped) {
@@ -429,8 +433,8 @@ class PuzPayload {
         const map = new Mapping(ALL_EMOJIS);
         const compressed = this.toCompressed(stripped);
         const b1024 = convertBase(compressed, 8, 10, true);
-        const emoji = b1024.map(i => map.getEmoji(i));
-        return emoji.join('');
+        const emoji = b1024.map(i => map.getEmoji(i)).join('');
+        return emoji;
     }
 
     static fromEmoji(s, stripped) {

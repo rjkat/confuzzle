@@ -23,6 +23,7 @@
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
+        @emoji-button-clicked="updateEmoji()"
         @copy-emoji-clicked="copyEmojiClicked()"
         @import-emoji-clicked="importEmojiClicked($event)"
         @export-eno-clicked="exportLinkClicked(getEnoParams())"
@@ -478,9 +479,7 @@ export default Vue.extend({
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
     
-    emojiNotation() {
-        return this.getPuzPayload().toEmoji(true);
-    },
+    
     selectedClue() {
         if (!this.crossword)
             return undefined;
@@ -633,7 +632,8 @@ export default Vue.extend({
       iOSSafari: false,
       iOSPrompt: false,
       installPrompt: null,
-      lastInputWasGrid: true
+      lastInputWasGrid: true,
+      emojiNotation: ''
     };
   },
   methods: {
@@ -652,6 +652,9 @@ export default Vue.extend({
             puz = confuz.toPuz(eno);
         }
         return puz;
+    },
+    getEmojiNotation() {
+        return this.getPuzPayload().toEmoji(true);
     },
     installClicked() {
         if (this.iOSSafari) {
@@ -1135,6 +1138,9 @@ export default Vue.extend({
     getPuzParams() {
         const stripped = false;
         return '?puz=' + this.getPuzPayload().toURL(stripped);
+    },
+    updateEmoji() {
+        this.emojiNotation = this.getEmojiNotation();
     },
     copyEmojiClicked() {
         navigator.clipboard.writeText(this.emojiNotation);

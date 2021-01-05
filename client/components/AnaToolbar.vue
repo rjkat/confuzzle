@@ -78,7 +78,7 @@
                 <form action="https://www.buymeacoffee.com/rjkat" target="_blank">
                     <ui-button color="primary" style="margin-top: 1em;">Buy me a coffee</ui-button>
                 </form>
-                <ui-button class="emoji-button" @click="openModal('emojiModal')">🧩</ui-button>
+                <ui-button class="emoji-button" @click="emojiButtonClicked()">🧩</ui-button>
             </div>
         </ui-modal>
         <ui-modal ref="emojiModal" title="🧩 🔄 📋">
@@ -221,11 +221,17 @@ export default Vue.extend({
             )
         }
     },
+    emojiButtonClicked() {
+        this.$emit('emoji-button-clicked');
+        this.openModal('emojiModal');
+        this.closeModal('aboutModal');
+    },
     copyEmojiClicked() {
         this.$emit('copy-emoji-clicked');
     },
     importEmojiClicked() {
         this.$emit('import-emoji-clicked', this.inputEmoji);
+        this.closeModal('emojiModal');
     },
     printClicked() {
         this.state.printing = true;
