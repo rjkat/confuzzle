@@ -137,7 +137,7 @@ separators:
 ans: O--A-----
 
 > bug reports and suggestions for new features are absolutely welcome:
-> https://github.com/rjkat/anagrind/issues/new
+> https://github.com/rjkat/confuzzle/issues/new
 
 > happy compiling!
 `;
