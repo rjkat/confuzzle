@@ -270,20 +270,7 @@ function puzText(clue) {
     if (clue.verbatim)
         return text;
 
-    text += ' ('
-    for (var i = 0; i < clue.lengths.length; i++) {
-        if (i > 0) {
-            if (clue.separators) {
-                text += clue.separators[i - 1]
-            } else {
-                text += ','
-            }
-        }
-        text += clue.lengths[i];
-    }
-    text += ')'
-
-    return text;
+    return text + ' ' + clue.lengthText;
 }
 
 export function toPuz(eno) {
@@ -304,11 +291,13 @@ export function toPuz(eno) {
             if (!cell.number)
                 continue
             
-            if (cell.clues.across && cell.offsets.across == 0) {
-                clues.push(puzText(cell.clues.across));
+            if (cell.clues.acrossId && cell.offsets.across == 0) {
+                const acrossClue = cw.clues[cell.clues.acrossId];
+                clues.push(puzText(acrossClue));
             }
-            if (cell.clues.down && cell.offsets.down == 0) {
-                clues.push(puzText(cell.clues.down));
+            if (cell.clues.downId && cell.offsets.down == 0) {
+                const downClue = cw.clues[cell.clues.downId];
+                clues.push(puzText(downClue));
             }
         }
     }

@@ -25,6 +25,14 @@ function bufRotate(buf) {
     ]);
 }
 
+function compareArrays(a, b) {
+    var i = 0;
+    while (i < a.length && a[i] == b[i]) {
+        i++;
+    }
+    return a[i] - b[i];
+}
+
 export function forward_bwt(s) {
     var rows = [];
     var buf = Buffer.from(s);
@@ -34,9 +42,9 @@ export function forward_bwt(s) {
         rows.push(buf);
         buf = bufRotate(buf);
     }
-    rows.sort();
+    rows.sort(compareArrays);
     var t = [];
-    var index = 0;
+    var index = -1;
     for (var i = 0; i < rows.length; i++) {
         if (rows[i].equals(orig))
             index = i;

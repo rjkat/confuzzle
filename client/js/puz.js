@@ -1,7 +1,8 @@
 
 const iconv = require('iconv-lite');
 
-import {ALL_EMOJIS, Mapping, convertBase} from './emojis.js';
+const emoji = require('./emoji.js');
+
 const base64url = require("base64url");
 import {MTFModel} from './compressjs/MTFModel.js'
 
@@ -93,12 +94,6 @@ function readHeader(buf, stripped) {
 function puzEncode(s, options) {
     const encoding = options && options.stripped ? STRIPPED_ENCODING : PUZ_ENCODING;
     return iconv.encode(s, encoding);
-}
-
-function decodeEmoji(url) {
-    const map = new Mapping(ALL_EMOJIS);
-    const runes = Array.from(url.split('\u{200D}')[0].split(/[\ufe00-\ufe0f]/).join(''))
-    return runes.map(r => map.getId(r));
 }
 
 // http://blog.tatedavies.com/2012/08/28/replace-microsoft-chars-in-javascript/
@@ -408,7 +403,7 @@ class PuzPayload {
     }
 
     toCompressed(stripped) {
-        const puzbytes = this.toBuffer(stripped)
+        const puzbytes = this.toBytes(stripped)
         const bwt = forward_bwt(puzbytes);
         const compressed = MTFModel.compressFile(bwt);
         return compressed;
@@ -416,7 +411,7 @@ class PuzPayload {
 
     static fromCompressed(compressed, stripped) {
         const decompressed = MTFModel.decompressFile(compressed);
-        const inv = inverse_bwt(Buffer.from(decompressed));
+        const inv = inverse_bwt(decompressed);
         return PuzPayload.from(inv, {stripped: stripped});
     }
 
@@ -430,16 +425,12 @@ class PuzPayload {
     }
 
     toEmoji(stripped) {
-        const map = new Mapping(ALL_EMOJIS);
         const compressed = this.toCompressed(stripped);
-        const b1024 = convertBase(compressed, 8, 10, true);
-        const emoji = b1024.map(i => map.getEmoji(i)).join('');
-        return emoji;
+        return emoji.encode(compressed);
     }
 
     static fromEmoji(s, stripped) {
-        const b1024 = decodeEmoji(s);
-        const compressed = Buffer.from(convertBase(b1024, 10, 8, false))
+        const compressed = emoji.decode(s);
         return PuzPayload.fromCompressed(compressed, stripped);
     }
     

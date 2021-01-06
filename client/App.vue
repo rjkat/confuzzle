@@ -357,11 +357,44 @@ import {emojisplosions} from "emojisplosion";
 
 function parseAndBuild(input, compiling) {
     const cw = parser.parse(input, compiling);
+    cw.acrossClues = [];
+    cw.downClues = [];
     for (let [clueid, clue] of Object.entries(cw.clues)) {
+      
+      // populate cell across and down clues for convenience
+      for (let cell of clue.cells) {
+        if (cell.clues.acrossId)
+            cell.clues.across = cw.clues[cell.clues.acrossId]
+        if (cell.clues.downId)
+            cell.clues.down = cw.clues[cell.clues.downId]
+      }
+
+      clue.refs = [];
+      if (clue.primaryId && clue.primaryId != clueid)
+        clue.primary = cw.clues[clue.primaryId];
+
+      var nextRefId = '';
+      for (let i = 0; i < clue.refIds.length; i++) {
+        if (clue.refIds[i] != clueid) {
+          clue.refs.push(cw.clues[clue.refIds[i]]);
+        } else {
+          nextRefId = clue.refIds[i + 1];
+        }
+      }
+      clue.nextRef = nextRefId ? cw.clues[nextRefId] : null;
+
+      // populate crossword across and down clues for convenience
+      if (clue.isAcross) {
+          cw.acrossClues.push(clue);
+      } else {
+          cw.downClues.push(clue);
+      }
+
       clue.highlightMask = 0;
       clue.selected = false;
       clue.showCorrect = false;
       clue.showIncorrect = false;
+
       clue.deselect = function (solverid) {
         solverid %= 8;
         this.selected = false;
@@ -369,7 +402,7 @@ function parseAndBuild(input, compiling) {
       };
       clue.select = function (solverid) {
         solverid %= 8;
-        for (let [otherid, other] of Object.entries(cw.clues)) {
+        for (const [otherid, other] of Object.entries(cw.clues)) {
           if (otherid != clueid)
             other.deselect(solverid);
         }
@@ -415,7 +448,7 @@ function parseAndBuild(input, compiling) {
             this.primary.clearHighlight(solverid);
           } else {
             for (let j = 0; j < this.refs.length; j++) {
-              this.refs[j].clearHighlight(solverid, true);
+                this.refs[j].clearHighlight(solverid, true);
             }
           }
         }
@@ -856,7 +889,10 @@ export default Vue.extend({
         var correct = true;
 
         var clue = this.selectedClue;
-
+        if (clue.primary) {
+            clue = clue.primary;
+        }
+        const startClue = clue;
         while (clue) {
             for (var i = 0; i < clue.cells.length; i++) {
                 const cell = clue.cells[i];
@@ -868,15 +904,18 @@ export default Vue.extend({
             clue = clue.nextRef;
         }
 
-        this.selectedClue.showCorrect = correct;
-        this.selectedClue.showIncorrect = !correct;
+        startClue.showCorrect = correct;
+        startClue.showIncorrect = !correct;
     },
     revealAnswerClicked() {
         if (!this.selectedClue)
             return;
 
         var clue = this.selectedClue;
-
+        if (clue.primary) {
+            clue = clue.primary;
+        }
+        const startClue = clue;
         while (clue) {
             for (var i = 0; i < clue.cells.length; i++) {
                 const cell = clue.cells[i];
@@ -889,10 +928,10 @@ export default Vue.extend({
                     });
                 }
             }
+            clue.showIncorrect = false;
+            clue.showCorrect = false;
             clue = clue.nextRef;
         }
-        this.selectedClue.showIncorrect = false;
-        this.selectedClue.showCorrect = false;
     },
     clearAllHighlighted() {
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {

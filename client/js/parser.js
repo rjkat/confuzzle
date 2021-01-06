@@ -49,7 +49,7 @@ function forEachCell(clue, cells, cellFn) {
   }
 }
 
-function populateCells(cw, cells, clues, compiling) {
+function buildCells(cw, cells, clues, compiling) {
   let errors = []
   for (let [clueid, clue] of Object.entries(clues)) {
     const numCol =  clue.isAcross ? clue.col - 1 + clue.numbering.offset : clue.col - 1;
@@ -59,24 +59,12 @@ function populateCells(cw, cells, clues, compiling) {
       if (cell.empty) {
         cell.clues = {};
         cell.offsets = {};
-      } else {
-        const other = cell.clues.across || cell.clues.down;
-        const otheroffset = (cell.offsets.across !== undefined ?
-                             cell.offsets.across : cell.offsets.down);
-        if (!clue.intersections) {
-            clue.intersections = {};
-        }
-        if (!other.intersections) {
-            other.intersections = {};
-        }
-        clue.intersections[offset] = {clueid: other.id, offset: otheroffset};
-        other.intersections[otheroffset] = {clueid: clue.id, offset: offset};
-      }
+      } 
       if (clue.isAcross) {
-        cell.clues.across = clue;
+        cell.clues.acrossId = clue.id;
         cell.offsets.across = offset;
       } else {
-        cell.clues.down = clue;
+        cell.clues.downId = clue.id;
         cell.offsets.down = offset;
       }
       if (clue.solution) {
@@ -121,6 +109,7 @@ function buildGrid(cw, compiling) {
   const clues = cw.clues;
   const grid = cw.grid;
   const shading = grid.shading;
+
   grid.cells = []
   for (let row = 1; row <= grid.height; row++) {
     let rowCells = [];
@@ -145,7 +134,22 @@ function buildGrid(cw, compiling) {
     }
     grid.cells.push(rowCells);
   }
-  return populateCells(cw, grid.cells, clues, compiling);
+  return buildCells(cw, grid.cells, clues, compiling);
+}
+
+function buildRefs() {
+  // populate refs and primary with actual objects
+  for (const [clueid, clue] of Object.entries(cw.clues)) {
+    clue.refs = [];
+
+    if (clue.primaryId && clue.primaryId != clueid)
+      clue.primary = cw.clues[clue.primaryId];
+
+    for (const refId of clue.refIds) {
+      if (refId != clue.id && cw.clues[refId])
+          clue.refs.push(cw.clues[refId])
+    }
+  }
 }
 
 function addEmoji(cw, word) {
@@ -429,30 +433,7 @@ export function parse(input, compiling, options) {
     filledClues.elements().forEach(clue => parseFilled(cw, clue));
   }
 
-  cw.acrossClues = [];
-  cw.downClues = [];
-  for (let [clueid, clue] of Object.entries(cw.clues)) {
-      clue.refs = [];
-      if (clue.primaryId && clue.primaryId != clueid)
-        clue.primary = cw.clues[clue.primaryId];
-
-      var nextRefId = '';
-      for (let i = 0; i < clue.refIds.length; i++) {
-        if (clue.refIds[i] != clueid) {
-          clue.refs.push(cw.clues[clue.refIds[i]]);
-        } else {
-          nextRefId = clue.refIds[i + 1];
-        }
-      }
-      clue.nextRef = nextRefId ? cw.clues[nextRefId] : null;
-      if (clue.isAcross) {
-          cw.acrossClues.push(clue);
-      } else {
-          cw.downClues.push(clue);
-      }
-  }
-
-  for (let [clueid, clue] of Object.entries(cw.clues)) {
+  for (const [clueid, clue] of Object.entries(cw.clues)) {
     clue.lengthText = getLengthText(clue);
   }
   return cw;
