@@ -186,7 +186,7 @@ MTFModel.prototype.encode = function(symbol) {
     return this._update(symbol, this.seenSyms);
 };
 
-MTFModel.MAGIC = '\x2E\x70\x0A\xFD';
+MTFModel.MAGIC = '';
 /** Simple order-0 compressor, as self-test. */
 MTFModel.compressFile = Util.compressFileHelper(MTFModel.MAGIC, function(inStream, outStream, fileSize, props, finalByte) {
   var range = new RangeCoder(outStream);

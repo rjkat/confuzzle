@@ -35,7 +35,7 @@
         </cfz-share-modal>
 
         <input type="file" ref="fileInput"
-            accept=".puz,.eno,.confuz,.🧩"
+            accept=".puz,.eno,.confuz,.🧩✨"
             @change="handleFiles()"
             style="display: none">
         </input>
@@ -78,17 +78,17 @@
                 <form action="https://www.buymeacoffee.com/rjkat" target="_blank">
                     <ui-button color="primary" style="margin-top: 1em;">Buy me a coffee</ui-button>
                 </form>
-                <ui-button class="emoji-button" @click="emojiButtonClicked()">🧩</ui-button>
+                <ui-button class="emoji-button" @click="emojiButtonClicked()">🧩✨</ui-button>
             </div>
         </ui-modal>
-        <ui-modal ref="emojiModal" title="🧩 🔄 📋">
+        <ui-modal ref="emojiModal" title="🧩✨ 🔄 📋">
             <div style="text-align: center;">
                 <ui-textbox :value="emojiText" readonly></ui-textbox>
                 <ui-icon-button icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
                 <ui-textbox
                     v-model="inputEmoji"
                     floating-label
-                    label="📋 ➡️ 🧩 ✨"
+                    label="📋 ➡️ 🧩✨"
                     style="margin-top: 1em;"></ui-textbox>
                 <ui-icon-button icon="forward" @click="importEmojiClicked()"></ui-icon-button>
             </div>
@@ -100,6 +100,7 @@
 <style lang="scss">
 .emoji-button {
     background: transparent !important;
+    font-size: 20px;
 }
 
 .about-text {

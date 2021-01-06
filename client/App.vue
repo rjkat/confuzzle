@@ -1,4 +1,4 @@
-<template>
+f<template>
 <div id="app-container">
     <cfz-disconnected-modal
         ref="disconnectedModal"
@@ -651,7 +651,7 @@ export default Vue.extend({
       bundler: "Parcel",
       copyMessage: 'Shared link copied to clipboard',
       exportMessage: 'Crossword exported to clipboard',
-      exportEmojiMessage: '🧩 ➡️ 📋 ✅',
+      exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,

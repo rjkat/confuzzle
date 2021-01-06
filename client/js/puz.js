@@ -57,6 +57,7 @@ const STRIPPED_HEADER_CONSTANTS = {
     }
 };
 
+const PUZZLE_EMOJI_MAGIC = '🧩✨0️⃣'
 
 // names of string fields
 const PUZ_STRING_FIELDS = ['title', 'author', 'copyright'];
@@ -426,11 +427,11 @@ class PuzPayload {
 
     toEmoji(stripped) {
         const compressed = this.toCompressed(stripped);
-        return emoji.encode(compressed);
+        return PUZZLE_EMOJI_MAGIC + emoji.encode(compressed);
     }
 
     static fromEmoji(s, stripped) {
-        const compressed = emoji.decode(s);
+        const compressed = emoji.decode(s.slice(PUZZLE_EMOJI_MAGIC.length));
         return PuzPayload.fromCompressed(compressed, stripped);
     }
     
