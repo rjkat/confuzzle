@@ -1,4 +1,4 @@
-f<template>
+<template>
 <div id="app-container">
     <cfz-disconnected-modal
         ref="disconnectedModal"

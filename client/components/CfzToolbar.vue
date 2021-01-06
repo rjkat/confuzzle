@@ -84,13 +84,13 @@
         <ui-modal ref="emojiModal" title="🧩✨ 🔄 📋">
             <div style="text-align: center;">
                 <ui-textbox :value="emojiText" readonly></ui-textbox>
-                <ui-icon-button icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
+                <ui-icon-button id="copy-emoji-button" icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
                 <ui-textbox
                     v-model="inputEmoji"
                     floating-label
                     label="📋 ➡️ 🧩✨"
                     style="margin-top: 1em;"></ui-textbox>
-                <ui-icon-button icon="forward" @click="importEmojiClicked()"></ui-icon-button>
+                <ui-icon-button id="import-emoji-button" icon="forward" @click="importEmojiClicked()"></ui-icon-button>
             </div>
         </ui-modal>
     </div>
@@ -139,6 +139,7 @@
 <script>
 import Vue from "vue";
 
+import {emojisplosion} from "emojisplosion";
 import CfzShareModal from './CfzShareModal.vue'
 
 // https://gist.github.com/hanayashiki/8dac237671343e7f0b15de617b0051bd
@@ -158,6 +159,34 @@ import CfzShareModal from './CfzShareModal.vue'
     })
   }
 })();
+
+// https://stackoverflow.com/questions/1480133
+var cumulativeOffset = function(element) {
+    var top = 0, left = 0;
+    do {
+        top += element.offsetTop  || 0;
+        left += element.offsetLeft || 0;
+        element = element.offsetParent;
+    } while(element);
+
+    return {
+        top: top,
+        left: left
+    };
+};
+
+function explodeOn(id) {
+    const element = document.getElementById(id);
+    emojisplosion({
+        position() {
+            const offset = cumulativeOffset(element);
+            return {
+              x: offset.left + element.clientWidth / 2,
+              y: offset.top + element.clientHeight / 2,
+            };
+        },
+    })
+}
 
 export default Vue.extend({
   components: {
@@ -228,9 +257,13 @@ export default Vue.extend({
         this.closeModal('aboutModal');
     },
     copyEmojiClicked() {
+        explodeOn('copy-emoji-button');
         this.$emit('copy-emoji-clicked');
     },
     importEmojiClicked() {
+        if (!this.inputEmoji)
+            return;
+        explodeOn('import-emoji-button');
         this.$emit('import-emoji-clicked', this.inputEmoji);
         this.closeModal('emojiModal');
     },
