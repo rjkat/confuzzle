@@ -4,6 +4,8 @@ The following page was taken from
 https://code.google.com/archive/p/puz/wikis/FileFormat.wiki
 and converted into markdown, since the tables there seem to be broken. I've moved the credit section first.
 
+I relied on this document heavily when implementing the PUZ file reader/writer in [puz.js](client/js/puz.js), which I hope to eventually split out into its own npm package.
+
 # Credit
 
 Most of this document is by [Josh Myer](http://joshisanerd.com), with some work also done by [Evan Martin](http://neugierig.org).  [Chris Casinghino](http://www.cis.upenn.edu/~ccasin) added documentation of the optional extra sections, with help from [Michael Greenberg](http://www.cis.upenn.edu/~mgree).  The commenters below, including mrichards42@gmx.com and boisvert42, also contributed.
@@ -24,54 +26,54 @@ The file is laid out like this:
   4. optionally, a series of sections with additional information about the puzzle, like rebuses, circled squares, and timer data.
 
 ## Header Format
-Define a _short_ to be a little-endian two byte integer.  The file header is then described in the following table.
+Define a `short` to be a little-endian two byte integer.  The file header is then described in the following table.
 
 | Component | Offset | End | Length | Type | Description |
 | ----------- | -------- | ----- | -------- | ------ | ------------- |
-| Checksum | 0x00 | 0x01 | 0x2 | short | overall file checksum |
-| File Magic | 0x02 | 0x0D | 0xC | string | NUL-terminated constant string: 4143 524f 5353 2644 4f57 4e00 ("ACROSS&DOWN") |
+| Checksum | `0x00` | `0x01` | `0x2` | `short` | overall file checksum |
+| File Magic | `0x02` | `0x0D` | `0xC` | `string` | NUL-terminated constant string: `4143 524f 5353 2644 4f57 4e00` (`"ACROSS&DOWN"`) |
 
 The following checksums are described in more detail in a separate section below.
 |  Component  |  Offset  |  End  |  Length  |  Type  |  Description  |
 | ----------- | -------- | ----- | -------- | ------ | ------------- |
-| CIB Checksum | 0x0E | 0x0F | 0x2 | short | (defined later) |
-| Masked Low Checksums | 0x10 | 0x13 | 0x4 | | A set of checksums, XOR-masked against a magic string. |
-| Masked High Checksums | 0x14 | 0x17 | 0x4 | | A set of checksums, XOR-masked against a magic string. |
+| CIB Checksum | `0x0E` | `0x0F` | `0x2` | `short` | (defined later) |
+| Masked Low Checksums | `0x10` | `0x13` | `0x4` | | A set of checksums, XOR-masked against a magic string. |
+| Masked High Checksums | `0x14` | `0x17` | `0x4` | | A set of checksums, XOR-masked against a magic string. |
 
 |  Component  |  Offset  |  End  |  Length  |  Type  |  Description  |
 | ----------- | -------- | ----- | -------- | ------ | ------------- |
-| Version String(?) | 0x18 | 0x1B | 0x4 | string | e.g. "1.2\0" |
-| Reserved1C(?) | 0x1C | 0x1D | 0x2 | ? | In many files, this is uninitialized memory |
-| Scrambled Checksum | 0x1E | 0x1F | 0x2 | short | In scrambled puzzles, a checksum of the real solution (details below).  Otherwise, 0x0000. |
-| Reserved20(?) | 0x20 | 0x2B | 0xC | ? | In files where Reserved1C is garbage, this is garbage too. |
-| Width | 0x2C | 0x2C | 0x1 | byte | The width of the board |
-| Height | 0x2D | 0x2D | 0x1 | byte | The height of the board |
-| # of Clues | 0x2E | 0x2F | 0x2 | short | The number of clues for this board |
-| Unknown Bitmask | 0x30 | 0x31 | 0x2 | short | A bitmask. Operations unknown. |
-| Scrambled Tag | 0x32 | 0x33 | 0x2 | short | 0 for unscrambled puzzles.  Nonzero (often 4) for scrambled puzzles. |
+| Version String(?) | `0x18` | `0x1B` | `0x4` | `string` | e.g. `"1.2\0"` |
+| Reserved1C(?) | `0x1C` | `0x1D` | `0x2` | `?` | In many files, this is uninitialized memory |
+| Scrambled Checksum | `0x1E` | `0x1F` | `0x2` | `short` | In scrambled puzzles, a checksum of the real solution (details below).  Otherwise, `0x0000`. |
+| Reserved20(?) | `0x20` | `0x2B` | `0xC` | `?` | In files where Reserved1C is garbage, this is garbage too. |
+| Width | `0x2C` | `0x2C` | `0x1` | `byte` | The width of the board |
+| Height | `0x2D` | `0x2D` | `0x1` | `byte` | The height of the board |
+| # of Clues | `0x2E` | `0x2F` | `0x2` | `short` | The number of clues for this board |
+| Unknown Bitmask | `0x30` | `0x31` | `0x2` | `short` | A bitmask. Operations unknown. |
+| Scrambled Tag | `0x32` | `0x33` | `0x2` | `short` | `0` for unscrambled puzzles.  Nonzero (often `4`) for scrambled puzzles. |
 
 ## Puzzle Layout and State
 Next come the board solution and player state.  (If a player works on a puzzle and then saves their game, the cells they've filled are stored in the state.  Otherwise the state is all blank cells and contains a subset of the information in the solution.)
 
-Boards are stored as a single string of ASCII, with one character per cell of the board beginning at the top-left and scanning in reading order, left to right then top to bottom.  We'll use this board as a running example (where # represents a black cell, and the letters are the filled-in solution).
+Boards are stored as a single string of ASCII, with one character per cell of the board beginning at the top-left and scanning in reading order, left to right then top to bottom.  We'll use this board as a running example (where `'#'` represents a black cell, and the letters are the filled-in solution).
 ```
 C A T
 # # A
 # # R
 ```
 
-At the end of the header (offset 0x34) comes the solution to the puzzle.  Non-playable (ie: black) cells are denoted by '.'.  So for this example, the board is stored as nine bytes:
+At the end of the header (offset `0x34`) comes the solution to the puzzle.  Non-playable (ie: black) cells are denoted by `'.'`.  So for this example, the board is stored as nine bytes:
 ```
 CAT..A..R
 ```
 
-Next comes the player state, stored similarly.  Empty cells are stored as '-', so the example board before any cells had been filled in is stored as: 
+Next comes the player state, stored similarly.  Empty cells are stored as `'-'`, so the example board before any cells had been filled in is stored as: 
 ```
 ---..-..-
 ```
 
 ## Strings Section
-Immediately following the boards comes the strings.  All strings are encoded in ISO-8859-1 and end with a NUL.  Even if a string is empty, its trailing NUL still appears in the file.  In order, the strings are:
+Immediately following the boards comes the strings.  All strings are encoded in ISO-8859-1 and end with a `NUL`.  Even if a string is empty, its trailing `NUL` still appears in the file.  In order, the strings are:
 
 | Description | Example |
 | ----------- | ------- |
@@ -83,12 +85,12 @@ Immediately following the boards comes the strings.  All strings are encoded in 
 | Clue#n | Quiet |
 | Notes | http://mywebsite |
 
-These first three example strings would appear in the file as the following, where \0 represents a NUL:
+These first three example strings would appear in the file as the following, where `'\0'` represents a `NUL`:
 ```
 Theme: .PUZ format\0J. Puz / W. Shortz\0(c) 2007 J. Puz\0
 ```
 
-In [some](http://rexwordpuzzle.blogspot.com/2010/02/german-border-river-wed-2-17-10-she.html) [NYT](http://rexwordpuzzle.blogspot.com/2010/02/cousin-of-boubou-thursday-feb-4-2010.html) [puzzles](http://rexwordpuzzle.blogspot.com/2010/01/like-unfortunate-torero-monday-jan-25.html), a "Note" has been included in the title instead of using the designated notes field.  In all the examples we've seen, the note has been separated from the title by a space (ASCII 0x20) and begins with the string "NOTE:" or "Note:".  It's not known if this is flagged anywhere else in the file.  It doesn't seem that Across Lite handles these notes - they are just included with the title (which looks ugly).
+In [some](http://rexwordpuzzle.blogspot.com/2010/02/german-border-river-wed-2-17-10-she.html) [NYT](http://rexwordpuzzle.blogspot.com/2010/02/cousin-of-boubou-thursday-feb-4-2010.html) [puzzles](http://rexwordpuzzle.blogspot.com/2010/01/like-unfortunate-torero-monday-jan-25.html), a `"Note"` has been included in the title instead of using the designated notes field.  In all the examples we've seen, the note has been separated from the title by a space (ASCII `0x20`) and begins with the string `"NOTE:"` or `"Note:"`.  It's not known if this is flagged anywhere else in the file.  It doesn't seem that Across Lite handles these notes - they are just included with the title (which looks ugly).
 
 The clues are arranged numerically.  When two clues have the same number, the Across clue comes before the Down clue.
 
@@ -188,7 +190,7 @@ if (strlen(notes) > 0)
 ```
 
 ## Masked Checksums
-The values from 0x10-0x17 are a real pain to generate. They are the result of masking off and XORing four checksums; 0x10-0x13 are the low bytes, while 0x14-0x17 are the high bytes.
+The values from `0x10`-`0x17` are a real pain to generate. They are the result of masking off and XORing four checksums; `0x10`-`0x13` are the low bytes, while `0x14`-`0x17` are the high bytes.
 
 To calculate these bytes, we must first calculate four checksums:
 
@@ -238,12 +240,12 @@ file[0x16] = 0x45 ^ ((c_grid & 0xFF00) >> 8);
 file[0x17] = 0x44 ^ ((c_part & 0xFF00) >> 8);
 ```
 
-Note that these hex values in ASCII are the string "ICHEATED".
+Note that these hex values in ASCII are the string `"ICHEATED"`.
 
 # Locked/Scrambled Puzzles
 
-The header contains two pieces related to scrambled puzzles.  The short at 0x32 records whether the puzzle is scrambled.  If it is scrambled, the short at 0x1E is a checksum suitable for verifying an attempt at unscrambling.  If the correct solution is laid out as a string in column-major order, omitting black squares, then 0x1E contains 
-cksum_region(string,0x0000).
+The header contains two pieces related to scrambled puzzles.  The short at `0x32` records whether the puzzle is scrambled.  If it is scrambled, the short at `0x1E` is a checksum suitable for verifying an attempt at unscrambling.  If the correct solution is laid out as a string in column-major order, omitting black squares, then `0x1E` contains 
+`cksum_region(string,0x0000`).
 
 ## Scrambling Algorithm
 
@@ -255,41 +257,41 @@ The known extra sections are:
 
 | Section Name | Description |
 | ------------ | ----------- |
-| GRBS | where rebuses are located in the solution |
-| RTBL | contents of rebus squares, referred to by GRBS |
-| LTIM | timer data |
-| GEXT | circled squares, incorrect and given flags |
-| RUSR | user-entered rebus squares |
+| `GRBS` | where rebuses are located in the solution |
+| `RTBL` | contents of rebus squares, referred to by `GRBS` |
+| `LTIM` | timer data |
+| `GEXT` | circled squares, incorrect and given flags |
+| `RUSR` | user-entered rebus squares |
 
-In official puzzles, the sections always seem to come in this order, when they appear.  It is not known if the ordering is guaranteed.  The GRBS and RTBL sections appear together in puzzles with rebuses.  However, sometimes a GRBS section with no rebus squares appears without an RTBL, especially in puzzles that have additional extra sections.
+In official puzzles, the sections always seem to come in this order, when they appear.  It is not known if the ordering is guaranteed.  The `GRBS` and `RTBL` sections appear together in puzzles with rebuses.  However, sometimes a `GRBS` section with no rebus squares appears without an `RTBL`, especially in puzzles that have additional extra sections.
 
 The extra sections all follow the same general format, with variation in the data they contain.  That format is:
 
 | Component | Length (bytes) | Description |
 | --------- | -------------- | ----------- |
-| Title | 0x04 | The name of the section, these are given in the previous table |
-| Length | 0x02 | The length of the data section, in bytes, not counting the null terminator |
-| Checksum | 0x02 | A checksum of the data section, using the same algorithm described above |
+| Title | `0x04` | The name of the section, these are given in the previous table |
+| Length | `0x02` | The length of the data section, in bytes, not counting the null terminator |
+| Checksum | `0x02` | A checksum of the data section, using the same algorithm described above |
 | Data | variable | The data, which varies in format but is always terminated by null and has the specified length |
 
 The format of the data for each section is described below.
 
 ## GRBS
 
-The GRBS data is a "board" of one byte per square, similar to the strings for the solution and user state tables except that black squares, letters, etc. are not indicated.  The byte for each square of this board indicates whether or not that square is a rebus.  Possible values are:
+The `GRBS` data is a "board" of one byte per square, similar to the strings for the solution and user state tables except that black squares, letters, etc. are not indicated.  The byte for each square of this board indicates whether or not that square is a rebus.  Possible values are:
 
  * *0* indicates a non-rebus square.
- * *1+n* indicates a rebus square, the solution for which is given by the entry with key *n* in the RTBL section.
+ * *1+n* indicates a rebus square, the solution for which is given by the entry with key *n* in the `RTBL` section.
 
 If a square is a rebus, only the first letter will be given by the solution board and only the first letter of any fill will be given in the user state board.
 
 ## RTBL
 
-The RTBL data is a string containing the solutions for any rebus squares.  
+The `RTBL` data is a string containing the solutions for any rebus squares.  
 
-These solutions are given as an ascii string.  For each rebus there is a number, a colon, a string and a semicolon.  The number (represented by an ascii string) is always two characters long - if it is only one digit, the first character is a space.  It is the key that the GRBS section uses to refer to this entry (it is one less than the number that appears in the corresponding rebus grid squares).  The string is the rebus solution.
+These solutions are given as an ascii string.  For each rebus there is a number, a colon, a string and a semicolon.  The number (represented by an ascii string) is always two characters long - if it is only one digit, the first character is a space.  It is the key that the `GRBS` section uses to refer to this entry (it is one less than the number that appears in the corresponding rebus grid squares).  The string is the rebus solution.
 
-For example, in a puzzle which had four rebus squares containing "HEART", "DIAMOND", "CLUB", and "SPADE", the string might be:
+For example, in a puzzle which had four rebus squares containing `"HEART"`, `"DIAMOND"`, `"CLUB"`, and `"SPADE"`, the string might be:
 
 ```
 " 0:HEART; 1:DIAMOND;17:CLUB;23:SPADE;"
@@ -299,13 +301,13 @@ Note that the keys need not be consecutive numbers, but in official puzzles they
 
 ## LTIM
 
-The LTIM data section stores two pieces of information: how much time the solver has used and whether the timer is running or stopped.  The two pieces are both stored as ascii strings of numbers, separated by a comma.  First comes the number of seconds elapsed, then "0" if the timer is running and "1" if it is stopped.  For example, if the timer were stopped at 42 seconds when the puzzle was saved, the LTIM data section would contain the ascii string:
+The `LTIM` data section stores two pieces of information: how much time the solver has used and whether the timer is running or stopped.  The two pieces are both stored as ascii strings of numbers, separated by a comma.  First comes the number of seconds elapsed, then `'0'` if the timer is running and `'1'` if it is stopped.  For example, if the timer were stopped at 42 seconds when the puzzle was saved, the `LTIM` data section would contain the ascii string:
 
 ```c
 "42,1"
 ```
 
-In C, for example, if `ltim` were a pointer to the LTIM data section, it could be parsed with:
+In C, for example, if `ltim` were a pointer to the `LTIM` data section, it could be parsed with:
 
 ```c
   int elapsed, stopped;
@@ -315,18 +317,18 @@ In C, for example, if `ltim` were a pointer to the LTIM data section, it could b
 
 ## GEXT
 
-The GEXT data section is another "board" of one byte per square.  Each byte is a bitmask indicating that some style attributes are set.  The meanings of four bits are known:
+The `GEXT` data section is another "board" of one byte per square.  Each byte is a bitmask indicating that some style attributes are set.  The meanings of four bits are known:
 
-* 0x10 means that the square was previously marked incorrect
-* 0x20 means that the square is currently marked incorrect
-* 0x40 means that the contents were given
-* 0x80 means that the square is circled.
+* `0x10` means that the square was previously marked incorrect
+* `0x20` means that the square is currently marked incorrect
+* `0x40` means that the contents were given
+* `0x80` means that the square is circled.
 
 None, some, or all of these bits may be set for each square.  It is possible that they have reserved other values.
 
 ## RUSR
 
-_The RUSR section is currently undocumented._
+_The `RUSR` section is currently undocumented._
 
 # What remains
 
@@ -334,6 +336,5 @@ This section contains a list of pieces of the format that we haven't yet figured
 
 * The various unknown parts of the header, mentioned at the beginning
 * The algorithm used for scrambling puzzles is documented in the comments, it still needs to be integrated into the main text.
-* The RUSR data section format is also described in the comments but not the main text.
+* The `RUSR` data section format is also described in the comments but not the main text.
  
-
