@@ -29,6 +29,7 @@
   "homepage": "https://github.com/rjkat/confuzzle#readme",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
+    "@confuzzle/puz-crossword": "file:@confuzzle/puz-crossword",
     "@popperjs/core": "^2.5.4",
     "base64url": "^3.0.1",
     "blissfuljs": "^1.0.6",

@@ -1,0 +1,23 @@
+{
+    "name": "@confuzzle/puz-crossword",
+    "version": "1.0.1",
+    "description": ".puz crossword reader, writer, and parser",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "puz-crossword.js",
+    "keywords": [
+        "crossword",
+        "crosswords",
+        "puz",
+        "puz-parser",
+        "puz-reader",
+        "puz-writer",
+        "puz-file-format"
+    ],
+    "dependencies": {
+        "iconv-lite": "^0.5.2",
+        "@confuzzle/puz-common": "^1.0.0",
+        "@confuzzle/readpuz": "^1.0.0",
+        "@confuzzle/writepuz": "^1.0.0"
+    }
+}

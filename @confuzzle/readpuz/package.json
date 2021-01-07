@@ -1,0 +1,19 @@
+{
+    "name": "@confuzzle/readpuz",
+    "version": "1.0.1",
+    "description": "Minimal .puz format reader",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "readpuz.js",
+    "keywords": [
+        "crossword",
+        "crosswords",
+        "puz",
+        "puz-parser",
+        "puz-file-format"
+    ],
+    "dependencies": {
+        "iconv-lite": "^0.5.2",
+        "@confuzzle/puz-common": "^1.0.0"
+    }
+}

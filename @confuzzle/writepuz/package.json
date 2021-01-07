@@ -1,0 +1,19 @@
+{
+    "name": "@confuzzle/writepuz",
+    "version": "1.0.1",
+    "description": "Minimal .puz format writer",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "writepuz.js",
+    "keywords": [
+        "crossword",
+        "crosswords",
+        "puz",
+        "puz-writer",
+        "puz-file-format"
+    ],
+    "dependencies": {
+        "iconv-lite": "^0.5.2",
+        "@confuzzle/puz-common": "^1.0.0"
+    }
+}

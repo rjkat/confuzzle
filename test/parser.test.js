@@ -3,7 +3,7 @@ const path = require('path');
 const parser = require('../client/js/parser.js');
 const crossword = parser.sampleCrossword();
 const confuz = require('../client/js/confuz.js');
-const PuzPayload = require('../client/js/puz.js').PuzPayload;
+import {ShareablePuz} from '../client/js/shareable-puz.js';
 
 test('basic parsing', () => {
   const cw = parser.parse(crossword);
@@ -24,7 +24,7 @@ test('scramble round trip', () => {
 test('compression', () => {
     const source = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz');
     const buf = fs.readFileSync(source);
-    const puz = PuzPayload.from(buf);
+    const puz = ShareablePuz.from(buf);
     const eno = confuz.fromPuz(puz);
     const compressed = confuz.compressURL(eno);
     const parsed = parser.parse(confuz.decompressURL(compressed));

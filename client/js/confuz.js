@@ -1,5 +1,6 @@
-import {PuzPayload} from './puz.js';
-const parser = require('./parser.js');
+import {ShareablePuz} from './shareable-puz';
+const parser = require('./parser');
+const puz_common = require('@confuzzle/puz-common');
 const base64url = require("base64url");
 const LZUTF8 = require('lzutf8');
 
@@ -178,7 +179,7 @@ export function fromPuz(p) {
     eno += "\n# clues\n";
     for (var i = 0; i < clues.length; i++) {
         const clue = clues[i];
-        eno += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
+        eno += "\n## " + clue.number + (clue.isAcross ? 'A' : 'D') + "\n"
         eno += "row: " + (clue.row + 1) + "\n";
         eno += "col: " + (clue.col + 1) + "\n";
 
@@ -237,7 +238,7 @@ export function fromPuz(p) {
             }
         }
         if (haveAns) {
-            state += "\n## " + clue.number + (clue.isDown ? 'D' : 'A') + "\n"
+            state += "\n## " + clue.number + (clue.isAcross ? 'A' : 'D') + "\n"
             state += 'ans: ' + ans + '\n';
         }
     }
@@ -288,6 +289,7 @@ export function toPuz(eno) {
             if (!cell.empty && cell.contents)
                 haveState = true;
             state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
+            
             if (!cell.number)
                 continue
             
@@ -302,16 +304,18 @@ export function toPuz(eno) {
         }
     }
 
-    return new PuzPayload({
-            title: meta.name,
-            author: meta.author,
-            copyright: meta.copyright,
-            note: meta.note,
-            width: grid.width,
-            height: grid.height,
-        },
-        clues,
-        solution,
-        haveState ? state : ''
-    );
+    const puz = {
+        title: meta.name,
+        author: meta.author,
+        copyright: meta.copyright,
+        note: meta.note,
+        width: grid.width,
+        height: grid.height,
+        clues: clues,
+        solution: solution,
+        state: puz_common.emptyState(solution),
+        hasState: haveState
+    }
+
+    return new ShareablePuz(puz);
 }
