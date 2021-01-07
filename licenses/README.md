@@ -553,14 +553,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: mikeal.rogers@gmail.com
 
 
-## @fortawesome/fontawesome-free@5.15.1
-* licenses: (CC-BY-4.0 AND OFL-1.1 AND MIT)
-* repository: https://github.com/FortAwesome/Font-Awesome
-* publisher: Dave Gandy
-* email: dave@fontawesome.com
-* url: http://twitter.com/davegandy
-
-
 ## @hapi/address@2.1.4
 * licenses: BSD-3-Clause
 * repository: https://github.com/hapijs/address
@@ -610,57 +602,57 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Corey Farrell
 
 
-## @jest/console@25.5.0
+## @jest/console@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/core@25.5.4
+## @jest/core@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/environment@25.5.0
+## @jest/environment@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/fake-timers@25.5.0
+## @jest/fake-timers@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/globals@25.5.2
+## @jest/globals@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/reporters@25.5.1
+## @jest/reporters@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/source-map@25.5.0
+## @jest/source-map@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/test-result@25.5.0
+## @jest/test-result@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/test-sequencer@25.5.4
+## @jest/test-sequencer@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/transform@25.5.1
+## @jest/transform@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## @jest/types@25.5.0
+## @jest/types@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -749,6 +741,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/sinonjs/commons
 
 
+## @sinonjs/fake-timers@6.0.1
+* licenses: BSD-3-Clause
+* repository: https://github.com/sinonjs/fake-timers
+* publisher: Christian Johansen
+
+
 ## @surma/rollup-plugin-off-main-thread@1.4.2
 * licenses: Apache-2.0
 * repository: https://github.com/surma/rollup-plugin-off-main-thread
@@ -817,7 +815,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 
-## @types/istanbul-reports@1.1.2
+## @types/istanbul-reports@3.0.0
 * licenses: MIT
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
@@ -837,7 +835,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 
-## @types/prettier@1.19.1
+## @types/prettier@2.1.6
 * licenses: MIT
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
@@ -852,7 +850,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 
-## @types/stack-utils@1.0.1
+## @types/stack-utils@2.0.0
 * licenses: MIT
 * repository: https://github.com/DefinitelyTyped/DefinitelyTyped
 
@@ -912,7 +910,18 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: ForbesLindesay
 
 
+## acorn-globals@6.0.0
+* licenses: MIT
+* repository: https://github.com/ForbesLindesay/acorn-globals
+* publisher: ForbesLindesay
+
+
 ## acorn-walk@6.2.0
+* licenses: MIT
+* repository: https://github.com/acornjs/acorn
+
+
+## acorn-walk@7.2.0
 * licenses: MIT
 * repository: https://github.com/acornjs/acorn
 
@@ -938,11 +947,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/TrySound/alphanum-sort
 * publisher: Bogdan Chadkin
 * email: trysound@yandex.ru
-
-
-## anagrind@0.1.0
-* licenses: MIT
-* repository: https://github.com/rjkat/anagrind
 
 
 ## ansi-align@3.0.0
@@ -1140,14 +1144,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://github.com/jonschlinkert
 
 
-## astral-regex@1.0.0
-* licenses: MIT
-* repository: https://github.com/kevva/astral-regex
-* publisher: Kevin Mårtensson
-* email: kevinmartensson@gmail.com
-* url: github.com/kevva
-
-
 ## async-done@1.3.2
 * licenses: MIT
 * repository: https://github.com/gulpjs/async-done
@@ -1215,7 +1211,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://github.com/mhart
 
 
-## babel-jest@25.5.1
+## babel-jest@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -1233,7 +1229,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Thai Pangsakulyanont @dtinth
 
 
-## babel-plugin-jest-hoist@25.5.0
+## babel-plugin-jest-hoist@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -1245,14 +1241,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: sebmck@gmail.com
 
 
-## babel-preset-current-node-syntax@0.1.4
+## babel-preset-current-node-syntax@1.0.1
 * licenses: MIT
 * repository: https://github.com/nicolo-ribaudo/babel-preset-current-node-syntax
 * publisher: Nicolò Ribaudo
 * url: https://github.com/nicolo-ribaudo
 
 
-## babel-preset-jest@25.5.0
+## babel-preset-jest@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -1451,13 +1447,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: kumavis
 
 
-## browser-resolve@1.11.3
-* licenses: MIT
-* repository: https://github.com/shtylman/node-browser-resolve
-* publisher: Roman Shtylman
-* email: shtylman@gmail.com
-
-
 ## browserify-aes@1.2.0
 * licenses: MIT
 * repository: https://github.com/crypto-browserify/browserify-aes
@@ -1654,6 +1643,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: sindresorhus.com
 
 
+## camelcase@6.2.0
+* licenses: MIT
+* repository: https://github.com/sindresorhus/camelcase
+* publisher: Sindre Sorhus
+* email: sindresorhus@gmail.com
+* url: https://sindresorhus.com
+
+
 ## caniuse-api@3.0.0
 * licenses: MIT
 * repository: https://github.com/nyalab/caniuse-api
@@ -1701,6 +1698,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/chalk/chalk
 
 
+## char-regex@1.0.2
+* licenses: MIT
+* repository: https://github.com/Richienb/char-regex
+* publisher: Richie Bendall
+* email: richiebendall@gmail.com
+
+
 ## chardet@0.7.0
 * licenses: MIT
 * repository: https://github.com/runk/node-chardet
@@ -1735,6 +1739,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/crypto-browserify/cipher-base
 * publisher: Calvin Metcalf
 * email: calvin.metcalf@gmail.com
+
+
+## cjs-module-lexer@0.6.0
+* licenses: MIT
+* repository: https://github.com/guybedford/cjs-module-lexer
+* publisher: Guy Bedford
 
 
 ## class-utils@0.3.6
@@ -1979,6 +1989,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
 * url: sindresorhus.com
+
+
+## confuzzle@0.1.0
+* licenses: MIT
+* repository: https://github.com/rjkat/confuzzle
+* publisher: Rowan Katekar
 
 
 ## console-browserify@1.2.0
@@ -2301,6 +2317,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://domenic.me/
 
 
+## data-urls@2.0.0
+* licenses: MIT
+* repository: https://github.com/jsdom/data-urls
+* publisher: Domenic Denicola
+* email: d@domenic.me
+* url: https://domenic.me/
+
+
 ## de-indent@1.0.2
 * licenses: MIT
 * repository: https://github.com/yyx990803/de-indent
@@ -2356,6 +2380,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
 * url: sindresorhus.com
+
+
+## decimal.js@10.2.1
+* licenses: MIT
+* repository: https://github.com/MikeMcl/decimal.js
+* publisher: Michael Mclaughlin
+* email: M8ch88l@gmail.com
 
 
 ## decode-uri-component@0.2.0
@@ -2480,7 +2511,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: sindresorhus.com
 
 
-## diff-sequences@25.2.6
+## diff-sequences@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -2528,6 +2559,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## domexception@1.0.1
+* licenses: MIT
+* repository: https://github.com/jsdom/domexception
+* publisher: Domenic Denicola
+* email: d@domenic.me
+* url: https://domenic.me/
+
+
+## domexception@2.0.1
 * licenses: MIT
 * repository: https://github.com/jsdom/domexception
 * publisher: Domenic Denicola
@@ -2645,6 +2684,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/indutny/elliptic
 * publisher: Fedor Indutny
 * email: fedor@indutny.com
+
+
+## emittery@0.7.2
+* licenses: MIT
+* repository: https://github.com/sindresorhus/emittery
+* publisher: Sindre Sorhus
+* email: sindresorhus@gmail.com
+* url: https://sindresorhus.com
 
 
 ## emoji-regex@7.0.3
@@ -2876,12 +2923,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: sindresorhus.com
 
 
-## execa@3.4.0
+## execa@4.1.0
 * licenses: MIT
 * repository: https://github.com/sindresorhus/execa
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
-* url: sindresorhus.com
+* url: https://sindresorhus.com
 
 
 ## exit@0.1.2
@@ -2898,7 +2945,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://github.com/jonschlinkert
 
 
-## expect@25.5.0
+## expect@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -3068,13 +3115,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
 * url: sindresorhus.com
-
-
-## fonts@0.0.2
-* licenses: BSD*
-* repository: https://github.com/gammasoft/fonts
-* publisher: Renato Gama
-* email: renato@gammasoft.com.br
 
 
 ## for-in@1.0.2
@@ -3518,6 +3558,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## html-encoding-sniffer@1.0.2
+* licenses: MIT
+* repository: https://github.com/jsdom/html-encoding-sniffer
+* publisher: Domenic Denicola
+* email: d@domenic.me
+* url: https://domenic.me/
+
+
+## html-encoding-sniffer@2.0.1
 * licenses: MIT
 * repository: https://github.com/jsdom/html-encoding-sniffer
 * publisher: Domenic Denicola
@@ -4062,6 +4110,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://github.com/jonschlinkert
 
 
+## is-potential-custom-element-name@1.0.0
+* licenses: MIT
+* repository: https://github.com/mathiasbynens/is-potential-custom-element-name
+* publisher: Mathias Bynens
+* url: https://mathiasbynens.be/
+
+
 ## is-regex@1.1.1
 * licenses: MIT
 * repository: https://github.com/ljharb/is-regex
@@ -4238,79 +4293,79 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: kananthmail-github@yahoo.com
 
 
-## jest-changed-files@25.5.0
+## jest-changed-files@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-cli@25.5.4
+## jest-cli@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-config@25.5.4
+## jest-config@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-diff@25.5.0
+## jest-diff@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-docblock@25.3.0
+## jest-docblock@26.0.0
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-each@25.5.0
+## jest-each@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 * publisher: Matt Phillips
 * url: mattphillips
 
 
-## jest-environment-jsdom@25.5.0
+## jest-environment-jsdom@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-environment-node@25.5.0
+## jest-environment-node@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-get-type@25.2.6
+## jest-get-type@26.3.0
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-haste-map@25.5.1
+## jest-haste-map@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-jasmine2@25.5.4
+## jest-jasmine2@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-leak-detector@25.5.0
+## jest-leak-detector@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-matcher-utils@25.5.0
+## jest-matcher-utils@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-message-util@25.5.0
+## jest-message-util@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-mock@25.5.0
+## jest-mock@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -4320,57 +4375,52 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/arcanis/jest-pnp-resolver
 
 
-## jest-regex-util@25.2.6
+## jest-regex-util@26.0.0
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-resolve-dependencies@25.5.4
+## jest-resolve-dependencies@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-resolve@25.5.1
+## jest-resolve@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-runner@25.5.4
+## jest-runner@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-runtime@25.5.4
+## jest-runtime@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-serializer@25.5.0
+## jest-serializer@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-snapshot@25.5.1
+## jest-snapshot@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-util@25.5.0
+## jest-util@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-validate@25.5.0
+## jest-validate@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
 
-## jest-watcher@25.5.0
-* licenses: MIT
-* repository: https://github.com/facebook/jest
-
-
-## jest-worker@25.5.0
+## jest-watcher@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -4380,7 +4430,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/facebook/jest
 
 
-## jest@25.5.4
+## jest@26.6.3
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 
@@ -4409,7 +4459,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/jsdom/jsdom
 
 
-## jsdom@15.2.1
+## jsdom@16.4.0
 * licenses: MIT
 * repository: https://github.com/jsdom/jsdom
 
@@ -4668,12 +4718,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://sindresorhus.com
 
 
-## lolex@5.1.2
-* licenses: BSD-3-Clause
-* repository: https://github.com/sinonjs/lolex
-* publisher: Christian Johansen
-
-
 ## lowercase-keys@1.0.1
 * licenses: MIT
 * repository: https://github.com/sindresorhus/lowercase-keys
@@ -4691,6 +4735,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## lru-cache@4.1.5
+* licenses: ISC
+* repository: https://github.com/isaacs/node-lru-cache
+* publisher: Isaac Z. Schlueter
+* email: i@izs.me
+
+
+## lru-cache@6.0.0
 * licenses: ISC
 * repository: https://github.com/isaacs/node-lru-cache
 * publisher: Isaac Z. Schlueter
@@ -5013,7 +5064,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/nodejs/node-addon-api
 
 
-## node-forge@0.7.6
+## node-forge@0.10.0
 * licenses: (BSD-3-Clause OR GPL-2.0)
 * repository: https://github.com/digitalbazaar/forge
 * publisher: Digital Bazaar, Inc.
@@ -5042,7 +5093,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: github.com/jamestalmage
 
 
-## node-notifier@6.0.0
+## node-notifier@8.0.1
 * licenses: MIT
 * repository: https://github.com/mikaelbr/node-notifier
 * publisher: Mikael Brevik
@@ -5332,14 +5383,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: sindresorhus.com
 
 
-## p-finally@2.0.1
-* licenses: MIT
-* repository: https://github.com/sindresorhus/p-finally
-* publisher: Sindre Sorhus
-* email: sindresorhus@gmail.com
-* url: sindresorhus.com
-
-
 ## p-limit@2.3.0
 * licenses: MIT
 * repository: https://github.com/sindresorhus/p-limit
@@ -5416,6 +5459,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## parse5@5.1.0
+* licenses: MIT
+* repository: https://github.com/inikulin/parse5
+* publisher: Ivan Nikulin
+* email: ifaaan@gmail.com
+* url: https://github.com/inikulin
+
+
+## parse5@5.1.1
 * licenses: MIT
 * repository: https://github.com/inikulin/parse5
 * publisher: Ivan Nikulin
@@ -5922,7 +5973,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: https://sindresorhus.com
 
 
-## pretty-format@25.5.0
+## pretty-format@26.6.2
 * licenses: MIT
 * repository: https://github.com/facebook/jest
 * publisher: James Kyle
@@ -6119,7 +6170,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * url: dominictarr.com
 
 
-## react-is@16.13.1
+## react-is@17.0.1
 * licenses: MIT
 * repository: https://github.com/facebook/react
 
@@ -6164,13 +6215,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Thorsten Lorenz
 * email: thlorenz@gmx.de
 * url: thlorenz.com
-
-
-## realpath-native@2.0.0
-* licenses: MIT
-* repository: https://github.com/SimenB/realpath-native
-* publisher: Simen Bekkhus
-* email: sbekkhus91@gmail.com
 
 
 ## redent@3.0.0
@@ -6360,14 +6404,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: Simon Lydell
 
 
-## resolve@1.1.7
-* licenses: MIT
-* repository: https://github.com/substack/node-resolve
-* publisher: James Halliday
-* email: mail@substack.net
-* url: http://substack.net
-
-
 ## resolve@1.19.0
 * licenses: MIT
 * repository: https://github.com/browserify/resolve
@@ -6552,6 +6588,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: ldd@lddubeau.com
 
 
+## saxes@5.0.1
+* licenses: ISC
+* repository: https://github.com/lddubeau/saxes
+* publisher: Louis-Dominique Dubeau
+* email: ldd@lddubeau.com
+
+
 ## select@1.1.2
 * licenses: MIT
 * repository: https://github.com/zenorocha/select
@@ -6576,6 +6619,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## semver@7.0.0
+* licenses: ISC
+* repository: https://github.com/npm/node-semver
+
+
+## semver@7.3.4
 * licenses: ISC
 * repository: https://github.com/npm/node-semver
 
@@ -6877,7 +6925,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: info@angrybytes.com
 
 
-## stack-utils@1.0.4
+## stack-utils@2.0.3
 * licenses: MIT
 * repository: https://github.com/tapjs/stack-utils
 * publisher: James Talmage
@@ -6941,12 +6989,12 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: John Hiesey
 
 
-## string-length@3.1.0
+## string-length@4.0.1
 * licenses: MIT
 * repository: https://github.com/sindresorhus/string-length
 * publisher: Sindre Sorhus
 * email: sindresorhus@gmail.com
-* url: sindresorhus.com
+* url: https://sindresorhus.com
 
 
 ## string-width@3.1.0
@@ -7370,6 +7418,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: npm@smayr.name
 
 
+## tr46@2.0.2
+* licenses: MIT
+* repository: https://github.com/jsdom/tr46
+* publisher: Sebastian Mayr
+* email: npm@smayr.name
+
+
 ## trim-newlines@3.0.0
 * licenses: MIT
 * repository: https://github.com/sindresorhus/trim-newlines
@@ -7480,13 +7535,6 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * publisher: James Halliday
 * email: mail@substack.net
 * url: http://substack.net
-
-
-## typeface-bree-serif@0.0.72
-* licenses: MIT
-* repository: https://github.com/KyleAMathews/typefaces/tree/master/packages/bree-serif
-* publisher: Kyle Mathews
-* email: mathews.kyle@gmail.com
 
 
 ## typescript@3.9.7
@@ -7703,6 +7751,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/uuidjs/uuid
 
 
+## uuid@8.3.2
+* licenses: MIT
+* repository: https://github.com/uuidjs/uuid
+
+
 ## v8-compile-cache@2.2.0
 * licenses: MIT
 * repository: https://github.com/zertosh/v8-compile-cache
@@ -7710,7 +7763,7 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * email: zertosh@gmail.com
 
 
-## v8-to-istanbul@4.1.4
+## v8-to-istanbul@7.1.0
 * licenses: ISC
 * repository: https://github.com/istanbuljs/v8-to-istanbul
 * publisher: Ben Coe
@@ -7801,6 +7854,11 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 * repository: https://github.com/jsdom/w3c-xmlserializer
 
 
+## w3c-xmlserializer@2.0.0
+* licenses: MIT
+* repository: https://github.com/jsdom/w3c-xmlserializer
+
+
 ## walker@1.0.7
 * licenses: Apache-2.0
 * repository: https://github.com/daaku/nodejs-walker
@@ -7815,6 +7873,22 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## webidl-conversions@4.0.2
+* licenses: BSD-2-Clause
+* repository: https://github.com/jsdom/webidl-conversions
+* publisher: Domenic Denicola
+* email: d@domenic.me
+* url: https://domenic.me/
+
+
+## webidl-conversions@5.0.0
+* licenses: BSD-2-Clause
+* repository: https://github.com/jsdom/webidl-conversions
+* publisher: Domenic Denicola
+* email: d@domenic.me
+* url: https://domenic.me/
+
+
+## webidl-conversions@6.1.0
 * licenses: BSD-2-Clause
 * repository: https://github.com/jsdom/webidl-conversions
 * publisher: Domenic Denicola
@@ -7839,6 +7913,13 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## whatwg-url@7.1.0
+* licenses: MIT
+* repository: https://github.com/jsdom/whatwg-url
+* publisher: Sebastian Mayr
+* email: github@smayr.name
+
+
+## whatwg-url@8.4.0
 * licenses: MIT
 * repository: https://github.com/jsdom/whatwg-url
 * publisher: Sebastian Mayr
@@ -8084,6 +8165,14 @@ Please contact `rjkat` at `ieee.org` if something is incorrect or missing.
 
 
 ## yallist@2.1.2
+* licenses: ISC
+* repository: https://github.com/isaacs/yallist
+* publisher: Isaac Z. Schlueter
+* email: i@izs.me
+* url: http://blog.izs.me/
+
+
+## yallist@4.0.0
 * licenses: ISC
 * repository: https://github.com/isaacs/yallist
 * publisher: Isaac Z. Schlueter
