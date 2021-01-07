@@ -4,7 +4,7 @@ The following page was taken from
 https://code.google.com/archive/p/puz/wikis/FileFormat.wiki
 and converted into markdown, since the tables there seem to be broken. I've moved the credit section first.
 
-I relied on this document heavily when implementing the PUZ file reader/writer in [puz.js](client/js/puz.js), which I hope to eventually split out into its own npm package.
+I relied on this document heavily when implementing [@confuzzle/puz-crossword](https://www.npmjs.com/package/@confuzzle/puz-crossword) and related packages.
 
 # Credit
 
