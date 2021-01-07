@@ -1,6 +1,6 @@
 # Confuzzle
 
-![Node.js CI](https://github.com/rjkat/confuzzle/workflows/Node.js%20CI/badge.svg?branch=master)![Heroku](https://pyheroku-badge.herokuapp.com/?app=confuzzle)
+![Node.js CI](https://github.com/rjkat/confuzzle/workflows/Node.js%20CI/badge.svg?branch=master) ![Heroku](https://pyheroku-badge.herokuapp.com/?app=confuzzle)
 
 ## About
 
