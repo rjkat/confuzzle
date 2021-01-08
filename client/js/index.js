@@ -5,8 +5,6 @@ require('../../.sassrc.js');
 import Vue from 'vue';
 import App from '../App.vue'
 
-const define = require('amdefine');
-
 const vm = new App({
     el: '#app',
 });
