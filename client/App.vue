@@ -343,9 +343,9 @@ import CfzCrosswordEditor from './components/CfzCrosswordEditor.vue'
 import CfzToolbar from './components/CfzToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 
-const parser = require('./js/parser.js');
+const parser = require('../@confuzzle/confuz-parser/parser');
 
-const confuz = require('./js/confuz.js');
+const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
 const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
 

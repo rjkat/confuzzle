@@ -88,7 +88,6 @@ function readcompressed(x) {
     puz.state = '';
     
     const strings = puz_common.splitNulls(buf.slice(pos), COMPRESSED_ENCODING);
-    console.log(strings[4]);
     const fields = puz_common.PUZ_STRING_FIELDS;
     for (let i = 0; i < fields.length; i++) {
         const name = fields[i];

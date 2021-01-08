@@ -137,21 +137,6 @@ function buildGrid(cw, compiling) {
   return buildCells(cw, grid.cells, clues, compiling);
 }
 
-function buildRefs() {
-  // populate refs and primary with actual objects
-  for (const [clueid, clue] of Object.entries(cw.clues)) {
-    clue.refs = [];
-
-    if (clue.primaryId && clue.primaryId != clueid)
-      clue.primary = cw.clues[clue.primaryId];
-
-    for (const refId of clue.refIds) {
-      if (refId != clue.id && cw.clues[refId])
-          clue.refs.push(cw.clues[refId])
-    }
-  }
-}
-
 function addEmoji(cw, word) {
   if (word.length <= 2) {
     return;

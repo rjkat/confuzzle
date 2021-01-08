@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const parser = require('../client/js/parser.js');
-const confuz = require('../client/js/confuz.js');
+const parser = require('../@confuzzle/confuz-parser/parser');
+const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
 test('references', () => {
     const crossword = `

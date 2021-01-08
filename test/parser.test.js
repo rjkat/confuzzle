@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const parser = require('../client/js/parser.js');
+const parser = require('../@confuzzle/confuz-parser/parser');
 const TEST_ENO = parser.sampleCrossword();
-const confuz = require('../client/js/confuz.js');
+const confuz = require('../@confuzzle/confuz-crossword/confuz');
 const ShareablePuz = require('../@confuzzle/puz-sharing').ShareablePuz;
 
 test('basic parsing', () => {

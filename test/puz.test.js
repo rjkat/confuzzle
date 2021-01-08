@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const ShareablePuz = require('../@confuzzle/puz-sharing').ShareablePuz;
-const confuz = require('../client/js/confuz.js');
+const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
 const TEST_PUZ_FILE = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz')
 const TEST_PUZ = ShareablePuz.from(fs.readFileSync(TEST_PUZ_FILE));

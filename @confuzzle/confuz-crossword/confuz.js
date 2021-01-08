@@ -1,5 +1,5 @@
 const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
-const parser = require('./parser');
+const parser = require('../confuz-parser/parser');
 const puz_common = require('@confuzzle/puz-common');
 const base64url = require("base64url");
 const LZUTF8 = require('lzutf8');
