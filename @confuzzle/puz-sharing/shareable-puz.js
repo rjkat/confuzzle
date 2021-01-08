@@ -32,18 +32,22 @@ function buildHeader(puz) {
     return header;
 }
 
+function enc(s) {
+    return puz_common.puzEncode(s, COMPRESSED_ENCODING);
+}
+
 function buildStrings(puz) {
     let strings = '';
     const fields = puz_common.PUZ_STRING_FIELDS;
 
     for (let i = 0; i < fields.length; i++)
-        strings += puz[fields[i]] + '\x00';
+        strings += enc(puz[fields[i]]) + '\x00';
 
     for (let i = 0; i < puz.clues.length; i++)
-        strings += puz.clues[i] + '\x00';
+        strings += enc(puz.clues[i]) + '\x00';
 
     if (puz.note)
-        strings += puz.note;
+        strings += enc(puz.note);
 
     /* need a null terminator even if notes are empty */
     strings += '\x00';
@@ -83,7 +87,8 @@ function readcompressed(x) {
     /* no state */
     puz.state = '';
     
-    const strings = puz_common.splitNulls(buf.slice(pos));
+    const strings = puz_common.splitNulls(buf.slice(pos), COMPRESSED_ENCODING);
+    console.log(strings[4]);
     const fields = puz_common.PUZ_STRING_FIELDS;
     for (let i = 0; i < fields.length; i++) {
         const name = fields[i];

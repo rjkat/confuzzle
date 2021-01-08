@@ -38,29 +38,29 @@ function buildStrings(puz) {
     const fields = puz_common.PUZ_STRING_FIELDS;
 
     for (let i = 0; i < fields.length; i++)
-        strings += puz[fields[i]] + '\x00';
+        strings += enc(puz[fields[i]]) + '\x00';
 
     for (let i = 0; i < puz.clues.length; i++)
-        strings += puz.clues[i] + '\x00';
+        strings += enc(puz.clues[i]) + '\x00';
 
     if (puz.note)
-        strings += puz.note;
+        strings += enc(puz.note);
 
     /* need a null terminator even if notes are empty */
     strings += '\x00';
 
-    return enc(strings);
+    return strings;
 }
 
 function stringsChecksum(puz, c) {
-    c = checksum(enc(puz.title + '\x00'), c);
-    c = checksum(enc(puz.author + '\x00'), c);
-    c = checksum(enc(puz.copyright + '\x00'), c);
+    c = checksum(enc(puz.title) + '\x00', c);
+    c = checksum(enc(puz.author) + '\x00', c);
+    c = checksum(enc(puz.copyright) + '\x00', c);
     for (let i = 0; i < puz.clues.length; i++)
         c = checksum(enc(puz.clues[i]), c);
 
     if (puz.note)
-        c = checksum(enc(puz.note + '\x00'), c);
+        c = checksum(enc(puz.note) + '\x00', c);
     return c;
 }
 

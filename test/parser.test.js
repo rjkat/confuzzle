@@ -1,17 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const parser = require('../client/js/parser.js');
-const crossword = parser.sampleCrossword();
+const TEST_ENO = parser.sampleCrossword();
 const confuz = require('../client/js/confuz.js');
 const ShareablePuz = require('../@confuzzle/puz-sharing').ShareablePuz;
 
 test('basic parsing', () => {
-  const cw = parser.parse(crossword);
+  const cw = parser.parse(TEST_ENO);
   expect(cw.meta.author).toBe('RK');
 });
 
 test('scramble round trip', () => {
-    const cw = parser.parse(crossword);
+    const cw = parser.parse(TEST_ENO);
     const scrambled = confuz.fromCrossword(cw, {scramble: true});
     const parsed = parser.parse(scrambled);
     expect(parsed.meta.author).toBe('RK');
@@ -19,7 +19,6 @@ test('scramble round trip', () => {
     const parsed2 = parser.parse(unscrambled);
     expect(parsed2.meta.author).toBe('RK');
 });
-
 
 test('compression', () => {
     const source = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz');
@@ -29,4 +28,12 @@ test('compression', () => {
     const compressed = confuz.compressURL(eno);
     const parsed = parser.parse(confuz.decompressURL(compressed));
     expect(parsed.meta.author).toBe("Natan Last / Will Shortz");
+});
+
+test('eno to emoji', () => {
+    const puz = confuz.toPuz(TEST_ENO);
+    const puz2 = ShareablePuz.fromEmoji(puz.toEmoji());
+    const eno = confuz.fromPuz(puz2);
+    const parsed = parser.parse(eno);
+    expect(parsed.meta.author).toBe('RK');
 });

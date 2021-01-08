@@ -282,6 +282,7 @@ export function toPuz(eno) {
     var state = '';
     var haveState = false;
     var clues = [];
+
     for (var row = 0; row < grid.height; row++) {
         for (var col = 0; col < grid.width; col++) {
             const cell = grid.cells[row][col];
@@ -290,7 +291,7 @@ export function toPuz(eno) {
                 haveState = true;
             state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
             
-            if (!cell.number)
+            if (!cell.clues)
                 continue
             
             if (cell.clues.acrossId && cell.offsets.across == 0) {
