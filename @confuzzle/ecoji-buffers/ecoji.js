@@ -2,8 +2,61 @@
 // used here under the Apache License 2.0
 // https://github.com/dimabory/ecoji-js
 
-/** wget -qO- https://unicode.org/Public/emoji/11.0/emoji-test.txt | cut -f 1 -d ' ' | sort -u | sed '/^[#0]/ d' | sed '/^\s*$/d' | sed -e 's/^/'0x/' */
+const padding = 0x2615;
+const padding40 = 0x269C;
+const padding41 = 0x1F3CD;
+const padding42 = 0x1F4D1;
+const padding43 = 0x1F64B;
+class Mapping {
+    constructor(emojis) {
+        // This should sort before everything.  This is output when 3 or less input bytes are present.
+        this.padding = String.fromCodePoint(padding);
+        // The following paddings are used when only 4 of 5 input bytes are present.
+        // This should sort between padding and emojis[0]
+        this.padding40 = String.fromCodePoint(padding40);
+        // This should sort between emojis[255] and emojis[256]
+        this.padding41 = String.fromCodePoint(padding41);
+        // This should sort between emojis[511] and emojis[512]
+        this.padding42 = String.fromCodePoint(padding42);
+        // This should sort between emojis[767] and emojis[768]
+        this.padding43 = String.fromCodePoint(padding43);
+        this.emojis = emojis.reduce((Map, hexUnicode, i) => Map.set(String.fromCodePoint(Number(hexUnicode)), i), new Map());
+        this.emojis.set(this.padding, -1);
+        this.revEmojis = emojis.reduce((Map, hexUnicode, i) => Map.set(i, String.fromCodePoint(Number(hexUnicode))), new Map());
+        this.revEmojis.set(-1, this.padding);
+    }
+    getEmoji(id) {
+        const emoji = this.revEmojis.get(id);
+        if (undefined === emoji) {
+            throw Error(`Invalid id provided: ${id}`);
+        }
+        return emoji;
+    }
+    getId(rune) {
+        const id = this.emojis.get(rune);
+        if (undefined === id) {
+            throw Error(`Invalid rune provided: ${rune}`);
+        }
+        return id;
+    }
+    getPadding() {
+        return this.padding;
+    }
+    getPadding40() {
+        return this.padding40;
+    }
+    getPadding41() {
+        return this.padding41;
+    }
+    getPadding42() {
+        return this.padding42;
+    }
+    getPadding43() {
+        return this.padding43;
+    }
+}
 
+/** wget -qO- https://unicode.org/Public/emoji/11.0/emoji-test.txt | cut -f 1 -d ' ' | sort -u | sed '/^[#0]/ d' | sed '/^\s*$/d' | sed -e 's/^/'0x/' */
 const ALL_EMOJIS = [
   '0x1F004',
   '0x1F0CF',
@@ -1031,103 +1084,11 @@ const ALL_EMOJIS = [
   '0x1F9D5',
 ]
 
-
-const padding = 0x2615;
-const padding40 = 0x269C;
-const padding41 = 0x1F3CD;
-const padding42 = 0x1F4D1;
-const padding43 = 0x1F64B;
-class Mapping {
-    constructor(emojis) {
-        // This should sort before everything.  This is output when 3 or less input bytes are present.
-        this.padding = String.fromCodePoint(padding);
-        // The following paddings are used when only 4 of 5 input bytes are present.
-        // This should sort between padding and emojis[0]
-        this.padding40 = String.fromCodePoint(padding40);
-        // This should sort between emojis[255] and emojis[256]
-        this.padding41 = String.fromCodePoint(padding41);
-        // This should sort between emojis[511] and emojis[512]
-        this.padding42 = String.fromCodePoint(padding42);
-        // This should sort between emojis[767] and emojis[768]
-        this.padding43 = String.fromCodePoint(padding43);
-        this.emojis = emojis.reduce((Map, hexUnicode, i) => Map.set(String.fromCodePoint(Number(hexUnicode)), i), new Map());
-        this.emojis.set(this.padding, -1);
-        this.revEmojis = emojis.reduce((Map, hexUnicode, i) => Map.set(i, String.fromCodePoint(Number(hexUnicode))), new Map());
-        this.revEmojis.set(-1, this.padding);
-    }
-    getEmoji(id) {
-        const emoji = this.revEmojis.get(id);
-        if (undefined === emoji) {
-            throw Error(`Invalid id provided: ${id}`);
-        }
-        return emoji;
-    }
-    getId(rune) {
-        const id = this.emojis.get(rune);
-        if (undefined === id) {
-            throw Error(`Invalid rune provided: ${rune}`);
-        }
-        return id;
-    }
-    getPadding() {
-        return this.padding;
-    }
-    getPadding40() {
-        return this.padding40;
-    }
-    getPadding41() {
-        return this.padding41;
-    }
-    getPadding42() {
-        return this.padding42;
-    }
-    getPadding43() {
-        return this.padding43;
-    }
-}
-
-// from emojicoding Copyright (c) 2019 Ryan Shea
-// used here under the MIT License
-// https://github.com/shea256/emojicoding
-function convertBase(data, inBits, outBits, pad) {
-  var value = 0
-  var bits = 0
-  var maxV = (1 << outBits) - 1
-
-  var result = []
-  for (var i = 0; i < data.length; ++i) {
-    value = (value << inBits) | data[i]
-    bits += inBits
-
-    while (bits >= outBits) {
-      bits -= outBits
-      result.push((value >> bits) & maxV)
-    }
-  }
-
-  if (pad) {
-    if (bits > 0) {
-      result.push((value << (outBits - bits)) & maxV)
-    }
-  } else {
-    if (bits >= inBits) throw new Error('Excess padding')
-    if ((value << (outBits - bits)) & maxV) throw new Error('Non-zero padding')
-  }
-
-  return result
-}
-
 const EMOJI_MAP = new Mapping(ALL_EMOJIS);
 
-export function encode(s) {
-    const b1024 = convertBase(s, 8, 10, true);
-    const emoji = b1024.map(i => EMOJI_MAP.getEmoji(i)).join('');
-    return emoji;
+module.exports = {
+  EMOJI_MAP: EMOJI_MAP
 }
 
-export function decode(t) {
-    const runes = Array.from(t.split('\u{200D}')[0].split(/[\ufe00-\ufe0f]/).join(''))
-    const b1024 = runes.map(r => EMOJI_MAP.getId(r));
-    const s = Buffer.from(convertBase(b1024, 10, 8, false))
-    return s;
-}
+
+

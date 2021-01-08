@@ -33,7 +33,7 @@ function compareArrays(a, b) {
     return a[i] - b[i];
 }
 
-export function forward_bwt(s) {
+function forward_bwt(s) {
     var rows = [];
     var buf = Buffer.from(s);
     var orig = buf.slice();
@@ -72,7 +72,7 @@ function get_next(t) {
     return next;
 }
 
-export function inverse_bwt(xfm) {
+function inverse_bwt(xfm) {
     const buf = Buffer.from(xfm);
     const index = buf.readUInt16LE(0);
     const t = bufBytes(buf.slice(2));
@@ -84,4 +84,9 @@ export function inverse_bwt(xfm) {
         inv.push(t[x]);
     }
     return Buffer.from(inv);
+}
+
+module.exports = {
+    forward: forward_bwt,
+    inverse: inverse_bwt
 }

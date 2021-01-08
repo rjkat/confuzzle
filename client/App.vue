@@ -347,7 +347,7 @@ const parser = require('./js/parser.js');
 
 const confuz = require('./js/confuz.js');
 
-import {ShareablePuz} from './js/shareable-puz.js'
+const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
 
 import {EnoError} from 'enolib'
 

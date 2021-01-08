@@ -3,7 +3,7 @@ const path = require('path');
 const parser = require('../client/js/parser.js');
 const crossword = parser.sampleCrossword();
 const confuz = require('../client/js/confuz.js');
-import {ShareablePuz} from '../client/js/shareable-puz.js';
+const ShareablePuz = require('../@confuzzle/puz-sharing').ShareablePuz;
 
 test('basic parsing', () => {
   const cw = parser.parse(crossword);

@@ -1,0 +1,13 @@
+{
+    "name": "@confuzzle/ecoji-buffers",
+    "version": "1.0.0",
+    "description": "Encode and decode arbitrary data as emoji",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "index.js",
+    "keywords": [
+        "emoji",
+        "encoding",
+        "base1024"
+    ]
+}

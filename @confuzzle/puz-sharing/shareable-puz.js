@@ -1,12 +1,13 @@
 const puz_common = require('@confuzzle/puz-common');
 const readpuz = require('@confuzzle/readpuz').readpuz;
+const PuzCrossword = require('@confuzzle/puz-crossword').PuzCrossword;
 
-import {PuzCrossword} from '@confuzzle/puz-crossword';
-
-const emoji = require('./emoji.js');
+const ecoji = require('@confuzzle/ecoji-buffers');
 const base64url = require("base64url");
-import {MTFModel} from './compressjs/MTFModel.js'
-import {forward_bwt, inverse_bwt} from './bwt.js'
+
+const mtf = require('./transforms/mtf');
+const bwt = require('./transforms/bwt');
+const rc = require('@thi.ng/range-coder');
 
 const PUZZLE_EMOJI_MAGIC = '🧩✨0️⃣'
 
@@ -97,32 +98,34 @@ function readcompressed(x) {
     return puz;
 }
 
-export class ShareablePuz extends PuzCrossword {
+class ShareablePuz extends PuzCrossword {
     static from(x) {
         return new ShareablePuz(readpuz(x));
     }
 
     toEmoji() {
         const compressed = this.toCompressed();
-        return PUZZLE_EMOJI_MAGIC + emoji.encode(compressed);
+        return PUZZLE_EMOJI_MAGIC + ecoji.encode(compressed);
     }
 
     static fromEmoji(s) {
-        const compressed = emoji.decode(s.slice(PUZZLE_EMOJI_MAGIC.length));
+        const compressed = ecoji.decode(s.slice(PUZZLE_EMOJI_MAGIC.length));
         return ShareablePuz.fromCompressed(compressed);
     }
 
     toCompressed() {
-        const puzbytes = writecompressed(this);
-        const bwt = forward_bwt(puzbytes);
-        const compressed = MTFModel.compressFile(bwt);
-        return compressed;
+        const s = writecompressed(this);
+        const t = bwt.forward(s);
+        const m = mtf.forward(t);
+        const x = rc.encodeBytes(m);
+        return x;
     }
 
     static fromCompressed(x) {
-        const decompressed = MTFModel.decompressFile(x);
-        const inv = inverse_bwt(decompressed);
-        return new ShareablePuz(readcompressed(inv));
+        const m = rc.decodeBytes(x);
+        const t = mtf.inverse(m);
+        const s = bwt.inverse(t);
+        return new ShareablePuz(readcompressed(s));
     }
 
     toURL() {
@@ -138,3 +141,8 @@ export class ShareablePuz extends PuzCrossword {
         super(puz);
     }
 }
+
+module.exports = {
+    ShareablePuz: ShareablePuz
+};
+
