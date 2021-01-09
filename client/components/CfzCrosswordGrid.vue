@@ -67,6 +67,8 @@ export default Vue.extend({
   },
   computed: {
     copyrightText() {
+      if (!this.crossword.meta.copyright)
+        return '';
       if (this.crossword.meta.copyright.includes('©'))
         return this.crossword.meta.copyright;
       return '© ' + this.crossword.meta.copyright;

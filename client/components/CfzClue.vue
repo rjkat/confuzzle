@@ -126,7 +126,7 @@ export default Vue.extend({
   watch: {
     selected: function(val) {
         if (val && !this.wasClicked) {
-            
+            this.scrollIntoView();     
         }
         this.wasClicked = false;
     }
@@ -147,7 +147,7 @@ export default Vue.extend({
     },
     showDirection: function () {
         const clue = this.clue;
-        return (clue.numbering.clueText == clue.numbering.gridText) && !(this.clue.verbatim || this.isPrimaryRef);
+        return (clue.numbering.clueText == clue.numbering.gridText) && !(this.isPrimaryRef);
     },
     idText: function () {
         const clue = this.clue;
