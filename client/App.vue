@@ -629,8 +629,7 @@ export default Vue.extend({
             eno += confuz.decompressURL(enoState);
         }
         this.crosswordSource = eno;
-        this.renderCrossword();
-        this.scrambleClicked();
+        this.sourceUpdated();
     } else if (puz) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
         this.sourceUpdated();
