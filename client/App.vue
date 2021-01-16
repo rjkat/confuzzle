@@ -7,8 +7,8 @@
         @stay-offline-clicked='goOffline()'
         @reconnect-clicked='reconnectClicked($event)'>
     </cfz-disconnected-modal>
-    <cfz-toolbar
-        id="app-toolbar"
+    <cfz-header-toolbar
+        id="header-toolbar"
         ref="toolbar"
         v-if="!state.joining"
         :metadata="crossword.meta"
@@ -31,7 +31,7 @@
         @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
     >
-    </cfz-toolbar>
+    </cfz-header-toolbar>
    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
          @dragenter="dragEnterHandler"
@@ -81,22 +81,30 @@
             </template>
             <template v-else>
                 <div id="clue-container" :data-portrait="isPortrait" :data-show-grid="showGrid">
+                    <cfz-control-toolbar
+                     v-on="$listeners"
+                     id="control-toolbar"
+                     :showEdit="!state.colluding"
+                     :showDelete="false"
+                     :showTooltipToggle="!isPortrait && showGrid"
+                     @toggles-changed="togglesChanged($event)"
+                     @check-word-clicked="checkWordClicked(false)"
+                     @check-all-clicked="checkWordClicked(true)"
+                     @reveal-word-clicked="revealWordClicked(false)"
+                     @reveal-all-clicked="revealWordClicked(true)"
+                     @edit-source-clicked="editSourceClicked()"
+                     @clear-all-clicked="clearAllClicked()"
+                     v-responsive.class
+                     >
+                    </cfz-control-toolbar>
                     <cfz-crossword-clues id="clues" ref="clues"
                         :data-portrait="isPortrait"
                         :data-show-grid="showGrid"
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
-                        :showDelete="false"
-                        :showEdit="!state.colluding"
-                        :showTooltipToggle="!isPortrait && showGrid"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
-                        @toggles-changed="togglesChanged($event)"
-                        @check-answer-clicked="checkAnswerClicked()"
-                        @edit-source-clicked="editSourceClicked()"
-                        @reveal-answer-clicked="revealAnswerClicked()"
-                        @delete-all-clicked="deleteAllClicked()"
                         v-responsive.class
                         >
                     </cfz-crossword-clues>
@@ -243,7 +251,7 @@ body {
     flex-direction: column;
 }
 
-#app-toolbar {
+#header-toolbar {
     flex: none;
     margin-right: $displayPadding;
 }
@@ -258,6 +266,11 @@ body {
     @media print {
         display: block !important;
     }
+}
+
+#control-toolbar {
+    position: sticky;
+    top: 0;
 }
 
 #editor {
@@ -306,8 +319,8 @@ body {
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
+    overflow-y: hidden;
     max-height: calc(100% - #{$displayPadding});
-    overflow-y: scroll;
     margin-right: $displayPadding;
     @media screen {
         border: 1px solid #000;
@@ -321,6 +334,13 @@ body {
     }
     height: 100%;
     background-color: #fff;
+}
+
+#clues {
+    padding-top: $displayPadding;
+    padding-bottom: $displayPadding;
+    height: 100%;
+    overflow-y: scroll;
 }
 </style>
 
@@ -340,7 +360,8 @@ Vue.use(responsive);
 import CfzCrosswordClues from './components/CfzCrosswordClues.vue'
 import CfzCrosswordGrid from './components/CfzCrosswordGrid.vue'
 import CfzCrosswordEditor from './components/CfzCrosswordEditor.vue'
-import CfzToolbar from './components/CfzToolbar.vue'
+import CfzHeaderToolbar from './components/CfzHeaderToolbar.vue'
+import CfzControlToolbar from './components/CfzControlToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 
 const parser = require('../@confuzzle/confuz-parser/parser');
@@ -463,7 +484,8 @@ export default Vue.extend({
     CfzCrosswordClues,
     CfzCrosswordGrid,
     CfzCrosswordEditor,
-    CfzToolbar,
+    CfzHeaderToolbar,
+    CfzControlToolbar,
     CfzDisconnectedModal
   },
   props: {
@@ -871,7 +893,7 @@ export default Vue.extend({
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
     },
-    deleteAllClicked() {
+    clearAllClicked() {
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
@@ -881,13 +903,12 @@ export default Vue.extend({
         }
         this.renderCrossword();
     },
-    checkAnswerClicked() {
-        if (!this.selectedClue)
+    checkClue(clue) {
+        if (!clue)
             return;
 
         var correct = true;
 
-        var clue = this.selectedClue;
         if (clue.primary) {
             clue = clue.primary;
         }
@@ -906,11 +927,9 @@ export default Vue.extend({
         startClue.showCorrect = correct;
         startClue.showIncorrect = !correct;
     },
-    revealAnswerClicked() {
-        if (!this.selectedClue)
+    revealClue(clue) {
+        if (!clue)
             return;
-
-        var clue = this.selectedClue;
         if (clue.primary) {
             clue = clue.primary;
         }
@@ -930,6 +949,22 @@ export default Vue.extend({
             clue.showIncorrect = false;
             clue.showCorrect = false;
             clue = clue.nextRef;
+        }
+    },
+    checkWordClicked(checkAll) {
+        if (!checkAll) {
+           this.checkClue(this.selectedClue);
+        } else {
+            for (let [clueid, clue] of Object.entries(this.crossword.clues))
+               this.checkClue(clue);
+        }
+    },
+    revealWordClicked(revealAll) {
+        if (!revealAll) {
+           this.revealClue(this.selectedClue);
+        } else {
+            for (let [clueid, clue] of Object.entries(this.crossword.clues))
+               this.revealClue(clue);
         }
     },
     clearAllHighlighted() {

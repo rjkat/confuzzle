@@ -1,57 +1,8 @@
 <template>
 <div>
-    <ui-toolbar class="cfz-clue-list-toolbar hidden-print">
-        <ui-checkbox-group class="toggle-checkboxes" :options="showTooltipToggle ? gridAndTooltips : gridOnly" v-model="toggles" @change="togglesChanged($event)" slot="icon"></ui-checkbox-group>
-            
-        <div slot="brand">
-            <ui-button
-                icon="playlist_add_check"
-                type="secondary"
-                @click="$emit('check-answer-clicked', $event)"
-            >
-            Check
-            </ui-button>
-            <ui-button
-                icon="visibility"
-                type="secondary"
-                @click="$emit('reveal-answer-clicked', $event)"
-            >
-            Reveal
-            </ui-button>
-            <ui-button
-                icon="edit"
-                type="secondary"
-                @click="$emit('edit-source-clicked', $event)"
-                v-responsive.lg.xl
-                v-if="showEdit"
-            >
-            Edit
-            </ui-button>
-            <ui-button
-                icon="delete"
-                type="secondary"
-                :color="deleting ? 'red' : 'default'"
-                @click="deleteClicked()"
-                v-if="showDelete"
-                v-responsive.lg.xl
-            >
-            {{deleteText}}
-            </ui-button>
-            <ui-button
-                icon="cancel"
-                type="secondary"
-                @click="cancelClicked()"
-                v-if="deleting"
-            >
-            Cancel
-            </ui-button>
-        </div>
-
-    </ui-toolbar>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
-
         <cfz-clue-list
             class="clue-list"
             ref="acrossList"
@@ -94,15 +45,6 @@
 
 #solvers {
     padding-bottom: $displayPadding;
-}
-
-.cfz-clue-list-toolbar {
-    position: sticky;
-    top: 0;
-    height: 2.25rem !important;
-    margin-bottom: $displayPadding;
-    background-color: #efefef;
-    z-index: 2;
 }
 
 .toggle-checkboxes {
@@ -163,9 +105,6 @@ export default Vue.extend({
         type: Number,
         default: 0
     },
-    showDelete: false,
-    showEdit: true,
-    showTooltipToggle: false
   },
   model: {
     prop: 'crossword'
@@ -182,22 +121,8 @@ export default Vue.extend({
             ]
         });
     },
-    deleteText() {
-        return this.deleting ? 'Confirm' : 'Delete all'
-    },
   },
   methods: {
-    cancelClicked() {
-        this.deleting = false;
-    },
-    deleteClicked() {
-        if (this.deleting) {
-            this.$emit('delete-all-clicked');
-            this.deleting = false;
-        } else {
-            this.deleting = true;
-        }
-    },
     clueDeselected(clue) {
         const next = clue.nextRef;
         if (!next) {
@@ -206,22 +131,10 @@ export default Vue.extend({
         const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
         nextList.selectClue(next);
     },
-    togglesChanged() {
-        // TODO: why doesn't toggling work properly
-        if (this.toggles.length == 0) {
-            this.toggles.push('tooltips');
-        }
-        this.$emit('toggles-changed', JSON.parse(JSON.stringify(this.toggles)));
-    }
   },
   data() {
     return {
-      gridOnly: ['grid'],
-      gridAndTooltips: ['grid', 'tooltips'],
-      toggles: ['grid', 'tooltips'],
-      lastTooltipVal: true,
       bundler: "Parcel",
-      deleting: false
     };
   }
 });

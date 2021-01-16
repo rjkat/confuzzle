@@ -5,7 +5,7 @@
         <form action="/syntax" target="_blank" slot="icon">
           <ui-button
                   icon="help"
-                  type="secondary"
+                  type="primary"
               >
               Syntax guide
           </ui-button>
@@ -13,7 +13,7 @@
         <div slot="brand">
           <ui-button
                 icon="lock"
-                type="secondary"
+                type="primary"
                 @click="$emit('scramble-clicked', $event)"
                 v-if="!scrambled"
             >
@@ -21,7 +21,7 @@
           </ui-button>
           <ui-button
                 icon="lock_open"
-                type="secondary"
+                type="primary"
                 @click="$emit('unscramble-clicked', $event)"
                 v-if="scrambled"
             >
@@ -29,7 +29,7 @@
           </ui-button>
           <ui-button
                 icon="visibility"
-                type="secondary"
+                type="primary"
                 @click="$emit('preview-clicked', $event)"
             >
             Preview
