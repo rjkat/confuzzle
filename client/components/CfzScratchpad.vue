@@ -21,11 +21,13 @@
     </div>
     <div class="answer-widget" ref="answer">
       <div class="answer-cells">
-            <div v-for="(letter, i) in droppedLetters[clue.id]" :key="letter.id" :class="'answer-slot letter-dropzone' + (letter.char ? ' draggable-dropzone--occupied' : '')" :data-cell-offset="letter.offset" :data-solver-mask="solverMask">
+        <div v-for="(letter, i) in droppedLetters[clue.id]" :key="letter.id" >
+            <div :class="'answer-slot letter-dropzone' + (letter.char ? ' draggable-dropzone--occupied' : '')" :data-cell-offset="letter.offset" :data-solver-mask="solverMask" :style="separator(clue.cells[letter.offset]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[letter.offset])">
               <div class="answer-slot-contents" :data-cell-contents="clue.cells[letter.offset].contents">
                 <div :class="letter.char ? 'letter-tile' : 'dummy-tile'" :data-solver-mask="solverMask" :data-letter-id="letter.id" ref="droppedTiles">{{letter.char}}</div>
               </div>
             </div>
+        </div>
       </div>
     </div>
     <div class="decrypt-button-container">
@@ -65,7 +67,6 @@
     }
     .decrypt-button-container {
       width: 100%;
-      padding-top: $displayPadding;
       text-align: center;
     }
     .decrypt-button {
@@ -129,7 +130,7 @@
         .answer-slot#{$sel} {
           border-color: $color;
         }
-        .crossword-separator#{$sel} {
+        .answer-slot#{$sel}:after {
           color: $color;
         }
     }
@@ -152,7 +153,6 @@
       margin-top: $displayPadding;
       margin-bottom: $displayPadding;
       font-size: $gridFontSize;
-      min-height: calc(#{$gridCellSize} + 16px);
       .letter-length-indicator {
           position: absolute;
           bottom: 4px;
@@ -165,6 +165,7 @@
     .letter-container {
       width: 100%;
       height: 100%;
+      min-height: calc(#{$gridCellSize} + 20px);
       overflow: auto;
       display: flex;
       flex-basis: auto;
@@ -199,6 +200,17 @@
       max-width: $gridCellSize;
       height: $gridCellSize;
       z-index: 1;
+      &[data-separator]:after {
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding-left: 4px;
+        margin-left: $gridCellSize;
+        height: $gridCellSize;
+        line-height: $gridCellSize;
+        vertical-align: middle;
+        content: attr(data-separator);
+      }
     }
     .answer-slot-contents {
       width: 100%;
@@ -215,8 +227,8 @@
       }
     }
     .crossword-separator {
-        font-family: $answerFontFamily;
-        margin-right: 4px;
+      font-family: $answerFontFamily;
+      margin-right: 4px;
     }
 </style>
 
@@ -346,7 +358,7 @@ export default Vue.extend({
     },
     letterReturned(event) {
       // event.dropzone.classList.remove('draggable-dropzone--occupied');
-      console.log('returned');
+      // console.log('returned');
       // console.log(event);
     },
     letterGrabbed(event) {
@@ -382,7 +394,7 @@ export default Vue.extend({
       }
       // from letters
       if (this.fromLetters) {
-          console.log('drag from letters ' + this.letterId);
+          // console.log('drag from letters ' + this.letterId);
           if (toAnswer) {
             const addAt = parseInt(dropzone.dataset.cellOffset);
             this.droppedLetters[this.clue.id][addAt].char = letter.char;
@@ -392,7 +404,7 @@ export default Vue.extend({
       // from answer
       } else {
         const toRemove = this.fromOffset;
-        console.log('drag from answer ' + toRemove);
+        // console.log('drag from answer ' + toRemove);
         const l = this.droppedLetters[this.clue.id][toRemove];
         this.droppedLetters[this.clue.id][toRemove] = {
           offset: toRemove
@@ -434,7 +446,7 @@ export default Vue.extend({
             return null;
         }
         if (sep == ',') {
-            sep = "&nbsp;";
+            sep = " ";
         }
         return sep;
     }
