@@ -1,5 +1,6 @@
 <template>
-<div class="cfz-scratchpad-container" ref="container">
+<div>
+  <div class="cfz-scratchpad-container" ref="container">
     <div class="decrypt-container-label">
       <span class="clue-id">{{clue.idText}}{{clue.isAcross ? 'A' : 'D'}}</span>
       {{clue.sanitizedText}}<span class="clue-length">{{clue.lengthText}}</span>
@@ -34,6 +35,7 @@
       <ui-button raised color="red" class="decrypt-button" :disabled="disableClear" icon="delete" @click="clearClicked()">Clear</ui-button>
       <ui-button raised color="primary" class="decrypt-button" :disabled="disableSubmit" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
+  </div>
 </div>
 </template>
 
@@ -48,9 +50,13 @@
     }
     .cfz-scratchpad-container {
         overflow: auto;
+        display: flex;
+        min-height: 100%;
+        max-height: 100%;
         flex-direction: column;
         font-family: $answerFontFamily;
         text-transform: uppercase;
+        -webkit-user-select: none;
         padding: $displayPadding;
         .cfz-scratchpad-header {
             font-family: $clueFontFamily;
@@ -148,9 +154,9 @@
       padding-bottom: 8px;
     }
     .letter-widget {
+      flex: 1;
       position: relative;
       border: 1px dashed #ddd;
-      flex-shrink: 1;
       border-radius: 8px;
       margin-bottom: 8px;
       font-size: 26px;
@@ -167,7 +173,6 @@
       width: 100%;
       height: 100%;
       min-height: calc(#{$gridCellSize} + 20px);
-      overflow: auto;
       display: flex;
       flex-basis: auto;
       flex-wrap: wrap;
