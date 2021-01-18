@@ -6,15 +6,15 @@
     </div>
     <div class="word-container" ref="words">
       <template v-for="(word, i) in words">
-        <ui-button raised class="word-tile" @click="explodeWord(word)" :data-word-length="word.length"><span class="word-tile-text">{{word}}</span></ui-button>
+        <ui-button raised class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
       </template>
     </div>
     <div class="letter-widget" >
       <div class="letter-container" ref="letterContainer">
-          <div v-for="letter in letters[clue.id]" :key="letter.id" :class="'working-slot letter-dropzone' + (letter ? ' draggable-dropzone--occupied' : '')">
-            <div class="letter-tile" :data-letter-id="letter.id.toString()" :data-solver-mask="solverMask">
-              {{letter.char}}
-            </div>
+          <div v-for="letter in letters[clue.id]" :key="letter.id" :class="'working-slot letter-dropzone' + (letter ? ' draggable-dropzone--occupied' : '')" :data-solver-mask="solverMask">
+              <div class="letter-tile" :data-letter-id="letter.id.toString()" :data-solver-mask="solverMask">
+                {{letter.char}}
+              </div>
           </div>
           <div class="letter-length-indicator" ref="lengthIndicator"></div>
       </div>
@@ -47,7 +47,7 @@
       visibility: hidden;
     }
     .cfz-scratchpad-container {
-        overflow-y: scroll;
+        overflow: auto;
         flex-direction: column;
         font-family: $answerFontFamily;
         text-transform: uppercase;
@@ -76,15 +76,15 @@
       margin-right: 8px;
       margin-top: 8px;
       min-width: 0 !important;
-      &:before {
-        position: absolute;
-        bottom: 4px;
-        right: 4px;
-        color: #888;
-        content: attr(data-word-length);
-        font-family: $answerFontFamily;
-        font-size: 12px;
-      }
+      padding: 4px !important;
+      height: 20px;
+    }
+
+    .word-tile-length {
+      margin-left: 4px;
+      color: #888;
+      font-family: $answerFontFamily;
+      font-size: 12px;
     }
     
     .word-tile-text {
@@ -136,6 +136,7 @@
     }
     .decrypt-container-label {
       font-family: $clueFontFamily;
+      font-size: 14px;
       text-transform: none;
       width: 100%;
     }
@@ -143,16 +144,16 @@
       flex: none;
       display: flex;
       flex-wrap: wrap;
-      padding: 8px;
+      padding-top: 4px;
+      padding-bottom: 8px;
     }
     .letter-widget {
       position: relative;
       border: 1px dashed #ddd;
       flex-shrink: 1;
       border-radius: 8px;
-      margin-top: $displayPadding;
-      margin-bottom: $displayPadding;
-      font-size: $gridFontSize;
+      margin-bottom: 8px;
+      font-size: 26px;
       .letter-length-indicator {
           position: absolute;
           bottom: 4px;
@@ -178,14 +179,12 @@
     }
     .answer-widget {
       margin-top: auto;
-      margin-bottom: $displayPadding;
-      font-size: $gridFontSize;
+      font-size: 20px;
       width: 100%;
     }
     .answer-cells {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       min-height: $gridCellSize;
     }
     .answer-slot {
