@@ -61,6 +61,7 @@
                 :gridSize="gridSize"
                 :isPortrait="isPortrait"
                 :showTooltips="showTooltips"
+                :showScratchpad="showScratchpad"
                 @fill-cell="sendFillCell($event)"
                 v-if="showGrid">
             </cfz-crossword-grid>
@@ -86,14 +87,20 @@
                      id="control-toolbar"
                      :showEdit="!state.colluding"
                      :showDelete="false"
-                     :showTooltipToggle="!isPortrait && showGrid"
-                     @toggles-changed="togglesChanged($event)"
+                     :showScratchpad="showScratchpad"
+                     :showScratchpadEnabled="selectedClue"
+                     :showTooltipToggle="!isPortrait && showGrid && !showScratchpad"
+                     :showTooltips="showTooltips"
+                     :showGrid="showGrid"
+                     @show-grid-changed="showGridChanged($event)"
+                     @show-tooltips-changed="showTooltipsChanged($event)"
                      @check-word-clicked="checkWordClicked(false)"
                      @check-all-clicked="checkWordClicked(true)"
                      @reveal-word-clicked="revealWordClicked(false)"
                      @reveal-all-clicked="revealWordClicked(true)"
                      @edit-source-clicked="editSourceClicked()"
                      @clear-all-clicked="clearAllClicked()"
+                     @show-scratchpad-changed="showScratchpadChanged($event)"
                      v-responsive.class
                      >
                     </cfz-control-toolbar>
@@ -135,8 +142,6 @@ body {
     background-color: rgb(240, 248, 255);
     height: 100%;
     width: 100%;
-    position: fixed;
-    top: 0px;
     margin: 8px;
 /*  
     @media print {
@@ -236,15 +241,8 @@ body {
     font-family: $clueFontFamily;
 }
 
-#app {
-    position: fixed;
-    top: $displayPadding;
-    bottom: 0;
-    width: 100%;
-}
-
 #app-container {
-    overflow: auto;
+    position: fixed;
     width: 100%;
     height: 100%;
     display: flex;
@@ -391,10 +389,17 @@ function parseAndBuild(input, compiling) {
       }
 
       clue.refs = [];
-      if (clue.primaryId && clue.primaryId != clueid)
+      if (clue.primaryId && clue.primaryId != clueid) {
         clue.primary = cw.clues[clue.primaryId];
+      }
 
-      var nextRefId = '';
+      clue.idText = clue.numbering.clueText;
+      if (!clue.verbatim && clue.refIds.length > 0 && clue.primaryId == clueid)
+      {
+         clue.idText = clue.refIds.join(', ');
+      }
+
+      let nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {
         if (clue.refIds[i] != clueid) {
           clue.refs.push(cw.clues[clue.refIds[i]]);
@@ -682,6 +687,7 @@ export default Vue.extend({
       socketid: '',
       showGrid: true,
       showTooltips: true,
+      showScratchpad: false,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
       iOSSafari: false,
       iOSPrompt: false,
@@ -724,9 +730,16 @@ export default Vue.extend({
             });
         }
     },
-    togglesChanged(toggles) {
-        this.showGrid = toggles.includes('grid');
-        this.showTooltips = toggles.includes('tooltips');
+    showScratchpadChanged(show) {
+        this.showScratchpad = show;
+    },
+    showGridChanged(show) {
+      console.log("showGridChanged: " + show);
+        this.showGrid = show;
+    },
+    showTooltipsChanged(show) {
+      console.log("showTooltips: " + show);
+        this.showTooltips = show;
     },
     // https://stackoverflow.com/a/11744120
     handleResize() {
@@ -1126,6 +1139,9 @@ export default Vue.extend({
     },
     dropHandler(event) {
         if (!event.dataTransfer.files)
+            return;
+
+        if (!event.dataTransfer.files[0].name)
             return;
 
         if (!this.state.colluding) {

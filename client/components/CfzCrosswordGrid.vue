@@ -6,18 +6,21 @@
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
   <div class="crossword-grid-container" :style="gridContainerStyle">
-    <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
-        <tr v-for="(row, r) in crossword.grid.cells">
-            <cfz-cell v-for="cell in row" ref="inputCells"
-                      :cell="crossword.grid.cells[cell.row][cell.col]"
-                      :solverid="solverid"
-                      @cell-clicked="cellClicked($event, cell)"
-                      @keydown="handleKeydown($event, cell)"
-                      @input="handleInput($event, cell)"
-                      @mousedown.prevent>
-            </cfz-cell>
-        </tr>
-    </table>
+      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" v-model="selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid">
+      </cfz-scratchpad>
+      <table v-else class="crossword-grid" cell-spacing="0" :style="gridStyle">
+          <tr v-for="(row, r) in crossword.grid.cells">
+              <cfz-cell v-for="cell in row" ref="inputCells"
+                        :cell="crossword.grid.cells[cell.row][cell.col]"
+                        :solverid="solverid"
+                        @cell-clicked="cellClicked($event, cell)"
+                        @keydown="handleKeydown($event, cell)"
+                        @input="handleInput($event, cell)"
+                        @mousedown.prevent>
+              </cfz-cell>
+          </tr>
+      </table>
+    </template>
   </div>
   <div v-if="!isPortrait" :style="gridControlStyle">
     <div class="copyright-text">{{copyrightText}}</div>
@@ -26,6 +29,11 @@
 </template>
 
 <style lang="scss">
+.crossword-scratchpad {
+  height: calc(100% - #{$displayPadding});
+  width: calc(100% - #{$displayPadding});
+  flex: none;
+}
 .crossword-grid {
   flex: none;
   text-transform: uppercase;
@@ -43,16 +51,19 @@
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
 import CfzCell from './CfzCell.vue'
+import CfzScratchpad from './CfzScratchpad.vue'
 
 export default Vue.extend({
   components: {
-    CfzCell
+    CfzCell,
+    CfzScratchpad
   },
   model: {
     prop: 'crossword'
   },
   props: {
     crossword: Object,
+    showScratchpad: Boolean,
     gridSize: Number,
     isPortrait: {
       type: Boolean,
@@ -168,6 +179,20 @@ export default Vue.extend({
         const inputCell = this.getInputCell(cell);
         if (inputCell)
           inputCell.select();
+    },
+    submitDecrypt(answer) {
+      let i = 0;
+      const clue = answer.clue;
+      while (i < answer.text.length && i < clue.cells.length) {
+        const cell = clue.cells[i];
+        if (answer.text[i]) {
+          cell.contents = answer.text[i];
+          this.$emit('fill-cell', {clueid: clue.id, offset: i, value: cell.contents});
+        }
+        i++;
+      }
+      clue.showCorrect = false;
+      clue.showIncorrect = false;
     },
     fillCell(cell) {
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;

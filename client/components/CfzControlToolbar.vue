@@ -1,24 +1,44 @@
 <template>
 <ui-toolbar class="cfz-control-toolbar hidden-print">
-    <ui-checkbox-group class="toggle-checkboxes" :options="showTooltipToggle ? gridAndTooltips : gridOnly" v-model="toggles" @change="togglesChanged($event)" slot="icon"></ui-checkbox-group>
-        
+    <div slot="icon"></div>
     <div slot="brand">
         <ui-button
             icon="star"
             type="primary"
             ref="checkButton"
             has-dropdown
+            dropdownPosition="bottom-start"
+            :constrainDropdownToScrollParent="false"
+        >Hints
+        <ui-menu
+            contain-focus
+            has-icons
+            class="cfz-menu"
+            slot="dropdown"
+            :options="cheatOptions"
+            @select="selectMenuOption($event)"
+            @close="$refs.checkButton.closeDropdown()"
+            >
+        </ui-menu>
+        </ui-button>
+        <ui-button
+            icon="widgets"
+            type="primary"
+            ref="checkButton"
+            has-dropdown
+            dropdownPosition="bottom-start"
+            :constrainDropdownToScrollParent="false"
         >
-        Cheat
+            Widgets
             <ui-menu
                 contain-focus
                 has-icons
                 class="cfz-menu"
-                position="bottom-start"
                 slot="dropdown"
-                :options="cheatOptions"
-                @select="selectCheatMenuOption($event)"
-                @close="$refs.checkButton.closeDropdown()">
+                :options="viewOptions"
+                @select="selectMenuOption($event)"
+                @close="$refs.checkButton.closeDropdown()"
+                >
             </ui-menu>
         </ui-button>
         <ui-button
@@ -60,11 +80,6 @@
     overflow-y: hidden;
     z-index: 2;
 }
-
-.tippy-popper {
-    margin-top: $displayPadding;
-    margin-left: -8px;
-}
 </style>
 
 <script>
@@ -74,26 +89,76 @@ export default Vue.extend({
   props: {
     showDelete: false,
     showEdit: true,
-    showTooltipToggle: false
+    showGrid: true,
+    showTooltips: true,
+    showTooltipToggle: false,
+    showScratchpad: false,
+    showScratchpadEnabled: false
   },
   computed: {
     deleteText() {
         return this.deleting ? 'Confirm' : 'Clear all'
     },
     cheatOptions() {
-        
+        return [
+            this.opt.CHECK_WORD,
+            this.opt.CHECK_ALL,
+            this.opt.REVEAL_WORD,
+            this.opt.REVEAL_ALL
+        ];
+    },
+    viewOptions() {
+        var options = [];
+        if (this.showScratchpad || !this.showGrid) {
+            options.push(this.opt.SHOW_GRID);
+        }
+        if (!this.showScratchpadEnabled) {
+            options.push(this.opt.SHOW_DECRYPT_DISABLED);
+        } else {
+            if (!this.showScratchpad) {
+                options.push(this.opt.SHOW_DECRYPT);
+            }
+        }
+        if (this.showGrid) {
+            options.push(this.opt.SHOW_CLUES_ONLY);
+        }
+        if (this.showTooltipToggle) {
+            if (this.showTooltips) {
+                options.push(this.opt.SHOW_NO_TOOLTIPS);
+            } else {
+                options.push(this.opt.SHOW_TOOLTIPS);
+            }
+        }
+        return options;
     }
   },
   methods: {
-    selectCheatMenuOption(option) {
-        if (option.label == 'Check word') {
+    
+    selectMenuOption(option) {
+        if (option.label == this.opt.CHECK_WORD.label) {
             this.$emit('check-word-clicked');
-        } else if (option.label == 'Check all') {
+        } else if (option.label == this.opt.CHECK_ALL.label) {
             this.$emit('check-all-clicked');
-        } else if (option.label == 'Reveal word') {
+        } else if (option.label == this.opt.REVEAL_WORD.label) {
             this.$emit('reveal-word-clicked');
-        } else if (option.label == 'Reveal all') {
+        } else if (option.label == this.opt.REVEAL_ALL.label) {
             this.$emit('reveal-all-clicked');
+        } else if (option.label == this.opt.SHOW_DECRYPT.label) {
+            if (!this.showGrid) {
+                this.$emit('show-grid-changed', true);
+            }
+            this.$emit('show-scratchpad-changed', true);
+        } else if (option.label == this.opt.SHOW_GRID.label) {
+            if (!this.showGrid) {
+                this.$emit('show-grid-changed', true);
+            }
+            this.$emit('show-scratchpad-changed', false);
+        } else if (option.label == this.opt.SHOW_NO_TOOLTIPS.label) {
+            this.$emit('show-tooltips-changed', false);
+        } else if (option.label == this.opt.SHOW_TOOLTIPS.label) {
+            this.$emit('show-tooltips-changed', true);
+        } else if (option.label == this.opt.SHOW_CLUES_ONLY.label) {
+            this.$emit('show-grid-changed', false);
         }
     },
     cancelClicked() {
@@ -123,24 +188,50 @@ export default Vue.extend({
       lastTooltipVal: true,
       bundler: "Parcel",
       deleting: false,
-      cheatOptions: [
-        {
+      opt: {
+        CHECK_WORD: {
             label: 'Check word',
             icon: 'playlist_add_check'
         },
-        {
+        CHECK_ALL: {
             label: 'Check all',
             icon: 'playlist_add_check'
         },
-        {
+        REVEAL_WORD: {
             label: 'Reveal word',
             icon: 'visibility'
         },
-        // {
-        //     label: 'Reveal all',
-        //     icon: 'visibility'
-        // }
-      ]
+        REVEAL_ALL: {
+            label: 'Reveal all',
+            icon: 'visibility'
+        },
+        SHOW_GRID: {
+            label: 'Grid',
+            icon: 'grid_on'
+        },
+        SHOW_DECRYPT: {
+            label: 'Breakdown',
+            icon: 'gesture'
+        },
+        SHOW_TOOLTIPS: {
+            label: 'Tooltips',
+            icon: 'speaker_notes'
+        },
+        SHOW_NO_TOOLTIPS: {
+            label: 'No tooltips',
+            icon: 'speaker_notes_off'
+        },
+        SHOW_DECRYPT_DISABLED: {
+            label: 'Breakdown',
+            icon: 'gesture',
+            disabled: true
+        },
+        SHOW_CLUES_ONLY: {
+            label: 'Clues',
+            icon: 'list'
+        },
+      }
+      
     };
   }
 });

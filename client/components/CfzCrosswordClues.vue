@@ -64,7 +64,7 @@
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
-
+    padding-top: $displayPadding;
     .clue-list {
         flex: 50%;
         margin: 0 auto;

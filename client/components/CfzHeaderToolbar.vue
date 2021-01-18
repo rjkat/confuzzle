@@ -10,7 +10,6 @@
     <div slot="actions" class="hidden-print">
         <ui-icon-button
             color="white"
-            has-dropdown
             icon="print"
             size="large"
             @click="printClicked()"
@@ -20,7 +19,6 @@
         <ui-icon-button
             :color="state.colluding ? 'green' : 'white'"
             type="secondary"
-            has-dropdown
             :icon="state.colluding ? 'group_add' : 'share'"
             size="large"
             @click="openModal('shareModal')"
@@ -44,19 +42,9 @@
             has-dropdown
             icon="more_vert"
             ref="menuDropdown"
+            dropdownPosition="left bottom"
             size="large"
         >
-            <ui-menu
-                contain-focus
-                has-icons
-                class="cfz-menu"
-                slot="dropdown"
-                position="bottom-end"
-                :options="menuOptions"
-                @select="selectMenuOption($event)"
-                @close="$refs.menuDropdown.closeDropdown()"
-                v-responsive.md.lg.xl
-            ></ui-menu>
             <ui-menu
                 contain-focus
                 has-icons
@@ -68,8 +56,17 @@
                 @close="$refs.menuDropdown.closeDropdown()"
                 v-responsive.xs.sm
             ></ui-menu>
+            <ui-menu
+                contain-focus
+                has-icons
+                class="cfz-menu"
+                slot="dropdown"
+                :options="menuOptions"
+                @select="selectMenuOption($event)"
+                @close="$refs.menuDropdown.closeDropdown()"
+                v-responsive.md.lg.xl
+            ></ui-menu>
         </ui-icon-button>
-
         <ui-modal ref="aboutModal" title="About">
             <div style="text-align: center;">
                 <p class="about-text">
@@ -131,9 +128,6 @@
     margin-right: .5em;
 }
 
-.tippy-popper {
-    margin-right: #{1.25 * $displayPadding};
-}
 </style>
 
 <script>
