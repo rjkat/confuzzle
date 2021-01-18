@@ -24,7 +24,7 @@
         <ui-button
             icon="widgets"
             type="primary"
-            ref="checkButton"
+            ref="widgetButton"
             has-dropdown
             dropdownPosition="bottom-start"
             :constrainDropdownToScrollParent="false"
@@ -37,7 +37,7 @@
                 slot="dropdown"
                 :options="viewOptions"
                 @select="selectMenuOption($event)"
-                @close="$refs.checkButton.closeDropdown()"
+                @close="$refs.widgetButton.closeDropdown()"
                 >
             </ui-menu>
         </ui-button>
