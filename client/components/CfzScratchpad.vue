@@ -29,7 +29,7 @@
     <div class="answer-widget" ref="answer">
       <div class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(clue.cells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[index])"
-          @drop="answerTileDropped($event, index)">
+          @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
             <div class="answer-slot-contents" :data-cell-contents="clue.cells[index].contents">
                  <drag :class="slot.letter ? 'letter-tile' : 'dummy-tile'" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
             </div>
