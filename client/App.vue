@@ -34,7 +34,6 @@
     </cfz-header-toolbar>
    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
-         @dragstart="dragStartHandler"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
@@ -1115,70 +1114,45 @@ export default Vue.extend({
         this.createSocket();
         this.joinClicked(this.solverName);
     },
-    dragStartHandler(event) {
-      if (this.showScratchpad) {
-        const info = event.srcElement.dataset;
-        event.dataTransfer.effectAllowed = 'copyMove';
-        event.dataTransfer.dropEffect = 'move';
-        event.dataTransfer.setData('text/plain', JSON.stringify({
-          fromAnswer: info.fromAnswer,
-          letter: info.letter,
-          offset: info.slotOffset
-        }));
-      }
-    },
     dragEnterHandler(event) {
         this.dragCount++;
-        if (this.showScratchpad) {
-          event.dataTransfer.effectAllowed = 'copyMove';
-          event.dataTransfer.dropEffect = 'move';
-        } else if (!this.state.colluding) {
+        if (!this.state.colluding) {
           this.$refs.dropArea.dataset.dropVisible = "";
         }
         event.preventDefault();
         event.stopPropagation();
     },
     dragOverHandler(event) {
-        event.dataTransfer.effectAllowed = 'copyMove';
-        event.dataTransfer.dropEffect = 'move';
         event.preventDefault();
         event.stopPropagation();
     },
     dragLeaveHandler(event) {
         this.dragCount--;
         if (this.dragCount <= 0) {
-          if (!this.showScratchpad) {
-            this.$refs.dropArea.removeAttribute('data-drop-visible');
-          }
+          this.$refs.dropArea.removeAttribute('data-drop-visible');
           this.dragCount = 0;
         }
         event.preventDefault();
         event.stopPropagation();
     },
     dropHandler(event) {
-      if (this.showScratchpad) {
-        const info = JSON.parse(event.dataTransfer.getData('text'));
-        this.$refs.grid.dropTile(info.fromAnswer, info.offset, info.letter, event.target);
-        document.body.style.cursor = '';
-      } else {
-        if (event.dataTransfer.files.length == 0)
-            return;
+      if (event.dataTransfer.files.length == 0)
+        return;
 
-        if (!event.dataTransfer.files[0].name)
-            return;
+      if (!event.dataTransfer.files[0].name)
+        return;
 
-        if (!this.state.colluding) {
-            const file = event.dataTransfer.files[0];
-            const self = this;
-            if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
-                file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
-            } else if (file.name.endsWith('.🧩')) {
-                file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
-            } else if (file.name.endsWith('.puz')) {
-                file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
-            }
-            this.$refs.dropArea.removeAttribute('data-drop-visible');
+      if (!this.state.colluding) {
+        const file = event.dataTransfer.files[0];
+        const self = this;
+        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
+            file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
+        } else if (file.name.endsWith('.🧩')) {
+            file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
+        } else if (file.name.endsWith('.puz')) {
+            file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
         }
+        this.$refs.dropArea.removeAttribute('data-drop-visible');
       }
       this.dragCount = 0;
       event.preventDefault();

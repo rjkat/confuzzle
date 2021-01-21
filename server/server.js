@@ -64,7 +64,9 @@ app.use(robots({UserAgent: '*', Disallow: '/'}))
 
 if (env == 'dev') {
   const Bundler = require('parcel-bundler');
-  const bundler = new Bundler('client/index.html');
+  const bundler = new Bundler('client/index.html', {
+       sourceMaps: false
+  });
   app.use(bundler.middleware());
 } else {
   app.use(compression());
