@@ -12,28 +12,25 @@
     </div>
     <div class="letter-widget" >
       <div class="letter-container" ref="letterContainer">
-          <div v-for="letter in letters[clue.id]" :key="letter.id" :class="'working-slot letter-dropzone' + (letter ? ' draggable-dropzone--occupied' : '')" :data-solver-mask="solverMask">
-              <div class="letter-tile" :data-letter-id="letter.id.toString()" :data-solver-mask="solverMask">
-                {{letter.char}}
-              </div>
+          <div v-for="(slot, index) in clueWorkingSlots[clue.id]" :key="index" class="working-slot letter-dropzone" :data-solver-mask="solverMask" :data-slot-offset="index">
+              <div :class="slot ? 'letter-tile' : 'dummy-tile'" draggable data-from-answer="" :data-letter="slot" :data-slot-offset="index" :data-solver-mask="solverMask">{{slot}}</div>
           </div>
-          <div class="letter-length-indicator" ref="lengthIndicator"></div>
+          <div class="letter-length-indicator" ref="lengthIndicator">{{numWorkingLetters}}</div>
       </div>
     </div>
     <div class="answer-widget" ref="answer">
       <div class="answer-cells">
-        <div v-for="(letter, i) in droppedLetters[clue.id]" :key="letter.id" >
-            <div :class="'answer-slot letter-dropzone' + (letter.char ? ' draggable-dropzone--occupied' : '')" :data-cell-offset="letter.offset" :data-solver-mask="solverMask" :style="separator(clue.cells[letter.offset]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[letter.offset])">
-              <div class="answer-slot-contents" :data-cell-contents="clue.cells[letter.offset].contents">
-                <div :class="letter.char ? 'letter-tile' : 'dummy-tile'" :data-solver-mask="solverMask" :data-letter-id="letter.id" ref="droppedTiles">{{letter.char}}</div>
-              </div>
+          <div v-for="(slot, index) in clueAnswerSlots[clue.id]" :key="index" class="answer-slot" :data-slot-offset="index" :data-letter="slot" :data-solver-mask="solverMask" :style="separator(clue.cells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[index])">
+            <div class="answer-slot-contents letter-dropzone" :data-slot-offset="index" :data-letter="slot" :data-cell-contents="clue.cells[index].contents">
+                 <div :class="slot ? 'letter-tile' : 'dummy-tile'" draggable data-from-answer="true" :data-solver-mask="solverMask" :data-letter="slot" :data-slot-offset="index">{{slot}}</div>
             </div>
-        </div>
+          </div>
       </div>
     </div>
     <div class="decrypt-button-container">
-      <ui-button raised color="red" class="decrypt-button" :disabled="disableClear" icon="delete" @click="clearClicked()">Clear</ui-button>
-      <ui-button raised color="primary" class="decrypt-button" :disabled="disableSubmit" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
+      <ui-button raised color="red" class="decrypt-button" :disabled="!numWorkingLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
+      <ui-button raised class="decrypt-button" icon="shuffle" :disabled="!numWorkingLetters" @click="shuffleClicked()">Shuffle</ui-button>
+      <ui-button raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
   </div>
 </div>
@@ -42,12 +39,12 @@
 
 <style lang="scss">
 @import '../stylesheets/solvers';
-    .draggable-source--is-dragging {
+    /*.draggable-source--is-dragging {
       visibility: hidden;
     }
     .draggable--original {
       visibility: hidden;
-    }
+    }*/
     .cfz-scratchpad-container {
         overflow: auto;
         display: flex;
@@ -55,6 +52,7 @@
         max-height: 100%;
         flex-direction: column;
         font-family: $answerFontFamily;
+        font-size: 26px;
         text-transform: uppercase;
         -webkit-user-select: none;
         padding: $displayPadding;
@@ -72,6 +70,7 @@
         }
     }
     .decrypt-button-container {
+      display: flex;
       width: 100%;
       text-align: center;
     }
@@ -108,7 +107,7 @@
       border: 1px dashed #ddd;
     }
     .dummy-tile {
-      content: '';
+      visibility: hidden;
     }
     .letter-tile {
       border: $gridBorderWidth solid #000;
@@ -124,10 +123,7 @@
       line-height: $gridCellSize;
       text-align: center;
       vertical-align: middle;
-      -webkit-user-select: none; 
-      &:active {
-        cursor: grabbing;
-      }
+      /*-webkit-user-select: none; */
     }
     @include each-solver using ($color, $lightColor, $sel) {
         .letter-tile#{$sel} {
@@ -184,7 +180,7 @@
     }
     .answer-widget {
       margin-top: auto;
-      font-size: 20px;
+      font-size: 26px;
       width: 100%;
     }
     .answer-cells {
@@ -239,7 +235,6 @@
 <script>
 import Vue from "vue";
 import CfzClue from './CfzClue.vue'
-import { Plugins, Droppable } from '@shopify/draggable';
 
 export default Vue.extend({
   components: {
@@ -256,10 +251,8 @@ export default Vue.extend({
   },
   watch: {
     clue(newClue, oldClue) {
-      if (!this.droppedLetters[this.clue.id]) {
-        this.createDroppedLetters();
-      }
-      this.forceUpdateState();
+      if (!this.clueAnswerSlots[newClue.id])
+        this.createAnswerSlots();
     }
   },
   computed: {
@@ -269,6 +262,7 @@ export default Vue.extend({
       for (const w of words) {
         // https://stackoverflow.com/a/31779560
         let plain = w.replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g,'');
+        plain = plain.replace(/[0-9]/g, '');
         if (plain) {
            plainWords.push(plain);
         }
@@ -278,64 +272,73 @@ export default Vue.extend({
     solverMask: function () {
         return (1 << (this.solverid % 8));
     },
+    numWorkingLetters() {
+      if (!this.clue || !this.clueWorkingSlots[this.clue.id]) {
+        return 0;
+      }
+      let n = 0;
+      for (const slot of this.clueWorkingSlots[this.clue.id]) {
+        if (slot != '')
+          n++;
+      }
+      return n;
+    },
+    submitDisabled() {
+      if (!this.clue || !this.clueAnswerSlots[this.clue.id]) {
+        return true;
+      }
+      for (const slot of this.clueAnswerSlots[this.clue.id]) {
+        if (slot)
+          return false;
+      }
+      return true;
+    },
   },
   methods: {
-    forceUpdateState() {
-      this.$forceUpdate();
-      this.recreateDroppable();
-      this.disableClear = this.clearDisabled();
-      this.disableSubmit = this.submitDisabled();
-      this.updateLengthText();
-    },
-    createDroppedLetters() {
-      this.droppedLetters[this.clue.id] = [];
+    createAnswerSlots() {
+      this.$set(this.clueAnswerSlots, this.clue.id, []);
+      this.clueAnswerSlots[this.clue.id].splice(this.clue.cells.length);
       for (let i = 0; i < this.clue.cells.length; i++) {
-        this.droppedLetters[this.clue.id].push({
-          offset: i
-        });
+        this.$set(this.clueAnswerSlots[this.clue.id], i, '');
       }
     },
     clearClicked() {
-      document.querySelectorAll('.letter-tile').forEach(e => e.remove());
-      this.letters[this.clue.id] = [];
-      this.createDroppedLetters();
-      this.forceUpdateState();
+      this.$set(this.clueWorkingSlots, this.clue.id, []);
+      for (let i = 0; i < this.clueAnswerSlots[this.clue.id].length; i++) {
+        this.$set(this.clueAnswerSlots[this.clue.id], i, '');
+      }
     },
-    updateLengthText() {
-      if (!this.clue || !this.letters[this.clue.id]) {
-        return '';
+    moveLettersToStart() {
+      // move everything back to the start
+      const a = this.clueWorkingSlots[this.clue.id];
+      let i = 0;
+      for (let i = 0; i < a.length; i++) {
+        if (!a[i]) {
+          for (let j = i + 1; j < a.length; j++) {
+            if (a[j]) {
+              this.$set(a, i, a[j]);
+              this.$set(a, j, '');
+              break;
+            }
+          }
+        }
       }
-      let len = 0;
-      for (const l of this.letters[this.clue.id]) {
-        if (l.char != '')
-          len++;
-      }
-      this.$refs.lengthIndicator.innerText = len.toString();
     },
-    clearDisabled() {
-      if (!this.clue || !this.letters[this.clue.id]) {
-        return true;
+    // https://stackoverflow.com/a/6274381
+    shuffleClicked() {
+      const a = this.clueWorkingSlots[this.clue.id];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = a[i];
+        this.$set(a, i, a[j]);
+        this.$set(a, j, tmp);
       }
-      for (const l of this.letters[this.clue.id]) {
-        if (l.char != '')
-          return false;
-      }
-      return true;
-    },
-    submitDisabled() {
-      if (!this.clue || !this.droppedLetters[this.clue.id]) {
-        return true;
-      }
-      for (const l of this.droppedLetters[this.clue.id]) {
-        if (l.char)
-          return false;
-      }
-      return true;
+      this.moveLettersToStart();
     },
     submitClicked() {
       const text = [];
-      for (const l of this.droppedLetters[this.clue.id]) {
-        text.push(l.char);
+      for (const letter of this.clueAnswerSlots[this.clue.id]) {
+        text.push(letter);
       }
       this.$emit('submit-decrypt', {
         text: text,
@@ -343,104 +346,35 @@ export default Vue.extend({
       });
       this.clearClicked();
     },
-    recreateDroppable() {
-      if (this.letterDrop) {
-        this.letterDrop.destroy();
-      }
-      document.querySelectorAll('.draggable-dropzone--occupied').forEach(e => {
-        e.classList.remove('draggable-dropzone--occupied');
-      });
-      this.$forceUpdate();
-      this.letterDrop = new Droppable(this.$refs.container, {
-        draggable: '.letter-tile',
-        dropzone: '.letter-dropzone',
-        plugins: [Plugins.Snappable],
-      });
-      this.letterDrop.on('droppable:start', this.letterGrabbed);
-      this.letterDrop.on('droppable:returned', this.letterReturned);
-      this.letterDrop.on('droppable:stop', this.letterDropped);
-    },
-    letterReturned(event) {
-      // event.dropzone.classList.remove('draggable-dropzone--occupied');
-      // console.log('returned');
-      // console.log(event);
-    },
-    letterGrabbed(event) {
-      if (this.dragging)
+    dropTile(fromAnswer, srcOffset, letter, target) {
+      if (!target.classList.contains('letter-dropzone')) {
         return;
-      document.body.style.cursor = 'grabbing';
-      this.dragging = true;
-      if (event.dropzone.classList.contains('working-slot')) {
-        this.fromLetters = true;
-        const source = event.data.dragEvent.data.source;
-        this.letterId = parseInt(source.dataset.letterId);
-      } else {
-        this.fromLetters = false;
-        this.fromOffset = parseInt(event.dropzone.dataset.cellOffset);
-        this.letterId = this.droppedLetters[this.clue.id][this.fromOffset].id;
       }
-    },
-    letterDropped(event) {
-      document.body.style.cursor = '';
-      this.dragging = false;
-      this.returning = false;
-      const dropzone = event.dropzone;
-      const dragEvent = event.data.dragEvent.data;  
-      const source = dragEvent.source;
+      const toAnswer = target.classList.contains('answer-slot') || target.classList.contains('answer-slot-contents');
+      const dstOffset = parseInt(target.dataset.slotOffset);
 
-      const toAnswer = dropzone.classList.contains('answer-slot');
-      let letter = {};
-      for (const l of this.letters[this.clue.id]) {
-        if (l.id == this.letterId) {
-          letter = l;
-          break;
-        }
-      }
-      // from letters
-      if (this.fromLetters) {
-          // console.log('drag from letters ' + this.letterId);
-          if (toAnswer) {
-            const addAt = parseInt(dropzone.dataset.cellOffset);
-            this.droppedLetters[this.clue.id][addAt].char = letter.char;
-            this.droppedLetters[this.clue.id][addAt].id = letter.id;
-            letter.char = '';
-          }
-      // from answer
-      } else {
-        const toRemove = this.fromOffset;
-        // console.log('drag from answer ' + toRemove);
-        const l = this.droppedLetters[this.clue.id][toRemove];
-        this.droppedLetters[this.clue.id][toRemove] = {
-          offset: toRemove
-        };
-        if (!toAnswer) {
-          letter.char = l.char;
-        } else {
-          const addAt = parseInt(dropzone.dataset.cellOffset);
-          this.droppedLetters[this.clue.id][addAt] = {
-            offset: addAt,
-            id: this.letterId,
-            char: letter.char
-          }
-        }
-      }
-      this.disableClear = this.clearDisabled();
-      this.disableSubmit = this.submitDisabled();
-      this.updateLengthText();
+      const srcSlots = fromAnswer ? this.clueAnswerSlots[this.clue.id] : this.clueWorkingSlots[this.clue.id];
+      const dstSlots = toAnswer ? this.clueAnswerSlots[this.clue.id] : this.clueWorkingSlots[this.clue.id];
+      
+      this.$set(srcSlots, srcOffset, '');
+      this.$set(dstSlots, dstOffset, letter);
     },
     explodeWord(word) {
-      if (!this.letters[this.clue.id]) {
-        this.letters[this.clue.id] = [];
+      if (!this.clueWorkingSlots[this.clue.id]) {
+        this.$set(this.clueWorkingSlots, this.clue.id, []);
       }
-      let i = this.letters[this.clue.id].length;
+      this.clueWorkingSlots[this.clue.id].splice(this.clueWorkingSlots[this.clue.id].length + word.length);
+
+      // find first free slot from the end
+      let i = this.clueWorkingSlots[this.clue.id].length;
+      while (i >= 0 && !this.clueWorkingSlots[this.clue.id][i]) {
+        i--;
+      }
+      i++;
       for (const c of word) {
-        this.letters[this.clue.id].push({
-          id: i,
-          char: c
-        });
+        this.$set(this.clueWorkingSlots[this.clue.id], i, c);
         i++;
       }
-      this.forceUpdateState();
     },
     separator: function (cell) {
         if (!cell)
@@ -457,30 +391,12 @@ export default Vue.extend({
   },
   data() {
     return {
-      fromLetters: true,
-      dragging: false,
-      returning: false,
-      disableClear: true,
-      disableSubmit: true,
-      workingLetters: [],
-      letters: {},
-      droppedLetters: {}
+      clueWorkingSlots: {},
+      clueAnswerSlots: {}
     };
   },
   mounted() {
-    this.clearClicked();
-    this.forceUpdateState();
-    // this.letterS[this.clue.id]wap = new Swappable(this.$refs.letters, {
-    //     draggable: '.letter-tile',
-    //   });
-
-    
-    // // --- Draggable events --- //
-    // swappable.on('drag:start', (evt) => {
-    //   if (evt.originalSource.classList.contains('Block--typeStripes')) {
-    //     evt.cancel();
-    //   }
-    // });
+    this.createAnswerSlots();
   }
 });
 </script>

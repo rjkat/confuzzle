@@ -6,7 +6,7 @@
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
   <div class="crossword-grid-container" :style="gridContainerStyle">
-      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" v-model="selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid">
+      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" v-model="selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
       </cfz-scratchpad>
       <table v-else class="crossword-grid" cell-spacing="0" :style="gridStyle">
           <tr v-for="(row, r) in crossword.grid.cells">
@@ -144,6 +144,11 @@ export default Vue.extend({
     },
   },
   methods: {
+    dropTile(fromAnswer, offset, letter, target) {
+      if (this.$refs.scratchpad) {
+        this.$refs.scratchpad.dropTile(fromAnswer, offset, letter, target);
+      }
+    },
     showPopover(clue) {
       const inputCell = this.getInputCell(clue.cells[0]);
       if (inputCell && (this.showTooltips || this.isPortrait)) {

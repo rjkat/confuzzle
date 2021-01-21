@@ -33,7 +33,6 @@
     "@confuzzle/puz-crossword": "file:@confuzzle/puz-crossword",
     "@confuzzle/puz-sharing": "file:@confuzzle/puz-sharing",
     "@popperjs/core": "^2.5.4",
-    "@shopify/draggable": "^1.0.0-beta.8",
     "@thi.ng/range-coder": "^1.0.64",
     "base64url": "^3.0.1",
     "blissfuljs": "^1.0.6",

@@ -34,6 +34,7 @@
     </cfz-header-toolbar>
    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
+         @dragstart="dragStartHandler"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
@@ -734,11 +735,9 @@ export default Vue.extend({
         this.showScratchpad = show;
     },
     showGridChanged(show) {
-      console.log("showGridChanged: " + show);
         this.showGrid = show;
     },
     showTooltipsChanged(show) {
-      console.log("showTooltips: " + show);
         this.showTooltips = show;
     },
     // https://stackoverflow.com/a/11744120
@@ -1116,29 +1115,53 @@ export default Vue.extend({
         this.createSocket();
         this.joinClicked(this.solverName);
     },
+    dragStartHandler(event) {
+      if (this.showScratchpad) {
+        const info = event.srcElement.dataset;
+        event.dataTransfer.effectAllowed = 'copyMove';
+        event.dataTransfer.dropEffect = 'move';
+        event.dataTransfer.setData('text/plain', JSON.stringify({
+          fromAnswer: info.fromAnswer,
+          letter: info.letter,
+          offset: info.slotOffset
+        }));
+      }
+    },
     dragEnterHandler(event) {
         this.dragCount++;
-        if (!this.state.colluding) {
-            this.$refs.dropArea.dataset.dropVisible = "";
+        if (this.showScratchpad) {
+          event.dataTransfer.effectAllowed = 'copyMove';
+          event.dataTransfer.dropEffect = 'move';
+        } else if (!this.state.colluding) {
+          this.$refs.dropArea.dataset.dropVisible = "";
         }
         event.preventDefault();
         event.stopPropagation();
     },
     dragOverHandler(event) {
+        event.dataTransfer.effectAllowed = 'copyMove';
+        event.dataTransfer.dropEffect = 'move';
         event.preventDefault();
         event.stopPropagation();
     },
     dragLeaveHandler(event) {
         this.dragCount--;
         if (this.dragCount <= 0) {
+          if (!this.showScratchpad) {
             this.$refs.dropArea.removeAttribute('data-drop-visible');
-            this.dragCount = 0;
+          }
+          this.dragCount = 0;
         }
         event.preventDefault();
         event.stopPropagation();
     },
     dropHandler(event) {
-        if (!event.dataTransfer.files)
+      if (this.showScratchpad) {
+        const info = JSON.parse(event.dataTransfer.getData('text'));
+        this.$refs.grid.dropTile(info.fromAnswer, info.offset, info.letter, event.target);
+        document.body.style.cursor = '';
+      } else {
+        if (event.dataTransfer.files.length == 0)
             return;
 
         if (!event.dataTransfer.files[0].name)
@@ -1154,11 +1177,11 @@ export default Vue.extend({
             } else if (file.name.endsWith('.puz')) {
                 file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
             }
-            this.dragCount = 0;
             this.$refs.dropArea.removeAttribute('data-drop-visible');
         }
-        
-        event.preventDefault();
+      }
+      this.dragCount = 0;
+      event.preventDefault();
     },
     enoFileUploaded(buf) {
         this.crosswordSource = Buffer.from(buf).toString('utf8');
