@@ -7,12 +7,12 @@
     </div>
     <div class="word-container" ref="words">
       <template v-for="(word, i) in words">
-        <ui-button raised class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
+        <ui-button raised disable-ripple class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
       </template>
     </div>
     <div class="letter-widget" >
-      <div class="letter-container" ref="letterContainer">
-          <drop-list row :items="workingLetters[clue.id]"
+      <div class="letter-container" ref="letterContainer" @touchmove="$event.preventDefault()">
+          <drop-list class="letter-list" row :items="workingLetters[clue.id]"
               @insert="insertWorkingTile"
               @reorder="reorderWorkingTiles"
               mode="cut">
@@ -20,18 +20,18 @@
                 <drag class="letter-tile" :data="item" :data-solver-mask="solverMask" :key="item.offset" @cut="cutWorkingLetter(item.offset)">{{item.letter}}</drag>
               </template>
               <template v-slot:feedback="{ data }">
-                <div class="letter-tile feedback" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
+                <div class="letter-tile letter-tile-feedback" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
               </template>
           </drop-list>
           <div class="letter-length-indicator" ref="lengthIndicator">{{numWorkingLetters}}</div>
       </div>
     </div>
-    <div class="answer-widget" ref="answer">
+    <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
       <div class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(clue.cells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
             <div class="answer-slot-contents" :data-cell-contents="clue.cells[index].contents">
-                 <drag :class="slot.letter ? 'letter-tile' : 'dummy-tile'" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
+                 <drag class="letter-tile" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
             </div>
           </drop>
       </div>
@@ -58,10 +58,9 @@
       visibility: hidden;
     }
     .cfz-scratchpad-container {
-        overflow: auto;
+        overflow-y: scroll;
         display: flex;
-        min-height: 100%;
-        max-height: 100%;
+        height: 100%;
         flex-direction: column;
         font-family: $answerFontFamily;
         font-size: 26px;
@@ -85,11 +84,13 @@
       display: flex;
       width: 100%;
       text-align: center;
+      padding-bottom: $displayPadding;
     }
     .decrypt-button {
       margin: 8px;
     }
     .word-tile {
+      cursor: pointer !important;
       margin-right: 8px;
       margin-top: 8px;
       min-width: 0 !important;
@@ -136,8 +137,12 @@
       text-align: center;
       display: inline-block;
       /*-webkit-user-select: none; */
+
+      &[data-letter=""] {
+        visibility: hidden !important;
+      }
     }
-    .letter-tile.feedback {
+    .letter-tile-feedback {
       border: $gridBorderWidth dashed #000;
       opacity: 0.4;
     }
@@ -192,6 +197,9 @@
       padding-left: 16px;
       padding-right: 8px;
       padding-bottom: 8px;
+    }
+    .letter-list {
+      height: 100%;
     }
     .answer-widget {
       margin-top: auto;

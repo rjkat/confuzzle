@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="cfz-crossword-clue-wrapper">
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
@@ -28,13 +28,18 @@
 </template>
 
 <style lang="scss">
+.cfz-crossword-clue-wrapper {
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+}
+
 .author-note {
     width: 100%;
     display: block;
     font-family: $clueFontFamily;
     padding-right: .5em;
     padding-left: .5em;
-    padding-top: .5em;
+    padding-top: $displayPadding;
     padding-bottom: $displayPadding;
     &:before {
         content: 'NOTE';
@@ -44,6 +49,7 @@
 }
 
 #solvers {
+    padding-top: $displayPadding;
     padding-bottom: $displayPadding;
 }
 

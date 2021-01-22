@@ -335,8 +335,6 @@ body {
 }
 
 #clues {
-    padding-top: $displayPadding;
-    padding-bottom: $displayPadding;
     height: 100%;
     overflow-y: scroll;
 }
@@ -508,7 +506,6 @@ export default Vue.extend({
             return {
                 colluding: false,
                 compiling: false,
-                printing: false,
                 joining: false,
                 reconnecting: false
             };
@@ -832,6 +829,7 @@ export default Vue.extend({
         this.handleResize();
         this.gridSizeLocked = true;
         this.renderLoading = false;
+        this.showScratchpad = false;
 
         // strip any state from the source, we have rendered it now
         this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];

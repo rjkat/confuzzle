@@ -210,7 +210,7 @@ export default Vue.extend({
             icon: 'grid_on'
         },
         SHOW_DECRYPT: {
-            label: 'Breakdown',
+            label: 'Anagram',
             icon: 'gesture'
         },
         SHOW_TOOLTIPS: {
@@ -222,7 +222,7 @@ export default Vue.extend({
             icon: 'speaker_notes_off'
         },
         SHOW_DECRYPT_DISABLED: {
-            label: 'Breakdown',
+            label: 'Anagram',
             icon: 'gesture',
             disabled: true
         },
