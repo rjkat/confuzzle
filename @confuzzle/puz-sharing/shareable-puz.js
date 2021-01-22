@@ -138,7 +138,7 @@ class ShareablePuz extends PuzCrossword {
 
     static fromURL(url) {
         const compressed = base64url.toBuffer(url);
-        return ShareablePuz.from(compressed);
+        return ShareablePuz.fromCompressed(compressed);
     }
 
     constructor(puz) {

@@ -30,6 +30,16 @@ test('compression', () => {
     expect(parsed.meta.author).toBe("Natan Last / Will Shortz");
 });
 
+test('url compression', () => {
+    const source = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz');
+    const buf = fs.readFileSync(source);
+    const puz = ShareablePuz.from(buf);
+    const puz2 = ShareablePuz.fromURL(puz.toURL());
+    const eno = confuz.fromPuz(puz2);
+    const parsed = parser.parse(eno);
+    expect(parsed.meta.author).toBe("Natan Last / Will Shortz");
+});
+
 test('eno to emoji', () => {
     const puz = confuz.toPuz(TEST_ENO);
     const puz2 = ShareablePuz.fromEmoji(puz.toEmoji());

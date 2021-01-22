@@ -187,7 +187,8 @@ export function fromPuz(p) {
         var separators = null;
         var lengths = [clue.length];
         var verbatim = true;
-        const toks = text.match(/^(.*) \((.*\b\d+\b.*)\)\s*$/);
+
+        const toks = text ? text.match(/^(.*) \((.*\b\d+\b.*)\)\s*$/) : null;
 
         if (toks) {
             // looks like a multiple-word clue, see if the lengths add up

@@ -6,7 +6,8 @@
   "dependencies": {
     "emojicoding": "^0.3.0",
     "graphemer": "^1.1.1",
-    "puppeteer": "^2.1.1"
+    "puppeteer": "^2.1.1",
+    "qrcode": "^1.4.4"
   },
   "devDependencies": {},
   "scripts": {
