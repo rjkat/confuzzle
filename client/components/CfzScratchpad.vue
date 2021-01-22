@@ -86,7 +86,6 @@
       display: flex;
       width: 100%;
       text-align: center;
-      padding-bottom: $displayPadding;
     }
     .decrypt-button {
       margin: 8px;
