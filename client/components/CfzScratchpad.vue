@@ -1,18 +1,19 @@
 <template>
 <div>
   <div class="cfz-scratchpad-container" ref="container">
-    <div class="decrypt-container-label">
+    <div v-if="clue" class="decrypt-container-label">
       <span class="clue-id">{{clue.idText}}{{clue.isAcross ? 'A' : 'D'}}</span>
       {{clue.sanitizedText}}<span class="clue-length">{{clue.lengthText}}</span>
     </div>
+    <div v-else class="decrypt-container-label">Select a clue to solve.</div>
     <div class="word-container" ref="words">
       <template v-for="(word, i) in words">
         <ui-button raised disable-ripple class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
       </template>
     </div>
-    <div class="letter-widget" >
+    <div class="letter-widget">
       <div class="letter-container" ref="letterContainer" @touchmove="$event.preventDefault()">
-          <drop-list class="letter-list" row :items="workingLetters[clue.id]"
+          <drop-list v-if="clue" class="letter-list" row :items="workingLetters[clue.id]"
               @insert="insertWorkingTile"
               @reorder="reorderWorkingTiles"
               mode="cut">
@@ -27,7 +28,7 @@
       </div>
     </div>
     <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
-      <div class="answer-cells">
+      <div v-if="clue" class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(clue.cells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
             <div class="answer-slot-contents" :data-cell-contents="clue.cells[index].contents">
@@ -42,6 +43,7 @@
       <ui-button raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
   </div>
+
 </div>
 </template>
 
@@ -280,12 +282,16 @@ export default Vue.extend({
   },
   watch: {
     clue(newClue, oldClue) {
+      if (!newClue)
+        return;
       if (!this.answerSlots[newClue.id])
         this.createAnswerSlots();
     }
   },
   computed: {
     words() {
+      if (!this.clue)
+        return '';
       const words = this.clue.sanitizedText.split(/[ -]/g);
       const plainWords = [];
       for (const w of words) {
@@ -319,6 +325,8 @@ export default Vue.extend({
   },
   methods: {
     createAnswerSlots() {
+      if (!this.clue)
+        return;
       this.$set(this.answerSlots, this.clue.id, []);
       this.answerSlots[this.clue.id].splice(this.clue.cells.length);
       for (let i = 0; i < this.clue.cells.length; i++) {
@@ -326,6 +334,8 @@ export default Vue.extend({
       }
     },
     clearClicked() {
+      if (!this.clue)
+        return;
       this.$set(this.workingLetters, this.clue.id, []);
       for (let i = 0; i < this.answerSlots[this.clue.id].length; i++) {
         this.$set(this.answerSlots[this.clue.id], i, {offset: i, letter: ''});
@@ -333,6 +343,8 @@ export default Vue.extend({
     },
     // https://stackoverflow.com/a/6274381
     shuffleClicked() {
+      if (!this.clue)
+        return;
       const a = this.workingLetters[this.clue.id];
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

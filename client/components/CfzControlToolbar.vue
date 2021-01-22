@@ -112,12 +112,8 @@ export default Vue.extend({
         if (this.showScratchpad || !this.showGrid) {
             options.push(this.opt.SHOW_GRID);
         }
-        if (!this.showScratchpadEnabled) {
-            options.push(this.opt.SHOW_DECRYPT_DISABLED);
-        } else {
-            if (!this.showScratchpad) {
-                options.push(this.opt.SHOW_DECRYPT);
-            }
+        if (!this.showScratchpad || !this.showGrid) {
+            options.push(this.opt.SHOW_DECRYPT);
         }
         if (this.showGrid) {
             options.push(this.opt.SHOW_CLUES_ONLY);
@@ -220,11 +216,6 @@ export default Vue.extend({
         SHOW_NO_TOOLTIPS: {
             label: 'No tooltips',
             icon: 'speaker_notes_off'
-        },
-        SHOW_DECRYPT_DISABLED: {
-            label: 'Anagram',
-            icon: 'gesture',
-            disabled: true
         },
         SHOW_CLUES_ONLY: {
             label: 'Clues',

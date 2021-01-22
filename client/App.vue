@@ -88,7 +88,6 @@
                      :showEdit="!state.colluding"
                      :showDelete="false"
                      :showScratchpad="showScratchpad"
-                     :showScratchpadEnabled="selectedClue"
                      :showTooltipToggle="!isPortrait && showGrid && !showScratchpad"
                      :showTooltips="showTooltips"
                      :showGrid="showGrid"
