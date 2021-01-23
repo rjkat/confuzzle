@@ -1,6 +1,6 @@
 <template>
     <ui-modal ref="modal" @reveal="onReveal()" title="Share Crossword">
-        <div style="text-align: center;">
+        <div style="text-align: center; position: relative;">
             <template v-if="!link">
                 <p class="share-info-text">Get a shared link to this crossword and solve with others in real time.</p>
                 <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="shareClicked()">
@@ -9,8 +9,10 @@
                 <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="shareClicked()">Share</ui-button>
             </template>
             <template v-else>
-                <p class="share-info-text">Share this link to solve with others. It will remain active
-                   whilst there is at least one active solver.</p>
+                <div style="display: flex; align-items: center;">
+                    <img v-if="qrString" :src="qrString" class="share-qr-code" alt="QR code for shared link"/>
+                    <p class="share-info-text">Share this link to solve with others. It will remain active whilst there is at least one active solver.</p>
+                </div>
                 <div class="crossword-link-text">{{link}}</div>
                 <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
             </template>
@@ -34,7 +36,15 @@
     }
 }
 
+.share-qr-code {
+    height: 76px;
+    width: 76px;
+}
+
 .share-info-text {
+    text-align: left;
+    padding-left: 1em;
+    line-height: 1.5;
     font-family: $clueFontFamily;
 }
 
@@ -57,28 +67,46 @@
 
 <script>
 import Vue from "vue";
+import QRCode from 'qrcode';
+
+import copy from 'copy-to-clipboard';
 
 export default Vue.extend({
   data() {
     return {
       solverName: "",
       bundler: "Parcel",
+      qrString: ""
     };
   },
   props: {
     loading: false,
-    link: ""
+    link: "",
+  },
+  watch: {
+    link(newLink) {
+        this.makeQrCode(newLink);
+    },
   },
   methods: {
+    makeQrCode(url) {
+        QRCode.toDataURL(url).then(s => {
+            this.qrString = s;
+            console.log(s);
+        }).catch(err => {
+            console.error(err)
+        });
+    },
     shareClicked() {
         this.$emit('share-clicked', this.solverName);
     },
     copyClicked() {
-        navigator.clipboard.writeText(this.link);
+        copy(this.link);
         this.$emit('copy-clicked');
     },
     onReveal() {
-        this.$refs.nameBox.focus();
+        if (this.$refs.nameBox)
+            this.$refs.nameBox.focus();
     },
     open() {
         this.$refs.modal.open();
@@ -86,6 +114,10 @@ export default Vue.extend({
     close() {
         this.$refs.modal.close();
     }
+  },
+  mounted() {
+    if (this.link)
+        this.makeQrCode(this.link)
   }
 });
 </script>

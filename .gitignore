@@ -5,6 +5,7 @@ server/crosswords/*
 
 script/reddad_bwt.js
 script/*.puz
+script/*.png
 
 test.puz
 test.eno

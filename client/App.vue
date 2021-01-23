@@ -20,6 +20,7 @@
         :showInstall="installPrompt || (iOSSafari && !standalone)"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
+        @copy-clicked="copyClicked($event)"
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
