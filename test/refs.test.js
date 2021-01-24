@@ -10,7 +10,7 @@ name: Reference test
 author: RK
 
 # grid
-width: 5
+width: 7
 height: 5
 
 # clues
@@ -27,6 +27,7 @@ lengths:
 row: 3
 col: 1
 ans: TWO
+text: See 1A
 lengths:
     - 3
 
@@ -34,6 +35,7 @@ lengths:
 row: 5
 col: 1
 ans: THREE
+text: See 1A
 lengths:
     - 5
 
@@ -44,6 +46,14 @@ text: Down
 ans: ONE
 lengths:
     - 3
+    
+## 3D
+row: 1
+col: 7
+ans: THREE
+text: See 1D
+lengths:
+    - 5
 
 # references
 
@@ -57,8 +67,8 @@ clues:
 clues:
     - 1D
     - 2A
-    - 3A
+    - 3D
 `
     const cw = parser.parse(crossword);
-    // console.log(JSON.stringify(cw.clues['1A']));
+    console.log(JSON.stringify(cw.clues));
 });

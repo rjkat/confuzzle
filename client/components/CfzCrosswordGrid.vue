@@ -6,7 +6,7 @@
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
   <div class="crossword-grid-container" :style="gridContainerStyle">
-      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" v-model="selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
+      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
       </cfz-scratchpad>
       <table v-else class="crossword-grid" cell-spacing="0" :style="gridStyle">
           <tr v-for="(row, r) in crossword.grid.cells">
@@ -121,7 +121,7 @@ export default Vue.extend({
             }
         }
         return undefined;
-    }
+    },
   },
   watch: {
     selectedClue(newVal, oldVal) {
@@ -150,6 +150,8 @@ export default Vue.extend({
       }
     },
     showPopover(clue) {
+      if (!clue)
+        return;
       const inputCell = this.getInputCell(clue.cells[0]);
       if (inputCell && (this.showTooltips || this.isPortrait)) {
           inputCell.showPopover();
@@ -159,6 +161,8 @@ export default Vue.extend({
       return this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col];
     },
     hidePopover(clue) {
+       if (!clue)
+        return;
        const cell = clue.cells[0];
        const inputCell = this.getInputCell(cell);
        if (inputCell) {

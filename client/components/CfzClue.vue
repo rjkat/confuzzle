@@ -4,7 +4,7 @@
         :data-solver-mask="solverMask"
         ref="item">
         <span class="clue-directions" @click="directionsClicked()">
-            <span class="clue-id">{{clue.idText}}<span class="hidden-print" v-if="showDirection">{{clue.isAcross ? 'A' : 'D'}}</span> </span>
+            <span class="clue-id">{{clue.idText}}<span class="hidden-print" v-if="showDirection">{{clue.directionText}}</span></span>
             <span class="clue-text" v-html="clue.sanitizedText"></span>
             <span class="clue-length">{{clue.lengthText}}</span>
         </span>
@@ -99,6 +99,8 @@
 
     .crossword-separator {
         font-family: $answerFontFamily;
+        font-size: $gridFontSize;
+        vertical-align: middle;
         margin-right: 4px;
     }
 

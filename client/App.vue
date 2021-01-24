@@ -392,11 +392,15 @@ function parseAndBuild(input, compiling) {
       }
 
       clue.idText = clue.numbering.clueText;
-      if (!clue.verbatim && clue.refIds.length > 0 && clue.primaryId == clueid)
-      {
-         clue.idText = clue.refIds.join(', ');
+      clue.directionText = '';
+      if (!clue.verbatim) {
+        if (clue.refIds.length > 0 && clue.primaryId == clueid) {
+          clue.idText = clue.refIds.join(', ');
+        } else {
+          clue.directionText = clue.isAcross ? 'A' : 'D';
+        }
       }
-
+      
       let nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {
         if (clue.refIds[i] != clueid) {
@@ -413,7 +417,6 @@ function parseAndBuild(input, compiling) {
       } else {
           cw.downClues.push(clue);
       }
-
       clue.highlightMask = 0;
       clue.selected = false;
       clue.showCorrect = false;

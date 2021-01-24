@@ -2,7 +2,7 @@
 <div>
   <div class="cfz-scratchpad-container" ref="container">
     <div v-if="clue" class="decrypt-container-label">
-      <span class="clue-id">{{clue.idText}}{{clue.isAcross ? 'A' : 'D'}}</span>
+      <span class="clue-id">{{clue.idText + clue.directionText}}</span>
       {{clue.sanitizedText}}<span class="clue-length">{{clue.lengthText}}</span>
     </div>
     <div v-else class="decrypt-container-label">Select a clue to solve.</div>
@@ -29,9 +29,9 @@
     </div>
     <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
       <div v-if="clue" class="answer-cells">
-          <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(clue.cells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(clue.cells[index])"
+          <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(answerCells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(answerCells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
-            <div class="answer-slot-contents" :data-cell-contents="clue.cells[index].contents">
+            <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents">
                  <drag class="letter-tile" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
             </div>
           </drop>
@@ -144,7 +144,6 @@
       }
     }
     .letter-tile-feedback {
-      border: $gridBorderWidth dashed #000;
       opacity: 0.4;
     }
     @include each-solver using ($color, $lightColor, $sel) {
@@ -276,9 +275,6 @@ export default Vue.extend({
         default: 0
     }
   },
-  model: {
-    prop: 'clue'
-  },
   watch: {
     clue(newClue, oldClue) {
       if (!newClue)
@@ -303,6 +299,17 @@ export default Vue.extend({
       }
       return plainWords;
     },
+    answerCells() {
+      let clue = this.clue;
+      const cells = [];
+      while (clue) {
+        for (let i = 0; i < clue.cells.length; i++) {
+          cells.push(clue.cells[i]);
+        }
+        clue = clue.nextRef;
+      }
+      return cells
+    },
     solverMask: function () {
         return (1 << (this.solverid % 8));
     },
@@ -323,18 +330,27 @@ export default Vue.extend({
     },
   },
   methods: {
+
     createAnswerSlots() {
       if (!this.clue)
         return;
       this.$set(this.answerSlots, this.clue.id, []);
-      this.answerSlots[this.clue.id].splice(this.clue.cells.length);
-      for (let i = 0; i < this.clue.cells.length; i++) {
-        this.$set(this.answerSlots[this.clue.id], i, {offset: i, letter: ''});
+      let ref = this.clue;
+      let j = 0;
+      while (ref) {
+        console.log(ref.id);
+        this.answerSlots[this.clue.id].splice(j + ref.cells.length);
+        for (let i = 0; i < ref.cells.length; i++) {
+          this.$set(this.answerSlots[this.clue.id], i + j, {offset: i + j, letter: ''});
+        }
+        j += ref.cells.length;
+        ref = ref.nextRef;
       }
     },
     clearClicked() {
       if (!this.clue)
         return;
+
       this.$set(this.workingLetters, this.clue.id, []);
       for (let i = 0; i < this.answerSlots[this.clue.id].length; i++) {
         this.$set(this.answerSlots[this.clue.id], i, {offset: i, letter: ''});
@@ -407,9 +423,15 @@ export default Vue.extend({
       this.answerSlots[this.clue.id][answerOffset].letter = letter;
     },
     separator: function (cell) {
-        if (!cell)
+        if (!cell || !this.clue)
           return '';
+
         let sep = this.clue.isAcross ? cell.sanitizedAcrossSeparator : cell.sanitizedDownSeparator;
+        if ((!cell.clues.across || cell.clues.across.id != this.clue.id) &&
+           (!cell.clues.down || cell.clues.down.id != this.clue.id)
+           && cell.sanitizedRefSeparators) {
+          sep = cell.sanitizedRefSeparators[this.clue.id];
+        }
         if (!sep) {
             return null;
         }

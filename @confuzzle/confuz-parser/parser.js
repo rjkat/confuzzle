@@ -101,6 +101,38 @@ function buildCells(cw, cells, clues, compiling) {
         wordpos++;
       }
     }
+
+
+  }
+
+  for (let [clueid, clue] of Object.entries(clues)) {
+    if (clue.primaryId == clue.id && clue.refSeparators) {
+      let ref = clue;
+      let i = 0;
+
+      while (ref && i < clue.refIds.length - 1) {
+         const sep = clue.refSeparators[i];
+         const sanitizedSep = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
+         console.log('sep: ' + sanitizedSep + ', clue: ' + clue.id + ', index: ' + i);
+         const cell = ref.cells[ref.cells.length - 1];
+         if (ref.isAcross) {
+           cell.acrossSeparator = sep;
+           cell.sanitizedAcrossSeparator = sanitizedSep;
+         } else {
+           cell.downSeparator = sep;
+           cell.sanitizedDownSeparator = sanitizedSep;
+         }
+         const pid = clue.primaryId;
+         if (!cell.refSeparators) {
+           cell.refSeparators = {}
+           cell.sanitizedRefSeparators = {}
+         }
+         cell.refSeparators[pid] = sep;
+         cell.sanitizedRefSeparators[pid] = sep;
+         i++;
+         ref = clues[clue.refIds[i]];
+      }
+    }
   }
   return errors;
 }

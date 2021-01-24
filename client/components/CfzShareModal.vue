@@ -92,7 +92,6 @@ export default Vue.extend({
     makeQrCode(url) {
         QRCode.toDataURL(url).then(s => {
             this.qrString = s;
-            console.log(s);
         }).catch(err => {
             console.error(err)
         });
