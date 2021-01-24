@@ -113,7 +113,6 @@ function buildCells(cw, cells, clues, compiling) {
       while (ref && i < clue.refIds.length - 1) {
          const sep = clue.refSeparators[i];
          const sanitizedSep = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
-         console.log('sep: ' + sanitizedSep + ', clue: ' + clue.id + ', index: ' + i);
          const cell = ref.cells[ref.cells.length - 1];
          if (ref.isAcross) {
            cell.acrossSeparator = sep;

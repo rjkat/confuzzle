@@ -338,7 +338,6 @@ export default Vue.extend({
       let ref = this.clue;
       let j = 0;
       while (ref) {
-        console.log(ref.id);
         this.answerSlots[this.clue.id].splice(j + ref.cells.length);
         for (let i = 0; i < ref.cells.length; i++) {
           this.$set(this.answerSlots[this.clue.id], i + j, {offset: i + j, letter: ''});

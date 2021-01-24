@@ -191,17 +191,23 @@ export default Vue.extend({
     },
     submitDecrypt(answer) {
       let i = 0;
-      const clue = answer.clue;
-      while (i < answer.text.length && i < clue.cells.length) {
-        const cell = clue.cells[i];
+      let clue = answer.clue;
+      let j = 0;
+      while (i < answer.text.length && clue) {
+        const cell = clue.cells[j];
         if (answer.text[i]) {
           cell.contents = answer.text[i];
-          this.$emit('fill-cell', {clueid: clue.id, offset: i, value: cell.contents});
+          this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents});
         }
         i++;
+        j++;
+        if (j >= clue.cells.length) {
+          clue.showCorrect = false;
+          clue.showIncorrect = false;
+          clue = clue.nextRef;
+          j = 0;
+        }
       }
-      clue.showCorrect = false;
-      clue.showIncorrect = false;
     },
     fillCell(cell) {
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
