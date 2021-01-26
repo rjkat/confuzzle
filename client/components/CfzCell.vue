@@ -2,8 +2,8 @@
 <td :data-solver-mask="solverMask"
     :data-number="cell.number"
     :data-selected=cell.selected
-    :data-across-separator="cell.acrossSeparator"
-    :data-down-separator="cell.downSeparator"
+    :data-across-separator="!isEnd ? cell.acrossSeparator : undefined"
+    :data-down-separator="!isEnd ? cell.downSeparator : undefined"
     :data-empty="cell.empty"
     :style="{backgroundColor: cell.shadingColor}"
     @click.prevent="onClick($event)"
@@ -201,6 +201,7 @@ function nBitsSet(v) {
 export default Vue.extend({
   props: {
     cell: Object,
+    isEnd: Boolean,
     editable: {
         type: Boolean,
         default: true

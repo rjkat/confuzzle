@@ -11,6 +11,7 @@
       <table v-else class="crossword-grid" cell-spacing="0" :style="gridStyle">
           <tr v-for="(row, r) in crossword.grid.cells">
               <cfz-cell v-for="cell in row" ref="inputCells"
+                        :isEnd="cell.row == crossword.grid.height - 1 || cell.col == crossword.grid.width - 1"
                         :cell="crossword.grid.cells[cell.row][cell.col]"
                         :solverid="solverid"
                         @cell-clicked="cellClicked($event, cell)"

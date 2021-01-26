@@ -24,6 +24,9 @@
                 <div class="letter-tile letter-tile-feedback" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
               </template>
           </drop-list>
+          <drop v-if="clue && numAnswerLetters > 0 && workingLetters[clue.id] && workingLetters[clue.id].length == 0" mode="cut" class="answer-slot" :data-solver-mask="solverMask"  
+              @drop="insertFirstWorkingTile($event)">
+          </drop>
           <div class="letter-length-indicator" ref="lengthIndicator">{{numWorkingLetters}}</div>
       </div>
     </div>
@@ -125,7 +128,8 @@
     }
     .letter-tile {
       border: $gridBorderWidth solid #000;
-      box-sizing: border-box;
+      box-sizing: content-box;
+
       cursor: grab;
       margin-right: 4px;
       margin-bottom: 4px;
@@ -135,6 +139,7 @@
       max-width: $gridCellSize;
       height: $gridCellSize;
       line-height: $gridCellSize;
+      vertical-align: middle;
       text-align: center;
       display: inline-block;
       /*-webkit-user-select: none; */
@@ -237,6 +242,7 @@
     }
     .answer-slot-contents {
       width: 100%;
+      height: 100%;
       position: absolute;
       &:before {
         top: 0;
@@ -247,6 +253,13 @@
         color: #888;
         position: absolute;
         z-index: -1;
+      }
+      .letter-tile {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin-left: -1px;
+        margin-top: -1px;
       }
     }
     .crossword-separator {
@@ -317,6 +330,16 @@ export default Vue.extend({
       if (!this.clue || !this.workingLetters[this.clue.id])
         return 0;
       return this.workingLetters[this.clue.id].length;
+    },
+    numAnswerLetters() {
+      if (!this.clue || !this.answerSlots[this.clue.id])
+        return 0;
+      let n = 0;
+      for (const s of this.answerSlots[this.clue.id]) {
+        if (s.letter != '')
+          n++;
+      }
+      return n;
     },
     submitDisabled() {
       if (!this.clue || !this.answerSlots[this.clue.id]) {
@@ -400,6 +423,12 @@ export default Vue.extend({
       for (let i = offset; i < this.workingLetters[this.clue.id].length; i++) {
         this.$set(this.workingLetters[this.clue.id][i], 'offset', i);
       }
+    },
+    insertFirstWorkingTile(event) {
+      this.workingLetters[this.clue.id].splice(0, 0, {
+        letter: event.data,
+        offset: 0
+      });
     },
     insertWorkingTile(event) {
       for (let offset = this.workingLetters[this.clue.id].length - 1; offset >= event.index; offset--)
