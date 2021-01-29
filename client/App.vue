@@ -43,9 +43,9 @@
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join crossword" :dismissible="false">
+            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join session" :dismissible="false">
                 <div style="text-align: center;">
-                    <p class="join-info-text">Join this crossword and collude with others in real time.</p>
+                    <p class="join-info-text">Choose your name to join and solve this crossword with others in real time.</p>
                     <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="joinClicked(solverName)">
                             <b>0A</b> Your name ({{solverName ? solverName.length : 0}})
                     </ui-textbox> 
@@ -625,6 +625,7 @@ export default Vue.extend({
     }
     if (shouldJoin) {
         this.state.joining = true;
+        document.title = 'Join session | Confuzzle';
         const self = this;
         Vue.nextTick(() => self.$refs.joinModal.open());
     }
@@ -651,6 +652,7 @@ export default Vue.extend({
     const enoSource = params.get('source');
     const puz = params.get('puz');
     const strippedPuz = params.get('🧩');
+
     if (enoSource) {
         var eno = confuz.decompressURL(enoSource);
         const enoState = params.get('state');
@@ -658,26 +660,24 @@ export default Vue.extend({
             eno += confuz.decompressURL(enoState);
         }
         this.crosswordSource = eno;
-        this.sourceUpdated();
     } else if (puz) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
-        this.sourceUpdated();
     } else if (strippedPuz) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true));
-        this.sourceUpdated();
     } else if (localStorage.crosswordSource) {
         this.crosswordSource = localStorage.crosswordSource;
         if (localStorage.crosswordState) {
             this.crosswordSource += localStorage.crosswordState;
         }
-        this.sourceUpdated();
     }
+    if (!this.state.joining)
+      this.sourceUpdated();
   },
   data() {
     return {
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
-      copyMessage: 'Invitation link copied to clipboard',
+      copyMessage: 'Session link copied to clipboard',
       exportMessage: 'Crossword exported to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
@@ -857,6 +857,10 @@ export default Vue.extend({
                 }
             }
         }
+        this.updateTitle()
+    },
+    updateTitle() {
+       document.title = (this.state.colluding ? 'Shared session: ' : '') + this.crossword.meta.name + ' by ' + this.crossword.meta.author + ' | Confuzzle';
     },
     crosswordEdited() {
         const self = this;
@@ -1071,6 +1075,8 @@ export default Vue.extend({
             this.reconnectFailed = false;
             this.state.reconnecting = false;
         } 
+
+        this.updateTitle();
     },
     joinClicked(name) {
         this.joinLoading = true;
@@ -1099,6 +1105,7 @@ export default Vue.extend({
         window.history.replaceState(null, window.location.hostname, '/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
+        this.updateTitle();
     },
     goOffline() {
         this.gridid = '';
@@ -1111,6 +1118,7 @@ export default Vue.extend({
         this.$refs.disconnectedModal.close();
         this.clearAllHighlighted();
         this.snackbarMessage('You left the session');
+        this.updateTitle();
     },
     reconnectClicked(event) {
         this.state.reconnecting = true;
