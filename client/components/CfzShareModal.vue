@@ -104,8 +104,6 @@ export default Vue.extend({
     },
     shareLink() {
         navigator.share({
-          title: 'Confuzzle',
-          text: "Solve a crossword with me at confuzzle.app!",
           url: this.link,
         });
     },
