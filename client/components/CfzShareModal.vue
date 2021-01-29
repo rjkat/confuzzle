@@ -1,5 +1,5 @@
 <template>
-    <ui-modal ref="modal" @reveal="onReveal()" :title="!link ? 'Start session' : 'Invite to session'">
+    <ui-modal ref="modal" @reveal="onReveal()" :title="!link ? 'Start session' : 'Share and solve'">
         <div style="text-align: center; position: relative;">
             <template v-if="!link">
                 <p class="share-info-text">Start a shared session for this crossword and solve with others in real time.</p>

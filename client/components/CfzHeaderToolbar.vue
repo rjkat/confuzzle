@@ -68,6 +68,11 @@
                 v-responsive.md.lg.xl
             ></ui-menu>
         </ui-icon-button>
+        <ui-modal ref="recentModal" title="Open recent">
+            <ul>
+                <li is="ui-button" raised class="file-tile" v-for="m in recentMetas"><span style="align-items: center;" @click="openRecentClicked(m.id)"><span class="file-tile-text">{{m.name}}</span><span class="file-tile-author">{{m.author}}</span></span></li>
+            </ul>
+        </ui-modal>
         <ui-modal ref="aboutModal" title="About">
             <div style="text-align: center;">
                 <p class="about-text">
@@ -111,6 +116,33 @@
     .ui-toolbar__body {
         color: white !important;
     }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-tile {
+  cursor: pointer !important;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 8px;
+  min-width: 0 !important;
+  padding: 4px !important;
+  height: 20px;
+  display: block;
+}
+
+.file-tile-text {
+}
+
+.file-tile-author {
+  margin-left: 6px;
+  color: #888;
+  font-family: $clueFontFamily;
+  text-transform: none;
+  font-size: 13px;
 }
 
 .crossword-meta-name {
@@ -190,12 +222,23 @@ export default Vue.extend({
   props: {
     metadata: Object,
     state: Object,
+    recentCrosswords: Array,
     shareLoading: false,
     shareLink: "",
     showInstall: false,
     emojiText: ""
   },
   computed: {
+    recentMetas() {
+        const metas = [];
+        for (const cwid of this.recentCrosswords) {
+            const m = localStorage[cwid + ':meta'];
+            if (m) {
+                metas.push(JSON.parse(m));
+            }
+        }
+        return metas;
+    },
     menuOptions() {
         var options = [];
         if (this.showInstall)
@@ -205,11 +248,14 @@ export default Vue.extend({
             options.push(this.opt.SOLVE_OFFLINE);
         } else {
             options.push(this.opt.OPEN_PUZZLE);
+
+            if (this.recentMetas.length > 0)
+                options.push(this.opt.OPEN_RECENT);
         }
 
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
-        options.push(this.opt.EXPORT_ENO_LINK);
+        // options.push(this.opt.EXPORT_ENO_LINK);
         options.push(this.opt.ABOUT);
 
         return options;
@@ -267,6 +313,10 @@ export default Vue.extend({
         this.state.compiling = false;
         Vue.nextTick(() => window.print());
     },
+    openRecentClicked(id) {
+        this.$emit('open-recent-clicked', id);
+        this.closeModal('recentModal');
+    },
     selectMenuOption(option) {
         if (option.label == this.opt.SAVE_PUZ.label) {
             this.$emit('download-puz-clicked');
@@ -278,6 +328,8 @@ export default Vue.extend({
             this.$emit('go-offline-clicked');
         } else if (option.label == this.opt.OPEN_PUZZLE.label) {
             this.openPuzzle();
+         } else if (option.label == this.opt.OPEN_RECENT.label) {
+            this.openModal('recentModal');
         } else if (option.label == this.opt.ABOUT.label) {
             this.openModal('aboutModal');
         } else if (option.label == this.opt.INSTALL.label) {
@@ -305,8 +357,12 @@ export default Vue.extend({
             icon: 'add_circle_outline'
         },
         OPEN_PUZZLE: {
-            label: 'Open puzzle...',
+            label: 'Load puzzle file...',
             icon: 'folder_open'
+        },
+        OPEN_RECENT: {
+            label: 'Open recent...',
+            icon: 'history'
         },
         SAVE_PUZ: {
             label: 'Save as .puz',
@@ -317,8 +373,8 @@ export default Vue.extend({
             icon: 'get_app'
         },
         EXPORT_ENO_LINK: {
-            label: 'Export to URL',
-            icon: 'content_copy'
+            label: 'Save as link',
+            icon: 'get_app'
         },
         SOLVE_OFFLINE: {
             label: 'Leave session',

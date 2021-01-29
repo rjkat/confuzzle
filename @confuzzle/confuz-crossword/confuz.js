@@ -315,7 +315,7 @@ export function toPuz(eno) {
         height: grid.height,
         clues: clues,
         solution: solution,
-        state: puz_common.emptyState(solution),
+        state: haveState ? state : puz_common.emptyState(solution),
         hasState: haveState
     }
 

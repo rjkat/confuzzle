@@ -29,7 +29,7 @@
 
 <style lang="scss">
 .cfz-crossword-clue-wrapper {
-    padding-top: 1rem;
+    padding-top: 1.5rem;
     padding-bottom: 1.5rem;
 }
 

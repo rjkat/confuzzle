@@ -17,6 +17,7 @@
         :emojiText="emojiNotation"
         class="hidden-print"
         :state="state"
+        :recentCrosswords="recentCrosswords"
         :showInstall="installPrompt || (iOSSafari && !standalone)"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
@@ -24,10 +25,11 @@
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
+        @open-recent-clicked="openById($event)"
         @emoji-button-clicked="updateEmoji()"
         @copy-emoji-clicked="copyEmojiClicked()"
         @import-emoji-clicked="importEmojiClicked($event)"
-        @export-eno-clicked="exportLinkClicked(getEnoParams())"
+        @export-eno-clicked="exportLinkClicked(getEnoParams(true))"
         @puz-file-uploaded="puzFileUploaded($event)"
         @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
@@ -43,7 +45,7 @@
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join session" :dismissible="false">
+            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join and solve" :dismissible="false">
                 <div style="text-align: center;">
                     <p class="join-info-text">Choose your name to join and solve this crossword with others in real time.</p>
                     <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="joinClicked(solverName)">
@@ -540,8 +542,11 @@ export default Vue.extend({
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
-    
-    
+    pageTitle() {
+      if (this.state.joining)
+        return 'Join session | Confuzzle';
+      return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
+    },
     selectedClue() {
         if (!this.crossword)
             return undefined;
@@ -551,6 +556,15 @@ export default Vue.extend({
             }
         }
         return undefined;
+    },
+    statelessSource() {
+      return this.crosswordSource.split(/\n#\s+state\n/)[0];
+    },
+    crosswordState() {
+      return confuz.stateFromClues(this.crossword.clues);
+    },
+    crosswordId() {
+      return this.crossword.meta.id;
     },
     gridComplete() {
         if (!this.crossword)
@@ -567,18 +581,24 @@ export default Vue.extend({
         }
         return true;
     },
-    crosswordState() {
-        return confuz.stateFromClues(this.crossword.clues);
-    }
   },
   watch: {
-    crosswordSource(newValue, oldValue) {
-        localStorage.crosswordSource = newValue;
-    },
     crosswordState(newValue, oldValue) {
-        localStorage.crosswordState = newValue;
+      localStorage[this.crosswordId + ':state'] = newValue;
     },
-    
+    crosswordSource(newValue, oldValue) {
+      if (!this.state.colluding && !this.state.joining) {
+        this.updateHistory();
+      }
+      
+      this.lastId = this.crosswordId;
+      this.renderCrossword();
+      this.redrawEditor();
+      this.updateTitle();
+      if (!this.state.colluding && !this.state.joining) {
+        this.updateLocalStorage();
+      }
+    },
     selectedClue(newValue, oldValue) {
         if (oldValue) {
             this.sendUpdate({
@@ -625,7 +645,6 @@ export default Vue.extend({
     }
     if (shouldJoin) {
         this.state.joining = true;
-        document.title = 'Join session | Confuzzle';
         const self = this;
         Vue.nextTick(() => self.$refs.joinModal.open());
     }
@@ -653,38 +672,50 @@ export default Vue.extend({
     const puz = params.get('puz');
     const strippedPuz = params.get('🧩');
 
+    if (localStorage.recentCrosswords)
+      this.recentCrosswords = JSON.parse(localStorage.recentCrosswords);
+
     if (enoSource) {
-        var eno = confuz.decompressURL(enoSource);
+        let eno = confuz.decompressURL(enoSource);
+        const cw = parser.parse(eno);
         const enoState = params.get('state');
         if (enoState) {
-            eno += confuz.decompressURL(enoState);
+          eno += confuz.decompressURL(enoState);
+        } else if (localStorage[cw.meta.id + ':state']) {
+          eno += localStorage[cw.meta.id + ':state'];
         }
         this.crosswordSource = eno;
     } else if (puz) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
     } else if (strippedPuz) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true));
-    } else if (localStorage.crosswordSource) {
-        this.crosswordSource = localStorage.crosswordSource;
-        if (localStorage.crosswordState) {
-            this.crosswordSource += localStorage.crosswordState;
+    } else if (localStorage.crosswordId) {
+        let cwid = localStorage.crosswordId; 
+        let eno = localStorage[cwid + ':source'];
+        if (eno) {
+          const cw = parser.parse(eno);
+          if (localStorage[cw.meta.id + ':state']) {
+            eno += localStorage[cw.meta.id + ':state'];
+          }
+          this.crosswordSource = eno;
         }
     }
-    if (!this.state.joining)
-      this.sourceUpdated();
+    
   },
   data() {
     return {
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
-      copyMessage: 'Session link copied to clipboard',
-      exportMessage: 'Crossword exported to clipboard',
+      copyMessage: 'Link copied to clipboard',
+      exportMessage: 'Crossword saved to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
       gridSizeLocked: false,
       dragCount: 0,
+      maxRecent: 5,
+      recentCrosswords: [],
       solverid: 0,
       socketid: '',
       showGrid: true,
@@ -695,10 +726,20 @@ export default Vue.extend({
       iOSPrompt: false,
       installPrompt: null,
       lastInputWasGrid: true,
-      emojiNotation: ''
+      emojiNotation: '',
+      lastId: ''
     };
   },
   methods: {
+    updateHistory() {
+      const sameCrossword = this.crosswordId == this.lastId;
+      
+      if (sameCrossword) {
+        this.replaceState();
+      } else {
+        this.pushState();
+      }
+    },
     beforeInstall(e) {
         e.preventDefault();
         this.installPrompt = e;
@@ -707,13 +748,8 @@ export default Vue.extend({
         this.iOSPrompt = false;
     },
     getShareablePuz() {
-        var eno = this.crosswordSource;
-        var puz = confuz.toPuz(eno);
-        if (!puz.state && !this.state.compiling) {
-            eno += this.crosswordState;
-            puz = confuz.toPuz(eno);
-        }
-        return puz;
+        var eno = this.statelessSource + (this.state.compiling ? '' : this.crosswordState);
+        return confuz.toPuz(eno);
     },
     getEmojiNotation() {
         return this.getShareablePuz().toEmoji(true);
@@ -836,8 +872,6 @@ export default Vue.extend({
         this.renderLoading = false;
         this.showScratchpad = false;
 
-        // strip any state from the source, we have rendered it now
-        this.crosswordSource = this.crosswordSource.split(/\n#\s+state\n/)[0];
 
 
         const grid = this.crossword.grid;
@@ -857,10 +891,27 @@ export default Vue.extend({
                 }
             }
         }
-        this.updateTitle()
     },
     updateTitle() {
-       document.title = (this.state.colluding ? 'Shared session: ' : '') + this.crossword.meta.name + ' by ' + this.crossword.meta.author + ' | Confuzzle';
+       document.title = this.pageTitle;
+    },
+    updateLocalStorage() {
+      localStorage[this.crosswordId + ':source'] = this.statelessSource;
+      localStorage[this.crosswordId + ':meta'] = JSON.stringify(this.crossword.meta);
+      localStorage.crosswordId = this.crosswordId;
+      let recent = [];
+      if (localStorage.recentCrosswords) {
+        recent = JSON.parse(localStorage.recentCrosswords);
+        for (let i = 0; i < recent.length; i++) {
+          if (recent[i] == this.crosswordId) {
+            recent.splice(i, 1);
+            break;
+          }
+        }
+      }
+      recent.splice(0, 0, this.crosswordId);
+      this.recentCrosswords = recent.slice(0, this.maxRecent);
+      localStorage.recentCrosswords = JSON.stringify(recent);
     },
     crosswordEdited() {
         const self = this;
@@ -882,11 +933,9 @@ export default Vue.extend({
     },
     scrambleClicked() {
         this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: true});
-        this.sourceUpdated();
     },
     unscrambleClicked() {
         this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: false});
-        this.sourceUpdated();
     },
     lostConnection() {
         if (this.$options.socket) {
@@ -1057,11 +1106,7 @@ export default Vue.extend({
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
 
-        this.crosswordSource = msg.crossword.source;
-        if (msg.crossword.state) {
-            this.crosswordSource += msg.crossword.state;
-        }
-        this.renderCrossword();
+        this.crosswordSource = msg.crossword.source + (msg.crossword.state ? msg.crossword.state : '');
         this.replayEvents(msg.events);
 
         this.state.joining = false;
@@ -1075,7 +1120,6 @@ export default Vue.extend({
             this.reconnectFailed = false;
             this.state.reconnecting = false;
         } 
-
         this.updateTitle();
     },
     joinClicked(name) {
@@ -1093,7 +1137,7 @@ export default Vue.extend({
         this.shareLoading = true;
         this.$options.socket.emit('shareCrossword', {
             crossword: {
-                source: this.crosswordSource,
+                source: this.statelessSource,
                 state: this.crosswordState
             },
             name: name
@@ -1102,7 +1146,8 @@ export default Vue.extend({
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
-        window.history.replaceState(null, window.location.hostname, '/' + msg.gridid);
+        this.updateTitle();
+        window.history.replaceState(null, this.pageTitle, '/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
         this.updateTitle();
@@ -1110,7 +1155,8 @@ export default Vue.extend({
     goOffline() {
         this.gridid = '';
         this.state.colluding = false;
-        window.history.replaceState(null, window.location.hostname, '/');
+        this.updateTitle();
+        window.history.replaceState(null, this.pageTitle, '/');
         if (this.$options.socket) {
             this.$options.socket.close();
         }
@@ -1118,7 +1164,7 @@ export default Vue.extend({
         this.$refs.disconnectedModal.close();
         this.clearAllHighlighted();
         this.snackbarMessage('You left the session');
-        this.updateTitle();
+        this.updateHistory();
     },
     reconnectClicked(event) {
         this.state.reconnecting = true;
@@ -1170,21 +1216,32 @@ export default Vue.extend({
     },
     enoFileUploaded(buf) {
         this.crosswordSource = Buffer.from(buf).toString('utf8');
-        this.sourceUpdated();
+    },
+    openById(cwid) {
+      let eno = localStorage[cwid + ':source'];
+      if (eno) {
+        const cw = parser.parse(eno);
+        if (localStorage[cw.meta.id + ':state']) {
+          eno += localStorage[cw.meta.id + ':state'];
+        }
+        this.crosswordSource = eno;
+      }
     },
     emojiFileUploaded(buf) {
         const emoji = Buffer.from(buf).toString('utf8');
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true));
-        this.sourceUpdated();
     },
     puzFileUploaded(buf) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf)));
-        this.sourceUpdated();
     },
-    sourceUpdated() {
-        this.renderCrossword();
-        this.redrawEditor();
+    pushState(title) {
+      window.history.pushState(null, title, this.getEnoParams());
     },
+    replaceState() {
+      if (!this.state.colluding)
+        window.history.replaceState(null, this.pageTitle, this.getEnoParams());
+    },
+
     keyListener(e) {
         // save .puz
         if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
@@ -1205,7 +1262,7 @@ export default Vue.extend({
         // export eno to clipboard
         } else if (e.key == "i" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            this.exportLinkClicked(this.getEnoParams())
+            this.exportLinkClicked(this.getEnoParams(true))
         }
     },
    
@@ -1214,7 +1271,7 @@ export default Vue.extend({
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {
-        var eno = this.crosswordSource;
+        var eno = this.statelessSource;
         if (!this.state.compiling) {
             eno += this.crosswordState;
         }
@@ -1224,7 +1281,7 @@ export default Vue.extend({
     downloadCrossword(blob, extension) {
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        const basename = this.crossword.meta.name + ' by ' + this.crossword.meta.author;
+        const basename = this.crossword.meta.fullName;
         const filename = basename + extension;
         link.download = filename;
         link.click();
@@ -1232,9 +1289,9 @@ export default Vue.extend({
     copyClicked() {
         this.snackbarMessage(this.copyMessage);
     },
-    getEnoParams() {
-        var params = '?source=' + confuz.compressURL(this.crosswordSource);
-        if (!this.state.compiling && this.crosswordState) {
+    getEnoParams(stateful) {
+        var params = '?source=' + confuz.compressURL(this.statelessSource);
+        if (stateful) {
             params += '&state=' + confuz.compressURL(this.crosswordState);
         }
         return params;
@@ -1256,7 +1313,6 @@ export default Vue.extend({
     },
     importEmojiClicked(emoji) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true));
-        this.sourceUpdated();
     },
     exportLinkClicked(params) {
         const link = window.location.origin.replace(/\/$/, "") + params;

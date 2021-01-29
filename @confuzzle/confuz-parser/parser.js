@@ -389,6 +389,7 @@ export function parse(input, compiling, options) {
        cw.meta.type = 'cryptic';
     }
   });
+  cw.meta.fullName = cw.meta.name + ' by ' + cw.meta.author;
 
   const grid = doc.requiredSection('grid');
   ['width', 'height'].forEach(field =>
@@ -447,8 +448,12 @@ export function parse(input, compiling, options) {
   }
 
   for (const [clueid, clue] of Object.entries(cw.clues)) {
+    // identify crossword using text of first clue
+    if (!cw.meta.id)
+      cw.meta.id = clue.text;
     clue.lengthText = getLengthText(clue);
   }
+
   return cw;
 };
 
