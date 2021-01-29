@@ -43,7 +43,7 @@
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join Crossword" :dismissible="false">
+            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join crossword" :dismissible="false">
                 <div style="text-align: center;">
                     <p class="join-info-text">Join this crossword and collude with others in real time.</p>
                     <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="joinClicked(solverName)">

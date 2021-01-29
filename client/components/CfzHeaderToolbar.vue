@@ -27,6 +27,7 @@
         </ui-icon-button>
         <cfz-share-modal
             ref="shareModal"
+            :title="metadata.name"
             :loading="shareLoading"
             :link="shareLink"
             v-on="$listeners">

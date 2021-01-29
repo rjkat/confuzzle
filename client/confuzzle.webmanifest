@@ -13,6 +13,7 @@
   "share_target": {
     "action": "/share-target/",
     "params": {
+      "title": "title",
       "url": "url"
     }
   },

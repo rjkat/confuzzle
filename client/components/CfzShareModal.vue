@@ -83,6 +83,7 @@ export default Vue.extend({
     };
   },
   props: {
+    title: "",
     loading: false,
     link: "",
   },
@@ -104,6 +105,7 @@ export default Vue.extend({
     },
     shareLink() {
         navigator.share({
+          title: this.title,
           url: this.link,
         });
     },
