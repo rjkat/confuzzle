@@ -1,5 +1,5 @@
 <template>
-    <ui-modal ref="modal" title="Lost Connection" :dismissible="canClose">
+    <ui-modal ref="modal" title="Lost connection" :dismissible="canClose">
         <div style="text-align: center;">
                 <p class="disconnect-info-text" v-if="!reconnectFailed">
                     Your connection was interrupted. How would you like to 
