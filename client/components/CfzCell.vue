@@ -2,8 +2,8 @@
 <td :data-solver-mask="solverMask"
     :data-number="cell.number"
     :data-selected=cell.selected
-    :data-across-separator="!isEndCol ? cell.acrossSeparator : undefined"
-    :data-down-separator="!isEndRow ? cell.downSeparator : undefined"
+    :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
+    :data-down-separator="showDownSeparator ? cell.downSeparator : undefined"
     :data-empty="cell.empty"
     :style="{backgroundColor: cell.shadingColor}"
     @click.prevent="onClick($event)"
@@ -220,6 +220,18 @@ export default Vue.extend({
     }
   },
   computed: {
+    showAcrossSeparator() {
+        if (!this.cell || !this.cell.clues || !this.cell.clues.across)
+            return false;
+        const clueCells = this.cell.clues.across.cells;
+        return (this.cell.offsets.across != clueCells.length - 1);
+    },
+    showDownSeparator() {
+        if (!this.cell || !this.cell.clues || !this.cell.clues.down)
+            return false;
+        const clueCells = this.cell.clues.down.cells;
+        return (this.cell.offsets.down != clueCells.length - 1);
+    },
     cellContents() {
         return this.cell.contents;
     },

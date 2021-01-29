@@ -1,20 +1,22 @@
 <template>
-    <ui-modal ref="modal" @reveal="onReveal()" title="Share Crossword">
+    <ui-modal ref="modal" @reveal="onReveal()" :title="!link ? 'Start session' : 'Invite to session'">
         <div style="text-align: center; position: relative;">
             <template v-if="!link">
-                <p class="share-info-text">Get a shared link to this crossword and solve with others in real time.</p>
-                <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="shareClicked()">
+                <p class="share-info-text">Start a shared session for this crossword and solve with others in real time.</p>
+                <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="startSession()">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>
-                <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="shareClicked()">Share</ui-button>
+                <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="startSession()">Start</ui-button>
             </template>
             <template v-else>
                 <div style="display: flex; align-items: center;">
-                    <img v-if="qrString" :src="qrString" class="share-qr-code" alt="QR code for shared link"/>
-                    <p class="share-info-text">Share this link to solve with others. It will remain active whilst there is at least one active solver.</p>
+                    <img v-if="qrString" :src="qrString" class="share-qr-code" alt="QR code for invitation link"/>
+                    <p class="share-info-text">Invite others to join your session using this link. The session will remain active whilst there is at least one active solver.</p>
                 </div>
                 <div class="crossword-link-text">{{link}}</div>
-                <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
+
+                <ui-button v-if="shareAvailable" color="primary" style="margin-top: 1em;" @click="shareLink()">Share</ui-button>
+                <ui-button v-else color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
             </template>
         </div>
     </ui-modal>
@@ -76,7 +78,8 @@ export default Vue.extend({
     return {
       solverName: "",
       bundler: "Parcel",
-      qrString: ""
+      qrString: "",
+      shareAvailable: false
     };
   },
   props: {
@@ -96,8 +99,15 @@ export default Vue.extend({
             console.error(err)
         });
     },
-    shareClicked() {
+    startSession() {
         this.$emit('share-clicked', this.solverName);
+    },
+    shareLink() {
+        navigator.share({
+          title: 'Confuzzle',
+          text: 'Join my crossword session',
+          url: this.link,
+        });
     },
     copyClicked() {
         copy(this.link);
@@ -115,6 +125,8 @@ export default Vue.extend({
     }
   },
   mounted() {
+    if ('share' in navigator)
+        this.shareAvailable = true;
     if (this.link)
         this.makeQrCode(this.link)
   }

@@ -19,7 +19,7 @@
         <ui-icon-button
             :color="state.colluding ? 'green' : 'white'"
             type="secondary"
-            :icon="state.colluding ? 'group_add' : 'share'"
+            icon="group_add"
             size="large"
             @click="openModal('shareModal')"
             v-if="isOnline"
@@ -316,11 +316,11 @@ export default Vue.extend({
             icon: 'get_app'
         },
         EXPORT_ENO_LINK: {
-            label: 'Copy as URL',
+            label: 'Export to URL',
             icon: 'content_copy'
         },
         SOLVE_OFFLINE: {
-            label: 'Solve alone',
+            label: 'Leave session',
             icon: 'exit_to_app'
         },
         ABOUT: {

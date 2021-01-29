@@ -366,6 +366,8 @@ const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
 const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
 
+import copy from 'copy-to-clipboard';
+
 import {EnoError} from 'enolib'
 
 const {Manager} = require("socket.io-client");
@@ -675,7 +677,7 @@ export default Vue.extend({
     return {
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
-      copyMessage: 'Shared link copied to clipboard',
+      copyMessage: 'Invitation link copied to clipboard',
       exportMessage: 'Crossword exported to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
@@ -997,12 +999,12 @@ export default Vue.extend({
     solversChanged(msg) {
         this.solvers = msg.solvers;
         if (msg.joined) {
-            this.snackbarMessage(msg.joined.name + ' joined the crossword');
+            this.snackbarMessage(msg.joined.name + ' joined the session');
         } else if (msg.disconnected) {
             for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
                 clue.clearHighlight(msg.disconnected.solverid);
             }
-            this.snackbarMessage(msg.disconnected.name + ' left the crossword');
+            this.snackbarMessage(msg.disconnected.name + ' left the session');
         }
     },
     fillCell(msg) {
@@ -1108,7 +1110,7 @@ export default Vue.extend({
         this.$options.socket = null;
         this.$refs.disconnectedModal.close();
         this.clearAllHighlighted();
-        this.snackbarMessage('You left the crossword');
+        this.snackbarMessage('You left the session');
     },
     reconnectClicked(event) {
         this.state.reconnecting = true;
@@ -1146,7 +1148,7 @@ export default Vue.extend({
       if (!this.state.colluding) {
         const file = event.dataTransfer.files[0];
         const self = this;
-        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
+        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz') || file.name.endsWith('.txt')) {
             file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
         } else if (file.name.endsWith('.🧩')) {
             file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
@@ -1209,7 +1211,7 @@ export default Vue.extend({
             eno += this.crosswordState;
         }
         const blob = new Blob([eno], {type: "text/plain"});
-        this.downloadCrossword(blob, '.confuz')
+        this.downloadCrossword(blob, '.confuz.txt')
     },
     downloadCrossword(blob, extension) {
         const link = document.createElement('a');
@@ -1241,7 +1243,7 @@ export default Vue.extend({
         this.emojiNotation = this.getEmojiNotation();
     },
     copyEmojiClicked() {
-        navigator.clipboard.writeText(this.emojiNotation);
+        copy(this.emojiNotation);
         this.snackbarMessage(this.exportEmojiMessage);
     },
     importEmojiClicked(emoji) {
@@ -1250,7 +1252,7 @@ export default Vue.extend({
     },
     exportLinkClicked(params) {
         const link = window.location.origin.replace(/\/$/, "") + params;
-        navigator.clipboard.writeText(link);
+        copy(link);
         this.snackbarMessage(this.exportMessage);
     }
   }

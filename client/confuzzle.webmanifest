@@ -10,6 +10,14 @@
       "purpose": "any maskable"
     }
   ],
+  "share_target": {
+    "action": "/share-target/",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
   "name": "Confuzzle",
   "short_name": "Confuzzle",
   "theme_color": "#363636",

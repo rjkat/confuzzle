@@ -19,13 +19,6 @@ let server;
 
 var env = process.argv[2] || 'dev';
 switch (env) {
-   case 'aws':
-        app.use(secure);
-        server = https.createServer({
-            key: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/privkey.pem'),
-            cert: fs.readFileSync('/etc/letsencrypt/live/anagrind.com/fullchain.pem')
-        }, app);
-        break;
     case 'heroku':
         app.use(secure);
     case 'dev':
