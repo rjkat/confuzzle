@@ -587,7 +587,7 @@ export default Vue.extend({
       localStorage[this.crosswordId + ':state'] = newValue;
     },
     crosswordSource(newValue, oldValue) {
-      if (!this.state.colluding && !this.state.joining) {
+      if (!this.state.colluding && !this.state.joining && !this.freezeHistory) {
         this.updateHistory();
       }
       
@@ -632,7 +632,8 @@ export default Vue.extend({
             this.$options.explosions.cancel();
             this.$options.explosions = undefined;
         }
-    }
+    },
+    
   },
   created() {
     var shouldJoin = false;
@@ -651,6 +652,7 @@ export default Vue.extend({
   },
   
   mounted() {
+    window.addEventListener('popstate', this.handlePopState);
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleOrientationChange);
     window.addEventListener('beforeinstallprompt', this.beforeInstall);
@@ -666,41 +668,7 @@ export default Vue.extend({
     this.handleOrientationChange();
     this.handleResize();
     this.gridSizeLocked = true;
-
-    const params = new URLSearchParams(window.location.search);
-    const enoSource = params.get('source');
-    const puz = params.get('puz');
-    const strippedPuz = params.get('🧩');
-
-    if (localStorage.recentCrosswords)
-      this.recentCrosswords = JSON.parse(localStorage.recentCrosswords);
-
-    if (enoSource) {
-        let eno = confuz.decompressURL(enoSource);
-        const cw = parser.parse(eno);
-        const enoState = params.get('state');
-        if (enoState) {
-          eno += confuz.decompressURL(enoState);
-        } else if (localStorage[cw.meta.id + ':state']) {
-          eno += localStorage[cw.meta.id + ':state'];
-        }
-        this.crosswordSource = eno;
-    } else if (puz) {
-        this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
-    } else if (strippedPuz) {
-        this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true));
-    } else if (localStorage.crosswordId) {
-        let cwid = localStorage.crosswordId; 
-        let eno = localStorage[cwid + ':source'];
-        if (eno) {
-          const cw = parser.parse(eno);
-          if (localStorage[cw.meta.id + ':state']) {
-            eno += localStorage[cw.meta.id + ':state'];
-          }
-          this.crosswordSource = eno;
-        }
-    }
-    
+    this.initSource();
   },
   data() {
     return {
@@ -727,13 +695,13 @@ export default Vue.extend({
       installPrompt: null,
       lastInputWasGrid: true,
       emojiNotation: '',
-      lastId: ''
+      lastId: '',
+      freezeHistory: false
     };
   },
   methods: {
     updateHistory() {
       const sameCrossword = this.crosswordId == this.lastId;
-      
       if (sameCrossword) {
         this.replaceState();
       } else {
@@ -776,6 +744,11 @@ export default Vue.extend({
     },
     showTooltipsChanged(show) {
         this.showTooltips = show;
+    },
+    handlePopState() {
+      this.freezeHistory = true;
+      this.initSource();
+      Vue.nextTick(() => {this.freezeHistory = false});
     },
     // https://stackoverflow.com/a/11744120
     handleResize() {
@@ -895,6 +868,41 @@ export default Vue.extend({
     updateTitle() {
        document.title = this.pageTitle;
     },
+    initSource() {
+      const params = new URLSearchParams(window.location.search);
+      const enoSource = params.get('source');
+      const puz = params.get('puz');
+      const strippedPuz = params.get('🧩');
+
+      if (localStorage.recentCrosswords)
+        this.recentCrosswords = JSON.parse(localStorage.recentCrosswords);
+
+      if (enoSource) {
+          let eno = confuz.decompressURL(enoSource);
+          const cw = parser.parse(eno);
+          const enoState = params.get('state');
+          if (enoState) {
+            eno += confuz.decompressURL(enoState);
+          } else if (localStorage[cw.meta.id + ':state']) {
+            eno += localStorage[cw.meta.id + ':state'];
+          }
+          this.crosswordSource = eno;
+      } else if (puz) {
+          this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
+      } else if (strippedPuz) {
+          this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true));
+      } else if (localStorage.crosswordId) {
+        let cwid = localStorage.crosswordId; 
+        let eno = localStorage[cwid + ':source'];
+        if (eno) {
+          const cw = parser.parse(eno);
+          if (localStorage[cw.meta.id + ':state']) {
+            eno += localStorage[cw.meta.id + ':state'];
+          }
+          this.crosswordSource = eno;
+        }
+      }
+    },
     updateLocalStorage() {
       localStorage[this.crosswordId + ':source'] = this.statelessSource;
       localStorage[this.crosswordId + ':meta'] = JSON.stringify(this.crossword.meta);
@@ -910,7 +918,7 @@ export default Vue.extend({
         }
       }
       recent.splice(0, 0, this.crosswordId);
-      this.recentCrosswords = recent.slice(0, this.maxRecent);
+      this.recentCrosswords = recent.slice(1, this.maxRecent + 1);
       localStorage.recentCrosswords = JSON.stringify(recent);
     },
     crosswordEdited() {

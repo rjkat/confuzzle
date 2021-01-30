@@ -68,9 +68,14 @@
                 v-responsive.md.lg.xl
             ></ui-menu>
         </ui-icon-button>
-        <ui-modal ref="recentModal" title="Open recent">
+        <ui-modal ref="recentModal" title="Recent puzzles">
             <ul>
-                <li is="ui-button" raised class="file-tile" v-for="m in recentMetas"><span style="align-items: center;" @click="openRecentClicked(m.id)"><span class="file-tile-text">{{m.name}}</span><span class="file-tile-author">{{m.author}}</span></span></li>
+                <li is="ui-button" raised @click="openRecentClicked(m.id)" class="file-tile" v-for="m in recentMetas">
+                    <div class="file-tile-text">
+                        <span class="file-tile-name">{{m.name}}</span>
+                        <span class="file-tile-author">{{m.author}}</span>
+                    </div>
+                </li>
             </ul>
         </ui-modal>
         <ui-modal ref="aboutModal" title="About">
@@ -135,6 +140,7 @@ ul {
 }
 
 .file-tile-text {
+    line-height: 100%;
 }
 
 .file-tile-author {
@@ -357,7 +363,7 @@ export default Vue.extend({
             icon: 'add_circle_outline'
         },
         OPEN_PUZZLE: {
-            label: 'Load puzzle file...',
+            label: 'Load file...',
             icon: 'folder_open'
         },
         OPEN_RECENT: {
