@@ -85,11 +85,6 @@ app.use(function (req, res, next) {
         res.sendFile(path.join(__dirname + '/../dist/syntax.html'));
         return;
     }
-    let gridid = req.url.split('/')[1];
-    if (!queryGrid(gridid)) {
-        res.sendStatus(404);
-        return;
-    }
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
 });
 

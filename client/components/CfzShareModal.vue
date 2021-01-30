@@ -94,6 +94,8 @@ export default Vue.extend({
   },
   methods: {
     makeQrCode(url) {
+        if (!url)
+            return;
         QRCode.toDataURL(url).then(s => {
             this.qrString = s;
         }).catch(err => {
@@ -127,8 +129,7 @@ export default Vue.extend({
   mounted() {
     if ('share' in navigator)
         this.shareAvailable = true;
-    if (this.link)
-        this.makeQrCode(this.link)
+    this.makeQrCode(this.link)
   }
 });
 </script>

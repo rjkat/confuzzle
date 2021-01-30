@@ -45,13 +45,22 @@
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining">
-            <ui-modal ref="joinModal" @reveal="onJoinReveal()" title="Join and solve" :dismissible="false">
-                <div style="text-align: center;">
+            <ui-modal ref="joinModal" @reveal="onJoinReveal()" :title="!joinFailed ? 'Join and solve' : 'Session not found'" :dismissible="false">
+                <div v-if="!joinFailed" style="text-align: center;">
                     <p class="join-info-text">Choose your name to join and solve this crossword with others in real time.</p>
                     <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="joinClicked(solverName)">
                             <b>0A</b> Your name ({{solverName ? solverName.length : 0}})
                     </ui-textbox> 
                     <ui-button :loading="joinLoading" color="primary" :disabled="!solverName" @click="joinClicked(solverName)">Join</ui-button>
+                </div>
+                <div v-else style="text-align: center;">
+                  <p class="join-info-text">
+                    Unable to join the shared session. Sessions only stay active
+                    whilst there is at least one solver connected.
+                    If you received this link from someone, please ask them to
+                    start another session.
+                  </p>
+                  <ui-button color="primary" @click="dismissJoinError()">Dismiss</ui-button>
                 </div>
             </ui-modal>
         </template>
@@ -521,6 +530,7 @@ export default Vue.extend({
     isPortrait: false,
     standalone: false,
     joinLoading: false,
+    joinFailed: false,
     shareLoading: false,
     renderLoading: false,
     reconnectFailed: false,
@@ -805,11 +815,18 @@ export default Vue.extend({
     createSocket() {
         const self = this;
         this.$options.manager = new Manager(window.location.origin, {
-            reconnectionAttempts: 5
+            reconnectionAttempts: 5,
+            autoConnect: false
+        });
+        this.$options.manager.on('error', (err) => {
+            console.log(err);
+            this.connectFailed();
         });
         this.$options.manager.on('reconnect_failed', (err) => {
             this.lostConnection();
         });
+
+        this.$options.manager.open();
         this.$options.socket = this.$options.manager.socket('/');
 
         this.$options.socket.on('connect', () => {
@@ -829,12 +846,14 @@ export default Vue.extend({
           }
         });
 
+        this.$options.socket.open();
+
         this.handlers = {
             crosswordShared: 'shareSucceeded',
             fillCell: 'fillCell',
             selectionChanged: 'selectionChanged',
             gridJoined: 'gridJoined',
-            noSuchGrid: 'lostConnection',
+            noSuchGrid: 'connectFailed',
             solversChanged: 'solversChanged'
         };
         for (let [action, callback] of Object.entries(this.handlers)) {
@@ -976,6 +995,13 @@ export default Vue.extend({
     },
     unscrambleClicked() {
         this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: false});
+    },
+    connectFailed() {
+      this.joinLoading = false;
+      this.joinFailed = true;
+    },
+    dismissJoinError() {
+      window.location.replace("/");
     },
     lostConnection() {
         if (this.$options.socket) {
