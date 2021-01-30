@@ -544,7 +544,7 @@ export default Vue.extend({
     },
     pageTitle() {
       if (this.state.joining)
-        return 'Join session | Confuzzle';
+        return 'Join session: ' + this.gridid + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
     },
     selectedClue() {
@@ -636,18 +636,8 @@ export default Vue.extend({
     
   },
   created() {
-    var shouldJoin = false;
-    if (window.location.pathname != "/") {
-        const pathParts = window.location.pathname.split('/');
-        if (pathParts.length > 1) {
-            this.gridid = pathParts[1];
-            shouldJoin = true;
-        }
-    }
-    if (shouldJoin) {
-        this.state.joining = true;
-        const self = this;
-        Vue.nextTick(() => self.$refs.joinModal.open());
+    if (this.shouldJoin()) {
+      this.startJoining();
     }
   },
   
@@ -668,7 +658,12 @@ export default Vue.extend({
     this.handleOrientationChange();
     this.handleResize();
     this.gridSizeLocked = true;
-    this.initSource();
+
+    if (this.shouldJoin()) {
+      this.startJoining();
+    } else {
+      this.initSource();
+    }
   },
   data() {
     return {
@@ -700,6 +695,23 @@ export default Vue.extend({
     };
   },
   methods: {
+    shouldJoin() {
+      var shouldJoin = false;
+      if (window.location.pathname != "/") {
+          const pathParts = window.location.pathname.split('/');
+          if (pathParts.length > 1) {
+              this.gridid = pathParts[1];
+              shouldJoin = true;
+          }
+      }
+      return shouldJoin;
+    },
+    startJoining() {
+        this.state.joining = true;
+        const self = this;
+        this.updateTitle();
+        Vue.nextTick(() => self.$refs.joinModal.open());
+    },
     updateHistory() {
       const sameCrossword = this.crosswordId == this.lastId;
       if (sameCrossword) {
@@ -746,9 +758,29 @@ export default Vue.extend({
         this.showTooltips = show;
     },
     handlePopState() {
-      this.freezeHistory = true;
-      this.initSource();
-      Vue.nextTick(() => {this.freezeHistory = false});
+      this.gridid = '';
+      if (this.state.colluding) {
+        this.state.colluding = false;
+        if (this.$options.socket) {
+            this.$options.socket.close();
+        }
+        this.$options.socket = null;
+        this.clearAllHighlighted();
+        this.snackbarMessage('You left the session');
+      }
+      if (this.state.joining) {
+        this.state.joining = false;
+      }
+      if (this.shouldJoin()) {
+        this.startJoining();
+      } else {
+        this.freezeHistory = true;
+        this.initSource();
+        Vue.nextTick(() => {
+          this.freezeHistory = false
+        });
+      }
+      this.updateTitle();
     },
     // https://stackoverflow.com/a/11744120
     handleResize() {
@@ -1155,7 +1187,7 @@ export default Vue.extend({
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
         this.updateTitle();
-        window.history.replaceState(null, this.pageTitle, '/' + msg.gridid);
+        window.history.pushState(null, this.pageTitle, '/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
         this.updateTitle();
@@ -1164,7 +1196,6 @@ export default Vue.extend({
         this.gridid = '';
         this.state.colluding = false;
         this.updateTitle();
-        window.history.replaceState(null, this.pageTitle, '/');
         if (this.$options.socket) {
             this.$options.socket.close();
         }
@@ -1243,7 +1274,7 @@ export default Vue.extend({
         this.crosswordSource = confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf)));
     },
     pushState(title) {
-      window.history.pushState(null, title, this.getEnoParams());
+      window.history.pushState(null, title, '/' + this.getEnoParams());
     },
     replaceState() {
       if (!this.state.colluding)
