@@ -1,0 +1,16 @@
+{
+    "name": "@confuzzle/move-to-front",
+    "version": "1.0.0",
+    "description": "naive Move-to-front transform",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "mtf.js",
+    "keywords": [
+        "move-to-front",
+        "transform",
+        "mtf",
+        "compression"
+    ],
+    "dependencies": {
+    }
+}

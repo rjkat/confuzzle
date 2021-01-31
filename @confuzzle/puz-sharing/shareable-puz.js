@@ -5,8 +5,8 @@ const PuzCrossword = require('@confuzzle/puz-crossword').PuzCrossword;
 const ecoji = require('@confuzzle/ecoji-buffers');
 const base64url = require("base64url");
 
-const mtf = require('./transforms/mtf');
-const bwt = require('./transforms/bwt');
+const mtf = require('@confuzzle/move-to-front');
+const bwt = require('@confuzzle/burrows-wheeler');
 const rc = require('@thi.ng/range-coder');
 
 const PUZZLE_EMOJI_MAGIC = '🧩✨0️⃣'

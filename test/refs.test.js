@@ -70,5 +70,5 @@ clues:
     - 3D
 `
     const cw = parser.parse(crossword);
-    console.log(JSON.stringify(cw.clues));
+    // console.log(JSON.stringify(cw.clues));
 });

@@ -6,8 +6,8 @@ const confuz = require('../@confuzzle/confuz-crossword/confuz');
 const TEST_PUZ_FILE = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz')
 const TEST_PUZ = ShareablePuz.from(fs.readFileSync(TEST_PUZ_FILE));
 
-const bwt = require('../@confuzzle/puz-sharing/transforms/bwt');
-const mtf = require('../@confuzzle/puz-sharing/transforms/mtf');
+const bwt = require('../@confuzzle/burrows-wheeler');
+const mtf = require('../@confuzzle/move-to-front');
 
 const ecoji = require('@confuzzle/ecoji-buffers');
 const rc = require('@thi.ng/range-coder');

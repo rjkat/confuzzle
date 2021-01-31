@@ -1,0 +1,18 @@
+{
+    "name": "@confuzzle/burrows-wheeler",
+    "version": "1.0.0",
+    "description": "naive Burrows-Wheeler transform",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "bwt.js",
+    "keywords": [
+        "burrows-wheeler",
+        "transform",
+        "bwt",
+        "burrows",
+        "wheeler",
+        "compression"
+    ],
+    "dependencies": {
+    }
+}

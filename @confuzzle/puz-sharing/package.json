@@ -23,6 +23,8 @@
         "@confuzzle/writepuz": "^1.0.1",
         "@confuzzle/ecoji-buffers": "^1.0.0",
         "base64url": "^3.0.1",
+        "@confuzzle/move-to-front": "^1.0.0",
+        "@confuzzle/burrows-wheeler": "^1.0.0",
         "@thi.ng/range-coder": "^1.0.64"
     }
 }

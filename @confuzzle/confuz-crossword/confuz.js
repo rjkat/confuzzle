@@ -2,17 +2,23 @@ const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
 const parser = require('../confuz-parser/parser');
 const puz_common = require('@confuzzle/puz-common');
 const base64url = require("base64url");
-const LZUTF8 = require('lzutf8');
+const mtf = require('@confuzzle/move-to-front');
+const bwt = require('@confuzzle/burrows-wheeler');
+const rc = require('@thi.ng/range-coder');
 
 export function compressURL(source) {
-    return base64url.fromBase64(LZUTF8.compress(source, {outputEncoding: "Base64"}));
+    const t = bwt.forward(source);
+    const m = mtf.forward(t);
+    const x = rc.encodeBytes(m);
+    return base64url.encode(x);
 }
 
 export function decompressURL(url, outputEncoding) {
-    if (!outputEncoding) {
-        outputEncoding = "String";
-    }
-    return LZUTF8.decompress(base64url.toBuffer(url), {outputEncoding: outputEncoding});
+    const x = base64url.toBuffer(url);
+    const m = rc.decodeBytes(x);
+    const t = mtf.inverse(m);
+    const s = bwt.inverse(t);
+    return s.toString();
 }
 
 function fuzClues(clues, options) {
