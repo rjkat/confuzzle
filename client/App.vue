@@ -55,8 +55,7 @@
                 </div>
                 <div v-else style="text-align: center;">
                   <p class="join-info-text">
-                    Unable to join the shared session. Sessions only stay active
-                    whilst there is at least one solver connected.
+                    Sessions only stay active whilst there is at least one solver connected.
                     If you received this link from someone, please ask them to
                     start another session.
                   </p>
@@ -249,6 +248,9 @@ body {
 }
 
 .join-info-text {
+    text-align: left;
+    padding-left: 1em;
+    line-height: 1.5;
     font-family: $clueFontFamily;
 }
 
@@ -531,6 +533,7 @@ export default Vue.extend({
     standalone: false,
     joinLoading: false,
     joinFailed: false,
+    freezeHistory: false,
     shareLoading: false,
     renderLoading: false,
     reconnectFailed: false,
@@ -553,6 +556,8 @@ export default Vue.extend({
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
     pageTitle() {
+      if (this.joinFailed)
+        return 'Session not found: ' + this.gridid + ' | Confuzzle';
       if (this.state.joining)
         return 'Join session: ' + this.gridid + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
@@ -600,7 +605,6 @@ export default Vue.extend({
       if (!this.state.colluding && !this.state.joining && !this.freezeHistory) {
         this.updateHistory();
       }
-      
       this.lastId = this.crosswordId;
       this.renderCrossword();
       this.redrawEditor();
@@ -701,7 +705,6 @@ export default Vue.extend({
       lastInputWasGrid: true,
       emojiNotation: '',
       lastId: '',
-      freezeHistory: false
     };
   },
   methods: {
@@ -718,17 +721,20 @@ export default Vue.extend({
     },
     startJoining() {
         this.state.joining = true;
-        const self = this;
         this.updateTitle();
+        const self = this;
         Vue.nextTick(() => self.$refs.joinModal.open());
     },
     updateHistory() {
       const sameCrossword = this.crosswordId == this.lastId;
-      if (sameCrossword) {
+      if (!this.lastId || sameCrossword || this.state.compiling || this.joinFailed) {
         this.replaceState();
       } else {
         this.pushState();
       }
+      Vue.nextTick(() => {
+        document.title = this.pageTitle
+      });
     },
     beforeInstall(e) {
         e.preventDefault();
@@ -999,9 +1005,16 @@ export default Vue.extend({
     connectFailed() {
       this.joinLoading = false;
       this.joinFailed = true;
+      this.updateTitle();
     },
     dismissJoinError() {
-      window.location.replace("/");
+      this.joinLoading = false;
+      this.joinFailed = false;
+      this.state.joining = false;
+      this.gridid = '';
+      this.initSource();
+      window.history.pushState(null, '', '/' + this.getEnoParams());
+      this.updateTitle();
     },
     lostConnection() {
         if (this.$options.socket) {
@@ -1212,8 +1225,7 @@ export default Vue.extend({
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
         this.solvers = msg.solvers;
-        this.updateTitle();
-        window.history.pushState(null, this.pageTitle, '/' + msg.gridid);
+        window.history.pushState(null, '', '/' + msg.gridid);
         this.state.colluding = true;
         this.shareLoading = false;
         this.updateTitle();
@@ -1299,12 +1311,12 @@ export default Vue.extend({
     puzFileUploaded(buf) {
         this.crosswordSource = confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf)));
     },
-    pushState(title) {
-      window.history.pushState(null, title, '/' + this.getEnoParams());
+    pushState() {
+      window.history.pushState(null, '', '/' + this.getEnoParams());
     },
     replaceState() {
       if (!this.state.colluding)
-        window.history.replaceState(null, this.pageTitle, this.getEnoParams());
+        window.history.replaceState(null, '', this.getEnoParams());
     },
 
     keyListener(e) {

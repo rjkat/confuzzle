@@ -11,7 +11,7 @@
             <template v-else>
                 <div style="display: flex; align-items: center;">
                     <img v-if="qrString" :src="qrString" class="share-qr-code" alt="QR code for invitation link"/>
-                    <p class="share-info-text">Invite others to join your session using this link. The session will remain active whilst there is at least one active solver.</p>
+                    <p class="share-info-text">Invite others to join your session using this link. The session will remain active whilst there is at least one solver connected.</p>
                 </div>
                 <div class="crossword-link-text">{{link}}</div>
 
