@@ -1,9 +1,13 @@
 <template>
 <ui-toolbar type="colored" removeNavIcon>
+    <table slot="brand" width="40">
+        <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em;"
+         @click="$emit('logo-clicked')">C</td>
+    </table>
     <template v-slot="title">
-        <span style="{display: inline-flex; align-items: center;}">
-            <span class="crossword-meta-name">{{metadata.name}}</span>
-            <span class="crossword-meta-author">by {{metadata.author}}</span>
+        <span style="{display: inline-flex; align-items: center; max-height: 100%;}">
+            <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
+            <span class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</span>
             <span class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</span>
         </span>
     </template>
@@ -115,6 +119,15 @@
     font-family: $clueFontFamily;
 }
 
+
+.ui-toolbar__brand {
+    min-width: 0;
+}
+
+.ui-toolbar__body.has-brand-divider {
+    border: none;
+}
+
 .ui-toolbar--type-colored {
     background-color: $titleBgColor !important;
 
@@ -149,19 +162,29 @@ ul {
   font-family: $clueFontFamily;
   text-transform: none;
   font-size: 13px;
+
+  
 }
 
 .crossword-meta-name {
     text-transform: uppercase;
     font-family: $titleFontFamily;
     font-weight: bold;
+    &.bs4-sm, &.bs4-xs {
+        font-size: 14px;
+    }
 }
+
 .crossword-meta-author {
     font-family: $clueFontFamily; 
     margin-left: .5em;
     margin-right: .5em;
     font-size: 16px;
+    &.bs4-sm, &.bs4-xs {
+        font-size: 14px;
+    }
 }
+
 .crossword-meta-identifier {
     font-family: $titleFontFamily;
     margin-right: .5em;

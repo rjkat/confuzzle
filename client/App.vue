@@ -1,5 +1,8 @@
 <template>
 <div id="app-container">
+    <cfz-launcher v-if="state.launching" :isPortrait="isPortrait">
+
+    </cfz-launcher>
     <cfz-disconnected-modal
         ref="disconnectedModal"
         :reconnecting="joinLoading"
@@ -10,7 +13,7 @@
     <cfz-header-toolbar
         id="header-toolbar"
         ref="toolbar"
-        v-if="!state.joining"
+        v-if="!state.joining && !state.launching"
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
@@ -22,6 +25,7 @@
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @copy-clicked="copyClicked($event)"
+        @logo-clicked="logoClicked()"
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
@@ -37,6 +41,7 @@
     </cfz-header-toolbar>
    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
+         v-if="!state.launching"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
@@ -372,8 +377,11 @@ import CfzCrosswordEditor from './components/CfzCrosswordEditor.vue'
 import CfzHeaderToolbar from './components/CfzHeaderToolbar.vue'
 import CfzControlToolbar from './components/CfzControlToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
+import CfzLauncher from './components/CfzLauncher.vue'
 
 const parser = require('../@confuzzle/confuz-parser/parser');
+
+const builder = require('../@confuzzle/confuz-parser/builder');
 
 const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
@@ -387,119 +395,8 @@ const {Manager} = require("socket.io-client");
 
 import {emojisplosions} from "emojisplosion";
 
-function parseAndBuild(input, compiling) {
-    const cw = parser.parse(input, compiling);
-    cw.acrossClues = [];
-    cw.downClues = [];
-    for (let [clueid, clue] of Object.entries(cw.clues)) {
-      
-      // populate cell across and down clues for convenience
-      for (let cell of clue.cells) {
-        if (cell.clues.acrossId)
-            cell.clues.across = cw.clues[cell.clues.acrossId]
-        if (cell.clues.downId)
-            cell.clues.down = cw.clues[cell.clues.downId]
-      }
 
-      clue.refs = [];
-      if (clue.primaryId && clue.primaryId != clueid) {
-        clue.primary = cw.clues[clue.primaryId];
-      }
-
-      clue.idText = clue.numbering.clueText;
-      clue.directionText = '';
-      if (!clue.verbatim) {
-        if (clue.refIds.length > 0 && clue.primaryId == clueid) {
-          clue.idText = clue.refIds.join(', ');
-        } else {
-          clue.directionText = clue.isAcross ? 'A' : 'D';
-        }
-      }
-      
-      let nextRefId = '';
-      for (let i = 0; i < clue.refIds.length; i++) {
-        if (clue.refIds[i] != clueid) {
-          clue.refs.push(cw.clues[clue.refIds[i]]);
-        } else {
-          nextRefId = clue.refIds[i + 1];
-        }
-      }
-      clue.nextRef = nextRefId ? cw.clues[nextRefId] : null;
-
-      // populate crossword across and down clues for convenience
-      if (clue.isAcross) {
-          cw.acrossClues.push(clue);
-      } else {
-          cw.downClues.push(clue);
-      }
-      clue.highlightMask = 0;
-      clue.selected = false;
-      clue.showCorrect = false;
-      clue.showIncorrect = false;
-
-      clue.deselect = function (solverid) {
-        solverid %= 8;
-        this.selected = false;
-        this.clearHighlight(solverid);
-      };
-      clue.select = function (solverid) {
-        solverid %= 8;
-        for (const [otherid, other] of Object.entries(cw.clues)) {
-          if (otherid != clueid)
-            other.deselect(solverid);
-        }
-        this.selected = true;
-        this.highlight(solverid);
-      };
-      clue.highlight = function(solverid, recursive) {
-        solverid %= 8;
-        this.highlightMask |= (1 << solverid);
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask |= (1 << solverid);
-          } else {
-            cell.downMask |= (1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.highlight(solverid);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-              this.refs[j].highlight(solverid, true);
-            }
-          }
-        }
-      };
-      clue.clearHighlight = function(solverid, recursive) {
-        solverid %= 8;
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask &= ~(1 << solverid);
-          } else {
-            cell.downMask &= ~(1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        this.highlightMask &= ~(1 << solverid);
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.clearHighlight(solverid);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-                this.refs[j].clearHighlight(solverid, true);
-            }
-          }
-        }
-      };
-    }
-    return cw;
-}
-
-const defaultCrossword = parseAndBuild(parser.sampleCrossword(), false);
+const defaultCrossword = builder.parseAndBuild(parser.sampleCrossword(), false);
 export default Vue.extend({
   components: {
     CfzCrosswordClues,
@@ -507,7 +404,8 @@ export default Vue.extend({
     CfzCrosswordEditor,
     CfzHeaderToolbar,
     CfzControlToolbar,
-    CfzDisconnectedModal
+    CfzDisconnectedModal,
+    CfzLauncher
   },
   props: {
     gridid: String,
@@ -525,6 +423,7 @@ export default Vue.extend({
                 colluding: false,
                 compiling: false,
                 joining: false,
+                launching: false,
                 reconnecting: false
             };
         }
@@ -884,7 +783,7 @@ export default Vue.extend({
         let errorText = '';
         let errorMessage = '';
         try {
-            this.crossword = parseAndBuild(this.crosswordSource, this.state.compiling);
+            this.crossword = builder.parseAndBuild(this.crosswordSource, this.state.compiling);
         } catch (err) {
             if (err instanceof EnoError) {
                 errorText = 'Line ' + (err.cursor.line + 1) + ': ' + err.text;
@@ -901,8 +800,6 @@ export default Vue.extend({
         this.gridSizeLocked = true;
         this.renderLoading = false;
         this.showScratchpad = false;
-
-
 
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
@@ -1362,6 +1259,9 @@ export default Vue.extend({
         const filename = basename + extension;
         link.download = filename;
         link.click();
+    },
+    logoClicked() {
+      // this.state.launching = true;
     },
     copyClicked() {
         this.snackbarMessage(this.copyMessage);
