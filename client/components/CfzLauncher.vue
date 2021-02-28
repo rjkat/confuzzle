@@ -1,5 +1,6 @@
 <template>
   <div class="cfz-launcher-container">
+      
       <div>
         <cfz-crossword-grid v-model="crossword" style="text-align: center; padding-top: 20vh; transform: scale(1.5,1.5)"></cfz-crossword-grid>
       </div>
@@ -10,12 +11,25 @@
               {{option.text}}
             </ui-button>
           </div>
+          
         </div>
+
+      </div>
+      <div class="cfz-launcher-options-container">
+        <ui-fab v-if="showReturnButton"
+          icon="close"
+          class="cfz-launcher-return-button"
+          @click.stop="$emit('return-to-app-clicked')"
+          >
+        </ui-fab>
       </div>
   </div>
 </template>
 
 <style lang="scss">
+  .cfz-launcher-return-button {
+    margin-top: 3rem;
+  }
   .cfz-launcher-container {
     height: 100%;
     width: 100%;
@@ -136,6 +150,7 @@ export default Vue.extend({
     CfzCrosswordGrid
   },
   props: {
+    showReturnButton: Boolean,
     isPortrait: Boolean,
     loading: Boolean,
     crossword: {

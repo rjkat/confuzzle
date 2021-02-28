@@ -1,7 +1,10 @@
 <template>
 <div id="app-container">
-    <cfz-launcher v-if="state.launching" :isPortrait="isPortrait">
-
+    <cfz-launcher v-if="state.launching"
+        :showReturnButton="!firstLaunch"
+        :isPortrait="isPortrait"
+        @return-to-app-clicked="hideLauncher()"
+    >
     </cfz-launcher>
     <cfz-disconnected-modal
         ref="disconnectedModal"
@@ -549,6 +552,7 @@ export default Vue.extend({
     
   },
   created() {
+
     if (this.shouldJoin()) {
       this.startJoining();
     }
@@ -565,7 +569,9 @@ export default Vue.extend({
     const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
     const webkit = !!ua.match(/WebKit/i);
     this.iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
-
+    console.log(localStorage.recentCrosswords);
+    this.firstLaunch = !localStorage.recentCrosswords;
+    this.state.launching = this.firstLaunch;
     this.standalone = window.navigator.standalone;
     document.addEventListener('keydown', this.keyListener);
     this.handleOrientationChange();
@@ -602,6 +608,7 @@ export default Vue.extend({
       iOSPrompt: false,
       installPrompt: null,
       lastInputWasGrid: true,
+      firstLaunch: true,
       emojiNotation: '',
       lastId: '',
     };
@@ -634,6 +641,9 @@ export default Vue.extend({
       Vue.nextTick(() => {
         document.title = this.pageTitle
       });
+    },
+    hideLauncher() {
+        this.state.launching = false;
     },
     beforeInstall(e) {
         e.preventDefault();
@@ -1083,7 +1093,9 @@ export default Vue.extend({
         this.gridid = msg.gridid;
 
         this.crosswordSource = msg.crossword.source + (msg.crossword.state ? msg.crossword.state : '');
-        this.replayEvents(msg.events);
+        Vue.nextTick(() => {
+            this.replayEvents(msg.events);    
+        });
 
         this.state.joining = false;
         
