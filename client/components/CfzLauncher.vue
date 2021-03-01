@@ -7,7 +7,8 @@
       <div class="cfz-launcher-options-container">
         <div class="cfz-launcher-options">
           <div v-for="option in options" class="cfz-launcher-option">
-            <ui-button :icon="option.icon" :tooltip="option.tooltip" class="cfz-launcher-button">
+            <ui-button :raised="true" :icon="option.icon" :tooltip="option.tooltip" class="cfz-launcher-button"
+              @click.stop="optionClicked(option)">
               {{option.text}}
             </ui-button>
           </div>
@@ -15,6 +16,11 @@
         </div>
 
       </div>
+      <input type="file" ref="fileInput"
+            accept=".puz,.eno,.confuz"
+            @change="handleFiles()"
+            style="display: none">
+      </input>
       <div class="cfz-launcher-options-container">
         <ui-fab v-if="showReturnButton"
           icon="close"
@@ -152,6 +158,7 @@ export default Vue.extend({
   props: {
     showReturnButton: Boolean,
     isPortrait: Boolean,
+    showLeave: Boolean,
     loading: Boolean,
     crossword: {
         type: Object,
@@ -168,26 +175,64 @@ export default Vue.extend({
           tooltip: "Compile your own crossword"
         });
 
-      opt.push({
-        text: "Join",
-        icon: "meeting_room",
-        tooltip: "Join a shared session"
-      });
+      if (this.showLeave) {
+        opt.push({
+          text: "Leave",
+          icon: "no_meeting_room",
+          tooltip: "Leave group session"
+        });
+      } else {
+        opt.push({
+          text: "Join",
+          icon: "meeting_room",
+          tooltip: "Join a group session"
+        });
+      }
       opt.push({
         text: "Invite",
         icon: "group_add",
-        tooltip: "Start a shared session"
+        tooltip: "Start a group session from a .puz file"
       });
       opt.push({
         text: "Solve",
         icon: "extension",
-        tooltip: "Browse and solve puzzles"
+        tooltip: "Upload and solve puzzles"
       });
       
       return opt;
     }
   },
   methods: {
+    optionClicked(option) {
+      if (option.text == 'Solve') {
+        this.$emit('return-to-app-clicked', false);
+      } else if (option.text == 'Create') {
+        this.$emit('return-to-app-clicked', true);
+      } else if (option.text == 'Invite') {
+        this.openPuzzle();
+      } else if (option.text == 'Leave') {
+        this.$emit('leave-session');
+      } else if (option.text == 'Join') {
+        this.$emit('join-session');
+      }
+    },
+    openPuzzle() {
+        this.$refs.fileInput.click();
+    },
+    handleFiles() {
+        const self = this;
+        let files = this.$refs.fileInput.files;
+        const file = files[0];
+        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
+            file.arrayBuffer().then(
+                buffer => self.$emit('invite-eno', buffer)
+            )
+        } else {
+            file.arrayBuffer().then(
+                buffer => self.$emit('invite-puz', buffer)
+            )
+        }
+    },
   },
   data() {
     return {

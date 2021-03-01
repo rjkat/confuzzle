@@ -2,7 +2,7 @@
     <ui-modal ref="modal" @reveal="onReveal()" :title="!link ? 'Start session' : 'Share and solve'">
         <div style="text-align: center; position: relative;">
             <template v-if="!link">
-                <p class="share-info-text">Start a shared session for this crossword and solve with others in real time.</p>
+                <p class="share-info-text">Start a group session for this crossword and solve with others in real time.</p>
                 <ui-textbox ref="nameBox" class="crossword-name-input" v-model="solverName" @keydown-enter="startSession()">
                     <b>0A</b> Your name ({{solverName.length}})
                 </ui-textbox>
@@ -79,7 +79,7 @@ export default Vue.extend({
       solverName: "",
       bundler: "Parcel",
       qrString: "",
-      shareAvailable: false
+      shareAvailable: false,
     };
   },
   props: {
@@ -103,6 +103,8 @@ export default Vue.extend({
         });
     },
     startSession() {
+        if (this.solverName)
+            localStorage['confuzzle:solverName'] = this.solverName;
         this.$emit('share-clicked', this.solverName);
     },
     shareLink() {
@@ -120,7 +122,12 @@ export default Vue.extend({
             this.$refs.nameBox.focus();
     },
     open() {
-        this.$refs.modal.open();
+        if (localStorage['confuzzle:solverName']) {
+            this.solverName = localStorage['confuzzle:solverName'];
+        }
+        Vue.nextTick(() => {
+            this.$refs.modal.open();
+        });
     },
     close() {
         this.$refs.modal.close();
@@ -129,6 +136,9 @@ export default Vue.extend({
   mounted() {
     if ('share' in navigator)
         this.shareAvailable = true;
+    if (localStorage['confuzzle:solverName']) {
+        this.solverName = localStorage['confuzzle:solverName'];
+    }
     this.makeQrCode(this.link)
   }
 });

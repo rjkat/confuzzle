@@ -1,7 +1,7 @@
 <template>
 <ui-toolbar type="colored" removeNavIcon>
     <table slot="brand" width="40">
-        <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em;"
+        <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
@@ -297,6 +297,9 @@ export default Vue.extend({
     openModal(ref) {
         this.$refs[ref].open();
     },
+    openShareModal() {
+        this.openModal('shareModal');
+    },
     closeModal(ref) {
         this.$refs[ref].close();
     },
@@ -407,7 +410,7 @@ export default Vue.extend({
         },
         SOLVE_OFFLINE: {
             label: 'Leave session',
-            icon: 'exit_to_app'
+            icon: 'no_meeting_room'
         },
         ABOUT: {
             label: 'About',

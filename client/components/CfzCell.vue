@@ -44,6 +44,7 @@
     display: none;
     text-align: left;
     white-space: pre;
+    pointer-events: none;
 
     &[data-show] {
         display: block !important;
