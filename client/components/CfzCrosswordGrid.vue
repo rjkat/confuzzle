@@ -6,9 +6,11 @@
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
   <div class="crossword-grid-container" :style="gridContainerStyle">
-      <cfz-scratchpad v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
-      </cfz-scratchpad>
-      <table v-else class="crossword-grid" cell-spacing="0" :style="gridStyle">
+      <keep-alive>
+        <cfz-scratchpad name="scratchpad" v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
+        </cfz-scratchpad>
+      </keep-alive>
+      <table v-if="!showScratchpad" class="crossword-grid" cell-spacing="0" :style="gridStyle">
           <tr v-for="(row, r) in crossword.grid.cells">
               <cfz-cell v-for="cell in row" ref="inputCells"
                         :cell="crossword.grid.cells[cell.row][cell.col]"

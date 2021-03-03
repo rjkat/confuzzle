@@ -85,18 +85,20 @@
             </ui-modal>
         </template>
         <template v-else>
-            <cfz-crossword-grid id="grid"
-                ref="grid"
-                v-model="crossword"
-                :data-portrait="isPortrait"
-                :solverid="solverid"
-                :gridSize="gridSize"
-                :isPortrait="isPortrait"
-                :showTooltips="showTooltips"
-                :showScratchpad="showScratchpad"
-                @fill-cell="sendFillCell($event)"
-                v-if="showGrid">
-            </cfz-crossword-grid>
+            <transition name="grid">
+                <cfz-crossword-grid id="grid"
+                    ref="grid"
+                    v-model="crossword"
+                    :data-portrait="isPortrait"
+                    :solverid="solverid"
+                    :gridSize="gridSize"
+                    :isPortrait="isPortrait"
+                    :showTooltips="showTooltips"
+                    :showScratchpad="showScratchpad"
+                    @fill-cell="sendFillCell($event)"
+                    v-if="showGrid">
+                </cfz-crossword-grid>
+            </transition>
             <template v-if="state.compiling && !isPortrait">
                 <cfz-crossword-editor id="editor"
                     ref="editor"
@@ -180,6 +182,19 @@ body {
     }
 */
 }
+
+/*.grid-enter-active,
+.grid-leave-active {
+  transition: all 0.3s;
+}*/
+
+/*.grid-enter, .grid-leave-to {
+    margin-left: -var(--grid-width);
+}
+
+.grid-enter[data-portrait], .grid-leave-to[data-portrait] {
+    margin-left: var(--grid-height);
+}*/
 
 .launcher-enter-active,
 .launcher-leave-active {

@@ -10,6 +10,7 @@
       <template v-for="(word, i) in words">
         <ui-button raised disable-ripple class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
       </template>
+      <ui-button v-if="clue" color="primary" raised disable-ripple class="word-tile" @click="openCustomModal()"><span class="word-tile-text">custom...</span></ui-button>
     </div>
     <div class="letter-widget">
       <div class="letter-container" ref="letterContainer" @touchmove="$event.preventDefault()">
@@ -46,7 +47,14 @@
       <ui-button raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
   </div>
-
+  <ui-modal ref="customWordModal" title="Add custom letters">
+    <div style="text-align: center;">
+        <ui-textbox ref="nameBox" class="crossword-join-input crossword-name-input" v-model="customWord" @keydown-enter="addCustomClicked()">
+                Enter letters ({{customWord ? customWord.length : 0}})
+        </ui-textbox> 
+        <ui-button color="primary" @click="addCustomClicked()">Add</ui-button>
+    </div>
+  </ui-modal>
 </div>
 </template>
 
@@ -415,6 +423,13 @@ export default Vue.extend({
         i++;
       }
     },
+    openCustomModal() {
+      this.$refs.customWordModal.open();
+    },
+    addCustomClicked() {
+      this.explodeWord(this.customWord);
+      this.$refs.customWordModal.close();
+    },
     cutAnswerLetter(offset) {
       this.$set(this.answerSlots[this.clue.id], offset, {offset: offset, letter: ''});
     },
@@ -472,7 +487,8 @@ export default Vue.extend({
   data() {
     return {
       workingLetters: {},
-      answerSlots: {}
+      answerSlots: {},
+      customWord: ''
     };
   },
   mounted() {
