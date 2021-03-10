@@ -1,5 +1,5 @@
 <template>
-<div id="app-container">
+<div id="app-container" ref="appContainer">
     <transition name="launcher">
         <cfz-launcher ref="launcher" v-if="state.launching"
             :showReturnButton="!firstLaunch"
@@ -718,6 +718,8 @@ export default Vue.extend({
     openPuzzleFromLauncher(mode) {
         this.puzzleModalTitle = this.getPuzzleModalTitle(mode);
         this.$refs.puzzleModal.open()
+        // hack to hide tooltip on mobile
+        this.$refs.appContainer.click()
     },
     getPuzzleModalTitle(mode) {
         if (mode == 'create') {
