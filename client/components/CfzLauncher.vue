@@ -137,6 +137,22 @@ lengths:
 clue:
 grid:
 
+# references
+
+## 1A
+
+clues:
+  - 1A
+  - 2A
+  - 3A
+
+## 3D
+
+clues:
+  - 1D
+  - 2D
+  - 3D
+
 `, true
 );
 
