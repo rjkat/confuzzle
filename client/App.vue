@@ -790,10 +790,9 @@ export default Vue.extend({
     },
     returnFromLauncher() {
         const mode = this.$refs.launcher.lastSelectedOption;
-        console.log('mode: ' + mode);
         this.$refs.puzzleModal.close();
         this.setHaveLaunched();
-        if (mode == 'create' || mode == 'invite') {
+        if (mode == 'create' || mode == 'invite' || mode == 'solve') {
             this.goOffline();
         }
         this.state.compiling = mode == 'create';
@@ -1081,11 +1080,15 @@ export default Vue.extend({
       this.joinLoading = false;
       this.joinFailed = false;
       this.state.joining = false;
+      
+      if (!this.state.joiningFromLauncher)
+        this.firstLaunch = true;
+
       this.state.joiningFromLauncher = false;
 
       this.goOffline();
       window.history.replaceState(null, '', '/');
-      this.firstLaunch = true;
+      
       this.updateTitle()
       this.openLauncher();
     },
