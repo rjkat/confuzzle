@@ -1045,7 +1045,7 @@ export default Vue.extend({
         }
       }
       recent.splice(0, 0, this.crosswordId);
-      this.recentCrosswords = recent.slice(1, this.maxRecent + 1);
+      this.recentCrosswords = recent.slice(0, this.maxRecent);
       localStorage.recentCrosswords = JSON.stringify(recent);
     },
     crosswordEdited() {
