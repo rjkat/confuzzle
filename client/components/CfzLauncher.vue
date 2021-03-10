@@ -16,11 +16,6 @@
         </div>
 
       </div>
-      <input type="file" ref="fileInput"
-            accept=".puz,.eno,.confuz"
-            @change="handleFiles()"
-            style="display: none">
-      </input>
       <div class="cfz-launcher-options-container">
         <ui-fab v-if="showReturnButton"
           icon="close"
@@ -191,7 +186,7 @@ export default Vue.extend({
       opt.push({
         text: "Invite",
         icon: "group_add",
-        tooltip: "Start a group session from a .puz file"
+        tooltip: "Start a group session"
       });
       opt.push({
         text: "Solve",
@@ -205,37 +200,22 @@ export default Vue.extend({
   methods: {
     optionClicked(option) {
       if (option.text == 'Solve') {
-        this.$emit('return-to-app-clicked', false);
+        this.$emit('solve-clicked');
       } else if (option.text == 'Create') {
-        this.$emit('return-to-app-clicked', true);
+        this.$emit('edit-clicked');
       } else if (option.text == 'Invite') {
-        this.openPuzzle();
+        this.$emit('invite-clicked');
       } else if (option.text == 'Leave') {
         this.$emit('leave-session');
       } else if (option.text == 'Join') {
         this.$emit('join-session');
       }
-    },
-    openPuzzle() {
-        this.$refs.fileInput.click();
-    },
-    handleFiles() {
-        const self = this;
-        let files = this.$refs.fileInput.files;
-        const file = files[0];
-        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
-            file.arrayBuffer().then(
-                buffer => self.$emit('invite-eno', buffer)
-            )
-        } else {
-            file.arrayBuffer().then(
-                buffer => self.$emit('invite-puz', buffer)
-            )
-        }
+      this.lastSelectedOption = option.text.toLowerCase();
     },
   },
   data() {
     return {
+      lastSelectedOption: '',
       bundler: "Parcel",
     };
   },

@@ -9,12 +9,16 @@
                 <ui-button :loading="loading" color="primary" :disabled="!solverName.length" @click="startSession()">Start</ui-button>
             </template>
             <template v-else>
+                <p class="session-info-text">Session ID: <span class="session-id-text">   {{sessionId}}</span>
+                        </p>
                 <div style="display: flex; align-items: center;">
                     <img v-if="qrString" :src="qrString" class="share-qr-code" alt="QR code for invitation link"/>
-                    <p class="share-info-text">Invite others to join your session using this link. The session will remain active whilst there is at least one solver connected.</p>
+                    <div>
+                        <p class="share-info-text">Invite others to join your session using the following link. The session will remain active whilst there is at least one solver connected.</p>
+                    </div>
                 </div>
                 <div class="crossword-link-text">{{link}}</div>
-
+                
                 <ui-button v-if="shareAvailable" color="primary" style="margin-top: 1em;" @click="shareLink()">Share</ui-button>
                 <ui-button v-else color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
             </template>
@@ -39,8 +43,18 @@
 }
 
 .share-qr-code {
-    height: 76px;
-    width: 76px;
+    height: 96px;
+    width: 96px;
+}
+
+.session-id-text {
+    font-family: $answerFontFamily;
+}
+
+.session-info-text {
+    font-family: $clueFontFamily;
+    margin: 0;
+    opacity: 0.7;
 }
 
 .share-info-text {
@@ -91,6 +105,12 @@ export default Vue.extend({
     link(newLink) {
         this.makeQrCode(newLink);
     },
+  },
+  computed: {
+    sessionId() {
+        const toks = this.link.split('/');
+        return toks[toks.length - 1];
+    }
   },
   methods: {
     makeQrCode(url) {

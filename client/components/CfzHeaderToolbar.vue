@@ -36,12 +36,7 @@
             :link="shareLink"
             v-on="$listeners">
         </cfz-share-modal>
-
-        <input type="file" ref="fileInput"
-            accept=".puz,.eno,.confuz,.🧩✨"
-            @change="handleFiles()"
-            style="display: none">
-        </input>
+        <cfz-file-input ref="fileInput" v-on="$listeners"></cfz-file-input>
         <ui-icon-button
             color="white"
             has-dropdown
@@ -72,7 +67,7 @@
                 v-responsive.md.lg.xl
             ></ui-menu>
         </ui-icon-button>
-        <ui-modal ref="recentModal" title="Recent puzzles">
+        <ui-modal ref="recentModal" title="Recent crosswords">
             <ul>
                 <li is="ui-button" raised @click="openRecentClicked(m.id)" class="file-tile" v-for="m in recentMetas">
                     <div class="file-tile-text">
@@ -147,13 +142,13 @@ ul {
   margin-left: auto;
   margin-top: 8px;
   min-width: 0 !important;
-  padding: 4px !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
   height: 20px;
   display: block;
 }
 
 .file-tile-text {
-    line-height: 100%;
 }
 
 .file-tile-author {
@@ -197,6 +192,7 @@ import Vue from "vue";
 
 import {emojisplosion} from "emojisplosion";
 import CfzShareModal from './CfzShareModal.vue'
+import CfzFileInput from './CfzFileInput.vue'
 
 // https://gist.github.com/hanayashiki/8dac237671343e7f0b15de617b0051bd
 (function () {
@@ -246,7 +242,8 @@ function explodeOn(id) {
 
 export default Vue.extend({
   components: {
-    CfzShareModal
+    CfzShareModal,
+    CfzFileInput
   },
   props: {
     metadata: Object,
@@ -304,25 +301,7 @@ export default Vue.extend({
         this.$refs[ref].close();
     },
     openPuzzle() {
-        this.$refs.fileInput.click();
-    },
-    handleFiles() {
-        const self = this;
-        let files = this.$refs.fileInput.files;
-        const file = files[0];
-        if (file.name.endsWith('.eno') || file.name.endsWith('.confuz')) {
-            file.arrayBuffer().then(
-                buffer => self.$emit('eno-file-uploaded', buffer)
-            )
-        } else if (file.name.endsWith('.🧩')) {
-            file.arrayBuffer().then(
-                buffer => self.$emit('emoji-file-uploaded', buffer)
-            )
-        } else {
-            file.arrayBuffer().then(
-                buffer => self.$emit('puz-file-uploaded', buffer)
-            )
-        }
+        this.$refs.fileInput.openFile();
     },
     emojiButtonClicked() {
         this.$emit('emoji-button-clicked');

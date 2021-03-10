@@ -5,6 +5,9 @@
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
+  <div v-if="isPortrait" :style="gridTopControlStyle">
+    <div class="copyright-text">{{copyrightText}}</div>
+  </div>
   <div class="crossword-grid-container" :style="gridContainerStyle">
       <keep-alive>
         <cfz-scratchpad name="scratchpad" v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
@@ -22,7 +25,6 @@
               </cfz-cell>
           </tr>
       </table>
-    </template>
   </div>
   <div v-if="!isPortrait" :style="gridControlStyle">
     <div class="copyright-text">{{copyrightText}}</div>
@@ -113,6 +115,16 @@ export default Vue.extend({
         'display': 'flex',
         'justify-content': 'space-between',
         'align-items': 'center',
+        'width': this.gridScale * this.gridWidth + 'px'
+      }
+    },
+    gridTopControlStyle() {
+      return {
+        'display': 'flex',
+        'justify-content': 'space-between',
+        'align-items': 'center',
+        'margin-top': '-10pt',
+        'font-size': '10pt',
        'width': this.gridScale * this.gridWidth + 'px'
       }
     },

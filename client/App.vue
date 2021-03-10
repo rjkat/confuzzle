@@ -1,18 +1,42 @@
 <template>
 <div id="app-container">
     <transition name="launcher">
-        <cfz-launcher v-if="state.launching"
+        <cfz-launcher ref="launcher" v-if="state.launching"
             :showReturnButton="!firstLaunch"
             :isPortrait="isPortrait"
             :showLeave="state.colluding"
             @return-to-app-clicked="returnFromLauncher($event)"
-            @invite-eno="inviteEno($event)"
-            @invite-puz="invitePuz($event)"
+            @solve-clicked="openPuzzleFromLauncher('solve')"
+            @edit-clicked="openPuzzleFromLauncher('create')"
+            @invite-clicked="openPuzzleFromLauncher('invite')"
             @leave-session="leaveSessionFromLauncher($event)"
             @join-session="joinSessionFromLauncher()"
         >
         </cfz-launcher>
     </transition>
+    <ui-modal ref="puzzleModal" :title="puzzleModalTitle">
+        <cfz-file-input ref="fileInput"
+            @puz-file-uploaded="puzFileUploaded($event)"
+            @emoji-file-uploaded="emojiFileUploaded($event)"
+            @eno-file-uploaded="enoFileUploaded($event)"
+            @file-uploaded="returnFromLauncher()">
+        </cfz-file-input>
+        <p class="join-info-text">Open .puz or .confuz file <ui-button color="primary" @click="browseClicked()" style="margin-left: 1em">Browse...</ui-button></p>
+        <template v-if="recentMetas && recentMetas.length > 0">
+            <p class="join-info-text">Choose from recent crosswords</p>
+            <div class="recent-crossword-list">
+                <ul>
+                    <li is="ui-button" raised @click="openFromLauncher(m.id)" class="file-tile" v-for="m in recentMetas">
+                        <div class="file-tile-text">
+                            <span class="file-tile-name">{{m.name}}</span>
+                            <span class="file-tile-author">{{m.author}}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </template>
+    </ui-modal>
+    
     <cfz-disconnected-modal
         ref="disconnectedModal"
         :reconnecting="joinLoading"
@@ -35,7 +59,7 @@
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @copy-clicked="copyClicked($event)"
-        @logo-clicked="logoClicked()"
+        @logo-clicked="openLauncher()"
         @go-offline-clicked='goOffline()'
         @download-puz-clicked="downloadPuzClicked()"
         @download-eno-clicked="downloadEnoClicked()"
@@ -49,7 +73,7 @@
         @eno-file-uploaded="enoFileUploaded($event)"
     >
     </cfz-header-toolbar>
-   
+    
     <div id="app-content" ref="appContent" :data-portrait="isPortrait"
          v-if="!state.launching"
          @dragenter="dragEnterHandler"
@@ -63,8 +87,8 @@
             <ui-modal ref="joinModal" @reveal="onJoinReveal()" :title="!joinFailed ? 'Join and solve' : 'Session not found'" :dismissible="state.joiningFromLauncher" @close="launcherJoinClosed()">
                 <div v-if="!joinFailed && !shouldJoin()" style="text-align: center;">
                     <p class="join-info-text">Join a crossword using a session identifier.</p>
-                    <ui-textbox ref="sessionIdBox" class="crossword-join-input crossword-sess-id-input" v-model="sessionIdText" @keydown-enter="joinClicked()">
-                            Group session ID (x-y-z)
+                    <ui-textbox ref="sessionIdBox" class="crossword-join-input crossword-sess-id-input" v-model="sessionIdText" @keydown-enter="joinClicked()" autocomplete="off">
+                            Session ID (x-y-z)
                     </ui-textbox> 
                 </div>
                 <div v-if="!joinFailed" style="text-align: center;">
@@ -426,6 +450,7 @@ import CfzHeaderToolbar from './components/CfzHeaderToolbar.vue'
 import CfzControlToolbar from './components/CfzControlToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 import CfzLauncher from './components/CfzLauncher.vue'
+import CfzFileInput from './components/CfzFileInput.vue'
 
 const parser = require('../@confuzzle/confuz-parser/parser');
 
@@ -453,7 +478,8 @@ export default Vue.extend({
     CfzHeaderToolbar,
     CfzControlToolbar,
     CfzDisconnectedModal,
-    CfzLauncher
+    CfzLauncher,
+    CfzFileInput
   },
   props: {
     gridid: String,
@@ -499,6 +525,16 @@ export default Vue.extend({
     client: Object
   },
   computed: {
+    recentMetas() {
+        const metas = [];
+        for (const cwid of this.recentCrosswords) {
+            const m = localStorage[cwid + ':meta'];
+            if (m) {
+                metas.push(JSON.parse(m));
+            }
+        }
+        return metas;
+    },
     shareLink() {
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
@@ -511,6 +547,7 @@ export default Vue.extend({
         return 'Join session' + (this.gridid ? ': ' : '') + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
     },
+
     selectedClue() {
         if (!this.crossword)
             return undefined;
@@ -582,6 +619,8 @@ export default Vue.extend({
     },
     gridComplete(complete) {
         if (complete && !this.state.compiling && !this.$options.explosions) {
+            if (localStorage[this.crosswordId + ':explosionsCancelled'])
+                return;
             if (this.crossword.meta.emoji && this.crossword.meta.emoji.length > 5) {
                 this.$options.explosions = emojisplosions({
                     emojis: this.crossword.meta.emoji,
@@ -591,6 +630,7 @@ export default Vue.extend({
             }
             this.exploding = true;
         } else if (this.$options.explosions) {
+            localStorage[this.crosswordId + ':explosionsCancelled'] = '1';
             this.exploding = false;
             this.$options.explosions.cancel();
             this.$options.explosions = undefined;
@@ -622,6 +662,15 @@ export default Vue.extend({
     this.handleOrientationChange();
     this.handleResize();
     this.gridSizeLocked = true;
+
+
+    if (localStorage.recentCrosswords) {
+        const recent = JSON.parse(localStorage.recentCrosswords);
+        if (recent.length > this.maxRecent)
+            recent.splice(this.maxRecent, recent.length - this.maxRecent);
+        this.recentCrosswords = recent;
+    }
+
 
     if (this.shouldJoin()) {
       this.firstLaunch = false;
@@ -658,12 +707,27 @@ export default Vue.extend({
       installPrompt: null,
       lastInputWasGrid: true,
       firstLaunch: true,
+      launchOption: '',
       emojiNotation: '',
       lastId: '',
-      sessionIdText: ""
+      sessionIdText: "",
+      puzzleModalTitle: ''
     };
   },
   methods: {
+    openPuzzleFromLauncher(mode) {
+        this.puzzleModalTitle = this.getPuzzleModalTitle(mode);
+        this.$refs.puzzleModal.open()
+    },
+    getPuzzleModalTitle(mode) {
+        if (mode == 'create') {
+            return 'Open for editing';
+        }
+        if (mode == 'invite') {
+            return 'Open for sharing';
+        }
+        return 'Open for solving';
+    },
     shouldJoin() {
       var shouldJoin = false;
       if (window.location.pathname != "/") {
@@ -709,7 +773,7 @@ export default Vue.extend({
         this.setHaveLaunched();
         this.state.joiningFromLauncher = true;
         this.state.launching = false;
-        this.gridid = this.sessionIdText;
+        this.gridid = this.sessionIdText.toLowerCase();
         this.startJoining();
     },
     launcherJoinClosed() {
@@ -718,15 +782,26 @@ export default Vue.extend({
         this.state.launching = true;
         this.updateTitle();
     },
-    returnFromLauncher(compiling) {
+    openFromLauncher(cwid) {
+        this.openById(cwid);
+        this.returnFromLauncher();
+    },
+    returnFromLauncher() {
+        const mode = this.$refs.launcher.lastSelectedOption;
+        console.log('mode: ' + mode);
+        this.$refs.puzzleModal.close();
         this.setHaveLaunched();
-        if (compiling) {
+        if (mode == 'create' || mode == 'invite') {
             this.goOffline();
-            this.crosswordSource = parser.sampleCrossword();
         }
-        this.state.compiling = compiling;
+        this.state.compiling = mode == 'create';
         this.state.launching = false;
         this.updateTitle();
+        if (mode == 'invite') {
+            Vue.nextTick(() => {
+                this.$refs.toolbar.openShareModal();
+            });
+        }
     },
     beforeInstall(e) {
         e.preventDefault();
@@ -927,9 +1002,6 @@ export default Vue.extend({
       const puz = params.get('puz');
       const strippedPuz = params.get('🧩');
 
-      if (localStorage.recentCrosswords)
-        this.recentCrosswords = JSON.parse(localStorage.recentCrosswords);
-
       if (enoSource) {
           let eno = confuz.decompressURL(enoSource);
           const cw = parser.parse(eno);
@@ -1009,10 +1081,11 @@ export default Vue.extend({
       this.state.joining = false;
       this.state.joiningFromLauncher = false;
 
-      this.gridid = '';
-      this.initSource();
-      window.history.pushState(null, '', '/' + this.getEnoParams());
-      this.updateTitle();
+      this.goOffline();
+      window.history.replaceState(null, '', '/');
+      this.firstLaunch = true;
+      this.updateTitle()
+      this.openLauncher();
     },
     lostConnection() {
         if (this.$options.socket) {
@@ -1083,6 +1156,7 @@ export default Vue.extend({
                 const cell = clue.cells[i];
                 if (cell.solution) {
                     cell.contents = cell.solution;
+                    this.setCheated();
                     this.sendFillCell({
                         clueid: clue.id,
                         offset: i,
@@ -1094,6 +1168,12 @@ export default Vue.extend({
             clue.showCorrect = false;
             clue = clue.nextRef;
         }
+    },
+    setCheated() {
+        localStorage[this.crosswordId + ':cheated'] = '1'
+    },
+    getCheated() {
+        return localStorage[this.crosswordId + ':cheated'];
     },
     checkWordClicked(checkAll) {
         if (!checkAll) {
@@ -1201,9 +1281,13 @@ export default Vue.extend({
             this.state.reconnecting = false;
         } 
         this.updateTitle();
+        this.snackbarMessage('You joined the session')
     },
     joinDisabled() {
         return !this.solverName || !(this.shouldJoin() || this.sessionIdText);
+    },
+    browseClicked() {
+        this.$refs.fileInput.openFile();
     },
     joinClicked() {
         if (this.joinDisabled())
@@ -1211,7 +1295,7 @@ export default Vue.extend({
         if (this.solverName)
             localStorage['confuzzle:solverName'] = this.solverName;
         if (this.sessionIdText) {
-            this.gridid = this.sessionIdText;
+            this.gridid = this.sessionIdText.toLowerCase();
         }
         this.joinLoading = true;
         this.createSocket();
@@ -1242,9 +1326,9 @@ export default Vue.extend({
         this.updateTitle();
     },
     goOffline() {
+        this.gridid = '';
         if (!this.state.colluding)
             return;
-        this.gridid = '';
         this.state.colluding = false;
         this.updateTitle();
         if (this.$options.socket) {
@@ -1395,7 +1479,7 @@ export default Vue.extend({
         link.download = filename;
         link.click();
     },
-    logoClicked() {
+    openLauncher() {
       this.state.launching = true;
     },
     copyClicked() {
