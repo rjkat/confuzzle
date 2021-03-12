@@ -677,7 +677,8 @@ export default Vue.extend({
       this.state.launching = false;
       this.startJoining();
     } else {
-      this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords);
+      const params = new URLSearchParams(window.location.search);
+      this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords || params.get('source'));
       this.state.launching = this.firstLaunch;
       this.initSource();
     }
