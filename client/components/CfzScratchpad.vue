@@ -3,7 +3,8 @@
   <div class="cfz-scratchpad-container" ref="container">
     <div v-if="clue" class="decrypt-container-label">
       <span class="clue-id">{{clue.idText + clue.directionText}}</span>
-      {{clue.sanitizedText}}<span class="clue-length">{{clue.lengthText}}</span>
+      <span v-html="clue.sanitizedText"></span>
+      <span class="clue-length">{{clue.lengthText}}</span>
     </div>
     <div v-else class="decrypt-container-label">Select a clue to solve.</div>
     <div class="word-container" ref="words">
@@ -308,7 +309,7 @@ export default Vue.extend({
     words() {
       if (!this.clue)
         return '';
-      const words = this.clue.sanitizedText.split(/[ -]/g);
+      const words = this.clue.plainText.split(/[ -]/g);
       const plainWords = [];
       for (const w of words) {
         // https://stackoverflow.com/a/31779560

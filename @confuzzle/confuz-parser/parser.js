@@ -109,9 +109,11 @@ function buildCells(cw, cells, clues, compiling) {
     if (clue.primaryId == clue.id && clue.refSeparators) {
       let ref = clue;
       let i = 0;
+      let j = 0;
 
       while (ref && i < clue.refIds.length - 1) {
-         const sep = clue.refSeparators[i];
+         j += ref.lengths.length - 1; 
+         const sep = clue.refSeparators[j];
          const sanitizedSep = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
          const cell = ref.cells[ref.cells.length - 1];
          if (ref.isAcross) {
