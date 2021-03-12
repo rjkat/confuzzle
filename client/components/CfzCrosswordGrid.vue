@@ -301,6 +301,9 @@ export default Vue.extend({
     handleKeydown(e, cell) {
         switch (e.keyCode) {
             case KeyCode.KEY_SPACE:
+                cell.contents = '';
+                this.moveInputCell(e.target, cell, 1);
+                e.preventDefault();
                 break;
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
