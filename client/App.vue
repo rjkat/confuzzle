@@ -21,6 +21,9 @@
             @eno-file-uploaded="enoFileUploaded($event)"
             @file-uploaded="returnFromLauncher()">
         </cfz-file-input>
+        <template v-if="launchOption == 'create'">
+            <p class="join-info-text">Start from the sample crossword<ui-button color="primary" style="margin-left: 1em;" @click="openSampleFromLauncher">Edit</ui-button></p>
+        </template>
         <p class="join-info-text">Open .puz or .confuz file <ui-button color="primary" @click="browseClicked()" style="margin-left: 1em">Browse...</ui-button></p>
         <template v-if="recentMetas && recentMetas.length > 0">
             <p class="join-info-text">Choose from recent crosswords</p>
@@ -35,6 +38,7 @@
                 </ul>
             </div>
         </template>
+        <p class="join-info-text">Discover publishers of .puz files at <a href="https://crosswordlinks.substack.com/about" target="_blank" rel="noopener">Daily Crossword Links<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></p>
     </ui-modal>
     
     <cfz-disconnected-modal
@@ -718,6 +722,7 @@ export default Vue.extend({
   methods: {
     openPuzzleFromLauncher(mode) {
         this.puzzleModalTitle = this.getPuzzleModalTitle(mode);
+        this.launchOption = mode;
         this.$refs.puzzleModal.open()
         // hack to hide tooltip on mobile
         this.$refs.appContainer.click()
@@ -787,6 +792,10 @@ export default Vue.extend({
     },
     openFromLauncher(cwid) {
         this.openById(cwid);
+        this.returnFromLauncher();
+    },
+    openSampleFromLauncher(cwid) {
+        this.crosswordSource = parser.sampleCrossword();
         this.returnFromLauncher();
     },
     returnFromLauncher() {

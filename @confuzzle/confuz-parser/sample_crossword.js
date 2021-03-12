@@ -1,7 +1,7 @@
 
 export function sampleCrossword() {
-  return `> this is an example crossword spec
-> it is written in eno: eno-lang.org/eno
+  return `> this is an example crossword in .confuz format
+> it uses the eno language: eno-lang.org/eno
 > you may wish to edit in a text editor with support for
 > eno syntax highlighting - see eno-lang.org/plugins
 > comments start with ">"
