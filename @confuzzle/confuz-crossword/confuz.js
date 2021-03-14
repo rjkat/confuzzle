@@ -28,7 +28,8 @@ function fuzClues(clues, options) {
         eno += "\n## " + clue.id + "\n"
         eno += "row: " + clue.row + "\n";
         eno += "col: " + clue.col + "\n";
-        eno += "text: " + clue.text + "\n";
+        if (clue.text)
+            eno += "text: " + clue.text + "\n";
         if (clue.verbatim)
             eno += "verbatim\n"
         if (!options.strip)

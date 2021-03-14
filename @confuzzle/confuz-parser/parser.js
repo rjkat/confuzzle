@@ -111,7 +111,7 @@ function buildCells(cw, cells, clues, compiling) {
       let i = 0;
       let j = 0;
 
-      while (ref && i < clue.refIds.length - 1) {
+      while (ref && i < clue.refIds.length - 1 && j < clue.refSeparators.length) {
          j += ref.lengths.length - 1; 
          const sep = clue.refSeparators[j];
          const sanitizedSep = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
@@ -265,6 +265,7 @@ function parseClue(cw, clue) {
     plainText: sanitizeHtml(parsedText, SANITIZE_HTML_OPTIONS_STRIP_ALL),
     separators: sep,
     verbatim: x.optionalEmpty('verbatim') ? true : false,
+    hidden: x.optionalEmpty('hidden') ? true : false,
     lengths: lengths,
     solution: solution,
     refIds: [],
@@ -275,7 +276,7 @@ function parseClue(cw, clue) {
 
   const number = clueid.match(/\d+/);
   var offset = 0;
-  var gridText = number ? parseInt(number, 10) : '';
+  var gridText = number ? number[0] : '';
   var clueText = gridText;
 
   const numbering = x.optionalSection('numbering');
@@ -419,14 +420,25 @@ export function parse(input, compiling, options) {
                   clues: colorClues
                 });
               } else {
-                const row = x.requiredField('row').requiredIntegerValue();
-                const col = x.requiredField('col').requiredIntegerValue();
-                cw.grid.shading.push({
-                  name: ruleName,
-                  color: color,
-                  row: row,
-                  col: col,
-                });
+                let colorRows = x.optionalList('rows');
+                let colorCols = [];
+                if (colorRows) {
+                  colorRows = colorRows.requiredIntegerValues();
+                  colorCols = x.requiredList('cols').requiredIntegerValues();
+                } else {
+                  const row = x.requiredField('row').requiredIntegerValue();
+                  colorRows = [row];
+                  const col = x.requiredField('col').requiredIntegerValue();
+                  colorCols = [col];
+                }
+                for (let i = 0; i < colorRows.length; i++) {
+                  cw.grid.shading.push({
+                    name: ruleName,
+                    color: color,
+                    row: colorRows[i],
+                    col: colorCols[i]
+                  });
+                }
               }
           });
         }

@@ -3,9 +3,9 @@
     <ul>
         <li is="cfz-clue"
             ref="items"
-            v-for="(clue, i) in clues"
+            v-for="(clue, i) in filteredClues"
             v-on="$listeners"
-            v-model="clues[i]"
+            v-model="filteredClues[i]"
             :solverid="solverid"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
@@ -60,6 +60,17 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
+    }
+  },
+  computed: {
+    filteredClues() {
+        const filtered = [];
+        for (var i = 0; i < this.clues.length; i++) {
+            if (!this.clues[i].hidden) {
+                filtered.push(this.clues[i]);
+            }
+        }
+        return filtered;
     }
   },
   methods: {

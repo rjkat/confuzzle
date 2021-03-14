@@ -130,12 +130,12 @@
             <template v-if="state.compiling && !isPortrait">
                 <cfz-crossword-editor id="editor"
                     ref="editor"
-                    v-model="crosswordSource"
+                    v-model="editorSource"
+                    @input="crosswordEdited($event)"
                     :loading="renderLoading"
                     :errorText="errorText"
                     :errorMessage="errorMessage"
-                    :scrambled='crossword.meta.scramble != "none"'
-                    @input="crosswordEdited()"
+                    :scrambled='!crossword.meta.scramble ? false : crossword.meta.scramble != "none"'
                     @preview-clicked="previewClicked()"
                     @scramble-clicked="scrambleClicked()"
                     @unscramble-clicked="unscrambleClicked()"
@@ -526,6 +526,7 @@ export default Vue.extend({
         type: String,
         default: parser.sampleCrossword()
     },
+    editorSource: "",
     client: Object
   },
   computed: {
@@ -585,7 +586,7 @@ export default Vue.extend({
             }
         }
         return true;
-    },
+    }
   },
   watch: {
     crosswordState(newValue, oldValue) {
@@ -594,6 +595,9 @@ export default Vue.extend({
     crosswordSource(newValue, oldValue) {
       if (!this.state.colluding && !this.state.joining && !this.freezeHistory) {
         this.updateHistory();
+      }
+      if (!this.state.compiling) {
+        this.editorSource = this.crosswordSource;
       }
       this.lastId = this.crosswordId;
       this.renderCrossword();
@@ -639,11 +643,9 @@ export default Vue.extend({
             this.$options.explosions.cancel();
             this.$options.explosions = undefined;
         }
-    },
-    
+    }
   },
   created() {
-
     if (this.shouldJoin()) {
       this.startJoining();
     }
@@ -712,6 +714,7 @@ export default Vue.extend({
       installPrompt: null,
       lastInputWasGrid: true,
       firstLaunch: true,
+      editDebounce: null,
       launchOption: '',
       emojiNotation: '',
       lastId: '',
@@ -795,7 +798,7 @@ export default Vue.extend({
         this.returnFromLauncher();
     },
     openSampleFromLauncher(cwid) {
-        this.crosswordSource = parser.sampleCrossword();
+        this.setCrosswordSource(parser.sampleCrossword());
         this.returnFromLauncher();
     },
     returnFromLauncher() {
@@ -805,7 +808,9 @@ export default Vue.extend({
         if (mode == 'create' || mode == 'invite' || mode == 'solve') {
             this.goOffline();
         }
-        this.state.compiling = mode == 'create';
+        if (mode == 'create') {
+            this.startCompiling();
+        }
         this.state.launching = false;
         this.updateTitle();
         if (mode == 'invite') {
@@ -1022,11 +1027,11 @@ export default Vue.extend({
           } else if (localStorage[cw.meta.id + ':state']) {
             eno += localStorage[cw.meta.id + ':state'];
           }
-          this.crosswordSource = eno;
+          this.setCrosswordSource(eno);
       } else if (puz) {
-          this.crosswordSource = confuz.fromPuz(ShareablePuz.fromURL(puz));
+          this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromURL(puz)));
       } else if (strippedPuz) {
-          this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true));
+          this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true)));
       } else if (localStorage.crosswordId) {
         let cwid = localStorage.crosswordId; 
         let eno = localStorage[cwid + ':source'];
@@ -1035,7 +1040,7 @@ export default Vue.extend({
           if (localStorage[cw.meta.id + ':state']) {
             eno += localStorage[cw.meta.id + ':state'];
           }
-          this.crosswordSource = eno;
+          this.setCrosswordSource(eno);
         }
       }
     },
@@ -1057,29 +1062,41 @@ export default Vue.extend({
       this.recentCrosswords = recent.slice(0, this.maxRecent);
       localStorage.recentCrosswords = JSON.stringify(recent);
     },
-    crosswordEdited() {
-        const self = this;
-        clearTimeout(self.editDebounce)
+    crosswordEdited(source) {
         this.renderLoading = true;
-        self.editDebounce = setTimeout(
-           self.renderCrossword,
-           500
+        if (this.editDebounce) {
+            clearTimeout(this.editDebounce);
+        }
+        this.editDebounce = setTimeout(
+           () => {
+                this.renderLoading = false;
+                this.crosswordSource = source;
+                this.editDebounce = null;
+           },
+           1000
         );
     },
-    previewClicked() {
+    startCompiling() {
+        this.editorSource = this.crosswordSource;
+        this.state.compiling = true;
+    },
+    endCompiling() {
         this.state.compiling = false;
     },
+    previewClicked() {
+        this.endCompiling();
+    },
     editSourceClicked() {
-        this.state.compiling = true;
+        this.startCompiling();
     },
     redrawEditor() {
         Vue.nextTick(() => this.$refs.editor && this.$refs.editor.redraw());
     },
     scrambleClicked() {
-        this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: true});
+        this.setCrosswordSource(confuz.fromCrossword(this.crossword, {scramble: true}));
     },
     unscrambleClicked() {
-        this.crosswordSource = confuz.fromCrossword(this.crossword, {scramble: false});
+        this.setCrosswordSource(confuz.fromCrossword(this.crossword, {scramble: false}));
     },
     connectFailed() {
       this.joinLoading = false;
@@ -1278,7 +1295,7 @@ export default Vue.extend({
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
 
-        this.crosswordSource = msg.crossword.source + (msg.crossword.state ? msg.crossword.state : '');
+        this.setCrosswordSource(msg.crossword.source + (msg.crossword.state ? msg.crossword.state : ''));
         Vue.nextTick(() => {
             this.replayEvents(msg.events);    
         });
@@ -1288,7 +1305,7 @@ export default Vue.extend({
 
         this.joinLoading = false;
         this.state.colluding = true;
-        this.state.compiling = false;
+        this.endCompiling();
 
         if (this.state.reconnecting) {
             this.$refs.disconnectedModal.close();
@@ -1318,7 +1335,7 @@ export default Vue.extend({
     shareClicked(name) {
         const self = this;
         if (this.state.compiling) {
-            this.state.compiling = false;
+            this.endCompiling();
             this.renderCrossword();
         }
         this.createSocket();
@@ -1411,7 +1428,7 @@ export default Vue.extend({
         if (localStorage[cw.meta.id + ':state']) {
           eno += localStorage[cw.meta.id + ':state'];
         }
-        this.crosswordSource = eno;
+        this.setCrosswordSource(eno);
       }
     },
     inviteEno(buf) {
@@ -1433,14 +1450,14 @@ export default Vue.extend({
         });
     },
     enoFileUploaded(buf) {
-        this.crosswordSource = Buffer.from(buf).toString('utf8');
+        this.setCrosswordSource(Buffer.from(buf).toString('utf8'));
     },
     emojiFileUploaded(buf) {
         const emoji = Buffer.from(buf).toString('utf8');
-        this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true));
+        this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true)));
     },
     puzFileUploaded(buf) {
-        this.crosswordSource = confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf)));
+        this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf))));
     },
     pushState() {
       window.history.pushState(null, '', '/' + this.getEnoParams());
@@ -1522,8 +1539,12 @@ export default Vue.extend({
         copy(this.emojiNotation);
         this.snackbarMessage(this.exportEmojiMessage);
     },
+    setCrosswordSource(source) {
+        this.crosswordSource = source;
+        this.editorSource = source;
+    },
     importEmojiClicked(emoji) {
-        this.crosswordSource = confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true));
+        this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true)));
     },
     exportLinkClicked(params) {
         const link = window.location.origin.replace(/\/$/, "") + params;

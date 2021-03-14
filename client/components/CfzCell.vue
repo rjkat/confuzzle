@@ -10,8 +10,8 @@
     ref="tableCell"
     >
     <div v-if="!cell.empty && (
-                 (cell.clues.across && cell == cell.clues.across.cells[0]) || 
-                 (cell.clues.down && cell == cell.clues.down.cells[0])
+                 (cell.clues.across && cell == cell.clues.across.cells[0] && !cell.clues.across.hidden) || 
+                 (cell.clues.down && cell == cell.clues.down.cells[0] && !cell.clues.down.hidden)
                )"
         class="cell-tooltip" ref="tooltip">{{tooltipText}}<div class="cell-tooltip-arrow" data-popper-arrow></div></div>
     <template v-if="editable && !cell.empty">
@@ -263,6 +263,9 @@ export default Vue.extend({
         if (downClue && (!acrossClue || downClue.selected)) {
             clue = downClue;
         }
+        if (clue.hidden)
+            return '';
+
         text = clue.plainText + clue.lengthText;
         if (clue.showCorrect) {
             text += ' ✅'
@@ -328,6 +331,9 @@ export default Vue.extend({
         this.$emit('cell-clicked', event);
     },
     showPopover() {
+        if (!this.tooltipText)
+            return;
+
         if (this.$refs.tooltip)
             this.$refs.tooltip.setAttribute('data-show', '');
 

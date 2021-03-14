@@ -1,6 +1,6 @@
 <template>
 <div class="cfz-crossword-editor-container">
-      <ui-toolbar class="cfz-editor-toolbar hidden-print">
+      <ui-toolbar :loading="loading" class="cfz-editor-toolbar hidden-print">
 
         <form action="/syntax" target="_blank" slot="icon">
           <ui-button
@@ -36,6 +36,7 @@
           </ui-button>
         </div>
     </ui-toolbar>
+
       <cfz-editor
           ref="editor"
           :source="source"
@@ -53,7 +54,6 @@
             </ui-button>
         </div>
       </ui-alert>
-      <ui-progress-linear v-if="loading" class="edit-progress"></ui-progress-linear>
 </div>
 </template>
 

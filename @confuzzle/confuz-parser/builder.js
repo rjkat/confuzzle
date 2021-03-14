@@ -109,5 +109,12 @@ export function parseAndBuild(input, compiling) {
         }
       };
     }
+
+    cw.acrossClues.sort((a, b) => {
+        return a.row != b.row ? a.row - b.row : a.col - b.col;
+    });
+    cw.downClues.sort((a, b) => {
+        return a.row != b.row ? a.row - b.row : a.col - b.col;
+    });
     return cw;
 }

@@ -307,6 +307,12 @@ export default Vue.extend({
                 break;
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
+                if (cell.clues.across && cell.clues.down) {
+                    if (   (this.inputAcross && e.keyCode == KeyCode.KEY_DOWN)
+                        || (!this.inputAcross && e.keyCode == KeyCode.KEY_RIGHT)) {
+                      this.inputAcross = !this.inputAcross;
+                    }
+                }
                 this.moveInputCell(e.target, cell, 1);
                 break;
             case KeyCode.KEY_BACK_SPACE:
@@ -314,6 +320,12 @@ export default Vue.extend({
                 this.fillCell(cell);
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
+                if (cell.clues.across && cell.clues.down) {
+                    if (   (this.inputAcross && e.keyCode == KeyCode.KEY_UP)
+                        || (!this.inputAcross && e.keyCode == KeyCode.KEY_LEFT)) {
+                      this.inputAcross = !this.inputAcross;
+                    }
+                }
                 this.moveInputCell(e.target, cell, -1);
                 e.preventDefault();
                 break;
