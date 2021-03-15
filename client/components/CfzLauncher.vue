@@ -182,7 +182,7 @@ export default Vue.extend({
       if (!this.isPortrait)
         opt.push({
           text: "Create",
-          icon: "edit",
+          icon: "code",
           tooltip: "Compile your own crossword"
         });
 

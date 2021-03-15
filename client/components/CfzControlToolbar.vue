@@ -1,6 +1,15 @@
 <template>
 <ui-toolbar class="cfz-control-toolbar hidden-print">
-    <div slot="icon"></div>
+    <div slot="icon">
+       <!--  <ui-icon-button
+            type="primary"
+            :icon="usingPencil ? 'edit_off' : 'edit'"
+            has-dropdown
+            @click="usingPencil = !usingPencil"
+            dropdownPosition="bottom-start"
+        >
+        </ui-icon-button> -->
+    </div>
     <div slot="brand">
         <ui-button
             icon="star"
@@ -22,14 +31,14 @@
         </ui-menu>
         </ui-button>
         <ui-button
-            icon="widgets"
+            icon="settings"
             type="primary"
             ref="widgetButton"
             has-dropdown
             dropdownPosition="bottom-start"
             :constrainDropdownToScrollParent="false"
         >
-            Widgets
+            View
             <ui-menu
                 contain-focus
                 has-icons
@@ -60,7 +69,7 @@
         Cancel
         </ui-button>
         <ui-button
-            icon="edit"
+            icon="code"
             type="primary"
             @click="$emit('edit-source-clicked', $event)"
             v-responsive.lg.xl
@@ -93,7 +102,11 @@ export default Vue.extend({
     showTooltips: true,
     showTooltipToggle: false,
     showScratchpad: false,
-    showScratchpadEnabled: false
+    showScratchpadEnabled: false,
+    usingPencil: false
+  },
+  model: {
+    prop: 'usingPencil'
   },
   computed: {
     deleteText() {

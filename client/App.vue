@@ -146,6 +146,7 @@
                 <div id="clue-container" :data-portrait="isPortrait" :data-show-grid="showGrid">
                     <cfz-control-toolbar
                      v-on="$listeners"
+                     v-model="usingPencil"
                      id="control-toolbar"
                      :showEdit="!state.colluding"
                      :showDelete="false"
@@ -211,18 +212,22 @@ body {
 */
 }
 
-/*.grid-enter-active,
+.grid-enter-active,
 .grid-leave-active {
-  transition: all 0.3s;
-}*/
+  transition: all 0.5s;
+}
 
-/*.grid-enter, .grid-leave-to {
-    margin-left: -var(--grid-width);
+.grid-enter:not([data-portrait]), .grid-leave-to:not([data-portrait]) {
+    margin-left: -100vw;
+    width: 100vw;
+    opacity: 0;
 }
 
 .grid-enter[data-portrait], .grid-leave-to[data-portrait] {
-    margin-left: var(--grid-height);
-}*/
+    margin-top: -100vh;
+    height: 100vh;
+    opacity: 0;
+}
 
 .launcher-enter-active,
 .launcher-leave-active {
@@ -638,7 +643,6 @@ export default Vue.extend({
             }
             this.exploding = true;
         } else if (this.$options.explosions) {
-            localStorage[this.crosswordId + ':explosionsCancelled'] = '1';
             this.exploding = false;
             this.$options.explosions.cancel();
             this.$options.explosions = undefined;
@@ -706,6 +710,7 @@ export default Vue.extend({
       solverid: 0,
       socketid: '',
       showGrid: true,
+      usingPencil: false,
       showTooltips: true,
       showScratchpad: false,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
@@ -961,6 +966,7 @@ export default Vue.extend({
     },
     cancelExplosions() {
         this.exploding = false;
+        localStorage[this.crosswordId + ':explosionsCancelled'] = '1';
         this.$options.explosions.cancel();
     },
     snackbarMessage(msg) {
@@ -1047,6 +1053,7 @@ export default Vue.extend({
     updateLocalStorage() {
       localStorage[this.crosswordId + ':source'] = this.statelessSource;
       localStorage[this.crosswordId + ':meta'] = JSON.stringify(this.crossword.meta);
+      localStorage[this.crosswordId + ':explosionsCancelled'] = '';
       localStorage.crosswordId = this.crosswordId;
       let recent = [];
       if (localStorage.recentCrosswords) {
