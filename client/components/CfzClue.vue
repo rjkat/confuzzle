@@ -240,7 +240,6 @@ export default Vue.extend({
         this.clue.showCorrect = false;
         this.clue.showIncorrect = false;
         const special = this.usingPencil ? '?' : '-';
-        console.log("special: " + special);
         this.clue.cells[offset].special = special;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value, special: special});
     },
