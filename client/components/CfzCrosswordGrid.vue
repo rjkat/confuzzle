@@ -208,11 +208,13 @@ export default Vue.extend({
       let i = 0;
       let clue = answer.clue;
       let j = 0;
+      const special = this.usingPencil ? '?' : '-';
       while (i < answer.text.length && clue) {
         const cell = clue.cells[j];
         if (answer.text[i]) {
           cell.contents = answer.text[i];
-          this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents, special: cell.special});
+          cell.special = special;
+          this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents, special: special});
         }
         i++;
         j++;
@@ -229,7 +231,7 @@ export default Vue.extend({
 
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
       const offset = this.inputAcross ? cell.offsets.across : cell.offsets.down;
-      cell.special = this.usingPencil ? '?' : '-';
+      cell.special = (this.usingPencil && value && value != ' ') ? '?' : '-';
       clue.showCorrect = false;
       clue.showIncorrect = false;
       this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents, special: cell.special});

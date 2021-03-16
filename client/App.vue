@@ -1156,6 +1156,7 @@ export default Vue.extend({
             for (let col = 0; col < grid.width; col++) {
                 const cell = grid.cells[row][col];
                 cell.contents = '';
+                cell.special = '-';
             }
         }
         this.renderCrossword();

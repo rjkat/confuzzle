@@ -57,6 +57,7 @@
 
     .crossword-clue-input {
         display: inline-block;
+        height: 29px;
         ::selection {
             background-color: transparent;
         }
@@ -64,7 +65,7 @@
 
     input {
         cursor: pointer;
-        font-size: $gridFontSize;
+        font-size: 22px;
         font-family: $answerFontFamily;
         padding: $gridBorderWidth 0 0 $gridBorderWidth;
         border: 0;
@@ -73,10 +74,10 @@
         border-bottom: 1px solid $gridBgColor;
         background: none;
         outline: none;
-        min-width: $gridCellSize;
-        max-width: $gridCellSize;
-        height: $gridCellSize;
-        line-height: $gridCellSize;
+        min-width: 29px;
+        max-width: 29px;
+        height: 100%;
+        line-height: 100%;
         text-align: center;
         vertical-align: middle;
         text-transform: uppercase;
@@ -239,7 +240,7 @@ export default Vue.extend({
     fillCell: function(offset, value) {
         this.clue.showCorrect = false;
         this.clue.showIncorrect = false;
-        const special = this.usingPencil ? '?' : '-';
+        const special = (this.usingPencil && value && value != ' ') ? '?' : '-';
         this.clue.cells[offset].special = special;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value, special: special});
     },
@@ -255,6 +256,8 @@ export default Vue.extend({
         const input = event.target;
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
+                this.clue.cells[offset].contents = '';
+                this.fillCell(offset, '');
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
                 this.moveInput(input, offset + 1);

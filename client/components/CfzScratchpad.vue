@@ -36,7 +36,7 @@
       <div v-if="clue" class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(answerCells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(answerCells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
-            <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents">
+            <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents" :data-is-pencil="answerCells[index].special == '?'">
                  <drag class="letter-tile" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
             </div>
           </drop>
@@ -253,7 +253,7 @@
       width: 100%;
       height: 100%;
       position: absolute;
-      &:before {
+      &:not([data-is-pencil]):before {
         top: 0;
         left: 0;
         width: 100%;
@@ -262,6 +262,19 @@
         color: #888;
         position: absolute;
         z-index: -1;
+      }
+      &[data-is-pencil]:before {
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        content: attr(data-cell-contents);
+        position: absolute;
+        z-index: -1;
+        font-size: 1.55rem;
+        padding-top: 4px;
+        font-family: 'F*ck Beans';
+        color: #888;
       }
       .letter-tile {
         position: absolute;
