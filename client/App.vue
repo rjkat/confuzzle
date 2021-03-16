@@ -1196,6 +1196,7 @@ export default Vue.extend({
                 const cell = clue.cells[i];
                 if (cell.solution) {
                     cell.contents = cell.solution;
+                    cell.special = '-';
                     this.setCheated();
                     this.sendFillCell({
                         clueid: clue.id,
