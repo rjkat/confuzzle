@@ -146,10 +146,15 @@
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
       width: 31px;
       height: 31px;
+
       vertical-align: middle;
       text-align: center;
       display: inline-block;
       /*-webkit-user-select: none; */
+
+      &:not([data-is-pencil]) {
+        line-height: 31px;
+      }
 
       &[data-is-pencil] {
         padding-top: 4px;
@@ -262,6 +267,7 @@
         top: 0;
         left: 0;
         width: 100%;
+        line-height: 31px;
         text-align: center;
         content: attr(data-cell-contents);
         color: #888;
