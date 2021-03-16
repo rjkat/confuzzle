@@ -7,6 +7,7 @@
             class="clue-list"
             ref="acrossList"
             data-across
+            :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
             v-model="crossword.acrossClues"
@@ -17,6 +18,7 @@
             class="clue-list"
             ref="downList"
             data-down
+            :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
             v-model="crossword.downClues"
@@ -107,6 +109,7 @@ export default Vue.extend({
     crossword: Object,
     state: Object,
     solvers: Object,
+    usingPencil: Boolean,
     solverid: {
         type: Number,
         default: 0

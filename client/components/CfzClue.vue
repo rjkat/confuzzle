@@ -26,6 +26,7 @@
                            @mousedown.prevent
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
+                           :data-is-pencil="cell.special == '?'"
                            :class="{highlighted: selected || highlighted}"
                            v-model="clue.cells[i].contents">
                     </input><span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
@@ -56,7 +57,6 @@
 
     .crossword-clue-input {
         display: inline-block;
-
         ::selection {
             background-color: transparent;
         }
@@ -82,6 +82,18 @@
         text-transform: uppercase;
         box-sizing: border-box;
         -webkit-user-select: none; 
+
+        &[data-is-pencil] {
+            vertical-align: bottom !important;
+            line-height: 10px;
+            font-size: 1.55rem;
+            padding-top: 4px;
+            min-height: 29px;
+            max-width: 29px;
+            min-width: 29px;
+            font-family: 'F*ck Beans';
+            color: #777;
+        }
     }
 
     input:focus {
@@ -117,6 +129,7 @@ import * as KeyCode from 'keycode-js';
 export default Vue.extend({
   props: {
     clue: Object,
+    usingPencil: Boolean,
     solverid: {
         type: Number,
         default: 0
@@ -226,7 +239,10 @@ export default Vue.extend({
     fillCell: function(offset, value) {
         this.clue.showCorrect = false;
         this.clue.showIncorrect = false;
-        this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value});
+        const special = this.usingPencil ? '?' : '-';
+        console.log("special: " + special);
+        this.clue.cells[offset].special = special;
+        this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value, special: special});
     },
     handleInput(event, offset) {
         const input = event.target;

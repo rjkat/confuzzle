@@ -18,7 +18,8 @@
         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             ref="input"
             class="crossword-grid-input"
-            :value="cellContents"
+            :value="cell.contents"
+            :data-is-pencil="cell.special == '?'"
             v-on="$listeners"
             maxlength="1"
         >
@@ -180,6 +181,13 @@ td {
         text-align: center;
         vertical-align: middle;
         text-transform: inherit;
+
+        &[data-is-pencil] {
+            font-size: 1.55rem;
+            padding-top: 2px;
+            font-family: 'F*ck Beans';
+            color: #565656;
+        }
     }
 }
 </style>
@@ -232,9 +240,6 @@ export default Vue.extend({
             return false;
         const clueCells = this.cell.clues.down.cells;
         return (this.cell.offsets.down != clueCells.length - 1);
-    },
-    cellContents() {
-        return this.cell.contents;
     },
     downSelected() {
         return this.cell && this.cell.clues && this.cell.clues.down && this.cell.clues.down.selected;

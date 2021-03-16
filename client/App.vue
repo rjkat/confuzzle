@@ -117,6 +117,7 @@
                 <cfz-crossword-grid id="grid"
                     ref="grid"
                     v-model="crossword"
+                    :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
                     :solverid="solverid"
                     :gridSize="gridSize"
@@ -172,6 +173,7 @@
                         :state="state"
                         :solvers="solvers"
                         :solverid="solverid"
+                        :usingPencil="usingPencil"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
                         v-responsive.class
@@ -717,7 +719,6 @@ export default Vue.extend({
       iOSSafari: false,
       iOSPrompt: false,
       installPrompt: null,
-      lastInputWasGrid: true,
       firstLaunch: true,
       editDebounce: null,
       launchOption: '',
@@ -1199,7 +1200,8 @@ export default Vue.extend({
                     this.sendFillCell({
                         clueid: clue.id,
                         offset: i,
-                        value: cell.solution
+                        value: cell.solution,
+                        special: cell.special
                     });
                 }
             }
@@ -1260,6 +1262,7 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].showIncorrect = false;
         this.crossword.clues[msg.clueid].showCorrect = false;
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
+        this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
     },
     sendUpdate(event) {
         if (this.$options.socket) {
@@ -1274,14 +1277,14 @@ export default Vue.extend({
             }
         }
     },
-    sendFillCell(event, wasGrid) {
-        this.lastInputWasGrid = wasGrid;
+    sendFillCell(event) {
         this.sendUpdate({
             action: 'fillCell',
             solverid: this.solverid,
             clueid: event.clueid,
             offset: event.offset,
-            value: event.value
+            value: event.value,
+            special: event.special
         });
     },
     replayEvents(eventLog) {

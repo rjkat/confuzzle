@@ -6,6 +6,7 @@
             v-for="(clue, i) in filteredClues"
             v-on="$listeners"
             v-model="filteredClues[i]"
+            :usingPencil="usingPencil"
             :solverid="solverid"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
@@ -60,7 +61,8 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
-    }
+    },
+    usingPencil: Boolean
   },
   computed: {
     filteredClues() {

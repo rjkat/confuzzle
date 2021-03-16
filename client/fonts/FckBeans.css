@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'F*ck Beans';
+    src: url('FckBeans.woff2') format('woff2'),
+        url('FckBeans.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'F*ck Beans';
+    src: url('FckBeans-Bold-Italic.woff2') format('woff2'),
+        url('FckBeans-Bold-Italic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'F*ck Beans';
+    src: url('FckBeans-Bold.woff2') format('woff2'),
+        url('FckBeans-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'F*ck Beans';
+    src: url('FckBeans-Italic.woff2') format('woff2'),
+        url('FckBeans-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+

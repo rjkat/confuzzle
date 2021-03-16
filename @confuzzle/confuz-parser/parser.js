@@ -152,6 +152,7 @@ function buildGrid(cw, compiling) {
         row: row - 1,
         empty: true,
         contents: '',
+        special: '-',
         acrossMask: 0,
         downMask: 0,
         highlightMask: 0
@@ -363,6 +364,15 @@ function parseFilled(cw, filled) {
   for (var i = 0; i < clue.cells.length; i++) {
     if (ans[i] != '-') {
       clue.cells[i].contents = ans[i];
+    }
+  }
+
+  const special = x.optionalField('special');
+  if (special) {
+    const s = special.requiredStringValue();
+    const clue = cw.clues[clueid];
+    for (var i = 0; i < clue.cells.length; i++) {
+       clue.cells[i].special = s[i];
     }
   }
 }

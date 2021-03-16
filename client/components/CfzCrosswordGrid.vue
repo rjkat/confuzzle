@@ -67,6 +67,7 @@ export default Vue.extend({
   },
   props: {
     crossword: Object,
+    usingPencil: Boolean,
     showScratchpad: Boolean,
     gridSize: Number,
     isPortrait: {
@@ -211,7 +212,7 @@ export default Vue.extend({
         const cell = clue.cells[j];
         if (answer.text[i]) {
           cell.contents = answer.text[i];
-          this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents});
+          this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents, special: cell.special});
         }
         i++;
         j++;
@@ -223,12 +224,15 @@ export default Vue.extend({
         }
       }
     },
-    fillCell(cell) {
+    fillCell(cell, value) {
+      cell.contents = value;
+
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
       const offset = this.inputAcross ? cell.offsets.across : cell.offsets.down;
+      cell.special = this.usingPencil ? '?' : '-';
       clue.showCorrect = false;
       clue.showIncorrect = false;
-      this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents});
+      this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents, special: cell.special});
     },
     cellClicked(event, cell) {
         if (!this.editable) {
@@ -291,8 +295,7 @@ export default Vue.extend({
         this.selectCell(cell);
     },
     handleInput(e, cell) {
-        cell.contents = e.target.value;
-        this.fillCell(cell);
+        this.fillCell(cell, e.target.value);
         if (cell.contents)
         {
           this.moveInputCell(e.target, cell, 1);
@@ -316,8 +319,7 @@ export default Vue.extend({
                 this.moveInputCell(e.target, cell, 1);
                 break;
             case KeyCode.KEY_BACK_SPACE:
-                cell.contents = '';
-                this.fillCell(cell);
+                this.fillCell(cell, '');
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_UP:
                 if (cell.clues.across && cell.clues.down) {

@@ -10,7 +10,7 @@ const {setCacheNameDetails, clientsClaim} = workbox.core;
 
 setCacheNameDetails({
   prefix: 'confuzzle',
-  suffix: 'v2'
+  suffix: 'v3'
 });
 
 self.skipWaiting();

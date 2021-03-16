@@ -113,46 +113,62 @@ export function stateFromClues(clues) {
     var written = {};
     for (let [clueid, clue] of Object.entries(clues)) {
         var ans = '';
+        var special = '';
         var nfilled = 0;
+        var haveSpecial = false;
         for (var i = 0; i < clue.cells.length; i++) {
             const cell = clue.cells[i];
-            const c = clue.cells[i].contents;
-            if (c) {
+            const c = cell.contents;
+            const s = cell.special;
+            if (c || s) {
                 nfilled++;
-                ans += c.toUpperCase();
+                ans += c ? c.toUpperCase() : '-';
+                special += s;
+                if (s && s != '-') {
+                    console.log('haveSpecial! ' + s);
+                    haveSpecial = true;
+                }
             } else {
                 ans += '-';
+                special += '-';
             }
         }
 
         /* if all cells are already in another clue with more filled-in
          * cells, don't write this one */
+        
         var nneeded = nfilled;
-        for (var i = 0; i < clue.cells.length; i++) {
-            const cell = clue.cells[i];
-            const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
-            if (!otherClue)
-                continue;
-            var nother = 0;
-            for (var j = 0; j < otherClue.cells.length; j++) {
-                if (otherClue.cells[j].contents) {
-                    nother++;
+        if (!haveSpecial) {
+            for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
+                const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
+                if (!otherClue)
+                    continue;
+                var nother = 0;
+                for (var j = 0; j < otherClue.cells.length; j++) {
+                    if (otherClue.cells[j].contents) {
+                        nother++;
+                    }
                 }
-            }
-            if (nother > nfilled ) {
-                nneeded--;
-            } else if (!clue.isAcross && nother == nfilled) {
-                // tiebreak, prefer across clues to down
-                nneeded--;
+                if (nother > nfilled ) {
+                    nneeded--;
+                } else if (!clue.isAcross && nother == nfilled) {
+                    // tiebreak, prefer across clues to down
+                    nneeded--;
+                }
             }
         }
 
-        if (nneeded > 0) {
+        if (nneeded > 0 || haveSpecial) {
             if (!state) {
                 state = '\n# state\n';
             }
             state += '\n## ' + clueid + '\n';
             state += 'ans: ' + ans + '\n';
+            if (haveSpecial) {
+                console.log('have special!');
+                state += 'special: ' + special + '\n';
+            }
             written[clueid] = true;
         }
     }

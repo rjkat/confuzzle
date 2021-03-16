@@ -1,14 +1,13 @@
 <template>
 <ui-toolbar class="cfz-control-toolbar hidden-print">
     <div slot="icon">
-       <!--  <ui-icon-button
-            type="primary"
-            :icon="usingPencil ? 'edit_off' : 'edit'"
-            has-dropdown
-            @click="usingPencil = !usingPencil"
-            dropdownPosition="bottom-start"
-        >
-        </ui-icon-button> -->
+        <ui-icon-button
+            color="primary"
+            type="secondary"
+            style="height: 1.6rem; width: 1.6rem; margin-left: .5rem;"
+            @click="toggleUsingPencil()"
+        ><div :style="pencilButtonStyle">A</div>
+        </ui-icon-button>
     </div>
     <div slot="brand">
         <ui-button
@@ -109,6 +108,14 @@ export default Vue.extend({
     prop: 'usingPencil'
   },
   computed: {
+    pencilButtonStyle() {
+        const fam = !this.usingPencil ? '"notcouriersansregular"' : '"F*ck Beans"';
+        return {
+            'font-family': fam,
+            'font-size': !this.usingPencil ? '1.6rem' : '1.4rem',
+            'margin-top': !this.usingPencil ? '-0.2rem' : '0'
+        };
+    },
     deleteText() {
         return this.deleting ? 'Confirm' : 'Clear all'
     },
@@ -143,6 +150,9 @@ export default Vue.extend({
   },
   methods: {
     
+    toggleUsingPencil() {
+        this.$emit('input', !this.usingPencil);
+    },
     selectMenuOption(option) {
         if (option.label == this.opt.CHECK_WORD.label) {
             this.$emit('check-word-clicked');
