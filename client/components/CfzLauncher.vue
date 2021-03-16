@@ -2,7 +2,7 @@
   <div class="cfz-launcher-container">
       
       <div>
-        <cfz-crossword-grid v-model="crossword" style="text-align: center; padding-top: 20vh; transform: scale(1.5,1.5)"></cfz-crossword-grid>
+        <cfz-crossword-grid v-model="crossword" :usingPencil="true" style="text-align: center; padding-top: 20vh; transform: scale(1.5,1.5)"></cfz-crossword-grid>
       </div>
       <div class="cfz-launcher-options-container">
         <div class="cfz-launcher-options">
