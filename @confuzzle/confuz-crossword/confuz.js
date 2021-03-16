@@ -125,7 +125,6 @@ export function stateFromClues(clues) {
                 ans += c ? c.toUpperCase() : '-';
                 special += s;
                 if (s && s != '-') {
-                    console.log('haveSpecial! ' + s);
                     haveSpecial = true;
                 }
             } else {
@@ -166,7 +165,6 @@ export function stateFromClues(clues) {
             state += '\n## ' + clueid + '\n';
             state += 'ans: ' + ans + '\n';
             if (haveSpecial) {
-                console.log('have special!');
                 state += 'special: ' + special + '\n';
             }
             written[clueid] = true;

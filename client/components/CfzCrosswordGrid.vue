@@ -10,7 +10,7 @@
   </div>
   <div class="crossword-grid-container" :style="gridContainerStyle">
       <keep-alive>
-        <cfz-scratchpad name="scratchpad" v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" ref="scratchpad">
+        <cfz-scratchpad name="scratchpad" v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" ref="scratchpad">
         </cfz-scratchpad>
       </keep-alive>
       <table v-if="!showScratchpad" class="crossword-grid" cell-spacing="0" :style="gridStyle">

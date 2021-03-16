@@ -20,10 +20,10 @@
               @reorder="reorderWorkingTiles"
               mode="cut">
               <template v-slot:item="{item}">
-                <drag class="letter-tile" :data="item" :data-solver-mask="solverMask" :key="item.offset" @cut="cutWorkingLetter(item.offset)">{{item.letter}}</drag>
+                <drag class="letter-tile" :data-is-pencil="usingPencil" :data="item" :data-solver-mask="solverMask" :key="item.offset" @cut="cutWorkingLetter(item.offset)">{{item.letter}}</drag>
               </template>
               <template v-slot:feedback="{ data }">
-                <div class="letter-tile letter-tile-feedback" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
+                <div class="letter-tile letter-tile-feedback" :data-is-pencil="usingPencil" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
               </template>
           </drop-list>
           <drop v-if="clue && numAnswerLetters > 0 && workingLetters[clue.id] && workingLetters[clue.id].length == 0" mode="cut" class="answer-slot" :data-solver-mask="solverMask"  
@@ -37,7 +37,7 @@
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(answerCells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(answerCells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
             <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents" :data-is-pencil="answerCells[index].special == '?'">
-                 <drag class="letter-tile" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
+                 <drag class="letter-tile" :data-is-pencil="usingPencil" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
             </div>
           </drop>
       </div>
@@ -144,14 +144,20 @@
       margin-bottom: 4px;
       outline: none;
       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-      min-width: $gridCellSize;
-      max-width: $gridCellSize;
-      height: $gridCellSize;
-      line-height: $gridCellSize;
+      width: 31px;
+      height: 31px;
       vertical-align: middle;
       text-align: center;
       display: inline-block;
       /*-webkit-user-select: none; */
+
+      &[data-is-pencil] {
+        padding-top: 4px;
+        height: 27px;
+
+        font-family: 'F*ck Beans';
+        color: #565656;
+      }
 
       &[data-letter=""] {
         visibility: hidden !important;
@@ -233,9 +239,8 @@
       margin-bottom: 4px;
       background: none;
       outline: none;
-      min-width: $gridCellSize;
-      max-width: $gridCellSize;
-      height: $gridCellSize;
+      width: 31px;
+      height: 31px;
       z-index: 1;
       &[data-separator]:after {
         position: absolute;
@@ -308,7 +313,8 @@ export default Vue.extend({
     solverid: {
         type: Number,
         default: 0
-    }
+    },
+    usingPencil: Boolean
   },
   watch: {
     clue(newClue, oldClue) {
