@@ -1,17 +1,17 @@
 <template>
-<ui-toolbar type="colored" removeNavIcon>
+<ui-toolbar type="colored" class="crossword-toolbar" style="overflow: hidden;" removeNavIcon>
     <table slot="brand" width="40">
         <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
-        <span style="{display: inline-flex; align-items: center; max-height: 100%;}">
-            <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
-            <span class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</span>
-            <span class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</span>
-        </span>
+        <div class="crossword-title" >
+            <div class="crossword-meta-name" v-responsive.class>{{metadata.name}}</div>
+            <div class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</div>
+            <div class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</div>
+        </div>
     </template>
-    <div slot="actions" class="hidden-print">
+    <div slot="actions" class="hidden-print crossword-toolbar-actions">
         <ui-icon-button
             color="white"
             icon="print"
@@ -105,6 +105,15 @@
 </template>
 
 <style lang="scss">
+
+.crossword-title {
+    display: flex;
+    column-gap: 1em;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 100%;
+}
+
 .emoji-button {
     background: transparent !important;
     font-size: 20px;
@@ -172,8 +181,7 @@ ul {
 
 .crossword-meta-author {
     font-family: $clueFontFamily; 
-    margin-left: .5em;
-    margin-right: .5em;
+
     font-size: 16px;
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
