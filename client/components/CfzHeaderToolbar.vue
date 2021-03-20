@@ -5,10 +5,10 @@
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
-        <div class="crossword-title" >
-            <div class="crossword-meta-name" v-responsive.class>{{metadata.name}}</div>
-            <div class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</div>
-            <div class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</div>
+        <div class="crossword-title">
+            <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
+            <span class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</span>
+            <span class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</span>
         </div>
     </template>
     <div slot="actions" class="hidden-print crossword-toolbar-actions">
@@ -106,14 +106,6 @@
 
 <style lang="scss">
 
-.crossword-title {
-    display: flex;
-    column-gap: 1em;
-    flex-wrap: wrap;
-    align-items: center;
-    height: 100%;
-}
-
 .emoji-button {
     background: transparent !important;
     font-size: 20px;
@@ -174,6 +166,7 @@ ul {
     text-transform: uppercase;
     font-family: $titleFontFamily;
     font-weight: bold;
+    padding-right: .5em;
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
     }
@@ -181,8 +174,8 @@ ul {
 
 .crossword-meta-author {
     font-family: $clueFontFamily; 
-
     font-size: 16px;
+    padding-right: .5em;
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
     }
