@@ -116,6 +116,7 @@
             <transition name="grid">
                 <cfz-crossword-grid id="grid"
                     ref="grid"
+                    key="gridContainer"
                     v-model="crossword"
                     :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
@@ -226,8 +227,8 @@ body {
 }
 
 .grid-enter[data-portrait], .grid-leave-to[data-portrait] {
-    margin-top: -100vh;
-    height: 100vh;
+    margin-top: -100vw;
+    height: 100vw;
     opacity: 0;
 }
 

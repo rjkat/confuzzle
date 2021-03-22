@@ -316,6 +316,8 @@ export default Vue.extend({
   },
   props: {
     clue: Object,
+    answerSlots: Object,
+    workingLetters: Object,
     solverid: {
         type: Number,
         default: 0
@@ -387,7 +389,6 @@ export default Vue.extend({
     },
   },
   methods: {
-
     createAnswerSlots() {
       if (!this.clue)
         return;
@@ -402,6 +403,7 @@ export default Vue.extend({
         j += ref.cells.length;
         ref = ref.nextRef;
       }
+      this.$emit('update:answerSlots', this.answerSlots);
     },
     clearClicked() {
       if (!this.clue)
@@ -411,6 +413,8 @@ export default Vue.extend({
       for (let i = 0; i < this.answerSlots[this.clue.id].length; i++) {
         this.$set(this.answerSlots[this.clue.id], i, {offset: i, letter: ''});
       }
+      this.$emit('update:answerSlots', this.answerSlots);
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     // https://stackoverflow.com/a/6274381
     shuffleClicked() {
@@ -423,6 +427,7 @@ export default Vue.extend({
         this.$set(a, i, {letter: a[j].letter, offset: i});
         this.$set(a, j, {letter: tmp.letter, offset: j});
       }
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     submitClicked() {
       const text = [];
@@ -448,6 +453,7 @@ export default Vue.extend({
         });
         i++;
       }
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     openCustomModal() {
       this.$refs.customWordModal.open();
@@ -458,18 +464,21 @@ export default Vue.extend({
     },
     cutAnswerLetter(offset) {
       this.$set(this.answerSlots[this.clue.id], offset, {offset: offset, letter: ''});
+      this.$emit('update:answerSlots', this.answerSlots);
     },
     cutWorkingLetter(offset) {
       this.workingLetters[this.clue.id].splice(offset, 1);
       for (let i = offset; i < this.workingLetters[this.clue.id].length; i++) {
         this.$set(this.workingLetters[this.clue.id][i], 'offset', i);
       }
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     insertFirstWorkingTile(event) {
       this.workingLetters[this.clue.id].splice(0, 0, {
         letter: event.data,
         offset: 0
       });
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     insertWorkingTile(event) {
       for (let offset = this.workingLetters[this.clue.id].length - 1; offset >= event.index; offset--)
@@ -481,15 +490,18 @@ export default Vue.extend({
         letter: event.data,
         offset: event.index
       });
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     reorderWorkingTiles(event) {
       this.$set(this.workingLetters[this.clue.id][event.from], 'offset', event.to);
       this.$set(this.workingLetters[this.clue.id][event.to], 'offset', event.from);
       event.apply(this.workingLetters[this.clue.id]);
+      this.$emit('update:workingLetters', this.workingLetters);
     },
     answerTileDropped(event, answerOffset) {
       const letter = event.data.letter || event.data;
       this.answerSlots[this.clue.id][answerOffset].letter = letter;
+      this.$emit('update:answerSlots', this.answerSlots);
     },
     separator: function (cell) {
         if (!cell || !this.clue)
@@ -512,8 +524,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      workingLetters: {},
-      answerSlots: {},
       customWord: ''
     };
   },

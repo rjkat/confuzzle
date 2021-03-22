@@ -162,6 +162,11 @@ ul {
   
 }
 
+.crossword-title {
+    margin-top: .25em;
+    margin-bottom: .25em;
+}
+
 .crossword-meta-name {
     text-transform: uppercase;
     font-family: $titleFontFamily;

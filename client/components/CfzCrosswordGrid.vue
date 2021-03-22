@@ -9,22 +9,26 @@
     <div class="copyright-text">{{copyrightText}}</div>
   </div>
   <div class="crossword-grid-container" :style="gridContainerStyle">
-      <keep-alive>
-        <cfz-scratchpad name="scratchpad" v-if="showScratchpad" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" ref="scratchpad">
+      <transition name="anagram">
+        <div v-if="!showScratchpad" key="grid">
+          <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
+              <tr v-for="(row, r) in crossword.grid.cells">
+                  <cfz-cell v-for="cell in row" ref="inputCells"
+                            :cell="crossword.grid.cells[cell.row][cell.col]"
+                            :solverid="solverid"
+                            @cell-clicked="cellClicked($event, cell)"
+                            @keydown="handleKeydown($event, cell)"
+                            @input="handleInput($event, cell)"
+                            @mousedown.prevent>
+                  </cfz-cell>
+              </tr>
+          </table>
+        </div>
+        <cfz-scratchpad v-else key="scratchpad" name="scratchpad" :answerSlots.sync="answerSlots" :workingLetters.sync="workingLetters" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" ref="scratchpad">
         </cfz-scratchpad>
-      </keep-alive>
-      <table v-if="!showScratchpad" class="crossword-grid" cell-spacing="0" :style="gridStyle">
-          <tr v-for="(row, r) in crossword.grid.cells">
-              <cfz-cell v-for="cell in row" ref="inputCells"
-                        :cell="crossword.grid.cells[cell.row][cell.col]"
-                        :solverid="solverid"
-                        @cell-clicked="cellClicked($event, cell)"
-                        @keydown="handleKeydown($event, cell)"
-                        @input="handleInput($event, cell)"
-                        @mousedown.prevent>
-              </cfz-cell>
-          </tr>
-      </table>
+        
+      </transition>
+      
   </div>
   <div v-if="!isPortrait" :style="gridControlStyle">
     <div class="copyright-text">{{copyrightText}}</div>
@@ -40,14 +44,25 @@
 }
 .crossword-grid {
   flex: none;
+  text-indent: 0;
   text-transform: uppercase;
   background-color: $gridBgColor;
-  display:inline-block;
+  display: inline-block;
   border-collapse: collapse;
 }
 .copyright-text {
   font-family: $clueFontFamily;
   margin-right: $displayPadding;
+}
+
+.anagram-enter-active,
+.anagram-leave-active {
+  transition: opacity 0.5s;
+}
+
+.anagram-enter, .anagram-leave-to {
+  height: 0px;
+  opacity: 0;
 }
 </style>
 
@@ -69,6 +84,14 @@ export default Vue.extend({
     crossword: Object,
     usingPencil: Boolean,
     showScratchpad: Boolean,
+    answerSlots: {
+      type: Object,
+      default: function () { return {} }
+    },
+    workingLetters: {
+      type: Object,
+      default: function () { return {} }
+    },
     gridSize: Number,
     isPortrait: {
       type: Boolean,
