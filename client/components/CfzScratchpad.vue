@@ -392,6 +392,8 @@ export default Vue.extend({
     createAnswerSlots() {
       if (!this.clue)
         return;
+      if (this.answerSlots[this.clue.id])
+        return;
       this.$set(this.answerSlots, this.clue.id, []);
       let ref = this.clue;
       let j = 0;
