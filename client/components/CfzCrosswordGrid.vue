@@ -5,9 +5,7 @@
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
   </span>
-  <div v-if="isPortrait" :style="gridTopControlStyle">
-    <div class="copyright-text">{{copyrightText}}</div>
-  </div>
+  
   <div class="crossword-grid-container" :style="gridContainerStyle">
       <transition name="anagram">
         <div v-if="!showScratchpad" key="grid">
@@ -30,16 +28,13 @@
       </transition>
       
   </div>
-  <div v-if="!isPortrait" :style="gridControlStyle">
-    <div class="copyright-text">{{copyrightText}}</div>
-  </div>
 </div>
 </template>
 
 <style lang="scss">
 .crossword-scratchpad {
-  height: calc(100% - #{$displayPadding});
-  width: calc(100% - #{$displayPadding});
+  height: calc(100% - #{2 * $displayPadding});
+  width: calc(100% - #{2 * $displayPadding});
   flex: none;
 }
 .crossword-grid {
@@ -49,10 +44,6 @@
   background-color: $gridBgColor;
   display: inline-block;
   border-collapse: collapse;
-}
-.copyright-text {
-  font-family: $clueFontFamily;
-  margin-right: $displayPadding;
 }
 
 .anagram-enter-active,
@@ -105,18 +96,11 @@ export default Vue.extend({
     showTooltips: Boolean
   },
   computed: {
-    copyrightText() {
-      if (!this.crossword.meta.copyright)
-        return '';
-      if (this.crossword.meta.copyright.includes('©'))
-        return this.crossword.meta.copyright;
-      return '© ' + this.crossword.meta.copyright;
-    },
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width + this.bodyPadding);
+      return (this.cellWidth * this.crossword.grid.width + 2 * this.bodyPadding);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height + this.bodyPadding);
+      return (this.cellWidth * this.crossword.grid.height + 2* this.bodyPadding);
     },
     gridScale() {
       const scaleDim = this.isPortrait ? this.gridHeight : this.gridWidth;
@@ -145,10 +129,11 @@ export default Vue.extend({
     gridTopControlStyle() {
       return {
         'display': 'flex',
+        'position': 'fixed',
         'justify-content': 'space-between',
         'align-items': 'center',
-        'margin-top': '-10pt',
-        'font-size': '10pt',
+        'margin-top': '-4pt',
+        'font-size': '8pt',
        'width': this.gridScale * this.gridWidth + 'px'
       }
     },
@@ -370,7 +355,7 @@ export default Vue.extend({
       inputAcross: true,
       lastClicked: undefined,
       cellWidth: 29,
-      bodyPadding: 18
+      bodyPadding: 8
     };
   }
 });

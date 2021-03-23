@@ -129,9 +129,12 @@
                     v-if="showGrid">
                 </cfz-crossword-grid>
             </transition>
-            <template v-if="state.compiling && !isPortrait">
+
+            <transition name="compiling" mode="out-in">
                 <cfz-crossword-editor id="editor"
                     ref="editor"
+                    key="editor"
+                    v-if="state.compiling"
                     v-model="editorSource"
                     @input="crosswordEdited($event)"
                     :loading="renderLoading"
@@ -141,11 +144,10 @@
                     @preview-clicked="previewClicked()"
                     @scramble-clicked="scrambleClicked()"
                     @unscramble-clicked="unscrambleClicked()"
+                    :data-show-grid="showGrid"
                     v-responsive.class>
                 </cfz-crossword-editor>
-            </template>
-            <template v-else>
-                <div id="clue-container" :data-portrait="isPortrait" :data-show-grid="showGrid">
+                <div v-else id="clue-container" key="clueContainer" :data-portrait="isPortrait" :data-show-grid="showGrid">
                     <cfz-control-toolbar
                      v-on="$listeners"
                      v-model="usingPencil"
@@ -181,7 +183,7 @@
                         >
                     </cfz-crossword-clues>
                 </div>
-            </template>
+            </transition>
         </template>
     </div>
     <ui-fab v-if="exploding"
@@ -234,11 +236,20 @@ body {
 
 .launcher-enter-active,
 .launcher-leave-active {
-  transition: opacity 0.5s;
+  transition: all 0.5s;
 }
 
 .launcher-enter, .launcher-leave-to {
   opacity: 0;
+}
+
+.compiling-enter-active,
+.compiling-leave-active {
+  transition: all 0.5s;
+}
+
+.compiling-enter, .compiling-leave-to {
+    opacity: 0;
 }
 
 .install-tooltip {
@@ -353,7 +364,7 @@ body {
 
 #header-toolbar {
     flex: none;
-    margin-right: $displayPadding;
+    margin-right: #{2 * $displayPadding};
 }
 
 #app-content {
@@ -374,7 +385,10 @@ body {
 }
 
 #editor {
-    margin-right: $displayPadding;
+    &[data-show-grid] {
+        margin-left: #{-$displayPadding};
+    }
+    margin-right: #{2*$displayPadding};
     margin-top: $displayPadding;
     overflow-x: scroll;
     border: 1px solid #000;
@@ -421,17 +435,21 @@ body {
     min-height: 0;
     overflow-y: hidden;
     max-height: calc(100% - #{$displayPadding});
-    margin-right: $displayPadding;
+    margin-top: $displayPadding;
+    margin-right: #{2 * $displayPadding};
+
     @media screen {
         border: 1px solid #000;
     }
 
-    &:not([data-show-grid])[data-portrait] {
-        margin-top: $displayPadding;
+    &[data-show-grid][data-portrait] {
+        margin-top: #{-$displayPadding};
     }
-    &:not([data-portrait]) {
-        margin-top: $displayPadding;
+
+    &[data-show-grid]:not([data-portrait]) {
+        margin-left: #{-$displayPadding};
     }
+
     height: 100%;
     background-color: #fff;
 }

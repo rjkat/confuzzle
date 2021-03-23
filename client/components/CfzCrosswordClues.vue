@@ -1,5 +1,6 @@
 <template>
 <div class="cfz-crossword-clue-wrapper">
+    <div class="copyright-text">{{copyrightText}}</div>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
@@ -31,8 +32,9 @@
 
 <style lang="scss">
 .cfz-crossword-clue-wrapper {
-    padding-top: 1.5rem;
+    padding-top: 1rem;
     padding-bottom: 1.5rem;
+    max-height: calc(100% - 2rem);
 }
 
 .author-note {
@@ -50,9 +52,19 @@
     }
 }
 
+.copyright-text {
+    width: 100%;
+    font-family: $clueFontFamily;
+    font-size: 10pt;
+    padding-right: .5em;
+    padding-bottom: .5em;
+    color: #555;
+    padding-left: .5em;
+}
+
 #solvers {
-    padding-top: $displayPadding;
-    padding-bottom: $displayPadding;
+    margin-top: $displayPadding;
+    margin-bottom: $displayPadding;
 }
 
 .toggle-checkboxes {
@@ -72,7 +84,7 @@
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
-    padding-top: $displayPadding;
+    margin-top: $displayPadding;
     .clue-list {
         flex: 50%;
         margin: 0 auto;
@@ -129,6 +141,13 @@ export default Vue.extend({
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
             ]
         });
+    },
+    copyrightText() {
+      if (!this.crossword.meta.copyright)
+        return '';
+      if (this.crossword.meta.copyright.includes('©'))
+        return this.crossword.meta.copyright;
+      return '© ' + this.crossword.meta.copyright;
     },
   },
   methods: {

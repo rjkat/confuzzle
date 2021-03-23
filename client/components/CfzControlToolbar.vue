@@ -85,7 +85,7 @@
 .cfz-control-toolbar {
     height: 2rem !important;
     background-color: #efefef;
-    overflow-y: hidden;
+    overflow: hidden;
     z-index: 2;
 }
 </style>

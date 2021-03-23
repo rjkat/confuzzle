@@ -61,7 +61,8 @@
   .cfz-editor-toolbar {
       position: sticky;
       top: 0;
-      height: 2.25rem !important;
+      height: 2rem !important;
+      overflow: hidden;
       flex: none;
       background-color: #efefef;
       z-index: 2;
