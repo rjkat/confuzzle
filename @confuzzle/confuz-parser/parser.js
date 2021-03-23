@@ -157,16 +157,20 @@ function buildGrid(cw, compiling) {
         downMask: 0,
         highlightMask: 0
       };
-      if (shading) {
-        shading.forEach(rule => {
-          if (rule.row && row == rule.row && col == rule.col) {
-              cell.shadingColor = rule.color;
-          }
-        });
-      }
+      
       rowCells.push(cell);
     }
     grid.cells.push(rowCells);
+  }
+
+  if (shading) {
+    shading.forEach(rule => {
+      if (rule.rows) {
+        for (let i = 0; i < rule.rows.length; i++) {
+          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].shadingColor = rule.color;
+        }
+      }
+    });
   }
   return buildCells(cw, grid.cells, clues, compiling);
 }
@@ -277,7 +281,7 @@ function parseClue(cw, clue) {
 
   const number = clueid.match(/\d+/);
   var offset = 0;
-  var gridText = number ? number[0] : '';
+  var gridText = !parsed.hidden && number ? number[0] : '';
   var clueText = gridText;
 
   const numbering = x.optionalSection('numbering');
@@ -441,14 +445,12 @@ export function parse(input, compiling, options) {
                   const col = x.requiredField('col').requiredIntegerValue();
                   colorCols = [col];
                 }
-                for (let i = 0; i < colorRows.length; i++) {
-                  cw.grid.shading.push({
-                    name: ruleName,
-                    color: color,
-                    row: colorRows[i],
-                    col: colorCols[i]
-                  });
-                }
+                cw.grid.shading.push({
+                  name: ruleName,
+                  color: color,
+                  rows: colorRows,
+                  cols: colorCols
+                });
               }
           });
         }

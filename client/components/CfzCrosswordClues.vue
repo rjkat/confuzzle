@@ -1,6 +1,6 @@
 <template>
 <div class="cfz-crossword-clue-wrapper">
-    <div class="copyright-text">{{copyrightText}}</div>
+    <div class="copyright-text">{{crossword.meta.copyrightText}}</div>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
@@ -141,13 +141,6 @@ export default Vue.extend({
                 'li', 'b', 'i', 'strong', 'em', 'strike', 'abbr', 'code'
             ]
         });
-    },
-    copyrightText() {
-      if (!this.crossword.meta.copyright)
-        return '';
-      if (this.crossword.meta.copyright.includes('©'))
-        return this.crossword.meta.copyright;
-      return '© ' + this.crossword.meta.copyright;
     },
   },
   methods: {

@@ -32,6 +32,8 @@ function fuzClues(clues, options) {
             eno += "text: " + clue.text + "\n";
         if (clue.verbatim)
             eno += "verbatim\n"
+        if (clue.hidden)
+            eno += "hidden\n"
         if (!options.strip)
             eno += "ans: " + ans + "\n";
         eno += 'lengths:\n    - ' + clue.lengths.join('\n    - ') + '\n';
@@ -80,8 +82,8 @@ function fuzGrid(grid) {
             if (rule.clues) {
                 eno += 'clues:\n    - ' + rule.clues.join('\n    - ') + '\n';
             } else {
-                eno += 'row: ' + rule.row + '\n';
-                eno += 'col: ' + rule.col + '\n';
+                eno += 'rows:\n    - ' + rule.rows.join('\n    - ') + '\n';
+                eno += 'cols:\n    - ' + rule.cols.join('\n    - ') + '\n';
             }
         }
     }
@@ -281,10 +283,11 @@ export function fromCrossword(crossword, options) {
     if (refs)
         eno += refs;
 
-    var state = stateFromClues(crossword.clues);
-    if (state)
-        eno += state;
-
+    if (!options.scramble) {
+        var state = stateFromClues(crossword.clues);
+        if (state)
+            eno += state;
+    }
     return eno;
 }
 

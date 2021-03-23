@@ -2,6 +2,13 @@ const parser = require('./parser');
 
 export function parseAndBuild(input, compiling) {
     const cw = parser.parse(input, compiling);
+
+    cw.meta.copyrightText = '';
+    if (cw.meta.copyright.includes('©')) {
+      cw.meta.copyrightText = cw.meta.copyright;
+    } else if (cw.meta.copyright) {
+      cw.meta.copyrightText = '© ' + cw.meta.copyright;
+    }
     cw.acrossClues = [];
     cw.downClues = [];
     for (let [clueid, clue] of Object.entries(cw.clues)) {
