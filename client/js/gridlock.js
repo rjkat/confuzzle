@@ -349,7 +349,7 @@ lengths:
 ## 22A
 row: 11
 col: 7
-text: Ocean-going, looking distant to east
+text: Ocean-going, looking east for yonder
 ans: U0VBRkFSSU5H
 lengths:
     - 9
