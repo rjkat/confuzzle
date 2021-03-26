@@ -22,7 +22,10 @@
             @file-uploaded="returnFromLauncher()">
         </cfz-file-input>
         <template v-if="launchOption == 'create'">
-            <p class="join-info-text">Start from the sample crossword<ui-button color="primary" style="margin-left: 1em;" @click="openSampleFromLauncher">Edit</ui-button></p>
+            <p class="join-info-text">Start from an example crossword<ui-button color="primary" style="margin-left: 1em;" @click="openSampleFromLauncher">Edit</ui-button></p>
+        </template>
+        <template v-else>
+            <p class="join-info-text">Try a sample crossword<ui-button color="primary" style="margin-left: 1em;" @click="openSampleFromLauncher">Open</ui-button></p>
         </template>
         <p class="join-info-text">Open .puz or .confuz file <ui-button color="primary" @click="browseClicked()" style="margin-left: 1em">Browse...</ui-button></p>
         <template v-if="recentMetas && recentMetas.length > 0">
@@ -498,8 +501,10 @@ const {Manager} = require("socket.io-client");
 
 import {emojisplosions} from "emojisplosion";
 
+const gridlock = require('./js/gridlock');
 
-const defaultCrossword = builder.parseAndBuild(parser.sampleCrossword(), false);
+
+const defaultCrossword = builder.parseAndBuild(gridlock.gridlockCrossword(), false);
 export default Vue.extend({
   components: {
     CfzCrosswordClues,
@@ -823,7 +828,7 @@ export default Vue.extend({
         this.returnFromLauncher();
     },
     openSampleFromLauncher(cwid) {
-        this.setCrosswordSource(parser.sampleCrossword());
+        this.setCrosswordSource(gridlock.gridlockCrossword());
         this.returnFromLauncher();
     },
     returnFromLauncher() {

@@ -11,7 +11,7 @@
     </div>
     <div slot="brand">
         <ui-button
-            icon="star"
+            icon="lightbulb"
             type="primary"
             ref="checkButton"
             has-dropdown
@@ -30,14 +30,14 @@
         </ui-menu>
         </ui-button>
         <ui-button
-            icon="settings"
+            icon="dashboard"
             type="primary"
             ref="widgetButton"
             has-dropdown
             dropdownPosition="bottom-start"
             :constrainDropdownToScrollParent="false"
         >
-            View
+            Layout
             <ui-menu
                 contain-focus
                 has-icons

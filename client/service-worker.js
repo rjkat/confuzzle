@@ -6,14 +6,14 @@ workbox.setConfig({
 
 const {precacheAndRoute, cleanupOutdatedCaches} = workbox.precaching;
 const {pageCache, imageCache, staticResourceCache} = workbox.recipes;
-const {setCacheNameDetails, clientsClaim} = workbox.core;
+const {setCacheNameDetails, clientsClaim, skipWaiting} = workbox.core;
 
 setCacheNameDetails({
   prefix: 'confuzzle',
-  suffix: 'v3'
+  suffix: 'v4'
 });
 
-self.skipWaiting();
+skipWaiting();
 clientsClaim();
 
 cleanupOutdatedCaches();
