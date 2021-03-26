@@ -555,7 +555,7 @@ export default Vue.extend({
     },
     crosswordSource: {
         type: String,
-        default: parser.sampleCrossword()
+        default: gridlock.gridlockCrossword()
     },
     editorSource: "",
     client: Object

@@ -122,12 +122,16 @@ export function stateFromClues(clues) {
             const cell = clue.cells[i];
             const c = cell.contents;
             const s = cell.special;
-            if (c || s) {
+            if (s && s != '-') {
+                haveSpecial = true;
+            }
+            if (c || haveSpecial) {
                 nfilled++;
                 ans += c ? c.toUpperCase() : '-';
-                special += s;
-                if (s && s != '-') {
-                    haveSpecial = true;
+                if (haveSpecial) {
+                    special += s;
+                } else {
+                    special += '-';
                 }
             } else {
                 ans += '-';

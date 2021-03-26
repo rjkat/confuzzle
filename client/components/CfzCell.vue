@@ -13,7 +13,7 @@
                  (cell.clues.across && cell == cell.clues.across.cells[0] && !cell.clues.across.hidden) || 
                  (cell.clues.down && cell == cell.clues.down.cells[0] && !cell.clues.down.hidden)
                )"
-        class="cell-tooltip" ref="tooltip">{{tooltipText}}<div class="cell-tooltip-arrow" data-popper-arrow></div></div>
+        class="cell-tooltip" ref="tooltip"><span v-html="tooltipHtml"></span><div class="cell-tooltip-arrow" data-popper-arrow></div></div>
     <template v-if="editable && !cell.empty">
         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
             ref="input"
@@ -255,7 +255,7 @@ export default Vue.extend({
         }
         return v;
     },
-    tooltipText() {
+    tooltipHtml() {
         var text = '';
         if (!this.cell.clues)
             return text;
@@ -271,7 +271,7 @@ export default Vue.extend({
         if (clue.hidden)
             return '';
 
-        text = clue.plainText + clue.lengthText;
+        text = clue.sanitizedText + clue.lengthText;
         if (clue.showCorrect) {
             text += ' ✅'
         }
@@ -336,7 +336,7 @@ export default Vue.extend({
         this.$emit('cell-clicked', event);
     },
     showPopover() {
-        if (!this.tooltipText)
+        if (!this.tooltipHtml)
             return;
 
         if (this.$refs.tooltip)

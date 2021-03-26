@@ -224,10 +224,12 @@ function getLengthText(clue) {
       }
       lengthText += lengths[i];
   }
-  if (lengths.length - 1 < sep.length && !clue.refIds) {
+  if (lengths.length - 1 < sep.length && (!clue.refIds || clue.refIds.length == 0)) {
       lengthText += sep[lengths.length - 1];
   }
+
   lengthText += ')';
+  
   return lengthText;
 }
 
