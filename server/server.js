@@ -19,6 +19,8 @@ const {hri} = require('human-readable-ids');
 const AWS = require('aws-sdk');
 const nanoid = require('nanoid');
 const bodyParser = require('body-parser');
+const request  = require('request');
+
 app.use(bodyParser.urlencoded({extended: true}));
 
 const s3 = new AWS.S3();
@@ -87,11 +89,6 @@ if (env == 'dev') {
   app.use(express.static(__dirname + '/../dist'));
 }
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    next();
-});
-
 app.post('/shorten', function (req, res) {
     if (!req.body || !req.body.uri) {
         res.status(400);
@@ -104,6 +101,15 @@ app.post('/shorten', function (req, res) {
     }
     const objID = shortenLink(uri);
     res.send(objID);
+});
+
+app.get('/external', function (req, res) {
+    if (!req.query || !req.query.uri) {
+        res.status(400);
+        return;
+    }
+    const uri = req.query.uri;
+    request(uri).pipe(res);
 });
 
 app.use(function (req, res, next) {

@@ -1088,7 +1088,7 @@ export default Vue.extend({
     },
     fetchPuz(url) {
         this.state.downloading = true;
-        fetch(url, {mode: 'cors'}).then(res => { 
+        fetch('/external?uri=' + url).then(res => { 
           res.arrayBuffer().then(puz => {
             this.state.downloading = false;
             this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))))
