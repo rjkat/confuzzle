@@ -1,14 +1,13 @@
 const express = require('express')
 const http = require('http')
 const https = require('https')
-const cors = require('cors');
+
 const secure = require('express-force-https')
 const compression = require('compression')
 const favicon = require('serve-favicon');
 
 const app = express()
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(cors());
 
 const robots = require('express-robots-txt')
 const fs = require('fs')
@@ -88,6 +87,11 @@ if (env == 'dev') {
   app.use(express.static(__dirname + '/../dist'));
 }
 
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+});
+
 app.post('/shorten', function (req, res) {
     if (!req.body || !req.body.uri) {
         res.status(400);
@@ -132,8 +136,6 @@ function shortenLink(uri) {
     });
     return objID;
 }
-
-
 
 function firstSolverId(mask) {
     let i = 1;
