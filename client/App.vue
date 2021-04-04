@@ -58,7 +58,9 @@
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
+        :shortLink="shortLink"
         :emojiText="emojiNotation"
+        :sourceLoading="!state.initialised"
         class="hidden-print"
         :state="state"
         :recentCrosswords="recentCrosswords"
@@ -78,6 +80,7 @@
         @puz-file-uploaded="puzFileUploaded($event)"
         @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
+        @shorten-link-clicked="shortenLinkClicked($event)"
     >
     </cfz-header-toolbar>
     
@@ -90,8 +93,8 @@
         <div id="drop-area" ref="dropArea">
             <h1>Drop here to solve</h1>
         </div>
-        <template v-if="state.joining">
-            <ui-modal ref="joinModal" @reveal="onJoinReveal()" :title="!joinFailed ? 'Join and solve' : 'Session not found'" :dismissible="state.joiningFromLauncher" @close="launcherJoinClosed()">
+        <template v-if="state.joining || state.downloading">
+            <ui-modal v-if="state.joining" ref="joinModal" @reveal="onJoinReveal()" :title="!joinFailed ? 'Join and solve' : 'Session not found'" :dismissible="state.joiningFromLauncher" @close="launcherJoinClosed()">
                 <div v-if="!joinFailed && !shouldJoin()" style="text-align: center;">
                     <p class="join-info-text">Join a crossword using a session identifier.</p>
                     <ui-textbox ref="sessionIdBox" class="crossword-join-input crossword-sess-id-input" v-model="sessionIdText" @keydown-enter="joinClicked()" autocomplete="off">
@@ -114,13 +117,22 @@
                   <ui-button color="primary" @click="dismissJoinError()">Dismiss</ui-button>
                 </div>
             </ui-modal>
+            <ui-modal ref="downloadModal" v-else> 
+                <div style="text-align: center;">
+                    <p class="join-info-text">
+                        Downloading crossword...
+                    </p>
+                </div>
+            </ui-modal>
         </template>
-        <template v-else>
+        <template v-if="state.initialised">
             <transition name="grid">
                 <cfz-crossword-grid id="grid"
                     ref="grid"
                     key="gridContainer"
                     v-model="crossword"
+                    :answerSlots.sync="answerSlots"
+                    :workingLetters.sync="workingLetters"
                     :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
                     :solverid="solverid"
@@ -188,6 +200,9 @@
                 </div>
             </transition>
         </template>
+        <template v-else>
+            <ui-progress-circular class="grid-loader"></ui-progress-circular>
+        </template>
     </div>
     <ui-fab v-if="exploding"
         icon="close"
@@ -218,6 +233,10 @@ body {
         padding: 1.5cm !important;
     }
 */
+}
+
+.grid-loader {
+    margin: auto;
 }
 
 .grid-enter-active,
@@ -714,7 +733,10 @@ export default Vue.extend({
       this.startJoining();
     } else {
       const params = new URLSearchParams(window.location.search);
-      this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords || params.get('source'));
+      if (params.get('puz') && params.get('puz').startsWith('http')) {
+        this.state.downloading = true;
+      }
+      this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords || params.get('source') || params.get('puz'));
       this.state.launching = this.firstLaunch;
       this.initSource();
     }
@@ -735,6 +757,7 @@ export default Vue.extend({
       recentCrosswords: [],
       solverid: 0,
       socketid: '',
+      shortLink: '',
       showGrid: true,
       usingPencil: false,
       showTooltips: true,
@@ -749,7 +772,15 @@ export default Vue.extend({
       emojiNotation: '',
       lastId: '',
       sessionIdText: "",
-      puzzleModalTitle: ''
+      puzzleModalTitle: '',
+      answerSlots: {
+        type: Object,
+        default: function () { return {} }
+      },
+      workingLetters: {
+        type: Object,
+        default: function () { return {} }
+      }
     };
   },
   methods: {
@@ -1043,6 +1074,29 @@ export default Vue.extend({
     updateTitle() {
        document.title = this.pageTitle;
     },
+    shortenLinkClicked(url) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/shorten');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.addEventListener('load', event => {
+          this.shortLink = 'https://grids.confuzzle.me/' + event.target.responseText;
+        });
+        xhr.addEventListener('error', event => {
+          console.log(event.target.responseText);
+        });
+        xhr.send('uri=' + encodeURIComponent(url));
+    },
+    fetchPuz(url) {
+        this.state.downloading = true;
+        fetch(url).then(res => { 
+          res.arrayBuffer().then(puz => {
+            this.state.downloading = false;
+            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))))
+          })
+        }).catch(error => {
+          console.error('Error downloading puz:', error);
+        });
+    },
     initSource() {
       const params = new URLSearchParams(window.location.search);
       const enoSource = params.get('source');
@@ -1060,7 +1114,11 @@ export default Vue.extend({
           }
           this.setCrosswordSource(eno);
       } else if (puz) {
-          this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromURL(puz)));
+        if (puz.startsWith('https://')) {
+            this.fetchPuz(puz);
+        } else {
+            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromURL(puz)));
+        }
       } else if (strippedPuz) {
           this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromEmoji(strippedPuz, true)));
       } else if (localStorage.crosswordId) {
@@ -1578,6 +1636,7 @@ export default Vue.extend({
     setCrosswordSource(source) {
         this.crosswordSource = source;
         this.editorSource = source;
+        this.state.initialised = true;
     },
     importEmojiClicked(emoji) {
         this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromEmoji(emoji, true)));

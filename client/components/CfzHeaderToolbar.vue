@@ -1,17 +1,18 @@
 <template>
-<ui-toolbar type="colored" class="crossword-toolbar" style="overflow: hidden;" removeNavIcon>
+<ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
     <table slot="brand" width="40">
         <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
-        <div class="crossword-title">
+        <div v-if="!sourceLoading" class="crossword-title">
             <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
             <span class="crossword-meta-author" v-responsive.class>by {{metadata.author}}</span>
             <span class="crossword-meta-identifier" v-if="metadata.identifier" v-responsive.md.lg.xl>{{metadata.identifier}}</span>
         </div>
+        <div v-else class="crossword-loading-text">Loading...</div>
     </template>
-    <div slot="actions" class="hidden-print crossword-toolbar-actions">
+    <div v-if="!sourceLoading" slot="actions" class="hidden-print crossword-toolbar-actions">
         <ui-icon-button
             color="white"
             icon="print"
@@ -76,6 +77,26 @@
                     </div>
                 </li>
             </ul>
+        </ui-modal>
+        <ui-modal ref="linkModal" title="Link external crossword">
+            <div style="text-align: center;">
+                <template v-if="!shortLink">
+                    <div v-if="!shortLink">
+                        <p class="about-text">
+                            Generate a convenient link to a crossword hosted elsewhere.
+                        </p>
+                        <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="linkInvalid" error="Invalid URL">
+                                URL of .puz or .confuz
+                        </ui-textbox> 
+                        <ui-button color="primary" style="margin-top: 1em;" :loading="creatingLink" @click="shortenLinkClicked()" :disabled="linkInvalid">Submit</ui-button>
+                    </div>
+                </template>
+                <template v-else>
+                    <p class="about-text">Access your externally-hosted crossword using the following link.</p>
+                    <div class="crossword-link-text">{{shortLink}}</div>
+                    <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
+                </template>
+            </div>
         </ui-modal>
         <ui-modal ref="aboutModal" title="About">
             <div style="text-align: center;">
@@ -167,6 +188,12 @@ ul {
     margin-bottom: .25em;
 }
 
+.crossword-loading-text {
+    text-transform: uppercase;
+    font-family: $titleFontFamily;
+    font-weight: bold;
+}
+
 .crossword-meta-name {
     text-transform: uppercase;
     font-family: $titleFontFamily;
@@ -199,6 +226,8 @@ import Vue from "vue";
 import {emojisplosion} from "emojisplosion";
 import CfzShareModal from './CfzShareModal.vue'
 import CfzFileInput from './CfzFileInput.vue'
+
+import copy from 'copy-to-clipboard';
 
 // https://gist.github.com/hanayashiki/8dac237671343e7f0b15de617b0051bd
 (function () {
@@ -246,6 +275,14 @@ function explodeOn(id) {
     })
 }
 
+
+// https://stackoverflow.com/a/22648406
+function isURL(str) {
+     var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+     var url = new RegExp(urlRegex, 'i');
+     return str.length < 2083 && url.test(str);
+}
+
 export default Vue.extend({
   components: {
     CfzShareModal,
@@ -257,10 +294,15 @@ export default Vue.extend({
     recentCrosswords: Array,
     shareLoading: false,
     shareLink: "",
+    shortLink: "",
+    sourceLoading: false,
     showInstall: false,
     emojiText: ""
   },
   computed: {
+    linkInvalid() {
+        return !isURL(this.externalLink);
+    },
     recentMetas() {
         const metas = [];
         for (const cwid of this.recentCrosswords) {
@@ -287,7 +329,7 @@ export default Vue.extend({
 
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
-        // options.push(this.opt.EXPORT_ENO_LINK);
+        options.push(this.opt.LINK_EXTERNAL);
         options.push(this.opt.ABOUT);
 
         return options;
@@ -314,6 +356,10 @@ export default Vue.extend({
         this.openModal('emojiModal');
         this.closeModal('aboutModal');
     },
+    copyClicked() {
+        copy(this.shortLink);
+        this.$emit('copy-clicked');
+    },
     copyEmojiClicked() {
         explodeOn('copy-emoji-button');
         this.$emit('copy-emoji-clicked');
@@ -334,19 +380,25 @@ export default Vue.extend({
         this.$emit('open-recent-clicked', id);
         this.closeModal('recentModal');
     },
+    shortenLinkClicked() {
+        if (this.linkInvalid)
+            return;
+        this.creatingLink = true;
+        this.$emit('shorten-link-clicked', this.externalLink);
+    },
     selectMenuOption(option) {
         if (option.label == this.opt.SAVE_PUZ.label) {
             this.$emit('download-puz-clicked');
         } else if (option.label == this.opt.SAVE_ENO.label) {
             this.$emit('download-eno-clicked');
-        } else if (option.label == this.opt.EXPORT_ENO_LINK.label) {
-            this.$emit('export-eno-clicked');
         } else if (option.label == this.opt.SOLVE_OFFLINE.label) {
             this.$emit('go-offline-clicked');
         } else if (option.label == this.opt.OPEN_PUZZLE.label) {
             this.openPuzzle();
-         } else if (option.label == this.opt.OPEN_RECENT.label) {
+        } else if (option.label == this.opt.OPEN_RECENT.label) {
             this.openModal('recentModal');
+         } else if (option.label == this.opt.LINK_EXTERNAL.label) {
+            this.openModal('linkModal');
         } else if (option.label == this.opt.ABOUT.label) {
             this.openModal('aboutModal');
         } else if (option.label == this.opt.INSTALL.label) {
@@ -367,7 +419,9 @@ export default Vue.extend({
     return {
       bundler: "Parcel",
       isOnline: true,
+      creatingLink: false,
       inputEmoji: "",
+      externalLink: "",
       opt: {
         INSTALL: {
             label: 'Install app',
@@ -389,9 +443,9 @@ export default Vue.extend({
             label: 'Save as .confuz',
             icon: 'get_app'
         },
-        EXPORT_ENO_LINK: {
-            label: 'Save as link',
-            icon: 'get_app'
+        LINK_EXTERNAL: {
+            label: 'Link external...',
+            icon: 'link'
         },
         SOLVE_OFFLINE: {
             label: 'Leave session',

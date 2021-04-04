@@ -1,12 +1,14 @@
 const express = require('express')
 const http = require('http')
 const https = require('https')
+const cors = require('cors');
 const secure = require('express-force-https')
 const compression = require('compression')
 const favicon = require('serve-favicon');
 
 const app = express()
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
+app.use(cors());
 
 const robots = require('express-robots-txt')
 const fs = require('fs')
@@ -14,6 +16,13 @@ const path = require('path')
 const keyFile = path.join(__dirname, 'server.key')
 const certFile = path.join(__dirname, 'server.cert')
 const {hri} = require('human-readable-ids');
+
+const AWS = require('aws-sdk');
+const nanoid = require('nanoid');
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
+
+const s3 = new AWS.S3();
 
 let server;
 
@@ -55,12 +64,15 @@ function queryGrid(gridid) {
 
 app.use(robots({UserAgent: '*', Disallow: '/'}))
 
+
 if (env == 'dev') {
   const Bundler = require('parcel-bundler');
   const bundler = new Bundler('client/index.html', {
        sourceMaps: false
   });
   app.use(bundler.middleware());
+  // app.use(express.static(__dirname + '/../dist'));
+
 } else {
   app.use(compression());
   app.use(function (req, res, next) {
@@ -76,6 +88,20 @@ if (env == 'dev') {
   app.use(express.static(__dirname + '/../dist'));
 }
 
+app.post('/shorten', function (req, res) {
+    if (!req.body || !req.body.uri) {
+        res.status(400);
+        return;
+    }
+    const uri = req.body.uri;
+    if (!(uri || uri.startsWith('http://') || uri.startsWith('https://'))) {
+        res.status(400);
+        return;
+    }
+    const objID = shortenLink(uri);
+    res.send(objID);
+});
+
 app.use(function (req, res, next) {
     if (req.path == '/') {
         res.sendFile(path.join(__dirname + '/../dist/index.html'));
@@ -87,6 +113,27 @@ app.use(function (req, res, next) {
     }
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
 });
+
+
+function shortenLink(uri) {
+    const objID = nanoid.nanoid();
+    let sourceType = 'puz';
+    if (uri.endsWith('.confuz')) {
+        sourceType = 'confuz';
+    }
+    const redirectURI = 'https://confuzzle.app?' + sourceType + '=' + encodeURI(uri);
+    s3.putObject({
+      ACL: 'public-read',
+      Bucket: 'urls.confuzzle.me',
+      Key: objID,
+      WebsiteRedirectLocation: redirectURI
+    }, function(err, data) {
+      if (err) console.log(err, err.stack);
+    });
+    return objID;
+}
+
+
 
 function firstSolverId(mask) {
     let i = 1;

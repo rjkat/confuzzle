@@ -262,7 +262,7 @@ function parseClue(cw, clue) {
   const textField = x.optionalField('text');
   var parsedText = '';
   if (textField) {
-    parsedText = textField.requiredStringValue();
+    parsedText = textField.optionalStringValue() || '';
   }
   const parsed = {
     id: clueid,
