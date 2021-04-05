@@ -399,7 +399,7 @@ export function parse(input, compiling, options) {
   );
   // sanitize author
   cw.meta.author = cw.meta.author.replace(/^\s*by\s+/i, '');
-  ['type', 'identifier', 'copyright', 'note', 'scramble'].forEach(field => {
+  ['type', 'identifier', 'copyright', 'note', 'scramble', 'url'].forEach(field => {
     const f = meta.optionalField(field);
     if (f) {
        cw.meta[field] = f.requiredStringValue();

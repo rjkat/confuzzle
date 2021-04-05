@@ -81,6 +81,7 @@
         @emoji-file-uploaded="emojiFileUploaded($event)"
         @eno-file-uploaded="enoFileUploaded($event)"
         @shorten-link-clicked="shortenLinkClicked($event)"
+        @clear-short-link="clearShortLink()"
     >
     </cfz-header-toolbar>
     
@@ -1086,15 +1087,29 @@ export default Vue.extend({
         });
         xhr.send('uri=' + encodeURIComponent(url));
     },
+    clearShortLink() {
+        this.shortLink = '';
+    },
     fetchPuz(url) {
         this.state.downloading = true;
         fetch('/external?uri=' + url).then(res => { 
           res.arrayBuffer().then(puz => {
             this.state.downloading = false;
-            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))))
+            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))), url)
           })
         }).catch(error => {
           console.error('Error downloading puz:', error);
+        });
+    },
+    fetchConfuz(url) {
+        this.state.downloading = true;
+        fetch('/external?uri=' + url).then(res => { 
+          res.text().then(eno => {
+            this.state.downloading = false;
+            this.setCrosswordSource(eno, url);
+          })
+        }).catch(error => {
+          console.error('Error downloading confuz:', error);
         });
     },
     initSource() {
@@ -1104,17 +1119,21 @@ export default Vue.extend({
       const strippedPuz = params.get('🧩');
 
       if (enoSource) {
-          let eno = confuz.decompressURL(enoSource);
-          const cw = parser.parse(eno);
-          const enoState = params.get('state');
-          if (enoState) {
-            eno += confuz.decompressURL(enoState);
-          } else if (localStorage[cw.meta.id + ':state']) {
-            eno += localStorage[cw.meta.id + ':state'];
+          if (enoSource.startsWith('https://') || enoSource.startsWith('http://')) {
+            this.fetchConfuz(enoSource);
+          } else {
+              let eno = confuz.decompressURL(enoSource);
+              const cw = parser.parse(eno);
+              const enoState = params.get('state');
+              if (enoState) {
+                eno += confuz.decompressURL(enoState);
+              } else if (localStorage[cw.meta.id + ':state']) {
+                eno += localStorage[cw.meta.id + ':state'];
+              }
+              this.setCrosswordSource(eno);
           }
-          this.setCrosswordSource(eno);
       } else if (puz) {
-        if (puz.startsWith('https://')) {
+        if (puz.startsWith('https://') || puz.startsWith('http://')) {
             this.fetchPuz(puz);
         } else {
             this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromURL(puz)));
@@ -1633,8 +1652,17 @@ export default Vue.extend({
         copy(this.emojiNotation);
         this.snackbarMessage(this.exportEmojiMessage);
     },
-    setCrosswordSource(source) {
+    setCrosswordSource(source, url) {
+        // inject URL into meta section of source
+        if (url) {
+            const parts = source.split(/^#\s+meta\s*\n/);
+            if (parts && parts.length) {
+                parts[parts.length - 1] = 'url: ' + url + '\n' + parts[parts.length - 1];
+            }
+            source = parts.join('# meta\n')
+        }
         this.crosswordSource = source;
+        this.crosswordURL = url;
         this.editorSource = source;
         this.state.initialised = true;
     },

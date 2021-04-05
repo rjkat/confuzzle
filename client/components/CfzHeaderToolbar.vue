@@ -78,7 +78,7 @@
                 </li>
             </ul>
         </ui-modal>
-        <ui-modal ref="linkModal" title="Link external crossword">
+        <ui-modal ref="linkModal" title="Link external crossword" @hide="linkModalHidden()">
             <div style="text-align: center;">
                 <template v-if="!shortLink">
                     <div v-if="!shortLink">
@@ -202,6 +202,10 @@ ul {
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
     }
+}
+
+.ui-textbox__feedback-text {
+    font-family: $clueFontFamily; 
 }
 
 .crossword-meta-author {
@@ -360,6 +364,9 @@ export default Vue.extend({
         copy(this.shortLink);
         this.$emit('copy-clicked');
     },
+    makeNewLinkClicked() {
+        this.$emit('make-new-link-clicked');
+    },
     copyEmojiClicked() {
         explodeOn('copy-emoji-button');
         this.$emit('copy-emoji-clicked');
@@ -385,6 +392,10 @@ export default Vue.extend({
             return;
         this.creatingLink = true;
         this.$emit('shorten-link-clicked', this.externalLink);
+    },
+    linkModalHidden() {
+        this.creatingLink = false;
+        this.$emit('clear-short-link');
     },
     selectMenuOption(option) {
         if (option.label == this.opt.SAVE_PUZ.label) {

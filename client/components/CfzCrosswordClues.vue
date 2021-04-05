@@ -1,6 +1,7 @@
 <template>
 <div class="cfz-crossword-clue-wrapper">
     <div class="copyright-text">{{crossword.meta.copyrightText}}</div>
+    <div v-if="crossword.meta.url" class="copyright-text">Obtained from <a :href="crossword.meta.url" target="_blank" rel="noopener">{{crossword.meta.url}}<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></div>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
@@ -35,6 +36,9 @@
     padding-top: 1rem;
     padding-bottom: 1.5rem;
     max-height: calc(100% - 2rem);
+    @media print {
+        padding-top: 0 !important;
+    }
 }
 
 .author-note {

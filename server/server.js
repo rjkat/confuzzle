@@ -19,7 +19,7 @@ const {hri} = require('human-readable-ids');
 const AWS = require('aws-sdk');
 const nanoid = require('nanoid');
 const bodyParser = require('body-parser');
-const request  = require('request');
+const fetch = require('node-fetch');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -109,7 +109,9 @@ app.get('/external', function (req, res) {
         return;
     }
     const uri = req.query.uri;
-    request(uri).pipe(res);
+    fetch(uri).then(
+        r => r.body.pipe(res)
+    );
 });
 
 app.use(function (req, res, next) {
@@ -131,7 +133,7 @@ function shortenLink(uri) {
     if (uri.endsWith('.confuz')) {
         sourceType = 'confuz';
     }
-    const redirectURI = 'https://confuzzle.app?' + sourceType + '=' + encodeURI(uri);
+    const redirectURI = 'https://confuzzle.app?' + sourceType + '=' + encodeURIComponent(uri);
     s3.putObject({
       ACL: 'public-read',
       Bucket: 'urls.confuzzle.me',

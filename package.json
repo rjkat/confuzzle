@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "multiplayer crosswords",
   "engines": {
-    "node": "13.7.x"
+    "node": ">=13.7.x"
   },
   "main": "server/index.js",
   "scripts": {
@@ -53,9 +53,9 @@
     "keen-ui": "^1.3.1",
     "keycode-js": "^2.0.3",
     "nanoid": "^3.1.22",
+    "node-fetch": "^2.6.1",
     "prismjs": "^1.22.0",
     "qrcode": "^1.4.4",
-    "request": "^2.88.2",
     "sanitize-html": "^1.27.5",
     "sass": "^1.30.0",
     "sassybitwise": "^1.1.1",
