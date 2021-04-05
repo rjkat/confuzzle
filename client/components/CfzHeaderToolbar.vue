@@ -88,6 +88,9 @@
                         <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="linkInvalid" error="Invalid URL">
                                 URL of .puz or .confuz
                         </ui-textbox> 
+                        <p class="about-text">
+                            Only this URL will be stored on Confuzzle servers, not the crossword itself.
+                        </p>
                         <ui-button color="primary" style="margin-top: 1em;" :loading="creatingLink" @click="shortenLinkClicked()" :disabled="linkInvalid">Submit</ui-button>
                     </div>
                 </template>
