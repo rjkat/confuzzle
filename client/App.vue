@@ -734,7 +734,8 @@ export default Vue.extend({
       this.startJoining();
     } else {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('puz') && params.get('puz').startsWith('http')) {
+      if (params.get('puz') && params.get('puz').startsWith('http')
+         || params.get('source') && params.get('source').startsWith('http')) {
         this.state.downloading = true;
       }
       this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords || params.get('source') || params.get('puz'));
@@ -750,6 +751,7 @@ export default Vue.extend({
       exportMessage: 'Crossword saved to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
+      toolbarHeight: 64,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
       gridSizeLocked: false,
@@ -953,14 +955,14 @@ export default Vue.extend({
         const h = this.windowHeight;
         this.isPortrait = h > w;
         if (!this.gridSizeLocked)
-            this.gridSize = this.isPortrait ? w : h;
+            this.gridSize = this.isPortrait ? w : (h - this.toolbarHeight);
     },
     handleOrientationChange() {
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = !(window.orientation == -90 || window.orientation == 90);
         if (!this.gridSizeLocked)
-            this.gridSize = this.isPortrait ? w : h;
+            this.gridSize = this.isPortrait ? w : (h - this.toolbarHeight);
     },
     onJoinReveal() {
         if (!this.shouldJoin()) {
@@ -1090,23 +1092,23 @@ export default Vue.extend({
     clearShortLink() {
         this.shortLink = '';
     },
-    fetchPuz(url) {
+    fetchPuz(url, gid) {
         this.state.downloading = true;
         fetch('/external?uri=' + url).then(res => { 
           res.arrayBuffer().then(puz => {
             this.state.downloading = false;
-            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))), url)
+            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))), url, gid)
           })
         }).catch(error => {
           console.error('Error downloading puz:', error);
         });
     },
-    fetchConfuz(url) {
+    fetchConfuz(url, gid) {
         this.state.downloading = true;
         fetch('/external?uri=' + url).then(res => { 
           res.text().then(eno => {
             this.state.downloading = false;
-            this.setCrosswordSource(eno, url);
+            this.setCrosswordSource(eno, url, gid);
           })
         }).catch(error => {
           console.error('Error downloading confuz:', error);
@@ -1117,10 +1119,11 @@ export default Vue.extend({
       const enoSource = params.get('source');
       const puz = params.get('puz');
       const strippedPuz = params.get('🧩');
+      const gid = params.get('gid');
 
       if (enoSource) {
           if (enoSource.startsWith('https://') || enoSource.startsWith('http://')) {
-            this.fetchConfuz(enoSource);
+            this.fetchConfuz(enoSource, gid);
           } else {
               let eno = confuz.decompressURL(enoSource);
               const cw = parser.parse(eno);
@@ -1134,7 +1137,7 @@ export default Vue.extend({
           }
       } else if (puz) {
         if (puz.startsWith('https://') || puz.startsWith('http://')) {
-            this.fetchPuz(puz);
+            this.fetchPuz(puz, gid);
         } else {
             this.setCrosswordSource(confuz.fromPuz(ShareablePuz.fromURL(puz)));
         }
@@ -1652,12 +1655,16 @@ export default Vue.extend({
         copy(this.emojiNotation);
         this.snackbarMessage(this.exportEmojiMessage);
     },
-    setCrosswordSource(source, url) {
+    setCrosswordSource(source, url, gid) {
         // inject URL into meta section of source
         if (url) {
             const parts = source.split(/^#\s+meta\s*\n/);
             if (parts && parts.length) {
-                parts[parts.length - 1] = 'url: ' + url + '\n' + parts[parts.length - 1];
+                let extra = 'url: ' + url + '\n';
+                if (gid) {
+                    extra += 'gid: ' + gid + '\n';
+                }
+                parts[parts.length - 1] = extra + parts[parts.length - 1];
             }
             source = parts.join('# meta\n')
         }

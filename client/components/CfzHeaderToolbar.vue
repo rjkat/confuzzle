@@ -81,9 +81,9 @@
         <ui-modal ref="linkModal" title="Link external crossword" @hide="linkModalHidden()">
             <div style="text-align: center;">
                 <template v-if="!shortLink">
-                    <div v-if="!shortLink">
+                    <div>
                         <p class="about-text">
-                            Generate a convenient link to a crossword hosted elsewhere.
+                            Generate a short link for solving an externally-hosted crossword.
                         </p>
                         <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="linkInvalid" error="Invalid URL">
                                 URL of .puz or .confuz
@@ -92,9 +92,11 @@
                     </div>
                 </template>
                 <template v-else>
-                    <p class="about-text">Access your externally-hosted crossword using the following link.</p>
+                    <p class="about-text">Access your externally-hosted crossword using the following link. It's only displayed once, so be sure to save it somewhere.</p>
                     <div class="crossword-link-text">{{shortLink}}</div>
                     <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
+                    <p class="about-text">Embed your crossword in another website with the following snippet</p>
+                    <div class="crossword-link-text"><pre><code ref="codeDiv" class="language-html"></code></pre></div>
                 </template>
             </div>
         </ui-modal>
@@ -304,6 +306,9 @@ export default Vue.extend({
     emojiText: ""
   },
   computed: {
+    embedCode() {
+       return '<iframe src="' + this.shortLink + '"\n        height="550" width="800" frameBorder="0">\n</iframe>';
+    },
     linkInvalid() {
         return !isURL(this.externalLink);
     },
@@ -340,6 +345,14 @@ export default Vue.extend({
     },
     mobileMenuOptions() {
         return this.menuOptions;
+    }
+  },
+  watch: {
+    shortLink() {
+        Vue.nextTick(() => {
+            this.$refs.codeDiv.textContent = this.embedCode;
+            Prism.highlightElement(this.$refs.codeDiv);
+        });
     }
   },
   methods: {
@@ -455,7 +468,7 @@ export default Vue.extend({
             icon: 'get_app'
         },
         LINK_EXTERNAL: {
-            label: 'Link external...',
+            label: 'Generate link...',
             icon: 'link'
         },
         SOLVE_OFFLINE: {

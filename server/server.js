@@ -95,11 +95,20 @@ app.post('/shorten', function (req, res) {
         return;
     }
     const uri = req.body.uri;
-    if (!(uri || uri.startsWith('http://') || uri.startsWith('https://'))) {
+    if (!uri) {
         res.status(400);
         return;
     }
-    const objID = shortenLink(uri);
+    const urlObj = new URL(uri);
+    if (!(urlObj.protocol == 'http:' || urlObj.protocol == 'https:')) {
+        res.status(400);
+        return;
+    }
+    let sourceType = 'puz';
+    if (urlObj.pathname.endsWith('.confuz')) {
+        sourceType = 'confuz';
+    }
+    const objID = shortenLink(uri, sourceType);
     res.send(objID);
 });
 
@@ -127,13 +136,9 @@ app.use(function (req, res, next) {
 });
 
 
-function shortenLink(uri) {
-    const objID = nanoid.nanoid();
-    let sourceType = 'puz';
-    if (uri.endsWith('.confuz')) {
-        sourceType = 'confuz';
-    }
-    const redirectURI = 'https://confuzzle.app?' + sourceType + '=' + encodeURIComponent(uri);
+function shortenLink(uri, sourceType) {
+    const objID = nanoid.nanoid(10);
+    const redirectURI = 'https://confuzzle.app?' + sourceType + '=' + encodeURIComponent(uri) + '&gid=' + objID;
     s3.putObject({
       ACL: 'public-read',
       Bucket: 'urls.confuzzle.me',
