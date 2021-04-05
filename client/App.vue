@@ -1097,7 +1097,12 @@ export default Vue.extend({
         fetch('/external?uri=' + url).then(res => { 
           res.arrayBuffer().then(puz => {
             this.state.downloading = false;
-            this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(Buffer.from(puz))), url, gid)
+            let eno = confuz.fromPuz(ShareablePuz.from(Buffer.from(puz)));
+            const cw = parser.parse(eno);
+            if (localStorage[cw.meta.id + ':state']) {
+                eno += localStorage[cw.meta.id + ':state'];
+            }
+            this.setCrosswordSource(eno, url, gid)
           })
         }).catch(error => {
           console.error('Error downloading puz:', error);
@@ -1108,6 +1113,10 @@ export default Vue.extend({
         fetch('/external?uri=' + url).then(res => { 
           res.text().then(eno => {
             this.state.downloading = false;
+            const cw = parser.parse(eno);
+            if (localStorage[cw.meta.id + ':state']) {
+                eno += localStorage[cw.meta.id + ':state'];
+            }
             this.setCrosswordSource(eno, url, gid);
           })
         }).catch(error => {
