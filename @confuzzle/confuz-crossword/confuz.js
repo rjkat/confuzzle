@@ -217,26 +217,28 @@ export function fromPuz(p) {
     eno += "width: " + p.width + "\n";
     eno += "height: " + p.height + "\n";
 
-    for (var i = 0; i < p.sections.length; i++) {
-        if (p.sections[i].title == 'GEXT') {
-            let annotation_rows = [];
-            let annotation_cols = [];
-            for (var row = 0; row < p.height; row++) {
-                for (var col = 0; col < p.width; col++) {
-                    const g = p.sections[i].data[row * p.width + col];
-                    if (g & 0x80) {
-                        annotation_rows.push(row + 1);
-                        annotation_cols.push(col + 1);
+    if (p.sections) {
+        for (var i = 0; i < p.sections.length; i++) {
+            if (p.sections[i].title == 'GEXT') {
+                let annotation_rows = [];
+                let annotation_cols = [];
+                for (var row = 0; row < p.height; row++) {
+                    for (var col = 0; col < p.width; col++) {
+                        const g = p.sections[i].data[row * p.width + col];
+                        if (g & 0x80) {
+                            annotation_rows.push(row + 1);
+                            annotation_cols.push(col + 1);
+                        }
                     }
                 }
-            }
 
-            if (annotation_rows.length > 0) {
-                eno += '\n## annotations\n';
-                eno += '\n### circled\n';
-                eno += 'mark: circle\n';
-                eno += 'rows:\n    - ' + annotation_rows.join('\n    - ') + '\n';
-                eno += 'cols:\n    - ' + annotation_cols.join('\n    - ') + '\n';
+                if (annotation_rows.length > 0) {
+                    eno += '\n## annotations\n';
+                    eno += '\n### circled\n';
+                    eno += 'mark: circle\n';
+                    eno += 'rows:\n    - ' + annotation_rows.join('\n    - ') + '\n';
+                    eno += 'cols:\n    - ' + annotation_cols.join('\n    - ') + '\n';
+                }
             }
         }
     }
