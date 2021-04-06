@@ -85,7 +85,7 @@
                         <p class="about-text">
                             Generate a short link for solving an externally-hosted crossword.
                         </p>
-                        <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="linkInvalid" error="Invalid URL">
+                        <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="externalLink.length > 0 && linkInvalid" error="Invalid URL">
                                 URL of .puz or .confuz
                         </ui-textbox> 
                         <p class="about-text">

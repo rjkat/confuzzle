@@ -5,6 +5,8 @@
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
     :data-down-separator="showDownSeparator ? cell.downSeparator : undefined"
     :data-empty="cell.empty"
+    :data-mark="cell.mark"
+    :data-rebus="cell.rebus"
     :style="{backgroundColor: cell.shadingColor}"
     @click.prevent="onClick($event)"
     ref="tableCell"
@@ -115,9 +117,24 @@ td {
     vertical-align: baseline;
     border: $gridBorderWidth solid;
 
+
+    &[data-mark="circle"]:after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 7.5%;
+      height: 85%;
+      width: 85%;
+      background-color: transparent;
+      border-radius:50%;
+      border:1px solid #000;
+    }
+
     ::selection {
         background-color: transparent;
     }
+
+    
 
     &[data-number]:before {
         position: absolute;
@@ -132,6 +149,8 @@ td {
         }
         z-index: 5;
     }
+
+
 
     &[data-across-separator]:after {
         content: '';

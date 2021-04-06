@@ -142,6 +142,7 @@ function buildGrid(cw, compiling) {
   const clues = cw.clues;
   const grid = cw.grid;
   const shading = grid.shading;
+  const annotations = grid.annotations;
 
   grid.cells = []
   for (let row = 1; row <= grid.height; row++) {
@@ -169,6 +170,17 @@ function buildGrid(cw, compiling) {
         for (let i = 0; i < rule.rows.length; i++) {
           grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].shadingColor = rule.color;
         }
+      }
+    });
+  }
+
+  if (annotations) {
+    annotations.forEach(rule => {
+      for (let i = 0; i < rule.rows.length; i++) {
+        if (rule.mark)
+          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].mark = rule.mark;
+        if (rule.rebus)
+          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].rebus = rule.rebus;
       }
     });
   }
@@ -454,6 +466,31 @@ export function parse(input, compiling, options) {
                   cols: colorCols
                 });
               }
+          });
+        }
+      }
+      if (name == "annotations") {
+        cw.grid.annotations = [];
+        const annEls = section.elements(); {
+          annEls.forEach(el => {
+              const x = el.toSection();
+              const ruleName = el.stringKey();
+              const annRows = x.requiredList('rows').requiredIntegerValues();
+              const annCols = x.requiredList('cols').requiredIntegerValues();
+              const rule = {
+                name: ruleName,
+                rows: annRows,
+                cols: annCols
+              }
+              const mark = x.optionalField('mark');
+              if (mark) {
+                rule.mark = mark.requiredStringValue();
+              }
+              const rebus = x.optionalField('rebus');
+              if (rebus) {
+                rule.rebus = rebus.requiredStringValue();
+              }
+              cw.grid.annotations.push(rule);
           });
         }
       }

@@ -87,6 +87,20 @@ function fuzGrid(grid) {
             }
         }
     }
+    if (grid.annotations) {
+        eno += '\n## annotations\n';
+        for (var i = 0; i < grid.annotations.length; i++) {
+            const rule = grid.annotations[i];
+            eno += '\n### ' + rule.name + '\n';
+            if (rule.mark) {
+                eno += 'mark: ' + rule.mark + '\n';
+            } else {
+                eno += 'rebus: ' + rule.rebus + '\n';
+            }
+            eno += 'rows:\n    - ' + rule.rows.join('\n    - ') + '\n';
+            eno += 'cols:\n    - ' + rule.cols.join('\n    - ') + '\n';
+        }
+    }
     return eno;
 }
 
@@ -202,6 +216,30 @@ export function fromPuz(p) {
     eno += "\n# grid\n";
     eno += "width: " + p.width + "\n";
     eno += "height: " + p.height + "\n";
+
+    for (var i = 0; i < p.sections.length; i++) {
+        if (p.sections[i].title == 'GEXT') {
+            let annotation_rows = [];
+            let annotation_cols = [];
+            for (var row = 0; row < p.height; row++) {
+                for (var col = 0; col < p.width; col++) {
+                    const g = p.sections[i].data[row * p.width + col];
+                    if (g & 0x80) {
+                        annotation_rows.push(row + 1);
+                        annotation_cols.push(col + 1);
+                    }
+                }
+            }
+
+            if (annotation_rows.length > 0) {
+                eno += '\n## annotations\n';
+                eno += '\n### circled\n';
+                eno += 'mark: circle\n';
+                eno += 'rows:\n    - ' + annotation_rows.join('\n    - ') + '\n';
+                eno += 'cols:\n    - ' + annotation_cols.join('\n    - ') + '\n';
+            }
+        }
+    }
     
     eno += "\n# clues\n";
     for (var i = 0; i < clues.length; i++) {
@@ -311,8 +349,10 @@ export function toPuz(eno) {
     var state = '';
     var haveState = false;
     var clues = [];
+    var gext = [];
 
     for (var row = 0; row < grid.height; row++) {
+        gext[row] = [];
         for (var col = 0; col < grid.width; col++) {
             const cell = grid.cells[row][col];
             solution += cell.empty ? '.' : (cell.solution ? cell.solution : 'X');
@@ -320,6 +360,8 @@ export function toPuz(eno) {
                 haveState = true;
             state += cell.empty ? '.' : (cell.contents ? cell.contents.toUpperCase() : '-');
             
+            gext[row].push(cell.mark ? 0x00 : 0x80);
+
             if (!cell.clues)
                 continue
             
