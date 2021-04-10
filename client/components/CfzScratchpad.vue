@@ -519,7 +519,7 @@ export default Vue.extend({
     insertFirstWorkingTile(event) {
       this.workingLetters[this.clue.id].splice(0, 0, {
         id: this.highestId,
-        letter: event.data,
+        letter: event.data.letter,
       });
       this.$emit('update:workingLetters', this.workingLetters);
     },
