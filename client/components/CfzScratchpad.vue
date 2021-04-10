@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
-      <div v-if="clue" class="answer-cells">
+      <div v-if="clue && answerSlots[clue.id]" class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(answerCells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(answerCells[index])"
           @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.item">
             <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents" :data-is-pencil="answerCells[index].special == '?'">
@@ -435,7 +435,7 @@ export default Vue.extend({
       while (ref) {
         this.answerSlots[this.clue.id].splice(j + ref.cells.length);
         for (let i = 0; i < ref.cells.length; i++) {
-          this.$set(this.answerSlots[this.clue.id], i + j, {offset: i + j, item: null});
+          this.$set(this.answerSlots[this.clue.id], i + j, {item: null});
         }
         j += ref.cells.length;
         ref = ref.nextRef;
@@ -448,7 +448,7 @@ export default Vue.extend({
 
       this.$set(this.workingLetters, this.clue.id, []);
       for (let i = 0; i < this.answerSlots[this.clue.id].length; i++) {
-        this.$set(this.answerSlots[this.clue.id], i, {offset: i, item: null});
+        this.$set(this.answerSlots[this.clue.id], i, {item: null});
       }
       this.$emit('update:answerSlots', this.answerSlots);
       this.$emit('update:workingLetters', this.workingLetters);
@@ -460,16 +460,16 @@ export default Vue.extend({
       const a = this.workingLetters[this.clue.id];
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        const tmp = a[i];
-        this.$set(a, i, {letter: a[j].letter, offset: i, id: a[j].id});
-        this.$set(a, j, {letter: tmp.letter, offset: j, id: tmp.id});
+        const tmp = JSON.parse(JSON.stringify(a[i]));
+        this.$set(a, i, {letter: a[j].letter, id: a[j].id});
+        this.$set(a, j, {letter: tmp.letter, id: tmp.id});
       }
       this.$emit('update:workingLetters', this.workingLetters);
     },
     submitClicked() {
       const text = [];
       for (const slot of this.answerSlots[this.clue.id]) {
-        text.push(slot.item.letter);
+        text.push(slot.item ? slot.item.letter : '');
       }
       this.$emit('submit-decrypt', {
         text: text,
@@ -487,7 +487,6 @@ export default Vue.extend({
       for (const c of word) {
         this.$set(this.workingLetters[this.clue.id], i, {
           id: id,
-          offset: i,
           letter: c
         });
         id++;
@@ -503,21 +502,24 @@ export default Vue.extend({
       this.$refs.customWordModal.close();
     },
     cutAnswerLetter(offset) {
-      this.$set(this.answerSlots[this.clue.id], offset, {offset: offset, item: null});
+      this.$set(this.answerSlots[this.clue.id], offset, {item: null});
       this.$emit('update:answerSlots', this.answerSlots);
     },
     cutWorkingLetter(item) {
-      this.workingLetters[this.clue.id].splice(item.offset, 1);
-      for (let i = item.offset; i < this.workingLetters[this.clue.id].length; i++) {
-        this.$set(this.workingLetters[this.clue.id][i], 'offset', i);
+      let offset = 0;
+      for (const l of this.workingLetters[this.clue.id]) {
+        if (l.id == item.id) {
+          this.workingLetters[this.clue.id].splice(offset, 1);
+          this.$emit('update:workingLetters', this.workingLetters);
+          break;
+        }
+        offset++;
       }
-      this.$emit('update:workingLetters', this.workingLetters);
     },
     insertFirstWorkingTile(event) {
       this.workingLetters[this.clue.id].splice(0, 0, {
         id: this.highestId,
         letter: event.data,
-        offset: 0
       });
       this.$emit('update:workingLetters', this.workingLetters);
     },
@@ -530,18 +532,18 @@ export default Vue.extend({
       this.workingLetters[this.clue.id].splice(event.index, 0, {
         id: event.data.id,
         letter: event.data.letter,
-        offset: event.index
       });
       this.$emit('update:workingLetters', this.workingLetters);
     },
     reorderWorkingTiles(event) {
-      this.$set(this.workingLetters[this.clue.id][event.from], 'offset', event.to);
-      this.$set(this.workingLetters[this.clue.id][event.to], 'offset', event.from);
-      event.apply(this.workingLetters[this.clue.id]);
+      let fromLetter = JSON.parse(JSON.stringify(this.workingLetters[this.clue.id][event.from]));
+      let toLetter = JSON.parse(JSON.stringify(this.workingLetters[this.clue.id][event.to]));
+      this.$set(this.workingLetters[this.clue.id], event.to, {id: fromLetter.id, letter: fromLetter.letter});
+      this.$set(this.workingLetters[this.clue.id], event.from, {id: toLetter.id, letter: toLetter.letter});
       this.$emit('update:workingLetters', this.workingLetters);
     },
     answerTileDropped(event, answerOffset) {
-      this.$set(this.answerSlots[this.clue.id], answerOffset, {offset: answerOffset, item: event.data})
+      this.$set(this.answerSlots[this.clue.id], answerOffset, {item: event.data})
       this.$emit('update:answerSlots', this.answerSlots);
     },
     separator: function (cell) {

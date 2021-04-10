@@ -657,6 +657,8 @@ export default Vue.extend({
       if (!this.state.colluding && !this.state.joining) {
         this.updateLocalStorage();
       }
+      this.workingLetters = {};
+      this.answerSlots = {};
     },
     selectedClue(newValue, oldValue) {
         if (oldValue) {
