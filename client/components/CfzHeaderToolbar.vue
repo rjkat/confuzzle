@@ -176,6 +176,7 @@ ul {
 }
 
 .file-tile-text {
+    max-height: 1em;
 }
 
 .file-tile-author {

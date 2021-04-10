@@ -20,10 +20,10 @@
               @reorder="reorderWorkingTiles"
               mode="cut">
               <template v-slot:item="{item}">
-                <drag class="letter-tile" :data-is-pencil="usingPencil" :data="item" :data-solver-mask="solverMask" :key="item.offset" @cut="cutWorkingLetter(item.offset)">{{item.letter}}</drag>
+                <drag class="letter-tile" :data-is-pencil="usingPencil" :data="item" :data-solver-mask="solverMask" :key="item.id" @cut="cutWorkingLetter(item)">{{item.letter}}</drag>
               </template>
               <template v-slot:feedback="{ data }">
-                <div class="letter-tile letter-tile-feedback" :data-is-pencil="usingPencil" :key="data" :data-solver-mask="solverMask">{{ data }}</div>
+                <div class="letter-tile letter-tile-feedback" :data-is-pencil="usingPencil" :key="data.id" :data-solver-mask="solverMask">{{ data.letter }}</div>
               </template>
           </drop-list>
           <drop v-if="clue && numAnswerLetters > 0 && workingLetters[clue.id] && workingLetters[clue.id].length == 0" mode="cut" class="answer-slot" :data-solver-mask="solverMask"  
@@ -35,15 +35,16 @@
     <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
       <div v-if="clue" class="answer-cells">
           <drop mode="cut" v-for="(slot, index) in answerSlots[clue.id]" :key="index" class="answer-slot" :data-solver-mask="solverMask" :style="separator(answerCells[index]) ? {'margin-right': 'calc(1ch + 6px)'} : {}" :data-separator="separator(answerCells[index])"
-          @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.letter">
+          @drop="answerTileDropped($event, index)" :accepts-data="() => !slot.item">
             <div class="answer-slot-contents" :data-cell-contents="answerCells[index].contents" :data-is-pencil="answerCells[index].special == '?'">
-                 <drag class="letter-tile" :data-is-pencil="usingPencil" :data-letter="slot.letter" :data-solver-mask="solverMask" :key="index" :data="slot.letter" @cut="cutAnswerLetter(index)">{{slot.letter}}</drag>
+                 <drag class="letter-tile" :data-is-pencil="usingPencil" :data-letter="slot.item ? slot.item.letter : ''" :data-solver-mask="solverMask" :key="index" :data="slot.item" @cut="cutAnswerLetter(index)">{{slot.item ? slot.item.letter : ''}}</drag>
             </div>
           </drop>
+          <div class="letter-length-indicator">{{numAnswerLetters + '/' + answerSlots[clue.id].length}}</div>
       </div>
     </div>
     <div class="decrypt-button-container">
-      <ui-button raised color="red" class="decrypt-button" :disabled="!numWorkingLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
+      <ui-button raised color="red" class="decrypt-button" :disabled="!numWorkingLetters && !numAnswerLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
       <ui-button raised class="decrypt-button" icon="shuffle" :disabled="!numWorkingLetters" @click="shuffleClicked()">Shuffle</ui-button>
       <ui-button raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
@@ -62,6 +63,16 @@
 
 <style lang="scss">
 @import '../stylesheets/solvers';
+    .letter-length-indicator {
+          padding: 4px;
+          line-height: 100%;
+          text-align: center;
+          vertical-align: middle;
+          border-radius: 4px;
+          color: #000;
+          background-color: rgba(240, 240, 240, 0.7);
+          font-family: $answerFontFamily;
+    }
     .drag-source {
       opacity: 0.4;
     }
@@ -206,14 +217,7 @@
       border-radius: 8px;
       margin-bottom: 8px;
       font-size: 26px;
-      .letter-length-indicator {
-          position: absolute;
-          bottom: 4px;
-          right: 4px;
-          color: #888;
-          font-family: $answerFontFamily;
-          font-size: 16px;
-      }
+
     }
     .letter-container {
       width: 100%;
@@ -222,6 +226,14 @@
       padding-left: 16px;
       padding-right: 8px;
       padding-bottom: 8px;
+      
+      .letter-length-indicator {
+         position: absolute;
+         bottom: .5em;
+         right: .5em;
+         font-size: 24px;
+
+      }
     }
     .letter-list {
       height: 100%;
@@ -230,6 +242,11 @@
       margin-top: auto;
       font-size: 26px;
       width: 100%;
+      .letter-length-indicator {
+        height: 24px;
+        margin-top: 4px;
+        font-size: 16px;
+      }
     }
     .answer-cells {
       display: flex;
@@ -372,17 +389,35 @@ export default Vue.extend({
         return 0;
       let n = 0;
       for (const s of this.answerSlots[this.clue.id]) {
-        if (s.letter != '')
+        if (s.item && s.item.letter != '')
           n++;
       }
       return n;
+    },
+    highestId() {
+      if (!this.clue)
+        return 0;
+      let id = 0;
+      if (this.answerSlots[this.clue.id]) {
+        for (const s of this.answerSlots[this.clue.id]) {
+          if (s.item && s.item.id > id)
+            id = s.item.id;
+        }
+      }
+      if (this.workingLetters[this.clue.id]) {
+        for (const l of this.workingLetters[this.clue.id]) {
+          if (l.id > id)
+            id = l.id;
+        }
+      }
+      return id;
     },
     submitDisabled() {
       if (!this.clue || !this.answerSlots[this.clue.id]) {
         return true;
       }
       for (const slot of this.answerSlots[this.clue.id]) {
-        if (slot.letter)
+        if (slot.item && slot.item.letter)
           return false;
       }
       return true;
@@ -400,7 +435,7 @@ export default Vue.extend({
       while (ref) {
         this.answerSlots[this.clue.id].splice(j + ref.cells.length);
         for (let i = 0; i < ref.cells.length; i++) {
-          this.$set(this.answerSlots[this.clue.id], i + j, {offset: i + j, letter: ''});
+          this.$set(this.answerSlots[this.clue.id], i + j, {offset: i + j, item: null});
         }
         j += ref.cells.length;
         ref = ref.nextRef;
@@ -413,7 +448,7 @@ export default Vue.extend({
 
       this.$set(this.workingLetters, this.clue.id, []);
       for (let i = 0; i < this.answerSlots[this.clue.id].length; i++) {
-        this.$set(this.answerSlots[this.clue.id], i, {offset: i, letter: ''});
+        this.$set(this.answerSlots[this.clue.id], i, {offset: i, item: null});
       }
       this.$emit('update:answerSlots', this.answerSlots);
       this.$emit('update:workingLetters', this.workingLetters);
@@ -426,15 +461,15 @@ export default Vue.extend({
       for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const tmp = a[i];
-        this.$set(a, i, {letter: a[j].letter, offset: i});
-        this.$set(a, j, {letter: tmp.letter, offset: j});
+        this.$set(a, i, {letter: a[j].letter, offset: i, id: a[j].id});
+        this.$set(a, j, {letter: tmp.letter, offset: j, id: tmp.id});
       }
       this.$emit('update:workingLetters', this.workingLetters);
     },
     submitClicked() {
       const text = [];
       for (const slot of this.answerSlots[this.clue.id]) {
-        text.push(slot.letter);
+        text.push(slot.item.letter);
       }
       this.$emit('submit-decrypt', {
         text: text,
@@ -448,11 +483,14 @@ export default Vue.extend({
       }
       this.workingLetters[this.clue.id].splice(this.workingLetters[this.clue.id].length + word.length);
       let i = this.workingLetters[this.clue.id].length;
+      let id = this.highestId + 1;
       for (const c of word) {
         this.$set(this.workingLetters[this.clue.id], i, {
+          id: id,
           offset: i,
           letter: c
         });
+        id++;
         i++;
       }
       this.$emit('update:workingLetters', this.workingLetters);
@@ -465,18 +503,19 @@ export default Vue.extend({
       this.$refs.customWordModal.close();
     },
     cutAnswerLetter(offset) {
-      this.$set(this.answerSlots[this.clue.id], offset, {offset: offset, letter: ''});
+      this.$set(this.answerSlots[this.clue.id], offset, {offset: offset, item: null});
       this.$emit('update:answerSlots', this.answerSlots);
     },
-    cutWorkingLetter(offset) {
-      this.workingLetters[this.clue.id].splice(offset, 1);
-      for (let i = offset; i < this.workingLetters[this.clue.id].length; i++) {
+    cutWorkingLetter(item) {
+      this.workingLetters[this.clue.id].splice(item.offset, 1);
+      for (let i = item.offset; i < this.workingLetters[this.clue.id].length; i++) {
         this.$set(this.workingLetters[this.clue.id][i], 'offset', i);
       }
       this.$emit('update:workingLetters', this.workingLetters);
     },
     insertFirstWorkingTile(event) {
       this.workingLetters[this.clue.id].splice(0, 0, {
+        id: this.highestId,
         letter: event.data,
         offset: 0
       });
@@ -489,7 +528,8 @@ export default Vue.extend({
       }
 
       this.workingLetters[this.clue.id].splice(event.index, 0, {
-        letter: event.data,
+        id: event.data.id,
+        letter: event.data.letter,
         offset: event.index
       });
       this.$emit('update:workingLetters', this.workingLetters);
@@ -501,8 +541,7 @@ export default Vue.extend({
       this.$emit('update:workingLetters', this.workingLetters);
     },
     answerTileDropped(event, answerOffset) {
-      const letter = event.data.letter || event.data;
-      this.answerSlots[this.clue.id][answerOffset].letter = letter;
+      this.$set(this.answerSlots[this.clue.id], answerOffset, {offset: answerOffset, item: event.data})
       this.$emit('update:answerSlots', this.answerSlots);
     },
     separator: function (cell) {
