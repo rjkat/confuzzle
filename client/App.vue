@@ -411,14 +411,12 @@ body {
 }
 
 #editor {
-    &[data-show-grid] {
-        margin-left: #{-$displayPadding};
-    }
-    margin-right: #{$displayPadding};
-    margin-top: $displayPadding;
     overflow-x: scroll;
+    width: 100%;
+    margin-right: $displayPadding;
     border: 1px solid #000;
     min-height: 0;
+    margin-top: $displayPadding;
     max-height: calc(100% - #{$displayPadding});
 }
 
@@ -1202,7 +1200,7 @@ export default Vue.extend({
         );
     },
     startCompiling() {
-        this.editorSource = this.crosswordSource;
+        this.editorSource = JSON.parse(JSON.stringify(this.crosswordSource));
         this.state.compiling = true;
     },
     endCompiling() {

@@ -311,7 +311,7 @@ export default Vue.extend({
   },
   computed: {
     embedCode() {
-       return '<iframe src="' + this.shortLink + '"\n        height="550" width="800" frameBorder="0">\n</iframe>';
+       return '<iframe src="' + this.shortLink + '"\n        height="550" width="800" frameBorder="0"\n        marginheight="0" marginwidth="0">\n</iframe>';
     },
     linkInvalid() {
         return !isURL(this.externalLink);
