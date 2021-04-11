@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="crossword-grid-wrapper" :data-portrait="isPortrait">
   <span class="visible-print">
     <span class="crossword-meta-name">{{crossword.meta.name}}</span>
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
@@ -33,10 +33,23 @@
 
 <style lang="scss">
 .crossword-scratchpad {
-  height: calc(100% - #{2 * $displayPadding});
-  width: calc(100% - #{2 * $displayPadding});
   flex: none;
+  height: 100%;
+  width: 100%;
 }
+
+.crossword-grid-wrapper {
+  padding: $displayPadding;
+  display: flex;
+  &[data-portrait] {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  &:not([data-portrait]) {
+    flex-direction: column;
+  }
+}
+
 .crossword-grid {
   flex: none;
   text-indent: 0;
@@ -97,14 +110,14 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width + 2 * this.bodyPadding);
+      return (this.cellWidth * this.crossword.grid.width);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height + 2* this.bodyPadding);
+      return (this.cellWidth * this.crossword.grid.height);
     },
     gridScale() {
       const scaleDim = this.isPortrait ? this.gridHeight : this.gridWidth;
-      return Math.min(1, this.gridSize / scaleDim);
+      return Math.min(1, (this.gridSize - 2*this.bodyPadding) / scaleDim);
     },
     gridStyle() {
       return {
@@ -114,8 +127,8 @@ export default Vue.extend({
     },
     gridContainerStyle() {
       return {
-       'height': this.gridScale * this.gridHeight + 'px',
-       'width': this.gridScale * this.gridWidth + 'px'
+        'width': (this.gridScale * this.gridWidth) + 'px',
+        'height': (this.gridScale * this.gridHeight) + 'px'
       }
     },
     gridControlStyle() {

@@ -85,7 +85,7 @@
     >
     </cfz-header-toolbar>
     
-    <div id="app-content" ref="appContent" :data-portrait="isPortrait"
+    <div id="app-content" ref="appContent" :data-portrait="isPortrait" :data-show-grid="showGrid"
          v-if="!state.launching"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
@@ -126,7 +126,7 @@
                 </div>
             </ui-modal>
         </template>
-        <template v-if="state.initialised">
+        <template v-if="!state.joining && state.initialised">
             <transition name="grid">
                 <cfz-crossword-grid id="grid"
                     ref="grid"
@@ -228,7 +228,7 @@ body {
     background-color: rgb(240, 248, 255);
     height: 100%;
     width: 100%;
-    margin: 8px;
+    margin: 0px;
 /*  
     @media print {
         padding: 1.5cm !important;
@@ -341,7 +341,7 @@ body {
     position: fixed;
     left: 50%;
     margin-left: -1.75rem;
-    bottom: $displayPadding;
+    bottom: #{2 * $displayPadding};
 }
 .tippy-popper {
     font-family: $clueFontFamily;
@@ -387,16 +387,19 @@ body {
 
 #header-toolbar {
     flex: none;
-    margin-right: #{2 * $displayPadding};
 }
 
 #app-content {
     display: flex;
+    flex: 1 1 50%;
     &[data-portrait] {
         flex-direction: column;
     }
     width: 100%;
-    height: calc(100% - 3.5rem - #{$displayPadding} - 8px);
+    height: calc(100% - 3.5rem);
+    &[data-show-grid]:not([data-portrait]) {
+        padding-bottom: $displayPadding;
+    }
     @media print {
         display: block !important;
     }
@@ -411,18 +414,17 @@ body {
     &[data-show-grid] {
         margin-left: #{-$displayPadding};
     }
-    margin-right: #{2*$displayPadding};
+    margin-right: #{$displayPadding};
     margin-top: $displayPadding;
     overflow-x: scroll;
     border: 1px solid #000;
-    flex: 1 1 50%;
     min-height: 0;
     max-height: calc(100% - #{$displayPadding});
 }
 
 #drop-area {
     position: absolute;
-    width: calc(100% - #{$displayPadding});
+    width: 100%;
     margin: 0;
     background: #fff;
     height: 100%;
@@ -444,33 +446,27 @@ body {
 }
 
 #grid {
-    @media screen {
-        padding-top: $displayPadding;
-    }
-
-    &:not([data-portrait]) {
-        margin-bottom: $displayPadding;
-    }
 }
 
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
     overflow-y: hidden;
-    max-height: calc(100% - #{$displayPadding});
-    margin-top: $displayPadding;
-    margin-right: #{2 * $displayPadding};
 
-    @media screen {
-        border: 1px solid #000;
-    }
-
-    &[data-show-grid][data-portrait] {
-        margin-top: #{-$displayPadding};
+    @media screen  {
+        &[data-show-grid]:not([data-portrait]) {
+            border: 1px solid #000;
+        }
+        border-top: 1px solid #000;
     }
 
     &[data-show-grid]:not([data-portrait]) {
-        margin-left: #{-$displayPadding};
+        margin-right: #{$displayPadding};
+    }
+
+    &[data-show-grid]:not([data-portrait]) {
+        margin-top: #{$displayPadding};
+        max-height: calc(100% - #{$displayPadding});
     }
 
     height: 100%;
@@ -600,7 +596,7 @@ export default Vue.extend({
       if (this.joinFailed)
         return 'Session not found: ' + this.gridid + ' | Confuzzle';
       if (this.state.joining)
-        return 'Join session' + (this.gridid ? ': ' : '') + ' | Confuzzle';
+        return 'Join session' + (this.gridid ? ': ' + this.gridid : '') + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
     },
 
@@ -719,7 +715,7 @@ export default Vue.extend({
     document.addEventListener('keydown', this.keyListener);
     this.handleOrientationChange();
     this.handleResize();
-    this.gridSizeLocked = true;
+    // this.gridSizeLocked = true;
 
 
     if (localStorage.recentCrosswords) {
@@ -956,8 +952,14 @@ export default Vue.extend({
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = h > w;
-        if (!this.gridSizeLocked)
-            this.gridSize = this.isPortrait ? w : (h - this.toolbarHeight);
+
+        if (!this.gridSizeLocked) {
+            if (this.isPortrait) {
+                this.gridSize = (w < 0.67*h) ? w : 0.67*h;
+            } else {
+                this.gridSize = h - this.toolbarHeight;    
+            }
+        }
     },
     handleOrientationChange() {
         const w = this.windowWidth;
@@ -1052,9 +1054,9 @@ export default Vue.extend({
         }
         this.errorText = errorText;
         this.errorMessage = errorMessage;
-        this.gridSizeLocked = false;
+        // this.gridSizeLocked = false;
         this.handleResize();
-        this.gridSizeLocked = true;
+        // this.gridSizeLocked = true;
         this.renderLoading = false;
         this.showScratchpad = false;
 
@@ -1497,7 +1499,7 @@ export default Vue.extend({
         this.$refs.disconnectedModal.close();
         this.clearAllHighlighted();
         this.snackbarMessage('You left the session');
-        this.updateHistory();
+        this.pushState();
     },
     reconnectClicked(event) {
         this.state.reconnecting = true;
@@ -1587,13 +1589,11 @@ export default Vue.extend({
         this.setCrosswordSource(confuz.fromPuz(ShareablePuz.from(new Uint8Array(buf))));
     },
     pushState() {
-      window.history.pushState(null, '', '/' + this.getEnoParams());
+        window.history.pushState(null, '', '/' + this.getEnoParams());
     },
     replaceState() {
-      if (!this.state.colluding)
-        window.history.replaceState(null, '', this.getEnoParams());
+        window.history.replaceState(null, '', '/' + this.getEnoParams());
     },
-
     keyListener(e) {
         // save .puz
         if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
