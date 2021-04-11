@@ -96,7 +96,8 @@ export default Vue.extend({
       type: Object,
       default: function () { return {} }
     },
-    gridSize: Number,
+    gridDisplayWidth: Number,
+    gridDisplayHeight: Number,
     isPortrait: {
       type: Boolean,
       default: false
@@ -116,8 +117,13 @@ export default Vue.extend({
       return (this.cellWidth * this.crossword.grid.height);
     },
     gridScale() {
-      const scaleDim = this.isPortrait ? this.gridHeight : this.gridWidth;
-      return Math.min(1, this.gridSize / (scaleDim + 2*this.bodyPadding));
+      let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) > (this.gridWidth - this.gridDisplayWidth);
+      if (!shouldScaleHeight && this.gridWidth < this.gridDisplayWidth) {
+        shouldScaleHeight = this.crossword.grid.height < this.crossword.grid.width;
+      }
+      const scaleSize = shouldScaleHeight ? this.gridDisplayHeight : this.gridDisplayWidth;
+      const scaleDim = shouldScaleHeight ? this.gridHeight : this.gridWidth;
+      return Math.min(1, scaleSize / (scaleDim + 2*this.bodyPadding));
     },
     gridStyle() {
       return {

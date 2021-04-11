@@ -137,7 +137,8 @@
                     :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
                     :solverid="solverid"
-                    :gridSize="gridSize"
+                    :gridDisplayWidth="gridDisplayWidth"
+                    :gridDisplayHeight="gridDisplayHeight"
                     :isPortrait="isPortrait"
                     :showTooltips="showTooltips"
                     :showScratchpad="showScratchpad"
@@ -397,9 +398,6 @@ body {
     }
     width: 100%;
     height: calc(100% - 3.5rem);
-    &[data-show-grid]:not([data-portrait]) {
-        padding-bottom: $displayPadding;
-    }
     @media print {
         display: block !important;
     }
@@ -413,12 +411,9 @@ body {
 #editor {
     overflow-x: scroll;
     width: 100%;
-    margin-right: $displayPadding;
-    border: 1px solid #000;
+    border-left: 1px solid #000;
     min-height: 0;
-    margin-top: $displayPadding;
     height: 100%;
-    max-height: calc(100% - #{$displayPadding - 1});
 }
 
 #drop-area {
@@ -450,22 +445,16 @@ body {
 #clue-container {
     flex: 1 1 50%;
     min-height: 0;
+    min-width: 0;
     overflow-y: hidden;
 
     @media screen  {
         &[data-show-grid]:not([data-portrait]) {
-            border: 1px solid #000;
+            border-left: 1px solid #000;
         }
-        border-top: 1px solid #000;
-    }
-
-    &[data-show-grid]:not([data-portrait]) {
-        margin-right: #{$displayPadding};
-    }
-
-    &[data-show-grid]:not([data-portrait]) {
-        margin-top: #{$displayPadding};
-        max-height: calc(100% - #{$displayPadding - 1});
+        &[data-portrait] {
+            border-top: 1px solid #000;
+        }
     }
 
     height: 100%;
@@ -533,7 +522,8 @@ export default Vue.extend({
   },
   props: {
     gridid: String,
-    gridSize: Number,
+    gridDisplayWidth: Number,
+    gridDisplayHeight: Number,
     solvers: {
         type: Object,
         default: function() {
@@ -954,9 +944,11 @@ export default Vue.extend({
 
         if (!this.gridSizeLocked) {
             if (this.isPortrait) {
-                this.gridSize = (w < 0.67*h) ? w : 0.67*h;
+                this.gridDisplayWidth = w;
+                this.gridDisplayHeight = 0.67*h;
             } else {
-                this.gridSize = h - this.toolbarHeight;    
+                this.gridDisplayWidth = 0.5*w;
+                this.gridDisplayHeight = h - this.toolbarHeight;
             }
         }
     },
@@ -964,8 +956,10 @@ export default Vue.extend({
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = !(window.orientation == -90 || window.orientation == 90);
-        if (!this.gridSizeLocked)
-            this.gridSize = this.isPortrait ? w : (h - this.toolbarHeight);
+        if (!this.gridSizeLocked) {
+            this.gridDisplayWidth = this.isPortrait ? (0.5*w) : h - this.toolbarHeight;
+            this.gridDisplayHeight =this.isPortrait ? h - this.toolbarHeight : (0.5*w);
+        }
     },
     onJoinReveal() {
         if (!this.shouldJoin()) {
