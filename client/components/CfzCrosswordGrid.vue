@@ -117,7 +117,7 @@ export default Vue.extend({
     },
     gridScale() {
       const scaleDim = this.isPortrait ? this.gridHeight : this.gridWidth;
-      return Math.min(1, (this.gridSize - 2*this.bodyPadding) / scaleDim);
+      return Math.min(1, (this.gridSize - this.bodyPadding) / scaleDim);
     },
     gridStyle() {
       return {

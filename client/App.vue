@@ -417,7 +417,8 @@ body {
     border: 1px solid #000;
     min-height: 0;
     margin-top: $displayPadding;
-    max-height: calc(100% - #{$displayPadding});
+    height: 100%;
+    max-height: calc(100% - #{$displayPadding - 1});
 }
 
 #drop-area {
@@ -464,7 +465,7 @@ body {
 
     &[data-show-grid]:not([data-portrait]) {
         margin-top: #{$displayPadding};
-        max-height: calc(100% - #{$displayPadding});
+        max-height: calc(100% - #{$displayPadding - 1});
     }
 
     height: 100%;
