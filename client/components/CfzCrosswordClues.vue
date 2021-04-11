@@ -21,6 +21,7 @@
             class="clue-list"
             ref="downList"
             data-down
+            :style="{'min-width': isPortrait ? '100%' : '33vw'}"
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
@@ -93,7 +94,6 @@
     .clue-list {
         flex: 50%;
         margin: 0 auto;
-        min-width: $clueMinWidth;
         font-family: $clueFontFamily;
         &[data-across]:before {
             content: 'ACROSS';
@@ -126,6 +126,7 @@ export default Vue.extend({
     crossword: Object,
     state: Object,
     solvers: Object,
+    isPortrait: Boolean,
     usingPencil: Boolean,
     solverid: {
         type: Number,

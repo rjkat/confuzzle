@@ -189,6 +189,7 @@
                     </cfz-control-toolbar>
                     <cfz-crossword-clues id="clues" ref="clues"
                         :data-portrait="isPortrait"
+                        :isPortrait="isPortrait"
                         :data-show-grid="showGrid"
                         :state="state"
                         :solvers="solvers"
