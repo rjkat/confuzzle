@@ -169,8 +169,8 @@ export default Vue.extend({
   props: {
     showReturnButton: Boolean,
     isPortrait: Boolean,
-    showLeave: Boolean,
     loading: Boolean,
+    showLeave: Boolean,
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -179,12 +179,12 @@ export default Vue.extend({
   computed: {
     options() {
       const opt = [];
-      if (!this.isPortrait)
-        opt.push({
-          text: "Create",
-          icon: "code",
-          tooltip: "Compile your own crossword"
-        });
+      // if (!this.isPortrait)
+      //   opt.push({
+      //     text: "Create",
+      //     icon: "code",
+      //     tooltip: "Compile your own crossword"
+      //   });
 
       if (this.showLeave) {
         opt.push({
@@ -202,13 +202,16 @@ export default Vue.extend({
       opt.push({
         text: "Invite",
         icon: "group_add",
-        tooltip: "Start a group session"
+        tooltip: this.showLeave ? "Invite others to this session" : "Start a group session"
       });
-      opt.push({
-        text: "Solve",
-        icon: "extension",
-        tooltip: "Upload and solve puzzles"
-      });
+
+      if (!this.showLeave) {
+        opt.push({
+          text: "Solve",
+          icon: "extension",
+          tooltip: "Upload and solve puzzles"
+        });
+      }
       
       return opt;
     }

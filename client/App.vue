@@ -444,8 +444,7 @@ body {
 
 #clue-container {
     flex: 1 1 50%;
-    min-height: 0;
-    min-width: 0;
+    height: 100%;
     overflow-y: hidden;
 
     @media screen  {
@@ -457,12 +456,12 @@ body {
         }
     }
 
-    height: 100%;
     background-color: #fff;
 }
 
 #clues {
     height: 100%;
+    width: 100%;
     overflow-y: scroll;
 }
 </style>
@@ -775,11 +774,18 @@ export default Vue.extend({
   },
   methods: {
     openPuzzleFromLauncher(mode) {
-        this.puzzleModalTitle = this.getPuzzleModalTitle(mode);
-        this.launchOption = mode;
-        this.$refs.puzzleModal.open()
-        // hack to hide tooltip on mobile
-        this.$refs.appContainer.click()
+        if (mode == 'invite' && this.state.colluding) {
+            this.state.launching = false;
+            Vue.nextTick(() => {
+                this.$refs.toolbar.openShareModal();
+            });
+        } else {
+            this.puzzleModalTitle = this.getPuzzleModalTitle(mode);
+            this.launchOption = mode;
+            this.$refs.puzzleModal.open()
+            // hack to hide tooltip on mobile
+            this.$refs.appContainer.click()
+        }
     },
     getPuzzleModalTitle(mode) {
         if (mode == 'create') {

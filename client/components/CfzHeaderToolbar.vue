@@ -327,28 +327,10 @@ export default Vue.extend({
         return metas;
     },
     menuOptions() {
-        var options = [];
-        if (this.showInstall)
-            options.push(this.opt.INSTALL);
-
-        if (this.state.colluding) {
-            options.push(this.opt.SOLVE_OFFLINE);
-        } else {
-            options.push(this.opt.OPEN_PUZZLE);
-
-            if (this.recentMetas.length > 0)
-                options.push(this.opt.OPEN_RECENT);
-        }
-
-        options.push(this.opt.SAVE_PUZ);
-        options.push(this.opt.SAVE_ENO);
-        options.push(this.opt.LINK_EXTERNAL);
-        options.push(this.opt.ABOUT);
-
-        return options;
+        return this.getMenuOptions(false);
     },
     mobileMenuOptions() {
-        return this.menuOptions;
+        return this.getMenuOptions(true);
     }
   },
   watch: {
@@ -380,6 +362,29 @@ export default Vue.extend({
     copyClicked() {
         copy(this.shortLink);
         this.$emit('copy-clicked');
+    },
+    getMenuOptions(isMobile) {
+        var options = [];
+        if (this.showInstall)
+            options.push(this.opt.INSTALL);
+
+        if (this.state.colluding) {
+            options.push(this.opt.SOLVE_OFFLINE);
+        } else {
+            options.push(this.opt.OPEN_PUZZLE);
+
+            if (this.recentMetas.length > 0)
+                options.push(this.opt.OPEN_RECENT);
+        }
+
+        options.push(this.opt.SAVE_PUZ);
+        options.push(this.opt.SAVE_ENO);
+
+        if (!this.state.colluding && !isMobile) {
+            options.push(this.opt.LINK_EXTERNAL);
+        }
+        options.push(this.opt.ABOUT);
+        return options;
     },
     makeNewLinkClicked() {
         this.$emit('make-new-link-clicked');
