@@ -29,7 +29,7 @@
           <drop v-if="clue && numAnswerLetters > 0 && workingLetters[clue.id] && workingLetters[clue.id].length == 0" mode="cut" class="answer-slot" :data-solver-mask="solverMask"  
               @drop="insertFirstWorkingTile($event)">
           </drop>
-          <div class="letter-length-indicator" ref="lengthIndicator">{{numWorkingLetters}}</div>
+          <div class="letter-length-indicator" ref="lengthIndicator" :data-solver-mask="solverMask">{{numWorkingLetters}}</div>
       </div>
     </div>
     <div class="answer-widget" ref="answer" @touchmove="$event.preventDefault()">
@@ -40,7 +40,7 @@
                  <drag class="letter-tile" :data-is-pencil="usingPencil" :data-letter="slot.item ? slot.item.letter : ''" :data-solver-mask="solverMask" :key="index" :data="slot.item" @cut="cutAnswerLetter(index)">{{slot.item ? slot.item.letter : ''}}</drag>
             </div>
           </drop>
-          <div class="letter-length-indicator">{{numAnswerLetters + '/' + answerSlots[clue.id].length}}</div>
+          <div class="letter-length-indicator" :data-solver-mask="solverMask"><div :style="{'text-align': 'left', 'padding-left': numAnswerLetters < 10 ? '0.5em' : 0}">{{numAnswerLetters}}</div><div :style="{'text-align': 'right', 'padding-right': answerSlots[clue.id].length < 10 ? '0.5em' : 0}">{{answerSlots[clue.id].length}}</div></div>
       </div>
     </div>
     <div class="decrypt-button-container">
@@ -63,14 +63,11 @@
 
 <style lang="scss">
 @import '../stylesheets/solvers';
+    
     .letter-length-indicator {
-          padding: 4px;
-          line-height: 100%;
+          display: flex;
+          flex-direction: column;
           text-align: center;
-          vertical-align: middle;
-          border-radius: 4px;
-          color: #000;
-          background-color: rgba(240, 240, 240, 0.7);
           font-family: $answerFontFamily;
     }
     .drag-source {
@@ -186,13 +183,16 @@
         .letter-tile#{$sel} {
             background-color: $color;
         }
+        
         .answer-slot#{$sel} {
+          border-color: $color;
+        }
+        .answer-widget .letter-length-indicator#{$sel} {
           border-color: $color;
         }
         .answer-slot#{$sel}:after {
           color: $color;
         }
-
         .drop-in#{$sel} {
           background-color: $color;
         }
@@ -229,10 +229,14 @@
       
       .letter-length-indicator {
          position: absolute;
+         justify-content: space-around;
+         padding: 4px;
+         font-size: 16px;
+         min-width: 31px;
+         max-height: 31px;
          bottom: .5em;
          right: .5em;
-         font-size: 24px;
-
+         color: #888;
       }
     }
     .letter-list {
@@ -243,9 +247,22 @@
       font-size: 26px;
       width: 100%;
       .letter-length-indicator {
-        height: 24px;
-        margin-top: 4px;
-        font-size: 16px;
+        width: 31px;
+        height: 31px;
+        background: 
+         linear-gradient(to top left,
+             rgba(0,0,0,0) 0%,
+             rgba(0,0,0,0) calc(50% - 0.5px),
+             #888 50%,
+             rgba(0,0,0,0) calc(50% + 0.5px),
+             rgba(0,0,0,0) 100%);
+        background-size: 50% 50%;
+        background-repeat: no-repeat;
+        background-position: 50%;
+        font-size: 12px;
+        box-sizing: content-box;
+        justify-content: space-between;
+        color: #888;
       }
     }
     .answer-cells {
