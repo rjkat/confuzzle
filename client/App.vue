@@ -691,7 +691,7 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('popstate', this.handlePopState);
     window.addEventListener('resize', this.handleResize);
-    window.addEventListener('orientationchange', this.handleOrientationChange);
+    window.addEventListener('orientationchange', this.handleResize);
     window.addEventListener('beforeinstallprompt', this.beforeInstall);
 
     // https://stackoverflow.com/a/29696509
@@ -702,7 +702,6 @@ export default Vue.extend({
     
     this.standalone = window.navigator.standalone;
     document.addEventListener('keydown', this.keyListener);
-    this.handleOrientationChange();
     this.handleResize();
     // this.gridSizeLocked = true;
 
@@ -725,9 +724,9 @@ export default Vue.extend({
          || params.get('source') && params.get('source').startsWith('http')) {
         this.state.downloading = true;
       }
-      this.firstLaunch = !(localStorage.haveLaunched || localStorage.recentCrosswords || params.get('source') || params.get('puz'));
-      this.state.launching = this.firstLaunch;
-      this.initSource();
+      const haveSource = this.initSource();
+      this.firstLaunch = !haveSource;
+      this.state.launching = !haveSource;
     }
   },
   data() {
@@ -959,15 +958,6 @@ export default Vue.extend({
             }
         }
     },
-    handleOrientationChange() {
-        const w = this.windowWidth;
-        const h = this.windowHeight;
-        this.isPortrait = !(window.orientation == -90 || window.orientation == 90);
-        if (!this.gridSizeLocked) {
-            this.gridDisplayWidth = this.isPortrait ? (0.5*w) : h - this.toolbarHeight;
-            this.gridDisplayHeight =this.isPortrait ? h - this.toolbarHeight : (0.5*w);
-        }
-    },
     onJoinReveal() {
         if (!this.shouldJoin()) {
             this.$refs.sessionIdBox.focus();
@@ -1133,6 +1123,7 @@ export default Vue.extend({
       const puz = params.get('puz');
       const strippedPuz = params.get('🧩');
       const gid = params.get('gid');
+      let haveSource = true;
 
       if (enoSource) {
           if (enoSource.startsWith('https://') || enoSource.startsWith('http://')) {
@@ -1166,7 +1157,10 @@ export default Vue.extend({
           }
           this.setCrosswordSource(eno);
         }
+      } else {
+        haveSource = false;
       }
+      return haveSource;
     },
     updateLocalStorage() {
       localStorage[this.crosswordId + ':source'] = this.statelessSource;
