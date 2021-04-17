@@ -90,25 +90,22 @@ if (env == 'dev') {
 }
 
 app.post('/shorten', function (req, res) {
-    if (!req.body || !req.body.uri) {
+    if (!req.body || !req.body.uri || !req.body.format) {
         res.status(400);
         return;
     }
     const uri = req.body.uri;
-    if (!uri) {
-        res.status(400);
-        return;
-    }
     const urlObj = new URL(uri);
     if (!(urlObj.protocol == 'http:' || urlObj.protocol == 'https:')) {
         res.status(400);
         return;
     }
-    let sourceType = 'puz';
-    if (urlObj.pathname.endsWith('.confuz')) {
-        sourceType = 'confuz';
+    const format = req.body.format;
+    if (!(format == 'puz' || format == 'confuz')) {
+        res.status(400);
+        return;
     }
-    const objID = shortenLink(uri, sourceType);
+    const objID = shortenLink(uri, format);
     res.send(objID);
 });
 

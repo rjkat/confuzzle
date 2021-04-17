@@ -79,19 +79,29 @@
             </ul>
         </ui-modal>
         <ui-modal ref="linkModal" title="Link external crossword" @hide="linkModalHidden()">
-            <div style="text-align: center;">
+            <div>
                 <template v-if="!shortLink">
                     <div>
                         <p class="about-text">
                             Generate a short link for solving an externally-hosted crossword.
                         </p>
-                        <ui-textbox class="crossword-join-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="externalLink.length > 0 && linkInvalid" error="Invalid URL">
-                                URL of .puz or .confuz
-                        </ui-textbox> 
-                        <p class="about-text">
-                            Only this URL will be stored on Confuzzle servers, not the crossword itself.
-                        </p>
-                        <ui-button color="primary" style="margin-top: 1em;" :loading="creatingLink" @click="shortenLinkClicked()" :disabled="linkInvalid">Submit</ui-button>
+                        <div>
+                            <ui-textbox class="source-url-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="externalLink.length > 0 && linkInvalid" error="Invalid URL">
+                                    Source URL
+                            </ui-textbox> 
+                            <ui-radio-group
+                                name="sourceFormat"
+                                :options="sourceFormat.options"
+                                v-model="sourceFormat.chosen"
+                                vertical
+                            >Source format</ui-radio-group>
+                        </div>
+                            <p class="about-text">
+                                Only this URL will be stored on Confuzzle servers, not the crossword itself.
+                            </p>
+                        <div style="width: 100%; text-align: center;">
+                            <ui-button color="primary" style="margin-top: 1em;" :loading="creatingLink" @click="shortenLinkClicked()" :disabled="linkInvalid">Submit</ui-button>
+                        </div>
                     </div>
                 </template>
                 <template v-else>
@@ -139,6 +149,18 @@
 
 .about-text {
     font-family: $clueFontFamily;
+}
+
+.source-url-input {
+    text-align: left;
+    .ui-textbox__label-text {
+        font-family: $clueFontFamily;
+    }
+    input {
+        font-size: $gridFontSize;
+        font-family: $answerFontFamily;
+        text-transform: uppercase;
+    }
 }
 
 
@@ -208,6 +230,10 @@ ul {
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
     }
+}
+
+.ui-radio-group, .ui-radio {
+    font-family: $clueFontFamily; 
 }
 
 .ui-textbox__feedback-text {
@@ -413,7 +439,7 @@ export default Vue.extend({
         if (this.linkInvalid)
             return;
         this.creatingLink = true;
-        this.$emit('shorten-link-clicked', this.externalLink);
+        this.$emit('shorten-link-clicked', {url: this.externalLink, format: this.sourceFormat.chosen});
     },
     linkModalHidden() {
         this.creatingLink = false;
@@ -455,6 +481,10 @@ export default Vue.extend({
       creatingLink: false,
       inputEmoji: "",
       externalLink: "",
+      sourceFormat: {
+        chosen: "puz",
+        options: ["puz", "confuz"]
+      },
       opt: {
         INSTALL: {
             label: 'Install app',

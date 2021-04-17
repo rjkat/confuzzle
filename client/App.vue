@@ -1071,7 +1071,7 @@ export default Vue.extend({
     updateTitle() {
        document.title = this.pageTitle;
     },
-    shortenLinkClicked(url) {
+    shortenLinkClicked(event) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/shorten');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -1081,7 +1081,8 @@ export default Vue.extend({
         xhr.addEventListener('error', event => {
           console.log(event.target.responseText);
         });
-        xhr.send('uri=' + encodeURIComponent(url));
+        xhr.send('uri=' + encodeURIComponent(event.url));
+        xhr.send('format=' + encodeURIComponent(event.format));
     },
     clearShortLink() {
         this.shortLink = '';
