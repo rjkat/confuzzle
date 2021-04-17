@@ -721,7 +721,8 @@ export default Vue.extend({
     } else {
       const params = new URLSearchParams(window.location.search);
       if (params.get('puz') && params.get('puz').startsWith('http')
-         || params.get('source') && params.get('source').startsWith('http')) {
+         || params.get('source') && params.get('source').startsWith('http')
+         || params.get('confuz') && params.get('confuz').startsWith('http')) {
         this.state.downloading = true;
       }
       const haveSource = this.initSource();
@@ -1119,7 +1120,7 @@ export default Vue.extend({
     },
     initSource() {
       const params = new URLSearchParams(window.location.search);
-      const enoSource = params.get('source');
+      const enoSource = params.get('source') || params.get('confuz');
       const puz = params.get('puz');
       const strippedPuz = params.get('🧩');
       const gid = params.get('gid');
