@@ -1081,8 +1081,7 @@ export default Vue.extend({
         xhr.addEventListener('error', event => {
           console.log(event.target.responseText);
         });
-        xhr.send('uri=' + encodeURIComponent(event.url));
-        xhr.send('format=' + encodeURIComponent(event.format));
+        xhr.send('uri=' + encodeURIComponent(event.url) + '&format=' + encodeURIComponent(event.format));
     },
     clearShortLink() {
         this.shortLink = '';
