@@ -37,6 +37,7 @@
 .cfz-crossword-clue-wrapper {
     padding-top: 1rem;
     padding-bottom: 1.5rem;
+    overflow-x: hidden;
     max-height: calc(100% - 2rem);
     @media print {
         padding-top: 0 !important;
