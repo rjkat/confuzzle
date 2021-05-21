@@ -99,7 +99,7 @@
                 <div v-if="!joinFailed && !shouldJoin()" style="text-align: center;">
                     <p class="join-info-text">Join a crossword using a session identifier.</p>
                     <ui-textbox ref="sessionIdBox" class="crossword-join-input crossword-sess-id-input" v-model="sessionIdText" @keydown-enter="joinClicked()" autocomplete="off">
-                            Session ID (x-y-z)
+                            Session ID (x y z)
                     </ui-textbox> 
                 </div>
                 <div v-if="!joinFailed" style="text-align: center;">
@@ -842,7 +842,7 @@ export default Vue.extend({
         this.setHaveLaunched();
         this.state.joiningFromLauncher = true;
         this.state.launching = false;
-        this.gridid = this.sessionIdText.toLowerCase();
+        this.gridid = this.sessionIdText.toLowerCase().replaceAll(' ', '-');
         this.startJoining();
     },
     launcherJoinClosed() {
@@ -1451,7 +1451,7 @@ export default Vue.extend({
         if (this.solverName)
             localStorage['confuzzle:solverName'] = this.solverName;
         if (this.sessionIdText) {
-            this.gridid = this.sessionIdText.toLowerCase();
+            this.gridid = this.sessionIdText.toLowerCase().replaceAll(' ', '-');
         }
         this.joinLoading = true;
         this.createSocket();

@@ -37,7 +37,7 @@
             dropdownPosition="bottom-start"
             :constrainDropdownToScrollParent="false"
         >
-            Layout
+            View
             <ui-menu
                 contain-focus
                 has-icons

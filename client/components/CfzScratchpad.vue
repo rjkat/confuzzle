@@ -245,6 +245,7 @@
     .answer-widget {
       margin-top: auto;
       font-size: 26px;
+      padding: 0px .5rem;
       width: 100%;
       .letter-length-indicator {
         width: 31px;
@@ -374,7 +375,7 @@ export default Vue.extend({
       const plainWords = [];
       for (const w of words) {
         // https://stackoverflow.com/a/31779560
-        let plain = w.replace(/[~`!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g,'');
+        let plain = w.replace(/[~`’!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g,'');
         plain = plain.replace(/[0-9]/g, '');
         if (plain) {
            plainWords.push(plain);

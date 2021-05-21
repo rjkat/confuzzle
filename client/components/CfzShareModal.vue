@@ -49,6 +49,8 @@
 
 .session-id-text {
     font-family: $answerFontFamily;
+    vertical-align: top;
+    text-transform: uppercase;
 }
 
 .session-info-text {
@@ -109,7 +111,7 @@ export default Vue.extend({
   computed: {
     sessionId() {
         const toks = this.link.split('/');
-        return toks[toks.length - 1];
+        return toks[toks.length - 1].replaceAll('-', ' ');
     }
   },
   methods: {
