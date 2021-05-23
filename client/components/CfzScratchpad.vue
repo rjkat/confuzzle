@@ -98,7 +98,7 @@
             padding: .5em;
         }
         border: 1px solid #000;
-        @include theme-var(grid-blank-color) using ($value) {
+        @include theme-var(clue-bg-color) using ($value) {
           background-color: $value;
         }
         ul {
@@ -124,7 +124,9 @@
 
     .word-tile-length {
       margin-left: 4px;
-      color: #888;
+      @include theme-var(pencil-text-color) using ($value) {
+        color: $value;
+      }
       font-family: $answerFontFamily;
       font-size: 12px;
     }
@@ -149,6 +151,9 @@
     .letter-tile {
       border: $gridBorderWidth solid #000;
       box-sizing: content-box;
+      @include theme-var(text-color) using ($value) {
+        color: $value;
+      }
 
       cursor: grab;
       margin-right: 4px;
@@ -171,8 +176,10 @@
         padding-top: 4px;
         height: 27px;
 
-        font-family: 'F*ck Beans';
-        color: #AAA;
+        font-family: $pencilFontFamily;
+        @include theme-var(pencil-text-color) using ($value) {
+          color: $value;
+        }
       }
 
       &[data-letter=""] {
@@ -198,6 +205,24 @@
         }
         .drop-in#{$sel} {
           background-color: $color;
+        }
+
+
+        .theme-dark .letter-tile#{$sel} {
+            background-color: $lightColor;
+        }
+        
+        .theme-dark .answer-slot#{$sel} {
+          border-color: $lightColor;
+        }
+        .theme-dark .answer-widget .letter-length-indicator#{$sel} {
+          border-color: $lightColor;
+        }
+        .theme-dark .answer-slot#{$sel}:after {
+          color: $lightColor;
+        }
+        .theme-dark .drop-in#{$sel} {
+          background-color: $lightColor;
         }
     }
     .decrypt-container-label {
@@ -242,7 +267,9 @@
          max-height: 31px;
          bottom: .5em;
          right: .5em;
-         color: #888;
+         @include theme-var(pencil-text-color) using ($value) {
+           color: $value;
+         }
       }
     }
     .letter-list {
@@ -256,20 +283,22 @@
       .letter-length-indicator {
         width: 31px;
         height: 31px;
-        background: 
-         linear-gradient(to top left,
-             rgba(0,0,0,0) 0%,
-             rgba(0,0,0,0) calc(50% - 0.5px),
-             #888 50%,
-             rgba(0,0,0,0) calc(50% + 0.5px),
-             rgba(0,0,0,0) 100%);
-        background-size: 50% 50%;
-        background-repeat: no-repeat;
-        background-position: 50%;
-        font-size: 12px;
-        box-sizing: content-box;
-        justify-content: space-between;
-        color: #888;
+        @include theme-var(pencil-text-color) using ($value) {
+          color: $value;
+          background: 
+           linear-gradient(to top left,
+               rgba(0,0,0,0) 0%,
+               rgba(0,0,0,0) calc(50% - 0.5px),
+               $value 50%,
+               rgba(0,0,0,0) calc(50% + 0.5px),
+               rgba(0,0,0,0) 100%);
+          background-size: 50% 50%;
+          background-repeat: no-repeat;
+          background-position: 50%;
+          font-size: 12px;
+          box-sizing: content-box;
+          justify-content: space-between;
+        }
       }
     }
     .answer-cells {

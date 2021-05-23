@@ -5,15 +5,27 @@ $theme-names: "default", "dark";
 $theme-defs: (
     "page-bg-color": (
         "default": #F0F8FF,
-        "dark": #333
+        "dark": #555
     ),
     "grid-blank-color": (
         "default": #fff,
         "dark": #555
     ),
+    "pencil-text-color": (
+      "default": #777,  
+      "dark": #AAA
+    ),
     "grid-bg-color": (
         "default": #000,
         "dark": #000
+    ),
+    "number-bg-color": (
+        "default": rgba(240, 240, 240, 0.7),
+        "dark": rgba(15, 15, 15, 0.7)
+    ),
+    "clue-bg-color": (
+        "default": #fff,
+        "dark": #333
     ),
     "text-color": (
         "default": #000,
@@ -33,11 +45,11 @@ $theme-defs: (
     ),
     "widget-bg-color": (
         "default": #efefef,
-        "dark": #333
+        "dark": #010101
     ),
     "widget-text-color": (
         "default": rgba(0, 0, 0, 0.87),
-        "dark": rgba(255, 255, 255, 0.87),
+        "dark": rgba(255, 255, 255, 0.87)
     ),
     "title-bg-color": (
         "default": #7ad,

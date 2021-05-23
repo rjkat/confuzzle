@@ -100,8 +100,10 @@
             min-height: 29px;
             max-width: 29px;
             min-width: 29px;
-            font-family: 'F*ck Beans';
-            color: #AAA;
+            font-family: $pencilFontFamily;
+            @include theme-var(pencil-text-color) using ($value) {
+                color: $value;
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 <template>
 <td :data-solver-mask="solverMask"
-    :data-number="cell.number"
+    :data-number="cell.number ? cell.number : undefined"
     :data-selected=cell.selected
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
     :data-down-separator="showDownSeparator ? cell.downSeparator : undefined"
@@ -104,121 +104,133 @@
 }
 
 td {
-    @include theme-vars using ($theme, $vars) {
-        $gridBlankColor: map.get($vars, "grid-blank-color", $theme);
-        $gridBgColor: map.get($vars, "grid-bg-color", $theme);
-        $textColor: map.get($vars, "text-color", $theme);
-        $highlightedTextColor: map.get($vars, "highlighted-text-color", $theme);
+    font-size: $gridFontSize;
+    box-sizing: border-box;
+    font-family: $answerFontFamily;
     
-        font-size: $gridFontSize;
-        box-sizing: border-box;
-        font-family: $answerFontFamily;
-        
-        border-color: $gridBgColor;
+    @include theme-var(grid-bg-color) using ($value) {
+        border-color: $value;
+    }
+
+    min-width: $gridCellSize;
+    max-width: $gridCellSize;
+    min-height: $gridCellSize;
+    height: $gridCellSize;
+    max-height: $gridCellSize;
+    position: relative;
+    text-align: center;
+    vertical-align: baseline;
+    border: $gridBorderWidth solid;
 
 
-        min-width: $gridCellSize;
-        max-width: $gridCellSize;
-        min-height: $gridCellSize;
+    &[data-mark="circle"]:after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 7.5%;
+      height: 85%;
+      width: 85%;
+      background-color: transparent;
+      border-radius:50%;
+      @include theme-var(grid-bg-color) using ($value) {
+        border: 1px solid $value;
+      }
+    }
+
+    ::selection {
+        background-color: transparent;
+    }
+
+    &[data-number]:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: attr(data-number);
+        font-size: .45em;
+        line-height: 1em;
+        padding: 1px;
+
+        @include theme-var(number-bg-color) using ($value) {
+            background-color: $value !important;
+        }
+        @include theme-var(clue-text-color) using ($value) {
+            color: $value;
+        }
+
+        @media print {
+            background-color: transparent !important;
+        }
+        z-index: 5;
+    }
+
+
+
+    &[data-across-separator]:after {
+        content: '';
         height: $gridCellSize;
-        max-height: $gridCellSize;
-        position: relative;
+        position: absolute;
+        right: 0;
+        top: 0;
+        @include theme-var(grid-bg-color) using ($value) {
+            border-right: 3px $value solid;
+        }
+    }
+
+    &[data-down-separator]:after {
+        content: '';
+        width: $gridCellSize;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        @include theme-var(grid-bg-color) using ($value) {
+            border-bottom: 3px $value solid;
+        }
+    }
+
+    &:not([data-empty]) {
+        cursor: pointer;
+        @include theme-var(grid-blank-color) using ($value) {
+            background: $value;
+        }
+    }
+
+
+    .crossword-grid-input {
+        cursor: pointer;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        @include theme-var(text-color) using ($value) {
+            color: $value;
+        }
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none; /* Disable selection/copy in UIWebView */
+        font-family: $answerFontFamily;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        margin: 0;
+        background: none;
+        outline: none;
+        /*font-size: $gridFontSize;*/
+        font-size: 90%;
+        min-width: 100%;
+        max-width: 100%;
+        height: 100%;
+        line-height: 100%;
+        position: absolute;
         text-align: center;
-        vertical-align: baseline;
-        border: $gridBorderWidth solid;
+        vertical-align: middle;
+        text-transform: inherit;
 
-
-        &[data-mark="circle"]:after {
-          content: '';
-          position: absolute;
-          top: 10%;
-          left: 7.5%;
-          height: 85%;
-          width: 85%;
-          background-color: transparent;
-          border-radius:50%;
-          border:1px solid $gridBgColor;
-        }
-
-        ::selection {
-            background-color: transparent;
-        }
-
-        
-
-        &[data-number]:before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            content: attr(data-number);
-            font-size: .5em;
-            line-height: 1em;
-            background-color: rgba(240, 240, 240, 0.7);
-            @media print {
-                background-color: transparent !important;
-            }
-            z-index: 5;
-        }
-
-
-
-        &[data-across-separator]:after {
-            content: '';
-            height: $gridCellSize;
-            position: absolute;
-            right: 0;
-            top: 0;
-            border-right: 3px $gridBgColor solid;
-        }
-
-        &[data-down-separator]:after {
-            content: '';
-            width: $gridCellSize;
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            border-bottom: 3px $gridBgColor solid;
-        }
-
-        &:not([data-empty]) {
-            cursor: pointer;
-            background: $gridBlankColor;
-        }
-
-
-        .crossword-grid-input {
-            cursor: pointer;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            color: $textColor;
-
-            -webkit-touch-callout: none;
-            -webkit-user-select: none; /* Disable selection/copy in UIWebView */
-            font-family: $answerFontFamily;
-            border: 0;
-            border-radius: 0;
-            padding: 0;
-            margin: 0;
-            background: none;
-            outline: none;
-            /*font-size: $gridFontSize;*/
-            font-size: 90%;
-            min-width: 100%;
-            max-width: 100%;
-            height: 100%;
-            line-height: 100%;
-            position: absolute;
-            text-align: center;
-            vertical-align: middle;
-            text-transform: inherit;
-
-            &[data-is-pencil] {
-                font-size: 1.55rem;
-                padding-top: 2px;
-                font-family: 'F*ck Beans';
-                color: #AAA;
+        &[data-is-pencil] {
+            font-size: 1.55rem;
+            padding-top: 2px;
+            font-family: $pencilFontFamily;
+            @include theme-var(pencil-text-color) using ($value) {
+                color: $value;
             }
         }
     }

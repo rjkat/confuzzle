@@ -1,6 +1,6 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
-    <table slot="brand" width="40">
+    <table class="cfz-logo" slot="brand" width="40">
         <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
@@ -141,6 +141,7 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/themes';
 
 .emoji-button {
     background: transparent !important;
@@ -160,6 +161,15 @@
         font-size: $gridFontSize;
         font-family: $answerFontFamily;
         text-transform: uppercase;
+    }
+}
+
+.cfz-logo {
+    @include theme-var(grid-bg-color) using ($value) {
+        border-color: $value;
+    }
+    @include theme-var(text-color) using ($value) {
+        color: $value;
     }
 }
 

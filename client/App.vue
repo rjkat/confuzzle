@@ -415,6 +415,19 @@ body {
     }
 }
 
+.ui-fab--color-default {
+    @include theme-var(widget-bg-color) using ($value) {
+        background-color: $value !important;
+    }
+    @include theme-var(widget-text-color) using ($value) {
+        color: $value !important;
+    }
+    .ui-icon {
+        @include theme-var(widget-text-color) using ($value) {
+            color: $value !important;
+        }
+    }
+}
 
 
 
@@ -523,7 +536,7 @@ body {
         }
     }
 
-    @include theme-var(grid-blank-color) using ($value) {
+    @include theme-var(clue-bg-color) using ($value) {
         background-color: $value;
     }
 }
@@ -699,6 +712,9 @@ export default Vue.extend({
     crosswordState(newValue, oldValue) {
       localStorage[this.crosswordId + ':state'] = newValue;
     },
+    theme(newValue) {
+        localStorage["theme"] = newValue;
+    },
     crosswordSource(newValue, oldValue) {
       if (!this.state.colluding && !this.state.joining && !this.freezeHistory) {
         this.updateHistory();
@@ -782,6 +798,10 @@ export default Vue.extend({
         if (recent.length > this.maxRecent)
             recent.splice(this.maxRecent, recent.length - this.maxRecent);
         this.recentCrosswords = recent;
+    }
+
+    if (localStorage.theme == "theme-dark") {
+        this.darkModeEnabled = true;
     }
 
 
@@ -978,7 +998,6 @@ export default Vue.extend({
         }
     },
     enableDarkModeChanged(enable) {
-        console.log("enable dark mode: " + enable);
         this.darkModeEnabled = enable;
     },
     showScratchpadChanged(show) {
