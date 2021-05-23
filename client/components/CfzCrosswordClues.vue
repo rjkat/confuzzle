@@ -34,6 +34,8 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/themes';
+
 .cfz-crossword-clue-wrapper {
     padding-top: 1rem;
     padding-bottom: 1.5rem;
@@ -41,6 +43,9 @@
     max-height: calc(100% - 2rem);
     @media print {
         padding-top: 0 !important;
+    }
+    @include theme-var(clue-text-color) using ($value) {
+        color: $value;
     }
 }
 

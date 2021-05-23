@@ -82,12 +82,13 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/themes';
 .cfz-control-toolbar {
     height: 2rem !important;
-    background-color: #efefef;
     overflow: hidden;
     z-index: 2;
 }
+
 </style>
 
 <script>
@@ -102,7 +103,8 @@ export default Vue.extend({
     showTooltipToggle: false,
     showScratchpad: false,
     showScratchpadEnabled: false,
-    usingPencil: false
+    usingPencil: false,
+    darkModeEnabled: false
   },
   model: {
     prop: 'usingPencil'
@@ -145,6 +147,11 @@ export default Vue.extend({
                 options.push(this.opt.SHOW_TOOLTIPS);
             }
         }
+        if (this.darkModeEnabled) {
+            options.push(this.opt.DISABLE_DARK_MODE);
+        } else {
+            options.push(this.opt.ENABLE_DARK_MODE);
+        }
         return options;
     }
   },
@@ -178,6 +185,10 @@ export default Vue.extend({
             this.$emit('show-tooltips-changed', true);
         } else if (option.label == this.opt.SHOW_CLUES_ONLY.label) {
             this.$emit('show-grid-changed', false);
+        } else if (option.label == this.opt.ENABLE_DARK_MODE.label) {
+            this.$emit('enable-dark-mode-changed', true);
+        } else if (option.label == this.opt.DISABLE_DARK_MODE.label) {
+            this.$emit('enable-dark-mode-changed', false);
         }
     },
     cancelClicked() {
@@ -239,6 +250,14 @@ export default Vue.extend({
         SHOW_NO_TOOLTIPS: {
             label: 'No tooltips',
             icon: 'speaker_notes_off'
+        },
+        ENABLE_DARK_MODE: {
+            label: 'Dark theme',
+            icon: 'nightlight'
+        },
+        DISABLE_DARK_MODE: {
+            label: 'Light theme',
+            icon: 'light_mode'
         },
         SHOW_CLUES_ONLY: {
             label: 'Clues',

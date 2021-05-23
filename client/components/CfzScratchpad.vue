@@ -62,6 +62,8 @@
 
 
 <style lang="scss">
+@import '../stylesheets/themes';
+
 @import '../stylesheets/solvers';
     
     .letter-length-indicator {
@@ -96,8 +98,9 @@
             padding: .5em;
         }
         border: 1px solid #000;
-        background: #fff;
-
+        @include theme-var(grid-blank-color) using ($value) {
+          background-color: $value;
+        }
         ul {
           list-style-type: none;
         }
@@ -169,7 +172,7 @@
         height: 27px;
 
         font-family: 'F*ck Beans';
-        color: #565656;
+        color: #AAA;
       }
 
       &[data-letter=""] {
@@ -199,6 +202,9 @@
     }
     .decrypt-container-label {
       font-family: $clueFontFamily;
+      @include theme-var(clue-text-color) using ($value) {
+        color: $value;
+      }
       font-size: 14px;
       text-transform: none;
       width: 100%;

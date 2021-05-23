@@ -41,12 +41,14 @@
 
 <style lang="scss">
 @import '../stylesheets/solvers';
+@import '../stylesheets/themes';
 
 .crossword-answer-container {
     cursor: default;
 }
 
 .clue-item {
+   
     .clue-directions {
         cursor: pointer;
     }
@@ -71,7 +73,13 @@
         border: 0;
         border-radius: 0;
         padding-bottom: 1px;
-        border-bottom: 1px solid $gridBgColor;
+
+        @include theme-var(text-color) using ($value) {
+           color: $value;
+        }
+        @include theme-var(clue-text-color) using ($value) {
+           border-bottom: 1px solid $value;
+        }
         background: none;
         outline: none;
         min-width: 29px;
@@ -93,9 +101,11 @@
             max-width: 29px;
             min-width: 29px;
             font-family: 'F*ck Beans';
-            color: #777;
+            color: #AAA;
         }
     }
+
+    
 
     input:focus {
         background-color: #0075eb !important;

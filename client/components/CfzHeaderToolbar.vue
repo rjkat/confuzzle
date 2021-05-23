@@ -172,14 +172,6 @@
     border: none;
 }
 
-.ui-toolbar--type-colored {
-    background-color: $titleBgColor !important;
-
-    .ui-toolbar__body {
-        color: white !important;
-    }
-}
-
 ul {
   list-style: none;
   padding: 0;

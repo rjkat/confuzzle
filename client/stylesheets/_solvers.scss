@@ -62,11 +62,14 @@ $maxSolvers: length($solverColors);
     @return $result;
 }
 
-@function gradient($values, $n) {
+@function gradient($values, $n, $dark) {
     $g: ();
     $stripeWidth: 10px;
     @for $i from 1 through length($values) {
         $c: nth($values, $i);
+        @if $dark {
+            $c: color.adjust($c, $lightness: -20%);
+        }
         $g: append($g, $c #{($i - 1) * $stripeWidth}, $separator: comma);
         $g: append($g, $c #{$i * $stripeWidth}, $separator: comma);
     }
@@ -81,11 +84,22 @@ $maxSolvers: length($solverColors);
             td#{"[data-solver-mask=\"#{$mask}\"]"} {
                 background: repeating-linear-gradient(
                   45deg,
-                  gradient($values, $nMask),
+                  gradient($values, $nMask, $dark: false),
                 ) !important;
 
                 input:focus {
                     background-color: #0075eb;
+                    color: #fff;
+                }
+            }
+            .theme-dark td#{"[data-solver-mask=\"#{$mask}\"]"} {
+                background: repeating-linear-gradient(
+                  45deg,
+                  gradient($values, $nMask, $dark: true),
+                ) !important;
+
+                input:focus {
+                    background-color: #7ad;
                     color: #fff;
                 }
             }

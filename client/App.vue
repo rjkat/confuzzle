@@ -1,5 +1,5 @@
 <template>
-<div id="app-container" ref="appContainer">
+<div id="app-container" ref="appContainer" :class="theme">
     <transition name="launcher">
         <cfz-launcher ref="launcher" v-if="state.launching"
             :showReturnButton="!firstLaunch"
@@ -175,6 +175,7 @@
                      :showTooltipToggle="!isPortrait && showGrid && !showScratchpad"
                      :showTooltips="showTooltips"
                      :showGrid="showGrid"
+                     :darkModeEnabled="darkModeEnabled"
                      @show-grid-changed="showGridChanged($event)"
                      @show-tooltips-changed="showTooltipsChanged($event)"
                      @check-word-clicked="checkWordClicked(false)"
@@ -184,6 +185,7 @@
                      @edit-source-clicked="editSourceClicked()"
                      @clear-all-clicked="clearAllClicked()"
                      @show-scratchpad-changed="showScratchpadChanged($event)"
+                     @enable-dark-mode-changed="enableDarkModeChanged($event)"
                      v-responsive.class
                      >
                     </cfz-control-toolbar>
@@ -226,8 +228,10 @@
 </template>
 
 <style lang="scss">
+@import './stylesheets/themes';
+
 body {
-    background-color: rgb(240, 248, 255);
+
     height: 100%;
     width: 100%;
     margin: 0px;
@@ -379,16 +383,71 @@ body {
     font-family: $clueFontFamily;
 }
 
+
 #app-container {
     position: fixed;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    @include root-theme-var(page-bg-color) using ($value) {
+        background-color: $value;
+    }
+}
+
+.ui-toolbar {
+    @include theme-var(widget-bg-color) using ($value) {
+      background-color: $value !important;
+    }
+}
+
+.ui-button--color-default {
+    @include theme-var(widget-bg-color) using ($value) {
+        background-color: $value !important;
+    }
+    @include theme-var(widget-text-color) using ($value) {
+        color: $value !important;
+    }
+    .ui-icon {
+        @include theme-var(widget-text-color) using ($value) {
+            color: $value !important;
+        }
+    }
+}
+
+
+
+
+
+
+.tippy-popper {
+    @include sibling-theme-var(widget-bg-color) using ($value) {
+        .ui-menu {
+            background-color: $value;
+        }
+    }
+    @include sibling-theme-var(widget-text-color) using ($value) {
+        .ui-menu-option:not(:hover) {
+            color: $value !important;
+            .ui-icon {
+                color: $value !important;
+            }
+        }
+
+    }
 }
 
 #header-toolbar {
     flex: none;
+    @include theme-var(title-bg-color) using ($value) {
+        background-color: $value !important;
+    }
+
+    .ui-toolbar__body {
+        @include theme-var(text-color) using ($value) {
+            color: $value !important;
+        }
+    }
 }
 
 #app-content {
@@ -429,11 +488,18 @@ body {
     opacity: 0;
     z-index: 99;
     pointer-events: none;
-    background: repeating-linear-gradient(
-      45deg,
-      $pageBgColor,
-      $pageBgColor 10px, $gridBlankColor 10px, $gridBlankColor 20px
-    ) !important;
+
+
+    @include theme-vars using ($theme, $vars) {
+        $pageBgColor: map.get($vars, "page-bg-color", $theme);
+        $gridBlankColor: map.get($vars, "grid-blank-color", $theme);
+        background: repeating-linear-gradient(
+          45deg,
+          $pageBgColor,
+          $pageBgColor 10px, $gridBlankColor 10px, $gridBlankColor 20px
+        ) !important;
+    }
+
     &[data-drop-visible] {
         opacity: 1;
         pointer-events: auto;
@@ -457,7 +523,9 @@ body {
         }
     }
 
-    background-color: #fff;
+    @include theme-var(grid-blank-color) using ($value) {
+        background-color: $value;
+    }
 }
 
 #clues {
@@ -566,6 +634,9 @@ export default Vue.extend({
     client: Object
   },
   computed: {
+    theme() {
+        return this.darkModeEnabled ? 'theme-dark' : 'theme-default';
+    },
     recentMetas() {
         const metas = [];
         for (const cwid of this.recentCrosswords) {
@@ -732,6 +803,7 @@ export default Vue.extend({
   },
   data() {
     return {
+        darkModeEnabled: false,
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
       copyMessage: 'Link copied to clipboard',
@@ -904,6 +976,10 @@ export default Vue.extend({
                 this.installPrompt = null;
             });
         }
+    },
+    enableDarkModeChanged(enable) {
+        console.log("enable dark mode: " + enable);
+        this.darkModeEnabled = enable;
     },
     showScratchpadChanged(show) {
         this.showScratchpad = show;

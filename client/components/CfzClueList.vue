@@ -22,7 +22,10 @@
 @media screen {
     @include each-solver using ($color, $lightColor, $sel) {
         li.highlighted#{$sel} {
-            color: $lightColor
+            color: $lightColor;
+            .theme-dark & {
+                color: $color;
+            }
         }
     }
 }

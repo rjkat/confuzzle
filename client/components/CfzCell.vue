@@ -35,6 +35,8 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/themes';
+
 .cell-tooltip {
     padding: 4px 8px;
     font-size: 18px;
@@ -102,110 +104,122 @@
 }
 
 td {
-    font-size: $gridFontSize;
-    box-sizing: border-box;
-    font-family: $answerFontFamily;
+    @include theme-vars using ($theme, $vars) {
+        $gridBlankColor: map.get($vars, "grid-blank-color", $theme);
+        $gridBgColor: map.get($vars, "grid-bg-color", $theme);
+        $textColor: map.get($vars, "text-color", $theme);
+        $highlightedTextColor: map.get($vars, "highlighted-text-color", $theme);
     
-    border-color: $gridBgColor;
-    min-width: $gridCellSize;
-    max-width: $gridCellSize;
-    min-height: $gridCellSize;
-    height: $gridCellSize;
-    max-height: $gridCellSize;
-    position: relative;
-    text-align: center;
-    vertical-align: baseline;
-    border: $gridBorderWidth solid;
-
-
-    &[data-mark="circle"]:after {
-      content: '';
-      position: absolute;
-      top: 10%;
-      left: 7.5%;
-      height: 85%;
-      width: 85%;
-      background-color: transparent;
-      border-radius:50%;
-      border:1px solid #000;
-    }
-
-    ::selection {
-        background-color: transparent;
-    }
-
-    
-
-    &[data-number]:before {
-        position: absolute;
-        top: 0;
-        left: 0;
-        content: attr(data-number);
-        font-size: .5em;
-        line-height: 1em;
-        background-color: rgba(240, 240, 240, 0.7);
-        @media print {
-            background-color: transparent !important;
-        }
-        z-index: 5;
-    }
-
-
-
-    &[data-across-separator]:after {
-        content: '';
-        height: $gridCellSize;
-        position: absolute;
-        right: 0;
-        top: 0;
-        border-right: 3px #000 solid;
-    }
-
-    &[data-down-separator]:after {
-        content: '';
-        width: $gridCellSize;
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        border-bottom: 3px #000 solid;
-    }
-
-    &:not([data-empty]) {
-        cursor: pointer;
-        background: $gridBlankColor;
-    }
-
-    .crossword-grid-input {
-        cursor: pointer;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none; /* Disable selection/copy in UIWebView */
+        font-size: $gridFontSize;
+        box-sizing: border-box;
         font-family: $answerFontFamily;
-        border: 0;
-        border-radius: 0;
-        padding: 0;
-        margin: 0;
-        background: none;
-        outline: none;
-        /*font-size: $gridFontSize;*/
-        font-size: 90%;
-        min-width: 100%;
-        max-width: 100%;
-        height: 100%;
-        line-height: 100%;
-        position: absolute;
-        text-align: center;
-        vertical-align: middle;
-        text-transform: inherit;
+        
+        border-color: $gridBgColor;
 
-        &[data-is-pencil] {
-            font-size: 1.55rem;
-            padding-top: 2px;
-            font-family: 'F*ck Beans';
-            color: #565656;
+
+        min-width: $gridCellSize;
+        max-width: $gridCellSize;
+        min-height: $gridCellSize;
+        height: $gridCellSize;
+        max-height: $gridCellSize;
+        position: relative;
+        text-align: center;
+        vertical-align: baseline;
+        border: $gridBorderWidth solid;
+
+
+        &[data-mark="circle"]:after {
+          content: '';
+          position: absolute;
+          top: 10%;
+          left: 7.5%;
+          height: 85%;
+          width: 85%;
+          background-color: transparent;
+          border-radius:50%;
+          border:1px solid $gridBgColor;
+        }
+
+        ::selection {
+            background-color: transparent;
+        }
+
+        
+
+        &[data-number]:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: attr(data-number);
+            font-size: .5em;
+            line-height: 1em;
+            background-color: rgba(240, 240, 240, 0.7);
+            @media print {
+                background-color: transparent !important;
+            }
+            z-index: 5;
+        }
+
+
+
+        &[data-across-separator]:after {
+            content: '';
+            height: $gridCellSize;
+            position: absolute;
+            right: 0;
+            top: 0;
+            border-right: 3px $gridBgColor solid;
+        }
+
+        &[data-down-separator]:after {
+            content: '';
+            width: $gridCellSize;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            border-bottom: 3px $gridBgColor solid;
+        }
+
+        &:not([data-empty]) {
+            cursor: pointer;
+            background: $gridBlankColor;
+        }
+
+
+        .crossword-grid-input {
+            cursor: pointer;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            color: $textColor;
+
+            -webkit-touch-callout: none;
+            -webkit-user-select: none; /* Disable selection/copy in UIWebView */
+            font-family: $answerFontFamily;
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            background: none;
+            outline: none;
+            /*font-size: $gridFontSize;*/
+            font-size: 90%;
+            min-width: 100%;
+            max-width: 100%;
+            height: 100%;
+            line-height: 100%;
+            position: absolute;
+            text-align: center;
+            vertical-align: middle;
+            text-transform: inherit;
+
+            &[data-is-pencil] {
+                font-size: 1.55rem;
+                padding-top: 2px;
+                font-family: 'F*ck Beans';
+                color: #AAA;
+            }
         }
     }
 }

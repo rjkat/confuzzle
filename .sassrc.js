@@ -1,3 +1,3 @@
 module.exports = {
-    data: '@import "./client/stylesheets/variables";'
+    data: '@use "sass:map"; @import "./client/stylesheets/variables";'
 };

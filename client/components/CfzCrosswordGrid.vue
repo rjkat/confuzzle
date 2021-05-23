@@ -32,6 +32,8 @@
 </template>
 
 <style lang="scss">
+@import '../stylesheets/themes';
+
 .crossword-scratchpad {
   flex: none;
   height: 100%;
@@ -54,7 +56,10 @@
   flex: none;
   text-indent: 0;
   text-transform: uppercase;
-  background-color: $gridBgColor;
+
+  @include theme-var(grid-bg-color) using ($value) {
+      background-color: $value;
+  }
   display: inline-block;
   border-collapse: collapse;
 }

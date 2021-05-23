@@ -1,0 +1,74 @@
+@use "sass:map";
+
+$theme-names: "default", "dark";
+
+$theme-defs: (
+    "page-bg-color": (
+        "default": #F0F8FF,
+        "dark": #333
+    ),
+    "grid-blank-color": (
+        "default": #fff,
+        "dark": #555
+    ),
+    "grid-bg-color": (
+        "default": #000,
+        "dark": #000
+    ),
+    "text-color": (
+        "default": #000,
+        "dark": #fff
+    ),
+    "clue-text-color": (
+        "default": #000,
+        "dark": #BBB
+    ),
+    "highlighted-text-color": (
+        "default": #000,
+        "dark": #000
+    ),
+    "widget-bg-color": (
+        "default": #efefef,
+        "dark": #333
+    ),
+    "widget-text-color": (
+        "default": rgba(0, 0, 0, 0.87),
+        "dark": rgba(255, 255, 255, 0.87),
+    ),
+    "title-bg-color": (
+        "default": #7ad,
+        "dark": #3077be
+    )
+);
+
+@mixin root-theme-var($var) {
+    @each $name in $theme-names {
+        &.theme-#{$name} {
+            @content(map.get($theme-defs, $var, $name))
+        }
+    }
+};
+
+@mixin sibling-theme-var($var) {
+    @each $name in $theme-names {
+        .theme-#{$name} ~ &:not(focus) {
+            @content(map.get($theme-defs, $var, $name))
+        }
+    }
+};
+
+@mixin theme-var($var) {
+    @each $name in $theme-names {
+        .theme-#{$name} & {
+            @content(map.get($theme-defs, $var, $name))
+        }
+    }
+};
+
+@mixin theme-vars {
+    @each $name in $theme-names {
+        .theme-#{$name} & {
+            @content($name, $theme-defs);
+        }
+    }
+}

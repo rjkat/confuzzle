@@ -17,7 +17,6 @@
 ul {
     vertical-align: middle;
     list-style-type: none;
-    background-color: #fff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -27,6 +26,7 @@ ul {
     }
     li.solvers-text {
         font-family: $clueFontFamily;
+
         margin-left: 0.5em;
         padding-right: $displayPadding;
         border-right: 1px solid #000;
@@ -54,6 +54,7 @@ ul {
 
     @include each-solver using ($color, $lightColor, $sel) {
         li.highlighted#{$sel} {
+            color: #000 !important;
             background-color: $color;
         }
     }
