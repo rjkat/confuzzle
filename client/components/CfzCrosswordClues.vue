@@ -70,7 +70,9 @@
     font-size: 10pt;
     padding-right: .5em;
     padding-bottom: .5em;
-    color: #555;
+    @include theme-var(copyright-text-color) using ($value) {
+        color: $value;
+    }
     padding-left: .5em;
 }
 
