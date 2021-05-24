@@ -402,8 +402,10 @@ input {
     height: 100%;
     display: flex;
     flex-direction: column;
-    @include root-theme-var(page-bg-color) using ($value) {
-        background-color: $value;
+    @media screen {
+        @include root-theme-var(page-bg-color) using ($value) {
+            background-color: $value;
+        }
     }
 }
 
@@ -488,6 +490,24 @@ input {
             }
         }
 
+    }
+}
+
+a {
+    @include theme-var(link-text-color) using ($value) {
+        color: $value !important;
+    }
+}
+
+a:visited {
+    @include theme-var(link-visited-color) using ($value) {
+        color: $value !important;
+    }
+}
+
+@media print {
+    ::-webkit-scrollbar {
+        width: 0 !important
     }
 }
 
