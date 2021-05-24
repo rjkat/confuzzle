@@ -1,9 +1,11 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
-    <table class="cfz-logo" slot="brand" width="40">
+    <ui-icon-button slot="brand" type="secondary">
+    <table class="cfz-logo" width="40">
         <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
+    </ui-icon-button>
     <template v-slot="title">
         <div v-if="!sourceLoading" class="crossword-title">
             <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
@@ -14,17 +16,16 @@
     </template>
     <div v-if="!sourceLoading" slot="actions" class="hidden-print crossword-toolbar-actions">
         <ui-icon-button
-            color="white"
             icon="print"
+            type="secondary"
             size="large"
             @click="printClicked()"
             v-responsive.md.lg.xl
         >
         </ui-icon-button>
         <ui-icon-button
-            :color="state.colluding ? 'green' : 'white'"
             type="secondary"
-            icon="group_add"
+            :icon="state.colluding ? 'group_add' : 'share'"
             size="large"
             @click="openModal('shareModal')"
             v-if="isOnline"
@@ -39,9 +40,9 @@
         </cfz-share-modal>
         <cfz-file-input ref="fileInput" v-on="$listeners"></cfz-file-input>
         <ui-icon-button
-            color="white"
             has-dropdown
             icon="more_vert"
+            type="secondary"
             ref="menuDropdown"
             dropdownPosition="left bottom"
             size="large"
@@ -121,19 +122,19 @@
                 <form action="https://www.buymeacoffee.com/rjkat" target="_blank" rel="noopener">
                     <ui-button color="primary" style="margin-top: 1em;" icon="open_in_new">Buy me a coffee</ui-button>
                 </form>
-                <ui-button class="emoji-button" @click="emojiButtonClicked()">🧩✨</ui-button>
+                <ui-icon-button type="secondary" class="emoji-button" @click="emojiButtonClicked()">🧩✨</ui-button>
             </div>
         </ui-modal>
         <ui-modal ref="emojiModal" title="🧩✨ 🔄 📋">
             <div style="text-align: center;">
                 <ui-textbox :value="emojiText" readonly></ui-textbox>
-                <ui-icon-button id="copy-emoji-button" icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
+                <ui-icon-button id="copy-emoji-button" type="primary" icon="content_copy" @click="copyEmojiClicked()"></ui-icon-button>
                 <ui-textbox
                     v-model="inputEmoji"
                     floating-label
                     label="📋 ➡️ 🧩✨"
                     style="margin-top: 1em;"></ui-textbox>
-                <ui-icon-button id="import-emoji-button" icon="forward" @click="importEmojiClicked()"></ui-icon-button>
+                <ui-icon-button type="primary" id="import-emoji-button" icon="forward" @click="importEmojiClicked()"></ui-icon-button>
             </div>
         </ui-modal>
     </div>

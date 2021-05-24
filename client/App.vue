@@ -367,6 +367,18 @@ body {
     }
 }
 
+input {
+    @include theme-var(text-color) using ($value) {
+        color: $value !important;
+    }
+}
+
+.ui-textbox__label-text {
+    @include theme-var(clue-text-color) using ($value) {
+        color: $value !important;
+    }
+}
+
 .crossword-name-input {
     width: 10em;
 }
@@ -395,9 +407,27 @@ body {
     }
 }
 
-.ui-toolbar {
+.ui-toolbar, .ui-modal__header {
     @include theme-var(widget-bg-color) using ($value) {
       background-color: $value !important;
+    }
+    @include theme-var(widget-text-color) using ($value) {
+        color: $value !important;
+    }
+}
+
+.ui-close-button__icon {
+    @include theme-var(widget-text-color) using ($value) {
+        color: $value !important;
+    } 
+}
+
+.ui-modal__body {
+    @include theme-var(clue-bg-color) using ($value) {
+        background-color: $value !important;
+    }
+    @include theme-var(clue-text-color) using ($value) {
+        color: $value !important;
     }
 }
 
@@ -429,8 +459,19 @@ body {
     }
 }
 
+.ui-icon-button--color-default {
+    .ui-icon {
+        @include theme-var(widget-text-color) using ($value) {
+            color: $value !important;
+        }
+    }
+}
 
-
+.ui-button--type-primary.ui-button--color-primary, .ui-icon-button--type-primary  {
+    @include theme-var(widget-primary-bg-color) using ($value) {
+        background-color: $value !important;
+    }
+}
 
 
 .tippy-popper {
@@ -648,7 +689,7 @@ export default Vue.extend({
   },
   computed: {
     theme() {
-        return this.darkModeEnabled ? 'theme-dark' : 'theme-default';
+        return this.themeOverride ? (this.darkModeEnabled ? 'theme-dark' : 'theme-light') : '';
     },
     recentMetas() {
         const metas = [];
@@ -713,7 +754,8 @@ export default Vue.extend({
       localStorage[this.crosswordId + ':state'] = newValue;
     },
     theme(newValue) {
-        localStorage["theme"] = newValue;
+        if (this.themeOverride)
+            localStorage["theme"] = newValue;
     },
     crosswordSource(newValue, oldValue) {
       if (!this.state.colluding && !this.state.joining && !this.freezeHistory) {
@@ -800,10 +842,21 @@ export default Vue.extend({
         this.recentCrosswords = recent;
     }
 
+    if (localStorage.theme) {
+        this.themeOverride = true;
+    }
     if (localStorage.theme == "theme-dark") {
         this.darkModeEnabled = true;
     }
 
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    if (!this.themeOverride)
+        this.darkModeEnabled = query.matches;
+    query.addListener((e) => {
+        if (!this.themeOverride && e.matches) {
+            this.darkModeEnabled = true;
+        }
+    });
 
     if (this.shouldJoin()) {
       this.firstLaunch = false;
@@ -823,6 +876,7 @@ export default Vue.extend({
   },
   data() {
     return {
+        themeOverride: false,
         darkModeEnabled: false,
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
@@ -998,6 +1052,7 @@ export default Vue.extend({
         }
     },
     enableDarkModeChanged(enable) {
+        this.themeOverride = true;
         this.darkModeEnabled = enable;
     },
     showScratchpadChanged(show) {

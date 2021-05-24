@@ -1,87 +1,123 @@
 @use "sass:map";
 
-$theme-names: "default", "dark";
+$theme-names: "light", "dark";
 
 $theme-defs: (
     "page-bg-color": (
-        "default": #F0F8FF,
+        "light": #F0F8FF,
         "dark": #555
     ),
     "grid-blank-color": (
-        "default": #fff,
+        "light": #fff,
         "dark": #555
     ),
     "pencil-text-color": (
-      "default": #777,  
+      "light": #777,  
       "dark": #AAA
     ),
+    "editor-bg-color": (
+      "light": #fff,  
+      "dark": #bbb
+    ),
     "grid-bg-color": (
-        "default": #000,
+        "light": #000,
         "dark": #000
     ),
     "number-bg-color": (
-        "default": rgba(240, 240, 240, 0.7),
+        "light": rgba(240, 240, 240, 0.7),
         "dark": rgba(15, 15, 15, 0.7)
     ),
     "clue-bg-color": (
-        "default": #fff,
+        "light": #fff,
         "dark": #333
     ),
     "text-color": (
-        "default": #000,
+        "light": #000,
         "dark": #fff
     ),
     "clue-text-color": (
-        "default": #000,
+        "light": #000,
         "dark": #BBB
     ),
     "copyright-text-color": (
-        "default": #555,
+        "light": #555,
         "dark": #BBB
     ),
     "highlighted-text-color": (
-        "default": #000,
+        "light": #000,
         "dark": #000
     ),
     "widget-bg-color": (
-        "default": #efefef,
+        "light": #efefef,
         "dark": #010101
     ),
     "widget-text-color": (
-        "default": rgba(0, 0, 0, 0.87),
+        "light": rgba(0, 0, 0, 0.87),
         "dark": rgba(255, 255, 255, 0.87)
     ),
     "title-bg-color": (
-        "default": #7ad,
+        "light": #7ad,
+        "dark": #3077be
+    ),
+    "widget-primary-bg-color": (
+        "light": #3077be,
         "dark": #3077be
     )
 );
 
 @mixin root-theme-var($var) {
     @each $name in $theme-names {
+        @media (prefers-color-scheme: #{$name}) {
+            & {
+                @content(map.get($theme-defs, $var, $name));
+            }
+        }
+    }
+    @each $name in $theme-names {
         &.theme-#{$name} {
-            @content(map.get($theme-defs, $var, $name))
+            @content(map.get($theme-defs, $var, $name));
         }
     }
 };
 
 @mixin sibling-theme-var($var) {
     @each $name in $theme-names {
+        @media (prefers-color-scheme: #{$name}) {
+            ~ &:not(focus) {
+               @content(map.get($theme-defs, $var, $name));
+            }
+        }
+    }
+    @each $name in $theme-names {
         .theme-#{$name} ~ &:not(focus) {
-            @content(map.get($theme-defs, $var, $name))
+            @content(map.get($theme-defs, $var, $name));
         }
     }
 };
 
 @mixin theme-var($var) {
     @each $name in $theme-names {
+        @media (prefers-color-scheme: #{$name}) {
+            @content(map.get($theme-defs, $var, $name));
+        }
+    }
+
+    @each $name in $theme-names {
         .theme-#{$name} & {
-            @content(map.get($theme-defs, $var, $name))
+            @content(map.get($theme-defs, $var, $name));
         }
     }
 };
 
 @mixin theme-vars {
+    @each $name in $theme-names {
+        @media (prefers-color-scheme: #{$name}) {
+             & {
+                @content($name, $theme-defs);
+            }
+        }
+    }
+
     @each $name in $theme-names {
         .theme-#{$name} & {
             @content($name, $theme-defs);

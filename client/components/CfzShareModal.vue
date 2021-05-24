@@ -67,15 +67,12 @@
 }
 
 .crossword-link-text {
+    margin-top: 1em;
     font-family: $answerFontFamily;
 }
 
 .ui-modal__header-text {
     font-family: $clueFontFamily;
-}
-
-.ui-button--type-primary.ui-button--color-primary {
-    background-color: $titleBgColor !important;
 }
 
 .ui-button__content {

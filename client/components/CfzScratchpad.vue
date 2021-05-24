@@ -190,40 +190,63 @@
       opacity: 0.4;
     }
     @include each-solver using ($color, $lightColor, $sel) {
-        .letter-tile#{$sel} {
+        .theme-light, * {
+          .letter-tile#{$sel} {
+              background-color: $color;
+          }
+          
+          .answer-slot#{$sel} {
+            border-color: $color;
+          }
+          .answer-widget .letter-length-indicator#{$sel} {
+            border-color: $color;
+          }
+          .answer-slot#{$sel}:after {
+            color: $color;
+          }
+          .drop-in#{$sel} {
             background-color: $color;
+          }
         }
-        
-        .answer-slot#{$sel} {
-          border-color: $color;
-        }
-        .answer-widget .letter-length-indicator#{$sel} {
-          border-color: $color;
-        }
-        .answer-slot#{$sel}:after {
-          color: $color;
-        }
-        .drop-in#{$sel} {
-          background-color: $color;
-        }
-
-
-        .theme-dark .letter-tile#{$sel} {
+        @media (prefers-color-scheme: dark) {
+          .letter-tile#{$sel} {
             background-color: $lightColor;
+          }
+          
+          .answer-slot#{$sel} {
+            border-color: $lightColor;
+          }
+          .answer-widget .letter-length-indicator#{$sel} {
+            border-color: $lightColor;
+          }
+          .answer-slot#{$sel}:after {
+            color: $lightColor;
+          }
+          .drop-in#{$sel} {
+            background-color: $lightColor;
+          }
         }
+
+        .theme-dark {
+          .letter-tile#{$sel} {
+            background-color: $lightColor;
+          }
+          
+          .answer-slot#{$sel} {
+            border-color: $lightColor;
+          }
+          .answer-widget .letter-length-indicator#{$sel} {
+            border-color: $lightColor;
+          }
+          .answer-slot#{$sel}:after {
+            color: $lightColor;
+          }
+          .drop-in#{$sel} {
+            background-color: $lightColor;
+          }
+        }
+
         
-        .theme-dark .answer-slot#{$sel} {
-          border-color: $lightColor;
-        }
-        .theme-dark .answer-widget .letter-length-indicator#{$sel} {
-          border-color: $lightColor;
-        }
-        .theme-dark .answer-slot#{$sel}:after {
-          color: $lightColor;
-        }
-        .theme-dark .drop-in#{$sel} {
-          background-color: $lightColor;
-        }
     }
     .decrypt-container-label {
       font-family: $clueFontFamily;

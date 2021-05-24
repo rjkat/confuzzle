@@ -21,11 +21,18 @@
 
 @media screen {
     @include each-solver using ($color, $lightColor, $sel) {
-        li.highlighted#{$sel} {
-            color: $lightColor;
-            .theme-dark & {
+        .theme-light, * {
+            li.highlighted#{$sel} {
+                color: $lightColor;
+            }
+        }
+        @media (prefers-color-scheme: dark) {
+            li.highlighted#{$sel} {
                 color: $color;
             }
+        }
+        .theme-dark li.highlighted#{$sel} {
+            color: $color;
         }
     }
 }

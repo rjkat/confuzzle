@@ -56,8 +56,14 @@ ul {
         cursor: pointer;
 
         @include each-solver using ($color, $lightColor, $sel) {
-          &#{$sel} {
+          .theme-light &#{$sel}, &#{$sel} {
               background-color: $color;
+          }
+
+          @media (prefers-color-scheme: dark) {
+            &#{$sel} {
+              background-color: $lightColor;
+            }
           }
 
           .theme-dark &#{$sel} {
