@@ -1,11 +1,9 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
-    <ui-icon-button slot="brand" type="secondary">
-    <table class="cfz-logo" width="40">
+    <table slot="brand" class="cfz-logo" width="40">
         <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
          @click="$emit('logo-clicked')">C</td>
     </table>
-    </ui-icon-button>
     <template v-slot="title">
         <div v-if="!sourceLoading" class="crossword-title">
             <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
