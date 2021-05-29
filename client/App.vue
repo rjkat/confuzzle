@@ -91,7 +91,7 @@
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
          @drop="dropHandler">
-        <div id="drop-area" ref="dropArea">
+        <div id="drop-area" class="hidden-print" ref="dropArea">
             <h1>Drop here to solve</h1>
         </div>
         <template v-if="state.joining || state.downloading">
@@ -186,6 +186,7 @@
                      @clear-all-clicked="clearAllClicked()"
                      @show-scratchpad-changed="showScratchpadChanged($event)"
                      @enable-dark-mode-changed="enableDarkModeChanged($event)"
+                     class="hidden-print"
                      v-responsive.class
                      >
                     </cfz-control-toolbar>
@@ -202,6 +203,7 @@
                         v-responsive.class
                         >
                     </cfz-crossword-clues>
+                    
                 </div>
             </transition>
         </template>
@@ -233,6 +235,7 @@ body {
     height: 100%;
     width: 100%;
     margin: 0px;
+   
 /*  
     @media print {
         padding: 1.5cm !important;
@@ -391,15 +394,17 @@ input {
 
 
 #app-container {
-    position: fixed;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+
     @media screen {
+        display: flex;
+        position: fixed;
+        flex-direction: column;
         background-color: var(--page-bg-color);
     }
 }
+
 
 .ui-toolbar, .ui-modal__header {
     background-color: var(--widget-bg-color) !important;
@@ -464,6 +469,9 @@ a:visited {
     ::-webkit-scrollbar {
         width: 0 !important
     }
+    li {
+        page-break-inside: avoid;
+    }
 }
 
 #header-toolbar {
@@ -476,17 +484,20 @@ a:visited {
 }
 
 #app-content {
+    width: 100%;
+    height: calc(100% - 3.5rem);
     display: flex;
     flex: 1 1 50%;
     &[data-portrait] {
         flex-direction: column;
     }
-    width: 100%;
-    height: calc(100% - 3.5rem);
     @media print {
-        display: block !important;
+        flex-wrap: wrap;
+        justify-items: space-between;
+        page-break-after: auto !important;
     }
 }
+
 
 #control-toolbar {
     position: sticky;
@@ -527,14 +538,10 @@ a:visited {
     }
 }
 
-#grid {
-}
-
 #clue-container {
     flex: 1 1 50%;
     height: 100%;
     overflow-y: hidden;
-
     @media screen  {
         &[data-show-grid]:not([data-portrait]) {
             border-left: 1px solid #000;
@@ -542,16 +549,16 @@ a:visited {
         &[data-portrait] {
             border-top: 1px solid #000;
         }
+        background-color: var(--clue-bg-color);
     }
-
-    background-color: var(--clue-bg-color);
 }
 
 #clues {
     height: 100%;
-    width: 100%;
     overflow-y: scroll;
+    width: 100%;
 }
+
 </style>
 
 <script>

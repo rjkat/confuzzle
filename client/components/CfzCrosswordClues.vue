@@ -15,6 +15,7 @@
             @deselect-clue="clueDeselected($event)"
             v-model="crossword.acrossClues"
             v-on="$listeners"
+            v-if="!hideAcross"
         >
         </cfz-clue-list>
         <cfz-clue-list
@@ -27,6 +28,7 @@
             @deselect-clue="clueDeselected($event)"
             v-model="crossword.downClues"
             v-on="$listeners"
+            v-if="!hideDown"
         >
         </cfz-clue-list>
     </div>
@@ -37,12 +39,11 @@
 @import '../stylesheets/themes';
 
 .cfz-crossword-clue-wrapper {
-    padding-top: 1rem;
-    padding-bottom: 1.5rem;
-    overflow-x: hidden;
     max-height: calc(100% - 2rem);
-    @media print {
-        padding-top: 0 !important;
+    overflow-x: hidden;
+    @media screen {
+        padding-top: 1rem;
+        padding-bottom: 1.5rem;
     }
     color: var(--clue-text-color);
 }
@@ -131,6 +132,8 @@ export default Vue.extend({
     state: Object,
     solvers: Object,
     isPortrait: Boolean,
+    hideAcross: Boolean,
+    hideDown: Boolean,
     usingPencil: Boolean,
     solverid: {
         type: Number,

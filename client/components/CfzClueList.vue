@@ -1,7 +1,8 @@
 <template>
 <div class="crossword-clues">
-    <ul>
-        <li is="cfz-clue"
+    <ul class="crossword-clues-ul">
+        <li class="crossword-clues-li"
+            is="cfz-clue"
             ref="items"
             v-for="(clue, i) in filteredClues"
             v-on="$listeners"
@@ -47,6 +48,9 @@ ul {
         padding-bottom: .5em;
         .clue-directions {
             cursor: pointer;
+        }
+        @media print {
+            page-break-inside: avoid;
         }
     }
 }
