@@ -517,6 +517,7 @@ export function parse(input, compiling, options) {
     if (!cw.meta.id)
       cw.meta.id = clue.text;
     clue.lengthText = getLengthText(clue);
+    clue.sanitizedLengthText = sanitizeHtml(clue.lengthText);
   }
 
   return cw;

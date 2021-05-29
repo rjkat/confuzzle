@@ -3,11 +3,10 @@
         :class="{highlighted: selected || highlighted}"
         :data-solver-mask="solverMask"
         ref="item">
-        <span class="clue-directions" @click="directionsClicked()">
-            <span class="clue-id">{{clue.idText}}<span class="hidden-print" v-if="showDirection">{{clue.directionText}}</span></span>
-            <span class="clue-text" v-html="clue.sanitizedText"></span>
-            <span class="clue-length">{{clue.lengthText}}</span>
-        </span>
+        <div class="clue-directions" @click="directionsClicked()">
+            <div class="clue-id">{{clue.idText}}<span class="hidden-print" v-if="showDirection">{{clue.directionText}}</span></div>
+            <div class="clue-text" v-html="clue.sanitizedText + ' ' + clue.sanitizedLengthText"></div>
+        </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
                 <template v-for="(cell, i) in clue.cells">
@@ -123,9 +122,40 @@
         margin-right: 4px;
     }
 
+    .clue-directions {
+        @media screen {
+            display: inline;
+        }
+
+        @media print {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
     .clue-id {
         font-weight: bold;
+        display: inline-block;
+        @media print {
+            text-align: right;
+            align-self: flex-start;
+            min-width: 1.5em;
+            margin-right: .5em;
+        }
     } 
+
+    .clue-text {
+        display: inline;
+
+        @media print {
+            flex-grow: 1;
+        }
+    }
+
+    .clue-length {
+        display: inline;
+    }
+
 }
 </style>
 
