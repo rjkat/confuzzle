@@ -44,9 +44,7 @@
     @media print {
         padding-top: 0 !important;
     }
-    @include theme-var(clue-text-color) using ($value) {
-        color: $value;
-    }
+    color: var(--clue-text-color);
 }
 
 .author-note {
@@ -70,9 +68,7 @@
     font-size: 10pt;
     padding-right: .5em;
     padding-bottom: .5em;
-    @include theme-var(copyright-text-color) using ($value) {
-        color: $value;
-    }
+    color: var(--copyright-text-color);
     padding-left: .5em;
 }
 

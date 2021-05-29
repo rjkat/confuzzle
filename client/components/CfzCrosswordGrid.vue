@@ -57,9 +57,7 @@
   text-indent: 0;
   text-transform: uppercase;
 
-  @include theme-var(grid-bg-color) using ($value) {
-      background-color: $value;
-  }
+  background-color: var(--grid-bg-color);
   display: inline-block;
   border-collapse: collapse;
 }

@@ -49,9 +49,6 @@ test('compression', () => {
     const puzbytes = puz.toCompressed();
     const puz2 = ShareablePuz.fromCompressed(puzbytes);
     expect(puz2.author).toBe(puz.author);
-    const strippedBytes = puz.toCompressed(true);
-    const puz3 = ShareablePuz.fromCompressed(strippedBytes, true);
-    expect(puz3.author).toBe(puz.author);
 });
 
 test('emoji', () => {

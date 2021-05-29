@@ -164,12 +164,8 @@
 }
 
 .cfz-logo {
-    @include theme-var(grid-bg-color) using ($value) {
-        border-color: $value;
-    }
-    @include theme-var(text-color) using ($value) {
-        color: $value;
-    }
+    border-color: var(--grid-bg-color);
+    color: var(--text-color);
 }
 
 

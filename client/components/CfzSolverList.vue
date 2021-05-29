@@ -9,7 +9,6 @@
 
 <style lang="scss" scoped>
 @import '../stylesheets/solvers';
-@import '../stylesheets/themes';
 .solver-tooltip {
     font-family: $answerFontFamily;
     font-size: $gridFontSize;   
@@ -36,9 +35,7 @@ ul {
 
     li.highlighted {
         font-family: $answerFontFamily;
-        @include theme-var(text-color) using ($value) {
-          color: $value;
-        }
+        color: var(--text-color);
         font-size: $gridFontSize;
         min-width: $gridCellSize;
         max-width: $gridCellSize;

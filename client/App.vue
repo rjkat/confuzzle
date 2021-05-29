@@ -228,8 +228,6 @@
 </template>
 
 <style lang="scss">
-@import './stylesheets/themes';
-
 body {
 
     height: 100%;
@@ -368,15 +366,11 @@ body {
 }
 
 input {
-    @include theme-var(text-color) using ($value) {
-        color: $value !important;
-    }
+    color: var(--text-color) !important;
 }
 
 .ui-textbox__label-text {
-    @include theme-var(clue-text-color) using ($value) {
-        color: $value !important;
-    }
+    color: var(--text-color) !important;
 }
 
 .crossword-name-input {
@@ -403,106 +397,67 @@ input {
     display: flex;
     flex-direction: column;
     @media screen {
-        @include root-theme-var(page-bg-color) using ($value) {
-            background-color: $value;
-        }
+        background-color: var(--page-bg-color);
     }
 }
 
 .ui-toolbar, .ui-modal__header {
-    @include theme-var(widget-bg-color) using ($value) {
-      background-color: $value !important;
-    }
-    @include theme-var(widget-text-color) using ($value) {
-        color: $value !important;
-    }
+    background-color: var(--widget-bg-color) !important;
+    color: var(--widget-text-color) !important;
 }
 
 .ui-close-button__icon {
-    @include theme-var(widget-text-color) using ($value) {
-        color: $value !important;
-    } 
+    color: var(--widget-text-color) !important;
 }
 
 .ui-modal__body {
-    @include theme-var(clue-bg-color) using ($value) {
-        background-color: $value !important;
-    }
-    @include theme-var(clue-text-color) using ($value) {
-        color: $value !important;
-    }
+    background-color: var(--clue-bg-color) !important;
+    color: var(--clue-text-color) !important;
 }
 
 .ui-button--color-default {
-    @include theme-var(widget-bg-color) using ($value) {
-        background-color: $value !important;
-    }
-    @include theme-var(widget-text-color) using ($value) {
-        color: $value !important;
-    }
+    background-color: var(--widget-bg-color) !important;
+    color: var(--widget-text-color) !important;
     .ui-icon {
-        @include theme-var(widget-text-color) using ($value) {
-            color: $value !important;
-        }
+        color: var(--widget-text-color) !important;
     }
 }
 
 .ui-fab--color-default {
-    @include theme-var(widget-bg-color) using ($value) {
-        background-color: $value !important;
-    }
-    @include theme-var(widget-text-color) using ($value) {
-        color: $value !important;
-    }
+    background-color: var(--widget-bg-color) !important;
+    color: var(--widget-text-color) !important;
     .ui-icon {
-        @include theme-var(widget-text-color) using ($value) {
-            color: $value !important;
-        }
+        color: var(--widget-text-color) !important;
     }
 }
 
-.ui-icon-button--color-default {
-    .ui-icon {
-        @include theme-var(widget-text-color) using ($value) {
-            color: $value !important;
-        }
-    }
+.ui-icon-button--color-default .ui-icon {
+    color: var(--widget-text-color) !important;
 }
 
 .ui-button--type-primary.ui-button--color-primary, .ui-icon-button--type-primary  {
-    @include theme-var(widget-primary-bg-color) using ($value) {
-        background-color: $value !important;
-    }
+    background-color: var(--widget-primary-bg-color) !important;
 }
 
 
 .tippy-popper {
-    @include sibling-theme-var(widget-bg-color) using ($value) {
-        .ui-menu {
-            background-color: $value;
-        }
+    .ui-menu {
+        background-color: var(--widget-bg-color);
     }
-    @include sibling-theme-var(widget-text-color) using ($value) {
-        .ui-menu-option:not(:hover) {
-            color: $value !important;
-            .ui-icon {
-                color: $value !important;
-            }
+    .ui-menu-option:not(:hover) {
+        color: var(--widget-text-color) !important;
+        .ui-icon {
+            color: var(--widget-text-color) !important;
         }
-
     }
 }
 
 a {
-    @include theme-var(link-text-color) using ($value) {
-        color: $value !important;
-    }
+    color: var(--link-text-color) !important;
 }
 
 a:visited {
-    @include theme-var(link-visited-color) using ($value) {
-        color: $value !important;
-    }
+    color: var(--link-visited-color) !important;
 }
 
 @media print {
@@ -513,14 +468,10 @@ a:visited {
 
 #header-toolbar {
     flex: none;
-    @include theme-var(title-bg-color) using ($value) {
-        background-color: $value !important;
-    }
+    background-color: var(--title-bg-color) !important;
 
     .ui-toolbar__body {
-        @include theme-var(text-color) using ($value) {
-            color: $value !important;
-        }
+        color: var(--text-color) !important;
     }
 }
 
@@ -564,15 +515,11 @@ a:visited {
     pointer-events: none;
 
 
-    @include theme-vars using ($theme, $vars) {
-        $pageBgColor: map.get($vars, "page-bg-color", $theme);
-        $gridBlankColor: map.get($vars, "grid-blank-color", $theme);
-        background: repeating-linear-gradient(
-          45deg,
-          $pageBgColor,
-          $pageBgColor 10px, $gridBlankColor 10px, $gridBlankColor 20px
-        ) !important;
-    }
+    background: repeating-linear-gradient(
+      45deg,
+      var(--page-bg-color),
+      var(--page-bg-color) 10px, var(--grid-blank-color) 10px, var(--grid-blank-color) 20px
+    ) !important;
 
     &[data-drop-visible] {
         opacity: 1;
@@ -597,9 +544,7 @@ a:visited {
         }
     }
 
-    @include theme-var(clue-bg-color) using ($value) {
-        background-color: $value;
-    }
+    background-color: var(--clue-bg-color);
 }
 
 #clues {

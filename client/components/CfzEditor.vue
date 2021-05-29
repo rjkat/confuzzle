@@ -10,15 +10,11 @@
 </template>
 
 <style lang="scss">
-@import '../stylesheets/themes';
-
   .cfz-editor-container {
     overflow-y: scroll;
 
     pre {
-        @include theme-var(editor-bg-color) using ($value) {
-            background-color: $value;
-        }
+        background-color: var(--editor-bg-color);
     }
   }
 </style>

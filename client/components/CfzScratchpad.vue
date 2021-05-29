@@ -98,9 +98,7 @@
             padding: .5em;
         }
         border: 1px solid #000;
-        @include theme-var(clue-bg-color) using ($value) {
-          background-color: $value;
-        }
+        background-color: var(--clue-bg-color);
         ul {
           list-style-type: none;
         }
@@ -124,9 +122,7 @@
 
     .word-tile-length {
       margin-left: 4px;
-      @include theme-var(pencil-text-color) using ($value) {
-        color: $value;
-      }
+      color: var(--pencil-text-color);
       font-family: $answerFontFamily;
       font-size: 12px;
     }
@@ -151,9 +147,7 @@
     .letter-tile {
       border: $gridBorderWidth solid #000;
       box-sizing: content-box;
-      @include theme-var(text-color) using ($value) {
-        color: $value;
-      }
+      color: var(--text-color);
 
       cursor: grab;
       margin-right: 4px;
@@ -177,9 +171,7 @@
         height: 27px;
 
         font-family: $pencilFontFamily;
-        @include theme-var(pencil-text-color) using ($value) {
-          color: $value;
-        }
+        color: var(--pencil-text-color);
       }
 
       &[data-letter=""] {
@@ -250,9 +242,7 @@
     }
     .decrypt-container-label {
       font-family: $clueFontFamily;
-      @include theme-var(clue-text-color) using ($value) {
-        color: $value;
-      }
+      color: var(--clue-text-color);
       font-size: 14px;
       text-transform: none;
       width: 100%;
@@ -290,9 +280,7 @@
          max-height: 31px;
          bottom: .5em;
          right: .5em;
-         @include theme-var(pencil-text-color) using ($value) {
-           color: $value;
-         }
+         color: var(--pencil-text-color);
       }
     }
     .letter-list {
@@ -306,22 +294,20 @@
       .letter-length-indicator {
         width: 31px;
         height: 31px;
-        @include theme-var(pencil-text-color) using ($value) {
-          color: $value;
-          background: 
-           linear-gradient(to top left,
-               rgba(0,0,0,0) 0%,
-               rgba(0,0,0,0) calc(50% - 0.5px),
-               $value 50%,
-               rgba(0,0,0,0) calc(50% + 0.5px),
-               rgba(0,0,0,0) 100%);
-          background-size: 50% 50%;
-          background-repeat: no-repeat;
-          background-position: 50%;
-          font-size: 12px;
-          box-sizing: content-box;
-          justify-content: space-between;
-        }
+        color: var(--pencil-text-color);
+        background: 
+         linear-gradient(to top left,
+             rgba(0,0,0,0) 0%,
+             rgba(0,0,0,0) calc(50% - 0.5px),
+             var(--pencil-text-color) 50%,
+             rgba(0,0,0,0) calc(50% + 0.5px),
+             rgba(0,0,0,0) 100%);
+        background-size: 50% 50%;
+        background-repeat: no-repeat;
+        background-position: 50%;
+        font-size: 12px;
+        box-sizing: content-box;
+        justify-content: space-between;
       }
     }
     .answer-cells {

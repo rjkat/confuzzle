@@ -1,6 +1,8 @@
 // @import 'crossword';
 // @import 'solverdisplay';
 @import 'compile';
+@import 'themes';
+
 
 *,
 *::before,
@@ -15,6 +17,29 @@ html {
 
 body {
     -webkit-print-color-adjust: exact !important;
+}
+
+:root {
+    @each $var in map.keys($theme-defs) {
+        --#{$var}: #{map.get($theme-defs, $var, "light")}
+    }
+}
+
+@each $name in $theme-names {
+    @media screen {
+        @media (prefers-color-scheme: #{$name}) {
+            :root {
+                @each $var in map.keys($theme-defs) {
+                    --#{$var}: #{map.get($theme-defs, $var, $name)}
+                }
+            }
+        }
+        .theme-#{$name}, .theme-#{$name} *, .theme-#{$name} ~ * {
+            @each $var in map.keys($theme-defs) {
+                --#{$var}:  #{map.get($theme-defs, $var, $name)}
+            }
+        }
+    }
 }
 
 .content {

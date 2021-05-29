@@ -108,10 +108,6 @@ td {
     box-sizing: border-box;
     font-family: $answerFontFamily;
     
-    @include theme-var(grid-bg-color) using ($value) {
-        border-color: $value;
-    }
-
     min-width: $gridCellSize;
     max-width: $gridCellSize;
     min-height: $gridCellSize;
@@ -120,7 +116,7 @@ td {
     position: relative;
     text-align: center;
     vertical-align: baseline;
-    border: $gridBorderWidth solid;
+    border: $gridBorderWidth solid var(--grid-bg-color);
 
 
     &[data-mark="circle"]:after {
@@ -132,9 +128,7 @@ td {
       width: 85%;
       background-color: transparent;
       border-radius:50%;
-      @include theme-var(grid-bg-color) using ($value) {
-        border: 1px solid $value;
-      }
+      border: 1px solid var(--grid-bg-color);
     }
 
     ::selection {
@@ -150,12 +144,8 @@ td {
         line-height: 1em;
         padding: 1px;
 
-        @include theme-var(number-bg-color) using ($value) {
-            background-color: $value !important;
-        }
-        @include theme-var(clue-text-color) using ($value) {
-            color: $value;
-        }
+        background-color: var(--number-bg-color) !important;
+        color: var(--clue-text-color);
 
         @media print {
             background-color: transparent !important;
@@ -171,9 +161,7 @@ td {
         position: absolute;
         right: 0;
         top: 0;
-        @include theme-var(grid-bg-color) using ($value) {
-            border-right: 3px $value solid;
-        }
+        border-right: 3px var(--grid-bg-color) solid;
     }
 
     &[data-down-separator]:after {
@@ -182,16 +170,12 @@ td {
         position: absolute;
         right: 0;
         bottom: 0;
-        @include theme-var(grid-bg-color) using ($value) {
-            border-bottom: 3px $value solid;
-        }
+        border-bottom: 3px var(--grid-bg-color) solid;
     }
 
     &:not([data-empty]) {
         cursor: pointer;
-        @include theme-var(grid-blank-color) using ($value) {
-            background: $value;
-        }
+        background: var(--grid-blank-color);
     }
 
 
@@ -201,9 +185,7 @@ td {
         right: 0;
         bottom: 0;
         left: 0;
-        @include theme-var(text-color) using ($value) {
-            color: $value;
-        }
+        color: var(--text-color);
 
         -webkit-touch-callout: none;
         -webkit-user-select: none; /* Disable selection/copy in UIWebView */
@@ -229,9 +211,7 @@ td {
             font-size: 1.55rem;
             padding-top: 2px;
             font-family: $pencilFontFamily;
-            @include theme-var(pencil-text-color) using ($value) {
-                color: $value;
-            }
+            color: var(--pencil-text-color) !important;
         }
     }
 }

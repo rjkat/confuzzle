@@ -1,4 +1,3 @@
-@use "sass:map";
 
 $theme-names: "light", "dark";
 
@@ -73,62 +72,3 @@ $theme-defs: (
     )
 );
 
-@mixin root-theme-var($var) {
-    @each $name in $theme-names {
-        @media (prefers-color-scheme: #{$name}) {
-            & {
-                @content(map.get($theme-defs, $var, $name));
-            }
-        }
-    }
-    @each $name in $theme-names {
-        &.theme-#{$name} {
-            @content(map.get($theme-defs, $var, $name));
-        }
-    }
-};
-
-@mixin sibling-theme-var($var) {
-    @each $name in $theme-names {
-        @media (prefers-color-scheme: #{$name}) {
-            ~ &:not(focus) {
-               @content(map.get($theme-defs, $var, $name));
-            }
-        }
-    }
-    @each $name in $theme-names {
-        .theme-#{$name} ~ &:not(focus) {
-            @content(map.get($theme-defs, $var, $name));
-        }
-    }
-};
-
-@mixin theme-var($var) {
-    @each $name in $theme-names {
-        @media (prefers-color-scheme: #{$name}) {
-            @content(map.get($theme-defs, $var, $name));
-        }
-    }
-
-    @each $name in $theme-names {
-        .theme-#{$name} & {
-            @content(map.get($theme-defs, $var, $name));
-        }
-    }
-};
-
-@mixin theme-vars {
-    @each $name in $theme-names {
-        @media (prefers-color-scheme: #{$name}) {
-             & {
-                @content($name, $theme-defs);
-            }
-        }
-    }
-
-    @each $name in $theme-names {
-        .theme-#{$name} & {
-            @content($name, $theme-defs);
-        }
-    }
-}

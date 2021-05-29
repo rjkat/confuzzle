@@ -73,13 +73,9 @@
         border: 0;
         border-radius: 0;
         padding-bottom: 1px;
-
-        @include theme-var(text-color) using ($value) {
-           color: $value;
-        }
-        @include theme-var(clue-text-color) using ($value) {
-           border-bottom: 1px solid $value;
-        }
+ 
+        color: var(--text-color);
+        border-bottom: 1px solid var(--clue-text-color);
         background: none;
         outline: none;
         min-width: 29px;
@@ -101,9 +97,7 @@
             max-width: 29px;
             min-width: 29px;
             font-family: $pencilFontFamily;
-            @include theme-var(pencil-text-color) using ($value) {
-                color: $value;
-            }
+            color: var(--pencil-text-color);
         }
     }
 
