@@ -1,6 +1,6 @@
 <template>
 <div class="crossword-grid-wrapper" :data-portrait="isPortrait">
-  <span class="visible-print">
+  <span class="crossword-grid-meta">
     <span class="crossword-meta-name">{{crossword.meta.name}}</span>
     <span class="crossword-meta-author">by {{crossword.meta.author}}</span>
     <span class="crossword-meta-identifier" v-if="crossword.meta.identifier">{{crossword.meta.identifier}}</span>
@@ -28,6 +28,7 @@
       </transition>
       
   </div>
+  <div class="crossword-grid-meta crossword-grid-copyright-text">{{crossword.meta.copyrightText}}</div>
 </div>
 </template>
 
@@ -40,14 +41,34 @@
   width: 100%;
 }
 
+.crossword-grid-meta {
+  display: none;
+  @media print {
+      display: inline-block;
+  }
+}
+
+.crossword-grid-copyright-text {
+  font-family: $clueFontFamily;
+  font-size: 10pt;
+  padding-top: .5em;
+  color: var(--copyright-text-color);
+}
+
 .crossword-grid-wrapper {
   padding: $displayPadding;
   display: flex;
-  &[data-portrait] {
-    flex-direction: row;
-    justify-content: space-around;
+
+  @media screen {
+    &[data-portrait] {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+    &:not([data-portrait]) {
+      flex-direction: column;
+    }
   }
-  &:not([data-portrait]) {
+  @media print {
     flex-direction: column;
   }
 }

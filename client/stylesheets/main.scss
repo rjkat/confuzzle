@@ -54,9 +54,3 @@ body {
   }
 }
 
-.visible-print {
-    display: none !important;
-    @media print {
-        display: block !important;
-    }
-}

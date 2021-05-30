@@ -38,12 +38,12 @@
     }
 }
 
-ul {
+.crossword-clues-ul {
     list-style: none;
     margin: 0;
     padding: 1em .5em 1em .5em;
 
-    li {
+    .crossword-clues-li {
         line-height: 1.5em;
         padding-bottom: .5em;
         .clue-directions {

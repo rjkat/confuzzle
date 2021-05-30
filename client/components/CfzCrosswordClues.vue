@@ -1,6 +1,6 @@
 <template>
 <div class="cfz-crossword-clue-wrapper">
-    <div class="copyright-text">{{crossword.meta.copyrightText}}</div>
+    <div class="copyright-text hidden-print">{{crossword.meta.copyrightText}}</div>
     <div v-if="crossword.meta.url" class="copyright-text hidden-print">Obtained from <a :href="crossword.meta.url" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">{{crossword.meta.url}}<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></div>
     <div v-if="crossword.meta.gid" class="copyright-text">Solve at <a :href="'https://grids.confuzzle.me/' + crossword.meta.gid" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">https://grids.confuzzle.me/{{crossword.meta.gid}}</a></div>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
@@ -19,10 +19,11 @@
         >
         </cfz-clue-list>
         <cfz-clue-list
-            class="clue-list"
+            class="clue-list clue-list-down"
             ref="downList"
             data-down
-            :style="{'min-width': isPortrait ? '100%' : '33vw'}"
+            :data-portrait="isPortrait"
+            :style=""
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
@@ -39,11 +40,15 @@
 @import '../stylesheets/themes';
 
 .cfz-crossword-clue-wrapper {
-    max-height: calc(100% - 2rem);
     overflow-x: hidden;
+
+    @media print {
+        margin-left: .5em;
+    }
     @media screen {
         padding-top: 1rem;
         padding-bottom: 1.5rem;
+        max-height: calc(100% - 2rem);
     }
     color: var(--clue-text-color);
 }
@@ -93,9 +98,24 @@
 
 .cfz-clue-list-container {
     display: flex;
-    flex: 1 1 auto;
-    flex-wrap: wrap;
+    
     margin-top: $displayPadding;
+
+    @media print {
+        flex: 1 1 auto;
+        justify-content: space-between;
+    }
+
+    @media screen {
+        flex: 1 1 auto;
+        flex-wrap: wrap;
+        .clue-list-down {
+            min-width: 33vw;
+            &[data-portrait] {
+                min-width: 100% !important;
+            }
+        }
+    }
     .clue-list {
         flex: 50%;
         margin: 0 auto;

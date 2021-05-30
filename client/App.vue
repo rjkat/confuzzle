@@ -396,11 +396,11 @@ input {
 #app-container {
     width: 100%;
     height: 100%;
+    flex-direction: column;
 
     @media screen {
         display: flex;
         position: fixed;
-        flex-direction: column;
         background-color: var(--page-bg-color);
     }
 }
@@ -485,16 +485,21 @@ a:visited {
 
 #app-content {
     width: 100%;
-    height: calc(100% - 3.5rem);
     display: flex;
     flex: 1 1 50%;
-    &[data-portrait] {
-        flex-direction: column;
+
+    @media screen {
+        &[data-portrait] {
+            flex-direction: column;
+        }
+        height: calc(100% - 3.5rem);
     }
     @media print {
+        /*height: 100vh;*/
+        /*flex-direction: column;*/
         flex-wrap: wrap;
-        justify-items: space-between;
-        page-break-after: auto !important;
+        align-items: flex-start;
+        /*page-break-after: auto !important;*/
     }
 }
 
