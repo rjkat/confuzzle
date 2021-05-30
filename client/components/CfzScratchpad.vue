@@ -1,19 +1,24 @@
 <template>
 <div>
   <div class="cfz-scratchpad-container" ref="container">
-    <div v-if="clue" class="decrypt-container-label">
-      <span class="clue-id">{{clue.idText + clue.directionText}}</span>
-      <span v-html="clue.sanitizedText"></span>
-      <span class="clue-length">{{clue.lengthText}}</span>
-    </div>
-    <div v-else class="decrypt-container-label">Select a clue to solve.</div>
+    <template v-if="!standalone">
+      <div v-if="clue.id != 'dummy'" class="decrypt-container-label">
+        <span class="clue-id">{{clue.idText + clue.directionText}}</span>
+        <span v-html="clue.sanitizedText"></span>
+        <span class="clue-length">{{clue.lengthText}}</span>
+      </div>
+      <div v-else class="decrypt-container-label">Select a clue to solve.</div>
+    </template>
+    <template v-else>
+      <div class="cfz-scratchpad-standalone-subtitle">Add letters and drag to arrange them below.</div>
+    </template>
     <div class="word-container" ref="words">
       <template v-for="(word, i) in words">
         <ui-button raised disable-ripple class="word-tile" @click="explodeWord(word)"><span class="word-tile-text">{{word}}</span><span class="word-tile-length">{{word.length}}</span></ui-button>
       </template>
-      <ui-button v-if="clue" color="primary" raised disable-ripple class="word-tile" @click="openCustomModal()"><span class="word-tile-text">custom...</span></ui-button>
+      <ui-button v-if="clue.id != 'dummy' && !standalone" color="primary" raised disable-ripple class="word-tile" @click="openCustomModal()"><span class="word-tile-text">custom...</span></ui-button>
     </div>
-    <div class="letter-widget">
+    <div class="letter-widget" :data-standalone="standalone">
       <div class="letter-container" ref="letterContainer" @touchmove="$event.preventDefault()">
           <drop-list v-if="clue" class="letter-list" row :items="workingLetters[clue.id]"
               @insert="insertWorkingTile"
@@ -46,13 +51,14 @@
     <div class="decrypt-button-container">
       <ui-button raised color="red" class="decrypt-button" :disabled="!numWorkingLetters && !numAnswerLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
       <ui-button raised class="decrypt-button" icon="shuffle" :disabled="!numWorkingLetters" @click="shuffleClicked()">Shuffle</ui-button>
-      <ui-button raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
+      <ui-button v-if="standalone" raised color="primary" class="decrypt-button" icon="add" @click="openCustomModal()">Letters</ui-button>
+      <ui-button v-else raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
   </div>
   <ui-modal ref="customWordModal" title="Add custom letters">
     <div style="text-align: center;">
         <ui-textbox ref="nameBox" class="crossword-join-input crossword-name-input" v-model="customWord" @keydown-enter="addCustomClicked()">
-                Enter letters ({{customWord ? customWord.length : 0}})
+                Enter letters ({{plainCustomWord ? plainCustomWord.length : 0}})
         </ui-textbox> 
         <ui-button color="primary" @click="addCustomClicked()">Add</ui-button>
     </div>
@@ -102,10 +108,25 @@
         ul {
           list-style-type: none;
         }
+
+        .cfz-scratchpad-standalone-title {
+          width: 100%;
+          text-align: center;
+          font-family: $titleFontFamily;
+        }
+        .cfz-scratchpad-standalone-subtitle {
+          width: 100%;
+          padding-top: 1rem;
+          text-transform: none;
+          color: var(--clue-text-color);
+          font-family: $clueFontFamily;
+          text-align: center;
+        }
     }
     .decrypt-button-container {
       display: flex;
       width: 100%;
+      justify-content: center;
       text-align: center;
     }
     .decrypt-button {
@@ -261,7 +282,6 @@
       border-radius: 8px;
       margin-bottom: 8px;
       font-size: 26px;
-
     }
     .letter-container {
       width: 100%;
@@ -270,7 +290,7 @@
       padding-left: 16px;
       padding-right: 8px;
       padding-bottom: 8px;
-      
+
       .letter-length-indicator {
          position: absolute;
          justify-content: space-around;
@@ -394,9 +414,25 @@ export default Vue.extend({
     DropList
   },
   props: {
-    clue: Object,
-    answerSlots: Object,
-    workingLetters: Object,
+    standalone: Boolean,
+    clue: {
+      type: Object,
+      default: function() {
+        return {id: 'dummy', plainText: ''};
+      }
+    },
+    answerSlots: {
+      type: Object,
+      default: function() {
+        return {};
+      }
+    },
+    workingLetters: {
+      type: Object,
+      default: function() {
+        return {};
+      }
+    },
     solverid: {
         type: Number,
         default: 0
@@ -412,15 +448,16 @@ export default Vue.extend({
     }
   },
   computed: {
+    plainCustomWord() {
+       return this.customWord.replace(/[^A-Za-z]/g,'');
+    },
     words() {
       if (!this.clue)
         return '';
       const words = this.clue.plainText.split(/[ -]/g);
       const plainWords = [];
       for (const w of words) {
-        // https://stackoverflow.com/a/31779560
-        let plain = w.replace(/[~`’!@#$%^&*(){}\[\];:"'<,.>?\/\\|_+=-]/g,'');
-        plain = plain.replace(/[0-9]/g, '');
+        let plain = w.replace(/[^A-Za-z]/g,'');
         if (plain) {
            plainWords.push(plain);
         }
@@ -487,7 +524,7 @@ export default Vue.extend({
   },
   methods: {
     createAnswerSlots() {
-      if (!this.clue)
+      if (!this.clue || !this.clue.cells)
         return;
       if (this.answerSlots[this.clue.id])
         return;
@@ -560,7 +597,7 @@ export default Vue.extend({
       this.$refs.customWordModal.open();
     },
     addCustomClicked() {
-      this.explodeWord(this.customWord);
+      this.explodeWord(this.plainCustomWord);
       this.$refs.customWordModal.close();
     },
     cutAnswerLetter(offset) {

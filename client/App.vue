@@ -1,5 +1,8 @@
 <template>
 <div id="app-container" ref="appContainer" :class="theme">
+    <cfz-anagram-helper v-if="state.anagram" @close-anagram-helper="anagramHelperClosed()">
+
+    </cfz-anagram-helper>
     <transition name="launcher">
         <cfz-launcher ref="launcher" v-if="state.launching"
             :showReturnButton="!firstLaunch"
@@ -54,7 +57,7 @@
     <cfz-header-toolbar
         id="header-toolbar"
         ref="toolbar"
-        v-if="!state.joining && !state.launching"
+        v-if="!state.joining && !(state.launching || state.anagram)"
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
@@ -86,7 +89,7 @@
     </cfz-header-toolbar>
     
     <div id="app-content" ref="appContent" :data-portrait="isPortrait" :data-show-grid="showGrid"
-         v-if="!state.launching"
+         v-if="!(state.launching || state.anagram)"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
@@ -587,6 +590,7 @@ import CfzControlToolbar from './components/CfzControlToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 import CfzLauncher from './components/CfzLauncher.vue'
 import CfzFileInput from './components/CfzFileInput.vue'
+import CfzAnagramHelper from './components/CfzAnagramHelper.vue'
 
 const parser = require('../@confuzzle/confuz-parser/parser');
 
@@ -617,7 +621,8 @@ export default Vue.extend({
     CfzControlToolbar,
     CfzDisconnectedModal,
     CfzLauncher,
-    CfzFileInput
+    CfzFileInput,
+    CfzAnagramHelper
   },
   props: {
     gridid: String,
@@ -637,6 +642,7 @@ export default Vue.extend({
                 compiling: false,
                 joining: false,
                 launching: false,
+                anagram: false,
                 reconnecting: false
             };
         }
@@ -682,6 +688,8 @@ export default Vue.extend({
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
     pageTitle() {
+      if (this.state.anagram)
+        return 'Anagram Helper | Confuzzle';
       if (this.firstLaunch)
         return 'Home | Confuzzle';
       if (this.joinFailed)
@@ -835,7 +843,11 @@ export default Vue.extend({
         }
     });
 
-    if (this.shouldJoin()) {
+    if (this.isAnagram()) {
+      this.state.anagram = true;
+      this.state.launching = false;
+      this.updateTitle();
+    } else if (this.shouldJoin()) {
       this.firstLaunch = false;
       this.state.launching = false;
       this.startJoining();
@@ -920,16 +932,22 @@ export default Vue.extend({
         }
         return 'Open for solving';
     },
-    shouldJoin() {
-      var shouldJoin = false;
-      if (window.location.pathname != "/") {
+    requestedPath() {
+        if (window.location.pathname != "/") {
           const pathParts = window.location.pathname.split('/');
           if (pathParts.length > 1) {
-              this.gridid = pathParts[1];
-              shouldJoin = true;
+              return pathParts[1];
           }
-      }
-      return shouldJoin;
+        }
+        return '';
+    },
+    shouldJoin() {
+      const path = this.requestedPath();
+      return path != '' && path != 'anagram';
+    },
+    isAnagram() {
+      const path = this.requestedPath();
+      return path == 'anagram';
     },
     startJoining() {
         this.state.joining = true;
@@ -981,6 +999,12 @@ export default Vue.extend({
     openSampleFromLauncher(cwid) {
         this.setCrosswordSource(gridlock.gridlockCrossword());
         this.returnFromLauncher();
+    },
+    anagramHelperClosed() {
+        this.state.anagram = false;
+        this.state.launching = true;
+        window.history.pushState(null, '', '/');
+        this.updateTitle();
     },
     returnFromLauncher() {
         const mode = this.$refs.launcher.lastSelectedOption;
@@ -1042,6 +1066,13 @@ export default Vue.extend({
         this.showTooltips = show;
     },
     handlePopState() {
+       if (this.isAnagram()) {
+           this.state.anagram = true;
+           this.state.launching = false;
+       } else {
+           this.state.anagram = false;
+       }
+
       this.gridid = '';
       if (this.state.colluding) {
         this.state.colluding = false;
@@ -1059,12 +1090,16 @@ export default Vue.extend({
       }
       if (this.shouldJoin()) {
         this.startJoining();
-      } else {
-        this.freezeHistory = true;
-        this.initSource();
-        Vue.nextTick(() => {
-          this.freezeHistory = false
-        });
+      } else if (!this.state.anagram) {
+        if (this.firstLaunch) {
+            this.state.launching = true;
+        } else {
+            this.freezeHistory = true;
+            this.initSource();
+            Vue.nextTick(() => {
+              this.freezeHistory = false
+            });
+        }
       }
       this.updateTitle();
     },
