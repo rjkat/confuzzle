@@ -559,6 +559,9 @@ a:visited {
         }
         background-color: var(--clue-bg-color);
     }
+    @media print {
+        margin-top: 1rem;
+    }
 }
 
 #clues {

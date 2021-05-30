@@ -6,7 +6,7 @@
 
       <div class="cfz-anagram-footer">
         <ui-button color="primary" @click="$emit('close-anagram-helper')" class="cfz-anagram-home-button">
-            <table class="cfz-logo" width="30" height="30" style="padding-right: .5rem;">
+            <table class="cfz-flat-logo" width="30" height="30" style="padding-right: .5rem; ">
             <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
              >C</td>
             </table>
@@ -17,6 +17,10 @@
 </template>
 
 <style lang="scss">
+  .cfz-flat-logo {
+    border-color: var(--grid-bg-color);
+    color: var(--text-color);
+  }
   .cfz-standalone-scratchpad {
     padding: 1rem;
     flex-grow: 1;

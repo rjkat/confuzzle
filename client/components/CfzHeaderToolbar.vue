@@ -1,7 +1,7 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
-    <table slot="brand" class="cfz-logo" width="40">
-        <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
+    <table slot="brand" class="cfz-logo">
+        <td data-solver-mask="3" data-number="?" style="vertical-align: middle;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
@@ -166,6 +166,9 @@
 .cfz-logo {
     border-color: var(--grid-bg-color);
     color: var(--text-color);
+    border-spacing: 0;
+    width: 36px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 

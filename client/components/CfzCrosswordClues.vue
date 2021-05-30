@@ -55,7 +55,10 @@
     font-family: $clueFontFamily;
     padding-right: .5em;
     padding-left: .5em;
-    padding-top: $displayPadding;
+
+    @media screen {
+        padding-top: $displayPadding;
+    }
     padding-bottom: $displayPadding;
     &:before {
         content: 'NOTE';
@@ -95,7 +98,10 @@
 .cfz-clue-list-container {
     display: flex;
     
-    margin-top: $displayPadding;
+    @media screen {
+        margin-top: $displayPadding;
+    }
+
 
     @media print {
         flex: 1 1 auto;
@@ -119,7 +125,9 @@
         &[data-across]:before {
             content: 'ACROSS';
             font-weight: bold;
-            padding-top: .5em;
+            @media screen {
+                padding-top: .5em;
+            }
             padding-bottom: .5em;
             padding-left: .5em;
         }
@@ -127,7 +135,9 @@
         &[data-down]:before {
             content: 'DOWN';
             font-weight: bold;
-            padding-top: .5em;
+            @media screen {
+                padding-top: .5em;
+            }
             padding-bottom: .5em;
             padding-left: .5em;
         }
