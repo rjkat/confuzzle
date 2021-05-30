@@ -117,7 +117,7 @@ td {
     text-align: center;
     vertical-align: baseline;
     border: $gridBorderWidth solid var(--grid-bg-color);
-
+    border-collapse: collapse; 
 
     &[data-mark="circle"]:after {
       content: '';

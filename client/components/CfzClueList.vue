@@ -1,5 +1,6 @@
 <template>
 <div class="crossword-clues">
+    <div class="crossword-clues-label">{{isAcross ? 'ACROSS' : 'DOWN'}}</div>
     <ul class="crossword-clues-ul">
         <li class="crossword-clues-li"
             is="cfz-clue"
@@ -35,6 +36,19 @@
         .theme-dark li.highlighted#{$sel} {
             color: $color;
         }
+    }
+}
+
+.crossword-clues {
+    font-family: $clueFontFamily;
+}
+
+.crossword-clues-label {
+    font-weight: bold;
+    @media screen {
+        padding-left: .5em;
+        padding-top: .5em;
+        padding-bottom: .5em;
     }
 }
 
@@ -78,6 +92,7 @@ export default Vue.extend({
     prop: 'clues'
   },
   props: {
+    isAcross: Boolean,
     clues: {
         type: Array,
         required: true

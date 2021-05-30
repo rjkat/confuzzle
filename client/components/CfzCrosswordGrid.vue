@@ -69,8 +69,7 @@
     }
   }
   @media print {
-    padding-left: .5em;
-    padding-right: .5em;
+    padding-right: 1em;
     flex-direction: column;
   }
 }
@@ -82,7 +81,15 @@
 
   background-color: var(--grid-bg-color);
   display: inline-block;
-  border-collapse: collapse;
+  border-spacing: 0px;
+
+  @media screen {
+    border-collapse: collapse;    
+  }
+
+  @media print {
+    border: $gridBorderWidth solid var(--grid-bg-color);
+  }
 }
 
 .anagram-enter-active,

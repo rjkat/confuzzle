@@ -2,14 +2,14 @@
 <div class="cfz-crossword-clue-wrapper">
     <div class="copyright-text hidden-print">{{crossword.meta.copyrightText}}</div>
     <div v-if="crossword.meta.url" class="copyright-text hidden-print">Obtained from <a :href="crossword.meta.url" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">{{crossword.meta.url}}<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></div>
-    <div v-if="crossword.meta.gid" class="copyright-text">Solve at <a :href="'https://grids.confuzzle.me/' + crossword.meta.gid" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">https://grids.confuzzle.me/{{crossword.meta.gid}}</a></div>
+    <div v-if="crossword.meta.gid" class="copyright-text hidden-print">Solve at <a :href="'https://grids.confuzzle.me/' + crossword.meta.gid" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">https://grids.confuzzle.me/{{crossword.meta.gid}}</a></div>
     <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
         <cfz-clue-list 
             class="clue-list"
             ref="acrossList"
-            data-across
+            :isAcross="true"
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
@@ -21,9 +21,8 @@
         <cfz-clue-list
             class="clue-list clue-list-down"
             ref="downList"
-            data-down
+            :isAcross="false"
             :data-portrait="isPortrait"
-            :style=""
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
@@ -121,26 +120,6 @@
     .clue-list {
         flex: 50%;
         margin: 0 auto;
-        font-family: $clueFontFamily;
-        &[data-across]:before {
-            content: 'ACROSS';
-            font-weight: bold;
-            @media screen {
-                padding-top: .5em;
-            }
-            padding-bottom: .5em;
-            padding-left: .5em;
-        }
-
-        &[data-down]:before {
-            content: 'DOWN';
-            font-weight: bold;
-            @media screen {
-                padding-top: .5em;
-            }
-            padding-bottom: .5em;
-            padding-left: .5em;
-        }
     }
 }
 </style>
