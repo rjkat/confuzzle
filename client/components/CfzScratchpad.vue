@@ -25,10 +25,10 @@
               @reorder="reorderWorkingTiles"
               mode="cut">
               <template v-slot:item="{item}">
-                <drag class="letter-tile" :data-is-pencil="usingPencil" :data="item" :data-solver-mask="solverMask" :key="item.id" @cut="cutWorkingLetter(item)">{{item.letter}}</drag>
+                <drag class="letter-tile" :data-is-pencil="usingPencil" :data="item" :data-solver-mask="solverMask" :key="item.id" @cut="cutWorkingLetter(item)" :data-standalone="standalone">{{item.letter}}</drag>
               </template>
               <template v-slot:feedback="{ data }">
-                <div class="letter-tile letter-tile-feedback" :data-is-pencil="usingPencil" :key="data.id" :data-solver-mask="solverMask">{{ data.letter }}</div>
+                <div class="letter-tile letter-tile-feedback" :data-is-pencil="usingPencil" :key="data.id" :data-solver-mask="solverMask" :data-standalone="standalone">{{ data.letter }}</div>
               </template>
           </drop-list>
           <drop v-if="clue && numAnswerLetters > 0 && workingLetters[clue.id] && workingLetters[clue.id].length == 0" mode="cut" class="answer-slot" :data-solver-mask="solverMask"  
@@ -178,12 +178,19 @@
       width: 31px;
       height: 31px;
 
+      &[data-standalone] {
+        width: 41px;
+        height: 41px;
+        font-size: 36px;
+        line-height: 41px;
+      }
+
       vertical-align: middle;
       text-align: center;
       display: inline-block;
       /*-webkit-user-select: none; */
 
-      &:not([data-is-pencil]) {
+      &:not([data-standalone]):not([data-is-pencil]) {
         line-height: 31px;
       }
 
@@ -635,10 +642,15 @@ export default Vue.extend({
       this.$emit('update:workingLetters', this.workingLetters);
     },
     reorderWorkingTiles(event) {
-      let fromLetter = JSON.parse(JSON.stringify(this.workingLetters[this.clue.id][event.from]));
-      let toLetter = JSON.parse(JSON.stringify(this.workingLetters[this.clue.id][event.to]));
-      this.$set(this.workingLetters[this.clue.id], event.to, {id: fromLetter.id, letter: fromLetter.letter});
-      this.$set(this.workingLetters[this.clue.id], event.from, {id: toLetter.id, letter: toLetter.letter});
+      let reordered = [];
+      for (let offset = 0; offset < this.workingLetters[this.clue.id].length; offset++) {
+        reordered.push(JSON.parse(JSON.stringify(this.workingLetters[this.clue.id][offset])));
+      }
+      let temp = reordered[event.from];
+      reordered.splice(event.from, 1);
+      reordered.splice(event.to, 0, temp);
+
+      this.$set(this.workingLetters, this.clue.id, reordered);
       this.$emit('update:workingLetters', this.workingLetters);
     },
     answerTileDropped(event, answerOffset) {
