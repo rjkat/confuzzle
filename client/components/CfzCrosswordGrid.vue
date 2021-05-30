@@ -56,10 +56,10 @@
 }
 
 .crossword-grid-wrapper {
-  padding: $displayPadding;
   display: flex;
 
   @media screen {
+    padding: $displayPadding;
     &[data-portrait] {
       flex-direction: row;
       justify-content: space-around;
@@ -69,6 +69,8 @@
     }
   }
   @media print {
+    padding-left: .5em;
+    padding-right: .5em;
     flex-direction: column;
   }
 }

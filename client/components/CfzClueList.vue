@@ -41,17 +41,27 @@
 .crossword-clues-ul {
     list-style: none;
     margin: 0;
-    padding: 1em .5em 1em .5em;
+
+    @media screen {
+        padding: 1em .5em 1em .5em;
+    }
 
     .crossword-clues-li {
         line-height: 1.5em;
-        padding-bottom: .5em;
+
+        @media screen {
+            padding-bottom: .5em;
+        }
         .clue-directions {
             cursor: pointer;
         }
         @media print {
             page-break-inside: avoid;
         }
+    }
+
+    @media print {
+        padding-top: .5em;
     }
 }
 </style>

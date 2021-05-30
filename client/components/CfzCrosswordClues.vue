@@ -41,10 +41,6 @@
 
 .cfz-crossword-clue-wrapper {
     overflow-x: hidden;
-
-    @media print {
-        margin-left: .5em;
-    }
     @media screen {
         padding-top: 1rem;
         padding-bottom: 1.5rem;
@@ -123,13 +119,17 @@
         &[data-across]:before {
             content: 'ACROSS';
             font-weight: bold;
-            padding: .5em;
+            padding-top: .5em;
+            padding-bottom: .5em;
+            padding-left: .5em;
         }
 
         &[data-down]:before {
             content: 'DOWN';
             font-weight: bold;
-            padding: .5em;
+            padding-top: .5em;
+            padding-bottom: .5em;
+            padding-left: .5em;
         }
     }
 }

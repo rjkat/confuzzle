@@ -400,6 +400,9 @@ export default Vue.extend({
                 options.push(this.opt.OPEN_RECENT);
         }
 
+        if (isMobile)
+            options.push(this.opt.PRINT);
+
         options.push(this.opt.SAVE_PUZ);
         options.push(this.opt.SAVE_ENO);
 
@@ -459,6 +462,8 @@ export default Vue.extend({
             this.openModal('aboutModal');
         } else if (option.label == this.opt.INSTALL.label) {
             this.$emit('install-clicked');
+        } else if (option.label == this.opt.PRINT.label) {
+            this.printClicked();
         }
     },
   },
@@ -494,6 +499,10 @@ export default Vue.extend({
         OPEN_RECENT: {
             label: 'Open recent...',
             icon: 'history'
+        },
+        PRINT: {
+            label: 'Print',
+            icon: 'print'
         },
         SAVE_PUZ: {
             label: 'Save as .puz',
