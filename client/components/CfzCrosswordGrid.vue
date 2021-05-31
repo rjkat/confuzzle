@@ -22,7 +22,7 @@
               </tr>
           </table>
         </div>
-        <cfz-scratchpad v-else key="scratchpad" name="scratchpad" :answerSlots.sync="answerSlots" :workingLetters.sync="workingLetters" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" ref="scratchpad">
+        <cfz-scratchpad v-else key="scratchpad" name="scratchpad" :answerSlots.sync="answerSlots" :workingLetters.sync="workingLetters" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" :isPortrait="isPortrait" ref="scratchpad">
         </cfz-scratchpad>
         
       </transition>
@@ -58,12 +58,12 @@
   display: flex;
 
   @media screen {
-    padding: $displayPadding;
     &[data-portrait] {
       flex-direction: row;
       justify-content: space-around;
     }
     &:not([data-portrait]) {
+      padding: $displayPadding;
       flex-direction: column;
     }
   }
@@ -141,10 +141,10 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width);
+      return (this.cellWidth * this.crossword.grid.width - 1);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height);
+      return (this.cellWidth * this.crossword.grid.height - 1);
     },
     gridScale() {
       let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) > (this.gridWidth - this.gridDisplayWidth);
@@ -153,7 +153,7 @@ export default Vue.extend({
       }
       const scaleSize = shouldScaleHeight ? this.gridDisplayHeight : this.gridDisplayWidth;
       const scaleDim = shouldScaleHeight ? this.gridHeight : this.gridWidth;
-      return Math.min(1, scaleSize / (scaleDim + 2*this.bodyPadding));
+      return Math.min(1, scaleSize / (scaleDim + (this.isPortrait ? 0 : 2*this.bodyPadding)));
     },
     gridStyle() {
       return {

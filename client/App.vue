@@ -567,9 +567,6 @@ a:visited {
         &[data-show-grid]:not([data-portrait]) {
             border-left: 1px solid #000;
         }
-        &[data-portrait] {
-            border-top: 1px solid #000;
-        }
         background-color: var(--clue-bg-color);
     }
     @media print {

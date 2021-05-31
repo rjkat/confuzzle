@@ -66,6 +66,11 @@
       flex: none;
       background-color: #efefef;
       z-index: 2;
+      box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 20%), inset 0 0 2px rgb(0 0 0 / 12%), inset 0 2px 2px rgb(0 0 0 / 20%) !important;
+
+      .ui-button {
+        height: calc(2rem - 6px) !important;
+      }
   }
   .cfz-crossword-editor-container {
     display: flex;

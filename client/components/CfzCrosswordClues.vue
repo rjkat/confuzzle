@@ -52,10 +52,10 @@
     width: 100%;
     display: block;
     font-family: $clueFontFamily;
-    padding-right: .5em;
-    padding-left: .5em;
 
     @media screen {
+        padding-left: .5em;
+        padding-right: .5em;
         padding-top: $displayPadding;
     }
     padding-bottom: $displayPadding;

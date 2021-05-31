@@ -69,9 +69,6 @@
         .clue-directions {
             cursor: pointer;
         }
-        @media print {
-            page-break-inside: avoid;
-        }
     }
 
     @media print {

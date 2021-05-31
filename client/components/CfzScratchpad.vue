@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="cfz-scratchpad-container" ref="container">
+  <div class="cfz-scratchpad-container" ref="container" :data-portrait="isPortrait">
     <template v-if="!standalone">
       <div v-if="clue.id != 'dummy'" class="decrypt-container-label">
         <span class="clue-id">{{clue.idText + clue.directionText}}</span>
@@ -104,6 +104,7 @@
             padding: .5em;
         }
         border: 1px solid #000;
+
         background-color: var(--clue-bg-color);
         ul {
           list-style-type: none;
@@ -422,6 +423,7 @@ export default Vue.extend({
   },
   props: {
     standalone: Boolean,
+    isPortrait: Boolean,
     clue: {
       type: Object,
       default: function() {

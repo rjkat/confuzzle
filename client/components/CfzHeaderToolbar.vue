@@ -82,21 +82,21 @@
                 <template v-if="!shortLink">
                     <div>
                         <p class="about-text">
-                            Generate a short link for solving an externally-hosted crossword.
+                            Confuzzle does not host crossword files. In order to obtain a link to this crossword, please first save it in .puz or .confuz format to an external hosting service. 
                         </p>
                         <div>
                             <ui-textbox class="source-url-input crossword-sess-id-input" v-model="externalLink" @keydown-enter="shortenLinkClicked()" autocomplete="off" :invalid="externalLink.length > 0 && linkInvalid" error="Invalid URL">
-                                    Source URL
+                                    External URL
                             </ui-textbox> 
                             <ui-radio-group
                                 name="sourceFormat"
                                 :options="sourceFormat.options"
                                 v-model="sourceFormat.chosen"
                                 vertical
-                            >Source format</ui-radio-group>
+                            >Puzzle format</ui-radio-group>
                         </div>
                             <p class="about-text">
-                                Only this URL will be stored on Confuzzle servers, not the crossword itself.
+                                Upon submitting this form, a short link will be generated which opens the crossword in Confuzzle. Only the external URL will be stored on Confuzzle servers, not the crossword itself.
                             </p>
                         <div style="width: 100%; text-align: center;">
                             <ui-button color="primary" style="margin-top: 1em;" :loading="creatingLink" @click="shortenLinkClicked()" :disabled="linkInvalid">Submit</ui-button>
@@ -207,8 +207,7 @@ ul {
   font-family: $clueFontFamily;
   text-transform: none;
   font-size: 13px;
-
-  
+  font-weight: normal;
 }
 
 .crossword-title {
@@ -220,13 +219,11 @@ ul {
 .crossword-loading-text {
     text-transform: uppercase;
     font-family: $titleFontFamily;
-    font-weight: bold;
 }
 
 .crossword-meta-name {
     text-transform: uppercase;
     font-family: $titleFontFamily;
-    font-weight: bold;
     padding-right: .5em;
     &.bs4-sm, &.bs4-xs {
         font-size: 14px;
@@ -518,7 +515,7 @@ export default Vue.extend({
         },
         LINK_EXTERNAL: {
             label: 'Generate link...',
-            icon: 'link'
+            icon: 'bolt'
         },
         SOLVE_OFFLINE: {
             label: 'Leave session',

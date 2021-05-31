@@ -6,27 +6,3 @@ font-style: normal;
 font-weight: normal;
 src: local('Bree Serif'), url('BreeSerif-Regular.woff') format('woff');
 }
-
-
-@font-face {
-font-family: 'Bree Serif';
-font-style: italic;
-font-weight: normal;
-src: local('Bree Serif Italic'), url('Bree Serif Italic.woff') format('woff');
-}
-
-
-@font-face {
-font-family: 'Bree Serif';
-font-style: normal;
-font-weight: bold;
-src: local('Bree Serif Bold'), url('Bree Serif Bold.woff') format('woff');
-}
-
-
-@font-face {
-font-family: 'Bree Serif';
-font-style: italic;
-font-weight: bold;
-src: local('Bree Serif Bold Italic'), url('Bree Serif Bold Italic.woff') format('woff');
-}

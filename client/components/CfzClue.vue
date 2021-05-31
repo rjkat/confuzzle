@@ -47,13 +47,14 @@
 }
 
 .clue-item {
+
    
     .clue-directions {
         cursor: pointer;
     }
 
     @media print {
-        font-size: 13px;
+        font-size: 12pt;
     }
 
     .crossword-clue-input {
@@ -129,6 +130,7 @@
 
         @media print {
             display: flex;
+            page-break-inside: avoid;
             justify-content: space-between;
         }
     }
