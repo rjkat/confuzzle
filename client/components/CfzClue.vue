@@ -54,7 +54,7 @@
     }
 
     @media print {
-        font-size: 12pt;
+        font-size: 10pt;
     }
 
     .crossword-clue-input {
