@@ -51,7 +51,6 @@
 .crossword-grid-copyright-text {
   font-family: $clueFontFamily;
   font-size: 10pt;
-  padding-top: .5em;
   color: var(--copyright-text-color);
 }
 
@@ -87,9 +86,7 @@
     border-collapse: collapse;    
   }
 
-  @media print {
-    border: $gridBorderWidth solid var(--grid-bg-color);
-  }
+  border: $gridBorderWidth solid var(--grid-bg-color);
 }
 
 .anagram-enter-active,

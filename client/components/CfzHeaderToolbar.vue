@@ -214,6 +214,7 @@ ul {
 .crossword-title {
     margin-top: .25em;
     margin-bottom: .25em;
+    color: var(--title-text-color);
 }
 
 .crossword-loading-text {

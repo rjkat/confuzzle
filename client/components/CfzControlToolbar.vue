@@ -86,7 +86,11 @@
 .cfz-control-toolbar {
     height: 2rem !important;
     overflow: hidden;
-    z-index: 2;
+    box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 20%), inset 0 0 2px rgb(0 0 0 / 12%), inset 0 2px 2px rgb(0 0 0 / 20%) !important;
+
+    .ui-button {
+        height: calc(2rem - 6px) !important;
+    }
 }
 
 </style>
@@ -111,7 +115,7 @@ export default Vue.extend({
   },
   computed: {
     pencilButtonStyle() {
-        const fam = !this.usingPencil ? '"notcouriersansregular"' : '"F*ck Beans"';
+        const fam = !this.usingPencil ? '"notcouriersans"' : '"F*ck Beans"';
         return {
             'font-family': fam,
             'font-size': !this.usingPencil ? '1.6rem' : '1.4rem',

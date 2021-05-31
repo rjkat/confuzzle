@@ -178,6 +178,7 @@
                      :showTooltipToggle="!isPortrait && showGrid && !showScratchpad"
                      :showTooltips="showTooltips"
                      :showGrid="showGrid"
+                     :data-portrait="isPortrait"
                      :darkModeEnabled="darkModeEnabled"
                      @show-grid-changed="showGridChanged($event)"
                      @show-tooltips-changed="showTooltipsChanged($event)"
@@ -427,7 +428,7 @@ input {
     background-color: var(--widget-bg-color) !important;
     color: var(--widget-text-color) !important;
     .ui-icon {
-        color: var(--widget-text-color) !important;
+        color: var(--widget-icon-color) !important;
     }
 }
 
@@ -435,12 +436,12 @@ input {
     background-color: var(--widget-bg-color) !important;
     color: var(--widget-text-color) !important;
     .ui-icon {
-        color: var(--widget-text-color) !important;
+        color: var(--widget-icon-color) !important;
     }
 }
 
 .ui-icon-button--color-default .ui-icon {
-    color: var(--widget-text-color) !important;
+    color: var(--widget-icon-color) !important;
 }
 
 .ui-button--type-primary.ui-button--color-primary, .ui-icon-button--type-primary  {
@@ -455,7 +456,14 @@ input {
     .ui-menu-option:not(:hover) {
         color: var(--widget-text-color) !important;
         .ui-icon {
-            color: var(--widget-text-color) !important;
+            color: var(--widget-icon-color) !important;
+        }
+    }
+
+    .ui-menu-option {
+        &:hover:not(.is-disabled),
+        body[modality="keyboard"] &:focus {
+            background-color: var(--widget-hover-color) !important;
         }
     }
 }
@@ -510,6 +518,10 @@ a:visited {
 #control-toolbar {
     position: sticky;
     top: 0;
+
+    &:not([data-portrait]) {
+        /*margin-top: 3px;*/
+    }
 }
 
 #editor {
@@ -551,6 +563,7 @@ a:visited {
     height: 100%;
     overflow-y: hidden;
     @media screen  {
+        box-shadow: inset 0 0 2px rgb(0 0 0 / 12%), inset 2px 0px 2px rgb(0 0 0 / 20%);
         &[data-show-grid]:not([data-portrait]) {
             border-left: 1px solid #000;
         }

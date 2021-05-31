@@ -209,7 +209,7 @@ export default Vue.extend({
         opt.push({
           text: "Solve",
           icon: "extension",
-          tooltip: "Upload and solve puzzles"
+          tooltip: "Open and solve puzzles"
         });
       }
       

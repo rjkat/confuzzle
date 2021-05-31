@@ -51,8 +51,20 @@ $theme-defs: (
         "dark": #010101
     ),
     "widget-text-color": (
-        "light": rgba(0, 0, 0, 0.87),
+        "light": #333,
         "dark": rgba(255, 255, 255, 0.87)
+    ),
+    "widget-icon-color": (
+        "light": rgba(#000000, 0.54),
+        "dark": rgba(#ffffff, 1)
+    ),
+    "widget-hover-color": (
+        "light": #aaa,
+        "dark": #fff
+    ),
+    "title-text-color": (
+        "light": #333,
+        "dark": #fff
     ),
     "title-bg-color": (
         "light": #7ad,
