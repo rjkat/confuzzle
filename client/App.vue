@@ -463,6 +463,10 @@ input {
     }
 
     .ui-menu-option {
+        font-family:  $clueFontFamily;
+    }
+
+    .ui-menu-option {
         &:hover:not(.is-disabled),
         body[modality="keyboard"] &:focus {
             background-color: var(--widget-hover-color) !important;
