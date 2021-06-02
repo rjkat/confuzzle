@@ -1,7 +1,7 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
     <table slot="brand" class="cfz-logo">
-        <td data-solver-mask="3" data-number="?" style="vertical-align: middle;"
+        <td data-solver-mask="3" data-flat-number="?" style="vertical-align: middle;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">

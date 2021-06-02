@@ -1,5 +1,5 @@
 <template>
-<div id="app-container" ref="appContainer" :class="theme">
+<div id="app-container" ref="appContainer" :class="theme" :data-show-scratchpad="showScratchpad">
     <cfz-anagram-helper v-if="state.anagram" @close-anagram-helper="anagramHelperClosed()">
 
     </cfz-anagram-helper>
@@ -130,26 +130,7 @@
             </ui-modal>
         </template>
         <template v-if="!state.joining && state.initialised">
-            <transition name="grid">
-                <cfz-crossword-grid id="grid"
-                    ref="grid"
-                    key="gridContainer"
-                    v-model="crossword"
-                    :answerSlots.sync="answerSlots"
-                    :workingLetters.sync="workingLetters"
-                    :usingPencil="usingPencil"
-                    :data-portrait="isPortrait"
-                    :solverid="solverid"
-                    :gridDisplayWidth="gridDisplayWidth"
-                    :gridDisplayHeight="gridDisplayHeight"
-                    :isPortrait="isPortrait"
-                    :showTooltips="showTooltips"
-                    :showScratchpad="showScratchpad"
-                    @fill-cell="sendFillCell($event)"
-                    v-if="showGrid">
-                </cfz-crossword-grid>
-            </transition>
-
+            
             <transition name="compiling" mode="out-in">
                 <cfz-crossword-editor id="editor"
                     ref="editor"
@@ -210,6 +191,27 @@
                     
                 </div>
             </transition>
+
+            <transition name="grid">
+                <cfz-crossword-grid id="grid"
+                    ref="grid"
+                    key="gridContainer"
+                    v-model="crossword"
+                    :answerSlots.sync="answerSlots"
+                    :workingLetters.sync="workingLetters"
+                    :usingPencil="usingPencil"
+                    :data-portrait="isPortrait"
+                    :solverid="solverid"
+                    :gridDisplayWidth="gridDisplayWidth"
+                    :gridDisplayHeight="gridDisplayHeight"
+                    :isPortrait="isPortrait"
+                    :showTooltips="showTooltips"
+                    :showScratchpad="showScratchpad"
+                    @fill-cell="sendFillCell($event)"
+                    v-if="showGrid">
+                </cfz-crossword-grid>
+            </transition>
+
         </template>
         <template v-else>
             <ui-progress-circular class="grid-loader"></ui-progress-circular>
@@ -498,18 +500,20 @@ a:visited {
     width: 100%;
     display: flex;
     flex: 1 1 50%;
-
+    flex-direction: row-reverse;
+    &[data-portrait] {
+        flex-direction: column-reverse;
+    }
     @media screen {
-        &[data-portrait] {
-            flex-direction: column;
-        }
         height: calc(100% - 3.5rem);
     }
     @media print {
         /*height: 100vh;*/
         /*flex-direction: column;*/
-        flex-wrap: wrap;
-        align-items: flex-start;
+        flex-wrap: wrap-reverse;
+
+        align-items: flex-end;
+        justify-content: flex-end;
         /*page-break-after: auto !important;*/
     }
 }
@@ -564,9 +568,6 @@ a:visited {
     overflow-y: hidden;
     @media screen  {
         box-shadow: inset 0 0 2px rgb(0 0 0 / 12%), inset 2px 0px 2px rgb(0 0 0 / 20%);
-        &[data-show-grid]:not([data-portrait]) {
-            border-left: 1px solid #000;
-        }
         background-color: var(--clue-bg-color);
     }
     @media print {
@@ -886,7 +887,7 @@ export default Vue.extend({
       exportMessage: 'Crossword saved to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
-      toolbarHeight: 64,
+      toolbarHeight: 56,
       windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
       gridSizeLocked: false,

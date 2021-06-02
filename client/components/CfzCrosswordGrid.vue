@@ -63,8 +63,8 @@
       justify-content: space-around;
     }
     &:not([data-portrait]) {
-      padding: $displayPadding;
       flex-direction: column;
+      justify-content: flex-start;
     }
   }
   @media print {
@@ -95,8 +95,8 @@
 }
 
 .anagram-enter, .anagram-leave-to {
-  height: 0px;
   opacity: 0;
+  height: 0px;
 }
 </style>
 
@@ -141,19 +141,19 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width - 1);
+      return (this.cellWidth * this.crossword.grid.width);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height - 1);
+      return (this.cellWidth * this.crossword.grid.height);
     },
     gridScale() {
-      let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) > (this.gridWidth - this.gridDisplayWidth);
+      let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) >= (this.gridWidth - this.gridDisplayWidth);
       if (!shouldScaleHeight && this.gridWidth < this.gridDisplayWidth) {
         shouldScaleHeight = this.crossword.grid.height < this.crossword.grid.width;
       }
       const scaleSize = shouldScaleHeight ? this.gridDisplayHeight : this.gridDisplayWidth;
       const scaleDim = shouldScaleHeight ? this.gridHeight : this.gridWidth;
-      return Math.min(1, scaleSize / (scaleDim + (this.isPortrait ? 0 : 2*this.bodyPadding)));
+      return Math.min(1, scaleSize / scaleDim);
     },
     gridStyle() {
       return {
@@ -163,27 +163,8 @@ export default Vue.extend({
     },
     gridContainerStyle() {
       return {
-        'width': (this.gridScale * this.gridWidth) + 'px',
-        'height': (this.gridScale * this.gridHeight) + 'px'
-      }
-    },
-    gridControlStyle() {
-      return {
-        'display': 'flex',
-        'justify-content': 'space-between',
-        'align-items': 'center',
-        'width': this.gridScale * this.gridWidth + 'px'
-      }
-    },
-    gridTopControlStyle() {
-      return {
-        'display': 'flex',
-        'position': 'fixed',
-        'justify-content': 'space-between',
-        'align-items': 'center',
-        'margin-top': '-4pt',
-        'font-size': '8pt',
-       'width': this.gridScale * this.gridWidth + 'px'
+        'width': (this.showScratchpad && this.isPortrait) ? '100%' : (this.gridScale * this.gridWidth) + 'px',
+        'height': (this.showScratchpad && !this.isPortrait) ? '100%' : (this.gridScale * this.gridHeight) + 'px'
       }
     },
     selectedClue() {
@@ -403,8 +384,7 @@ export default Vue.extend({
       bundler: "Parcel",
       inputAcross: true,
       lastClicked: undefined,
-      cellWidth: 29,
-      bodyPadding: 8
+      cellWidth: 29
     };
   }
 });

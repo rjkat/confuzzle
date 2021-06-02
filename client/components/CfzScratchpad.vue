@@ -91,21 +91,22 @@
         overflow-y: scroll;
         display: flex;
         height: 100%;
+        padding: $displayPadding;
         flex-direction: column;
         font-family: $answerFontFamily;
         font-size: 26px;
         text-transform: uppercase;
         -webkit-user-select: none;
-        padding: $displayPadding;
         .cfz-scratchpad-header {
             font-family: $clueFontFamily;
             text-transform: none;
             font-weight: bold;
             padding: .5em;
         }
-        border: 1px solid #000;
+        /*outline: 2px solid #000;
+        outline-offset: -2px;*/
 
-        background-color: var(--clue-bg-color);
+        background-color: var(--page-bg-color);
         ul {
           list-style-type: none;
         }
@@ -119,7 +120,7 @@
           width: 100%;
           padding-top: 1rem;
           text-transform: none;
-          color: var(--clue-text-color);
+          color: var(--text-color);
           font-family: $clueFontFamily;
           text-align: center;
         }
@@ -161,7 +162,7 @@
       height: $gridCellSize;
     }
     .working-slot {
-      border: 1px dashed #ddd;
+      border: 1px dashed #000;
     }
     .dummy-tile {
       visibility: hidden;
@@ -235,10 +236,10 @@
           }
           
           .answer-slot#{$sel} {
-            border-color: $lightColor;
+            border-color: #fff;
           }
           .answer-widget .letter-length-indicator#{$sel} {
-            border-color: $lightColor;
+            border-color: #fff;
           }
           .answer-slot#{$sel}:after {
             color: $lightColor;
@@ -254,10 +255,10 @@
           }
           
           .answer-slot#{$sel} {
-            border-color: $lightColor;
+            border-color: #fff;
           }
           .answer-widget .letter-length-indicator#{$sel} {
-            border-color: $lightColor;
+            border-color: #fff;
           }
           .answer-slot#{$sel}:after {
             color: $lightColor;
@@ -266,12 +267,11 @@
             background-color: $lightColor;
           }
         }
-
         
     }
     .decrypt-container-label {
       font-family: $clueFontFamily;
-      color: var(--clue-text-color);
+      color: var(--text-color);
       font-size: 14px;
       text-transform: none;
       width: 100%;
@@ -286,7 +286,7 @@
     .letter-widget {
       position: relative;
       flex: 1;
-      border: 1px dashed #ddd;
+      border: 1px dashed #000;
       border-radius: 8px;
       margin-bottom: 8px;
       font-size: 26px;
@@ -308,7 +308,7 @@
          max-height: 31px;
          bottom: .5em;
          right: .5em;
-         color: var(--pencil-text-color);
+         color: var(--text-color);
       }
     }
     .letter-list {
@@ -322,12 +322,12 @@
       .letter-length-indicator {
         width: 31px;
         height: 31px;
-        color: var(--pencil-text-color);
+        color: var(--text-color);
         background: 
          linear-gradient(to top left,
              rgba(0,0,0,0) 0%,
              rgba(0,0,0,0) calc(50% - 0.5px),
-             var(--pencil-text-color) 50%,
+             var(--text-color) 50%,
              rgba(0,0,0,0) calc(50% + 0.5px),
              rgba(0,0,0,0) 100%);
         background-size: 50% 50%;

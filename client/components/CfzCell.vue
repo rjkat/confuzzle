@@ -153,6 +153,22 @@ td {
         z-index: 5;
     }
 
+    &[data-flat-number]:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        content: attr(data-flat-number);
+        font-size: .45em;
+        line-height: 1em;
+        padding: 1px;
+
+        background-color: var(--number-bg-color) !important;
+        color: var(--clue-text-color);
+
+        @media print {
+            background-color: transparent !important;
+        }
+    }
 
 
     &[data-across-separator]:after {
