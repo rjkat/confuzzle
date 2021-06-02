@@ -97,7 +97,7 @@
             max-width: 29px;
             min-width: 29px;
             font-family: $pencilFontFamily;
-            color: var(--pencil-text-color);
+            color: var(--pencil-text-color) !important;
         }
     }
 
