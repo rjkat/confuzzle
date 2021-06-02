@@ -25,12 +25,10 @@ ul {
         align-items: center;
     }
     li.solvers-text {
-        font-family: $clueFontFamily;
+        font-family: $titleFontFamily;
 
         margin-left: 0.5em;
         padding-right: $displayPadding;
-        border-right: 1px solid #000;
-        font-weight: bold;
     }
 
     li.highlighted {
@@ -46,10 +44,8 @@ ul {
         position: relative;
         justify-content: center;
         text-transform: uppercase;
-        box-sizing: content-box;
-        border-right: 1px solid #000;
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
+        border: 1px solid #000;
+        margin-left: -1px;
         cursor: pointer;
 
         @include each-solver using ($color, $lightColor, $sel) {

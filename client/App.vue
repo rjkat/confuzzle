@@ -961,7 +961,11 @@ export default Vue.extend({
     },
     shouldJoin() {
       const path = this.requestedPath();
-      return path != '' && path != 'anagram';
+      const should = path != '' && path != 'anagram';
+      if (should) {
+        this.gridid = path;
+      }
+      return should;
     },
     isAnagram() {
       const path = this.requestedPath();

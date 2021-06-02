@@ -44,7 +44,7 @@
 }
 
 .crossword-clues-label {
-    font-weight: bold;
+    font-family: $titleFontFamily;
     @media screen {
         padding-left: .5em;
         padding-top: .5em;

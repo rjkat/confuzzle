@@ -61,7 +61,7 @@
     padding-bottom: $displayPadding;
     &:before {
         content: 'NOTE';
-        font-weight: bold;
+        font-family: $titleFontFamily;
         padding-right: .5em;
     }
 }
