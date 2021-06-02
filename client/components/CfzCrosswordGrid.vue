@@ -162,9 +162,19 @@ export default Vue.extend({
       }
     },
     gridContainerStyle() {
+      const gridHeight = (this.gridScale * this.gridHeight) + 'px';
+      const gridWidth =  (this.gridScale * this.gridWidth) + 'px';
+      if (this.showScratchpad) {
+         return {
+          'height': this.isPortrait ? 'unset' : '100%',
+          'width': this.isPortrait ? '100%' : 'unset',
+          'max-width': this.isPortrait ? 'unset' : gridWidth,
+          'max-height': this.isPortrait ? gridHeight : 'unset'
+        }
+      }
       return {
-        'width': (this.showScratchpad && this.isPortrait) ? '100%' : (this.gridScale * this.gridWidth) + 'px',
-        'height': (this.showScratchpad && !this.isPortrait) ? '100%' : (this.gridScale * this.gridHeight) + 'px'
+        'width': gridWidth,
+        'height': gridHeight
       }
     },
     selectedClue() {

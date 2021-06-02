@@ -285,7 +285,7 @@
     }
     .letter-widget {
       position: relative;
-      flex: 1;
+      /*flex: 1;*/
       border: 1px dashed #000;
       border-radius: 8px;
       margin-bottom: 8px;
@@ -315,7 +315,6 @@
       height: 100%;
     }
     .answer-widget {
-      margin-top: auto;
       font-size: 26px;
       padding: 0px .5rem;
       width: 100%;
