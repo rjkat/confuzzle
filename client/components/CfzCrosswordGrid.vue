@@ -141,10 +141,10 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width);
+      return (this.cellWidth * this.crossword.grid.width - 0.5);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height);
+      return (this.cellWidth * this.crossword.grid.height - 0.5);
     },
     gridScale() {
       let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) >= (this.gridWidth - this.gridDisplayWidth);
