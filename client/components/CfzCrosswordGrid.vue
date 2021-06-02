@@ -294,45 +294,47 @@ export default Vue.extend({
         this.selectCell(cell);
     },
     moveInputCell(input, cell, direction) {
-        let row, col;
-        const cells = this.crossword.grid.cells;
-        
-        if (this.inputAcross) {
-            row = cell.row;
-            col = cell.col + direction;
-        } else {
-            row = cell.row + direction;
-            col = cell.col;
-        }
-        const backspace = direction == -1;
-        
-        // we've run off the end or hit an empty square
-        if (   row < 0 || row >= cells.length
-            || col < 0 || col >= cells[row].length
-            || cells[row][col].empty) {
-            // make it so that backspace doesn't hide the input
-            if (!backspace) {
-              input.blur();
-              if (this.selectedClue && this.selectedClue.nextRef) {
-                  const next = this.selectedClue.nextRef;
-                  this.inputAcross = next.isAcross;
-                  this.selectCell(next.cells[0]);
-              } else {
-                this.deselectCell(cell);
+        Vue.nextTick(() => {
+          let row, col;
+          const cells = this.crossword.grid.cells;
+          
+          if (this.inputAcross) {
+              row = cell.row;
+              col = cell.col + direction;
+          } else {
+              row = cell.row + direction;
+              col = cell.col;
+          }
+          const backspace = direction == -1;
+          
+          // we've run off the end or hit an empty square
+          if (   row < 0 || row >= cells.length
+              || col < 0 || col >= cells[row].length
+              || cells[row][col].empty) {
+              // make it so that backspace doesn't hide the input
+              if (!backspace) {
+                input.blur();
+                if (this.selectedClue && this.selectedClue.nextRef) {
+                    const next = this.selectedClue.nextRef;
+                    this.inputAcross = next.isAcross;
+                    this.selectCell(next.cells[0]);
+                } else {
+                  this.deselectCell(cell);
+                }
               }
-            }
-            return;
-        }
+              return;
+          }
 
-        if (!backspace)
-          this.deselectCell(cell);
-        cell = cells[row][col];
-        // if the clue can only be either across or down,
-        // change to its direction
-        if (!(cell.clues.across && cell.clues.down)) {
-            this.inputAcross = Boolean(cell.clues.across);
-        }
-        this.selectCell(cell);
+          if (!backspace)
+            this.deselectCell(cell);
+          cell = cells[row][col];
+          // if the clue can only be either across or down,
+          // change to its direction
+          if (!(cell.clues.across && cell.clues.down)) {
+              this.inputAcross = Boolean(cell.clues.across);
+          }
+          this.selectCell(cell);
+        });
     },
     handleInput(e, cell) {
         this.fillCell(cell, e.target.value);
@@ -357,6 +359,7 @@ export default Vue.extend({
                     }
                 }
                 this.moveInputCell(e.target, cell, 1);
+                e.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 this.fillCell(cell, '');

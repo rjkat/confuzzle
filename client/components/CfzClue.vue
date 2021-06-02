@@ -227,6 +227,7 @@ export default Vue.extend({
                 this.$refs.inputs[i].click();
             }
         }
+
         if (forced) {
             this.clue.select(this.solverid);
 
@@ -253,19 +254,21 @@ export default Vue.extend({
         return '';
     },
     moveInput: function(input, pos) {
-        let nextinput = undefined;
-        for (let i = 0; i < this.$refs.inputs.length; i++) {
-            if (this.$refs.inputs[i].dataset.cellIndex == pos) {
-                nextinput = this.$refs.inputs[i];
+        Vue.nextTick(() => {
+            let nextinput = undefined;
+            for (let i = 0; i < this.$refs.inputs.length; i++) {
+                if (this.$refs.inputs[i].dataset.cellIndex == pos) {
+                    nextinput = this.$refs.inputs[i];
+                }
             }
-        }
-        if (nextinput) {
-            this.select(nextinput);
-        } else if (pos >= 0) {
-            // only blur when going off the end
-            input.blur();
-            this.$emit('deselect-clue', this.clue);
-        }
+            if (nextinput) {
+                this.select(nextinput);
+            } else if (pos >= 0) {
+                // only blur when going off the end
+                input.blur();
+                this.$emit('deselect-clue', this.clue);
+            }
+        });
     },
     select: function(input) {
         this.wasClicked = true;
