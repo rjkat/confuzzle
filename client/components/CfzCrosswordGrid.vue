@@ -167,7 +167,7 @@ export default Vue.extend({
       if (this.showScratchpad) {
          return {
           'height': this.isPortrait ? 'unset' : '100%',
-          'width': this.isPortrait ? '100%' : 'unset',
+          'width': this.isPortrait ? '100%' : gridWidth,
           'max-width': this.isPortrait ? 'unset' : gridWidth,
           'max-height': this.isPortrait ? gridHeight : 'unset'
         }

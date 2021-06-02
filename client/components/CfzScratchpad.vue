@@ -293,7 +293,7 @@
     }
     .letter-container {
       width: 100%;
-      min-height: calc(#{$gridCellSize} + 20px);
+      min-height: calc(#{$gridCellSize} + 24px);
       padding-top: 8px;
       padding-left: 16px;
       padding-right: 8px;
