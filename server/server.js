@@ -37,7 +37,7 @@ switch (env) {
         break;
 }
 
-const GRID_DESTROY_TIMEOUT = 1000 * 60 * 60 * 12; // 12 hour grid destroy timeout
+const GRID_DESTROY_TIMEOUT = 1000 * 60 * 60 * 4; // 4 hour grid destroy timeout
 
 const io = require('socket.io')(server, {
   pingTimeout: 600000,
@@ -238,6 +238,7 @@ io.on('connection', function(socket) {
             const solver = grid.solvers[socket.id];
             delete grid.solvers[socket.id];
             if (Object.keys(grid.solvers).length == 0) {
+                grid.solverMask = 0;
                 setTimeout(() => destroyGrid(gridid), GRID_DESTROY_TIMEOUT);
             } else {
                 event = {

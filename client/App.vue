@@ -1615,6 +1615,7 @@ export default Vue.extend({
 
         this.setCrosswordSource(msg.crossword.source + (msg.crossword.state ? msg.crossword.state : ''));
         Vue.nextTick(() => {
+            this.clearAllHighlighted();
             this.replayEvents(msg.events);    
         });
 
