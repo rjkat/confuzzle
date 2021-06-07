@@ -37,9 +37,10 @@ switch (env) {
         break;
 }
 
+const GRID_DESTROY_TIMEOUT = 1000 * 60 * 60 * 12; // 12 hour grid destroy timeout
 
 const io = require('socket.io')(server, {
-  pingTimeout: 60000,
+  pingTimeout: 600000,
 });
 const grids = {};
 const socketGrids = {};
@@ -189,6 +190,12 @@ function joinGrid(socketid, name, gridid) {
     return grid;
 }
 
+function destroyGrid(gridid) {
+    if (grids[gridid] && Object.keys(grids[gridid].solvers).length == 0) {
+        delete grids[gridid];
+    }
+}
+
 io.on('connection', function(socket) {
     socket.on('shareCrossword', function(args) {
         const gridid = hri.random();
@@ -231,8 +238,7 @@ io.on('connection', function(socket) {
             const solver = grid.solvers[socket.id];
             delete grid.solvers[socket.id];
             if (Object.keys(grid.solvers).length == 0) {
-                // console.log("delete grid: " + gridid);
-                delete grids[gridid];
+                setTimeout(() => destroyGrid(gridid), GRID_DESTROY_TIMEOUT);
             } else {
                 event = {
                     action: 'solversChanged',
@@ -254,7 +260,7 @@ io.on('connection', function(socket) {
                     gridid = room;
                 }
             } 
-            if (!gridid) {
+            if (!gridid || !grids[gridid]) {
                 return;
             }
             grids[gridid].eventLog.push(event);

@@ -899,6 +899,7 @@ export default Vue.extend({
       maxRecent: 5,
       recentCrosswords: [],
       solverid: 0,
+      devicePixelRatio: 0,
       socketid: '',
       shortLink: '',
       showGrid: true,
@@ -1126,7 +1127,17 @@ export default Vue.extend({
       this.updateTitle();
     },
     // https://stackoverflow.com/a/11744120
+    // https://stackoverflow.com/a/52008131
     handleResize() {
+        const devicePixelRatio = window.devicePixelRatio || window.screen.availWidth / document.documentElement.clientWidth;
+
+        if (this.devicePixelRatio && this.devicePixelRatio != devicePixelRatio) {
+            // user is zooming page, don't resize
+            this.devicePixelRatio = devicePixelRatio;
+            return;
+        }
+        this.devicePixelRatio = devicePixelRatio;
+
         this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
         this.windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
         const w = this.windowWidth;
@@ -1153,7 +1164,6 @@ export default Vue.extend({
     createSocket() {
         const self = this;
         this.$options.manager = new Manager(window.location.origin, {
-            reconnectionAttempts: 5,
             autoConnect: false
         });
         this.$options.manager.on('error', (err) => {
@@ -1613,6 +1623,7 @@ export default Vue.extend({
 
         this.joinLoading = false;
         this.state.colluding = true;
+        this.joinFailed = false;
         this.endCompiling();
 
         if (this.state.reconnecting) {
@@ -1662,11 +1673,13 @@ export default Vue.extend({
         this.solvers = msg.solvers;
         window.history.pushState(null, '', '/' + msg.gridid);
         this.state.colluding = true;
+        this.joinFailed = false;
         this.shareLoading = false;
         this.updateTitle();
     },
     goOffline() {
         this.gridid = '';
+        this.solverid = 0;
         if (!this.state.colluding)
             return;
         this.state.colluding = false;
