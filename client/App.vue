@@ -169,6 +169,7 @@
                      @reveal-all-clicked="revealWordClicked(true)"
                      @edit-source-clicked="editSourceClicked()"
                      @clear-all-clicked="clearAllClicked()"
+                     @erase-clue-clicked="eraseClueClicked()"
                      @show-scratchpad-changed="showScratchpadChanged($event)"
                      @enable-dark-mode-changed="enableDarkModeChanged($event)"
                      class="hidden-print"
@@ -1464,6 +1465,55 @@ export default Vue.extend({
         }
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
+    },
+    eraseClueClicked() {
+        let clue = this.selectedClue;
+        if (!clue)
+            return;
+
+        if (clue.primary) {
+            clue = clue.primary;
+        }
+        const startClue = clue;
+
+        // erase contents of cells where the perpendicular clues
+        // haven't been filled in
+        while (clue) {
+            const direction = clue.isAcross;
+            for (var i = 0; i < clue.cells.length; i++) {
+                const cell = clue.cells[i];
+                let otherClue = undefined;
+                if (clue.isAcross && cell.clues.down) {
+                    otherClue = cell.clues.down;
+                } else if (!clue.isAcross && cell.clues.across) {
+                    otherClue = cell.clues.across;
+                }
+                let allFilled = false;
+                if (otherClue) {
+                    allFilled = true;
+                    for (var j = 0; j < otherClue.cells.length; j++) {
+                        if (otherClue.cells[j].contents == '') {
+                            allFilled = false;
+                            break;
+                        }
+                    }
+                } 
+                if (!allFilled) {
+                    cell.contents = '';
+                    cell.special = '-';
+                    this.sendFillCell({
+                        clueid: clue.id,
+                        offset: i,
+                        value: cell.solution,
+                        special: cell.special
+                    });
+                }
+            }
+            clue = clue.nextRef;
+        }
+
+        startClue.showCorrect = false;
+        startClue.showIncorrect = false;
     },
     clearAllClicked() {
         const grid = this.crossword.grid;

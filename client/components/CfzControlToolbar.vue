@@ -1,6 +1,7 @@
 <template>
 <ui-toolbar class="cfz-control-toolbar hidden-print">
     <div slot="icon">
+        <div style="display: flex; justify-content: space-between; width: 4rem;">
         <ui-icon-button
             color="primary"
             type="secondary"
@@ -8,6 +9,16 @@
             @click="toggleUsingPencil()"
         ><div :style="pencilButtonStyle">A</div>
         </ui-icon-button>
+        <ui-icon-button
+            color="primary"
+            class="backspace-button"
+            type="secondary"
+            icon="backspace"
+            style="height: 1.6rem; width: 1.6rem; bottom: 0"
+            @click="eraseClueClicked()"
+        >
+        </ui-icon-button>
+    </div>
     </div>
     <div slot="brand">
         <ui-button
@@ -83,6 +94,10 @@
 
 <style lang="scss">
 @import '../stylesheets/themes';
+
+.backspace-button .ui-icon  {
+    font-size: 1.3rem !important;
+}
 .cfz-control-toolbar {
     height: 2rem !important;
     overflow: hidden;
@@ -163,6 +178,9 @@ export default Vue.extend({
     
     toggleUsingPencil() {
         this.$emit('input', !this.usingPencil);
+    },
+    eraseClueClicked() {
+        this.$emit('erase-clue-clicked')
     },
     selectMenuOption(option) {
         if (option.label == this.opt.CHECK_WORD.label) {
