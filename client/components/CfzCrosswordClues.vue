@@ -7,7 +7,7 @@
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
         <cfz-clue-list 
-            class="clue-list"
+            class="clue-list clue-list-across"
             ref="acrossList"
             :isAcross="true"
             :usingPencil="usingPencil"
@@ -120,6 +120,11 @@
     .clue-list {
         flex: 50%;
         margin: 0 auto;
+    }
+    .clue-list-across {
+        @media print {
+            padding-right: 1em;
+        }
     }
 }
 </style>

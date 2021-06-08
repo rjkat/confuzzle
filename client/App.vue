@@ -95,7 +95,7 @@
          @dragleave="dragLeaveHandler"
          @drop="dropHandler">
         <div id="drop-area" class="hidden-print" ref="dropArea">
-            <h1>Drop here to solve</h1>
+            <span class="drop-text">Drop here to solve</span>
         </div>
         <template v-if="state.joining || state.downloading">
             <ui-modal v-if="state.joining" ref="joinModal" @reveal="onJoinReveal()" :title="!joinFailed ? 'Join and solve' : 'Session not found'" :dismissible="state.joiningFromLauncher" @close="launcherJoinClosed()">
@@ -236,6 +236,12 @@
 </template>
 
 <style lang="scss">
+@media print {
+    @page {
+        size: landscape
+    }
+}
+
 body {
 
     height: 100%;
@@ -448,8 +454,10 @@ input {
 
 .ui-button--type-primary.ui-button--color-primary, .ui-icon-button--type-primary  {
     background-color: var(--widget-primary-bg-color) !important;
+    .ui-icon {
+       color: var(--widget-primary-icon-color) !important;
+    }
 }
-
 
 .tippy-popper {
     .ui-menu {
@@ -553,11 +561,17 @@ a:visited {
     z-index: 99;
     pointer-events: none;
 
+    .drop-text {
+        color: var(--text-color);
+        font-family: $clueFontFamily;
+        font-weight: normal;
+        font-size:  48px;
+    }
 
     background: repeating-linear-gradient(
       45deg,
       var(--page-bg-color),
-      var(--page-bg-color) 10px, var(--grid-blank-color) 10px, var(--grid-blank-color) 20px
+      var(--page-bg-color) 10px, var(--clue-bg-color) 10px, var(--clue-bg-color) 20px
     ) !important;
 
     &[data-drop-visible] {
