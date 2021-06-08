@@ -236,11 +236,6 @@
 </template>
 
 <style lang="scss">
-@media print {
-    @page {
-        size: landscape
-    }
-}
 
 body {
 
