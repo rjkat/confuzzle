@@ -1,6 +1,6 @@
 {
   "name": "confuzzle",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "multiplayer crosswords",
   "engines": {
     "node": ">=13.7.x"

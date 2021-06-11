@@ -16,10 +16,10 @@
     ],
     "dependencies": {
         "@confuzzle/burrows-wheeler": "^1.0.0",
-        "@confuzzle/confuz-parser": "^1.0.1",
+        "@confuzzle/confuz-parser": "^1.2.0",
         "@confuzzle/move-to-front": "^1.0.0",
-        "@confuzzle/puz-common": "^1.0.1",
-        "@confuzzle/puz-sharing": "^1.1.0",
+        "@confuzzle/puz-common": "^1.2.0",
+        "@confuzzle/puz-sharing": "^1.2.0",
         "@thi.ng/range-coder": "^1.0.64",
         "base64url": "^3.0.1"
     }
