@@ -19,11 +19,6 @@ licenses.update(
             "repository": "https://github.com/PrismJS/live",
             "publisher": "Lea Verou",
         },
-        "compressjs": {
-            "repository": "https://github.com/cscott/compressjs",
-            "licenseFile": "client/js/compressjs/LICENSE.txt",
-            "publisher": "C. Scott Ananian",
-        },
         "ecoji-js": {
             "repository": "https://github.com/dimabory/ecoji-js",
             "licenseFile": "extra_licenses/ecoji_license.txt",

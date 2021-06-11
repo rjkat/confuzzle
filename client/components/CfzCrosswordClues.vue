@@ -52,7 +52,9 @@
     width: 100%;
     display: block;
     font-family: $clueFontFamily;
-
+    @media print {
+        font-size: 10pt;
+    }
     @media screen {
         padding-left: .5em;
         padding-right: .5em;
@@ -62,6 +64,7 @@
     &:before {
         content: 'NOTE';
         font-family: $titleFontFamily;
+        font-size: 16px;
         padding-right: .5em;
     }
 }
