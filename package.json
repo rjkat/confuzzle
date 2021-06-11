@@ -29,6 +29,9 @@
   "homepage": "https://github.com/rjkat/confuzzle#readme",
   "dependencies": {
     "@babel/runtime": "^7.12.5",
+    "@confuzzle/burrows-wheeler": "file:@confuzzle/burrows-wheeler",
+    "@confuzzle/confuz-crossword": "file:@confuzzle/confuz-crossword",
+    "@confuzzle/confuz-parser": "file:@confuzzle/confuz-parser",
     "@confuzzle/ecoji-buffers": "file:@confuzzle/ecoji-buffers",
     "@confuzzle/move-to-front": "file:@confuzzle/move-to-front",
     "@confuzzle/puz-common": "file:@confuzzle/puz-common",

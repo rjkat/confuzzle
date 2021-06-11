@@ -1,6 +1,6 @@
 const parser = require('./parser');
 
-export function parseAndBuild(input, compiling) {
+function parseAndBuild(input, compiling) {
     const cw = parser.parse(input, compiling);
 
     cw.meta.copyrightText = '';
@@ -124,4 +124,8 @@ export function parseAndBuild(input, compiling) {
         return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
     return cw;
+}
+
+module.exports = {
+  parseAndBuild: parseAndBuild
 }

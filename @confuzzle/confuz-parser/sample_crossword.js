@@ -1,5 +1,5 @@
 
-export function sampleCrossword() {
+function sampleCrossword() {
   return `> this is an example crossword in .confuz format
 > it uses the eno language: eno-lang.org/eno
 > you may wish to edit in a text editor with support for
@@ -141,4 +141,8 @@ ans: O--A-----
 
 > happy compiling!
 `;
+}
+
+module.exports = {
+    sampleCrossword: sampleCrossword
 }

@@ -1,0 +1,20 @@
+{
+    "name": "@confuzzle/confuz-parser",
+    "version": "1.0.0",
+    "description": ".confuz file format parser",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "parser.js",
+    "keywords": [
+        "crossword",
+        "crosswords",
+        "confuz",
+        "confuz-parser",
+        "confuz-file-format"
+    ],
+    "dependencies": {
+        "enolib": "^0.8.2",
+        "enotype": "^0.3.0",
+        "sanitize-html": "^1.27.5"
+    }
+}

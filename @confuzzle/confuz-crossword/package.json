@@ -1,0 +1,26 @@
+{
+    "name": "@confuzzle/confuz-crossword",
+    "version": "1.0.1",
+    "description": "Conversion to and from `.confuz` format",
+    "license": "MIT",
+    "repository": "rjkat/confuzzle",
+    "main": "confuz.js",
+    "keywords": [
+        "crossword",
+        "crosswords",
+        "puz",
+        "puz-parser",
+        "puz-file-format",
+        "confuz",
+        "confuz-file-format"
+    ],
+    "dependencies": {
+        "@confuzzle/burrows-wheeler": "^1.0.0",
+        "@confuzzle/confuz-parser": "^1.0.0",
+        "@confuzzle/move-to-front": "^1.0.0",
+        "@confuzzle/puz-common": "^1.0.1",
+        "@confuzzle/puz-sharing": "^1.1.0",
+        "@thi.ng/range-coder": "^1.0.64",
+        "base64url": "^3.0.1"
+    }
+}

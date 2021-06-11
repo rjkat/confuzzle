@@ -1,19 +1,19 @@
 const ShareablePuz = require('@confuzzle/puz-sharing').ShareablePuz;
-const parser = require('../confuz-parser/parser');
+const parser = require('@confuzzle/confuz-parser');
 const puz_common = require('@confuzzle/puz-common');
 const base64url = require("base64url");
 const mtf = require('@confuzzle/move-to-front');
 const bwt = require('@confuzzle/burrows-wheeler');
 const rc = require('@thi.ng/range-coder');
 
-export function compressURL(source) {
+function compressURL(source) {
     const t = bwt.forward(source);
     const m = mtf.forward(t);
     const x = rc.encodeBytes(m);
     return base64url.encode(x);
 }
 
-export function decompressURL(url, outputEncoding) {
+function decompressURL(url, outputEncoding) {
     const x = base64url.toBuffer(url);
     const m = rc.decodeBytes(x);
     const t = mtf.inverse(m);
@@ -124,7 +124,7 @@ function fuzRefs(clues) {
     return refs;
 }
 
-export function stateFromClues(clues) {
+function stateFromClues(clues) {
     var state = '';
     var written = {};
     for (let [clueid, clue] of Object.entries(clues)) {
@@ -193,7 +193,7 @@ export function stateFromClues(clues) {
     return state;
 }
 
-export function fromPuz(p) {
+function fromPuz(p) {
     const clues = p.parseClues();
     var eno = "# meta\n";
     var name = p.title;
@@ -317,7 +317,7 @@ export function fromPuz(p) {
     return eno;
 }
 
-export function fromCrossword(crossword, options) {
+function fromCrossword(crossword, options) {
     var eno = fuzMeta(crossword.meta, options);
     
     eno += fuzGrid(crossword.grid);
@@ -343,7 +343,7 @@ function puzText(clue) {
     return text + ' ' + clue.lengthText;
 }
 
-export function toPuz(eno) {
+function toPuz(eno) {
     const cw = parser.parse(eno);
     const meta = cw.meta;
     const grid = cw.grid;
@@ -392,4 +392,14 @@ export function toPuz(eno) {
     }
 
     return new ShareablePuz(puz);
+}
+
+
+module.exports = {
+    compressURL: compressURL,
+    decompressURL: decompressURL,
+    stateFromClues: stateFromClues,
+    fromCrossword: fromCrossword,
+    fromPuz: fromPuz,
+    toPuz: toPuz,
 }

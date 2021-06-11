@@ -3,11 +3,11 @@ const enotype = require('enotype');
 const sample = require('./sample_crossword');
 const sanitizeHtml = require('sanitize-html');
 
-import {EMOJI_DICT} from './words_to_emoji.js';
+const EMOJI_DICT = require('./words_to_emoji.js').EMOJI_DICT;
 
 enolib.register(enotype);
 
-export function sampleCrossword() {
+function sampleCrossword() {
   return sample.sampleCrossword();
 }
 
@@ -395,7 +395,7 @@ function parseFilled(cw, filled) {
   }
 }
 
-export function parse(input, compiling, options) {
+function parse(input, compiling, options) {
   const cw = {
     meta: {
       emoji: [],
@@ -523,4 +523,7 @@ export function parse(input, compiling, options) {
   return cw;
 };
 
-
+module.exports = {
+  sampleCrossword: sampleCrossword,
+  parse: parse
+}
