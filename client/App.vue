@@ -1504,7 +1504,7 @@ export default Vue.extend({
                     this.sendFillCell({
                         clueid: clue.id,
                         offset: i,
-                        value: cell.solution,
+                        value: '',
                         special: cell.special
                     });
                 }
