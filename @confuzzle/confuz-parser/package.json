@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/confuz-parser",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": ".confuz file format parser",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
@@ -15,6 +15,6 @@
     "dependencies": {
         "enolib": "^0.8.2",
         "enotype": "^0.3.0",
-        "sanitize-html": "^1.27.5"
+        "sanitize-html": "^2.4.0"
     }
 }
