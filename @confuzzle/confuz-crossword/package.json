@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/confuz-crossword",
-    "version": "1.0.2",
+    "version": "1.2.0",
     "description": "Conversion to and from `.confuz` format",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
