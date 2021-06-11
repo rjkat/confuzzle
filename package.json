@@ -89,6 +89,7 @@
     "workbox-cli": "^6.0.2"
   },
   "resolutions": {
-    "node-forge": "0.10.0"
+    "node-forge": "0.10.0",
+    "@babel/preset-env": "7.13.8"
   }
 }
