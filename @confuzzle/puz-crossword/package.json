@@ -16,8 +16,8 @@
     ],
     "dependencies": {
         "iconv-lite": "^0.5.2",
-        "@confuzzle/puz-common": "^1.2.0",
-        "@confuzzle/readpuz": "^1.2.0",
-        "@confuzzle/writepuz": "^1.2.0"
+        "@confuzzle/puz-common": "^1.2.1",
+        "@confuzzle/readpuz": "^1.2.1",
+        "@confuzzle/writepuz": "^1.2.1"
     }
 }

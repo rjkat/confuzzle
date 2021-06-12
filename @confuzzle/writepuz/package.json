@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/writepuz",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Minimal .puz format writer",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
@@ -14,6 +14,6 @@
     ],
     "dependencies": {
         "iconv-lite": "^0.5.2",
-        "@confuzzle/puz-common": "^1.2.0"
+        "@confuzzle/puz-common": "^1.2.1"
     }
 }
