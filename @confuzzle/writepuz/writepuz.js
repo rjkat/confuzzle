@@ -8,15 +8,17 @@ function checksum(base, c, len) {
   if (base === undefined)
     return c;
 
+  let x = Buffer.from(base);
+
   if (len === undefined)
-    len = base.length;
+    len = x.length;
 
   for (let i = 0; i < len; i++) {
     if (c & 0x0001)
       c = ((c >>> 1) + 0x8000) & 0xFFFF;
     else
       c = (c >>> 1);
-    c = (c + base[i]) & 0xFFFF;
+    c = (c + x[i]) & 0xFFFF;
   }
   return c;
 }
@@ -49,7 +51,7 @@ function buildStrings(puz) {
     /* need a null terminator even if notes are empty */
     strings += '\x00';
 
-    return strings;
+    return Buffer.from(strings);
 }
 
 function stringsChecksum(puz, c) {
@@ -61,6 +63,7 @@ function stringsChecksum(puz, c) {
 
     if (puz.note)
         c = checksum(enc(puz.note) + '\x00', c);
+
     return c;
 }
 

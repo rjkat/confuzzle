@@ -47,7 +47,7 @@ function puzDecode(buf, start, end, encoding) {
 function puzEncode(s, encoding) {
     if (!encoding)
         encoding = PUZ_ENCODING;
-    return iconv.encode(s, encoding);
+    return iconv.encode(replaceWordChars(s), encoding);
 }
 
 function emptyState(soln) {
