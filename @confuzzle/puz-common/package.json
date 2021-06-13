@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/puz-common",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "Common .puz utilities and constants",
     "license": "MIT",
     "repository": "rjkat/confuzzle",

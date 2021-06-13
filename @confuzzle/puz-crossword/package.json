@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/puz-crossword",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": ".puz crossword reader, writer, and parser",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
@@ -16,8 +16,8 @@
     ],
     "dependencies": {
         "iconv-lite": "^0.5.2",
-        "@confuzzle/puz-common": "^1.2.2",
-        "@confuzzle/readpuz": "^1.2.2",
-        "@confuzzle/writepuz": "^1.2.2"
+        "@confuzzle/puz-common": "^1.2.3",
+        "@confuzzle/readpuz": "^1.2.3",
+        "@confuzzle/writepuz": "^1.2.3"
     }
 }

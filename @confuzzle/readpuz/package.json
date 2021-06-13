@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/readpuz",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "Minimal .puz format reader",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
@@ -14,6 +14,6 @@
     ],
     "dependencies": {
         "iconv-lite": "^0.5.2",
-        "@confuzzle/puz-common": "^1.2.2"
+        "@confuzzle/puz-common": "^1.2.3"
     }
 }
