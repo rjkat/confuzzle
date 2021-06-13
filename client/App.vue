@@ -252,7 +252,9 @@ body {
 }
 
 .grid-loader {
-    margin: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
 }
 
 .grid-enter-active,
