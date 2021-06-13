@@ -35,35 +35,40 @@ function writeCheatChecksum(buf, offset, key, checksums) {
 
 const enc = puz_common.puzEncode;
 
+function nullByte() {
+    return Buffer.from([0]);
+}
+
 function buildStrings(puz) {
-    let strings = '';
+    let strings = [];
     const fields = puz_common.PUZ_STRING_FIELDS;
 
     for (let i = 0; i < fields.length; i++)
-        strings += enc(puz[fields[i]]) + '\x00';
+        strings.push(enc(puz[fields[i]], true));
 
     for (let i = 0; i < puz.clues.length; i++)
-        strings += enc(puz.clues[i]) + '\x00';
-
+        strings.push(enc(puz.clues[i], true));
+    
     if (puz.note)
-        strings += enc(puz.note);
+        strings.push(enc(puz.note));
 
     /* need a null terminator even if notes are empty */
-    strings += '\x00';
+    strings.push(nullByte());
 
-    return Buffer.from(strings);
+    return Buffer.concat(strings);
 }
 
 function stringsChecksum(puz, c) {
-    c = checksum(enc(puz.title) + '\x00', c);
-    c = checksum(enc(puz.author) + '\x00', c);
-    c = checksum(enc(puz.copyright) + '\x00', c);
+    c = checksum(enc(puz.title, true), c);
+    c = checksum(enc(puz.author, true), c);
+    c = checksum(enc(puz.copyright, true), c);
     for (let i = 0; i < puz.clues.length; i++)
         c = checksum(enc(puz.clues[i]), c);
 
     if (puz.note)
-        c = checksum(enc(puz.note) + '\x00', c);
+        c = checksum(enc(puz.note), c);
 
+    c = checksum(nullByte(), c)
     return c;
 }
 

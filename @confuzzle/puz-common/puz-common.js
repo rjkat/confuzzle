@@ -7,7 +7,7 @@ const iconv = require('iconv-lite');
 // except for the code points 128-159 (0x80-0x9F). ISO-8859-1 assigns several control
 // codes in this range. Windows-1252 has several characters, punctuation, arithmetic
 // and business symbols assigned to these code points.
-const PUZ_ENCODING = "windows-1252";
+const PUZ_ENCODING = "ISO-8859-1";
 
 const PUZ_HEADER_CONSTANTS = {
     offsets: {
@@ -44,10 +44,12 @@ function puzDecode(buf, start, end, encoding) {
     return replaceWordChars(s);
 }
 
-function puzEncode(s, encoding) {
-    if (!encoding)
-        encoding = PUZ_ENCODING;
-    return iconv.encode(replaceWordChars(s), encoding);
+function puzEncode(s, addNull) {
+    const result = iconv.encode(replaceWordChars(s), PUZ_ENCODING);
+    if (addNull) {
+        return Buffer.concat([result, Buffer.from([0])]);
+    }
+    return result;
 }
 
 function emptyState(soln) {

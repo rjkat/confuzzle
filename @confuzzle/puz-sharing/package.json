@@ -1,6 +1,6 @@
 {
     "name": "@confuzzle/puz-sharing",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": ".puz crossword reader, writer, and parser with compression and encoding",
     "license": "MIT",
     "repository": "rjkat/confuzzle",
@@ -17,10 +17,10 @@
         "puz-file-format"
     ],
     "dependencies": {
-        "@confuzzle/puz-crossword": "^1.2.1",
-        "@confuzzle/puz-common": "^1.2.1",
-        "@confuzzle/readpuz": "^1.2.1",
-        "@confuzzle/writepuz": "^1.2.1",
+        "@confuzzle/puz-crossword": "^1.2.2",
+        "@confuzzle/puz-common": "^1.2.2",
+        "@confuzzle/readpuz": "^1.2.2",
+        "@confuzzle/writepuz": "^1.2.2",
         "@confuzzle/ecoji-buffers": "^1.0.0",
         "base64url": "^3.0.1",
         "@confuzzle/move-to-front": "^1.0.0",
