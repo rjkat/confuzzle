@@ -32,8 +32,8 @@ function buildHeader(puz) {
     return header;
 }
 
-function enc(s) {
-    return puz_common.puzEncode(s, COMPRESSED_ENCODING);
+function enc(s, addNull) {
+    return puz_common.puzEncode(s, addNull, COMPRESSED_ENCODING);
 }
 
 function buildStrings(puz) {
@@ -41,22 +41,20 @@ function buildStrings(puz) {
     const fields = puz_common.PUZ_STRING_FIELDS;
 
     for (let i = 0; i < fields.length; i++)
-        strings += enc(puz[fields[i]]) + '\x00';
+        strings += enc(puz[fields[i]], true);
 
     for (let i = 0; i < puz.clues.length; i++)
-        strings += enc(puz.clues[i]) + '\x00';
+        strings += enc(puz.clues[i], true);
 
     if (puz.note)
         strings += enc(puz.note);
 
     /* need a null terminator even if notes are empty */
-    strings += '\x00';
-
-    return puz_common.puzEncode(strings, COMPRESSED_ENCODING);
+    return enc(strings, true);
 }
 
 function buildBody(puz) {
-    let body = puz_common.puzEncode(puz.solution, COMPRESSED_ENCODING);
+    let body = puz_common.puzEncode(puz.solution, false, COMPRESSED_ENCODING);
     return puz_common.concatBytes(body, buildStrings(puz));
 }
 

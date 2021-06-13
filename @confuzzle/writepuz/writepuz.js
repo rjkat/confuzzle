@@ -63,7 +63,7 @@ function stringsChecksum(puz, c) {
     c = checksum(enc(puz.author, true), c);
     c = checksum(enc(puz.copyright, true), c);
     for (let i = 0; i < puz.clues.length; i++)
-        c = checksum(enc(puz.clues[i] ? puz.clues[i] : ' '), c);
+        c = checksum(enc(puz.clues[i]), c);
 
     if (puz.note)
         c = checksum(enc(puz.note, true), c);

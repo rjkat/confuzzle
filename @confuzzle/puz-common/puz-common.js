@@ -44,8 +44,10 @@ function puzDecode(buf, start, end, encoding) {
     return replaceWordChars(s);
 }
 
-function puzEncode(s, addNull) {
-    const result = iconv.encode(replaceWordChars(s), PUZ_ENCODING);
+function puzEncode(s, addNull, encoding) {
+    if (!encoding)
+        encoding = PUZ_ENCODING;
+    const result = iconv.encode(replaceWordChars(s), encoding);
     if (addNull) {
         return Buffer.concat([result, Buffer.from([0])]);
     }
