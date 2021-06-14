@@ -6,7 +6,7 @@
             color="primary"
             class="pencil-button"
             type="secondary"
-            style="width: 2.5rem; font-weight: normal; min-width: 0; margin-left: .5rem;"
+            style="width: 2.25rem; font-weight: normal; min-width: 0; margin-left: .25rem;"
             @click="toggleUsingPencil()"
         ><div :style="pencilButtonStyle">A</div>
         </ui-button>
@@ -15,7 +15,7 @@
             class="backspace-button"
             type="secondary"
             icon="backspace"
-            style="width: 2.5rem; min-width: 0; margin-left: .25rem"
+            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
             @click="eraseClueClicked()"
         >
         </ui-button>
@@ -97,9 +97,9 @@
 @import '../stylesheets/themes';
 
 .backspace-button .ui-icon  {
-    font-size: 1.3rem !important;
+    /*font-size: 1.3rem !important;*/
+    /*height: 100%;*/
     padding-left: .25rem;
-    padding-top: .1rem;
 }
 .cfz-control-toolbar {
     margin-left: 1px;
@@ -138,7 +138,7 @@ export default Vue.extend({
         return {
             'font-family': fam,
             'font-size': !this.usingPencil ? '1.6rem' : '1.4rem',
-            'margin-top': !this.usingPencil ? '-0.2rem' : '0.2rem'
+            'margin-top': !this.usingPencil ? '-0.25rem' : '0.2rem'
         };
     },
     deleteText() {
