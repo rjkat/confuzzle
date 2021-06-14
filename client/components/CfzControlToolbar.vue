@@ -1,23 +1,24 @@
 <template>
 <ui-toolbar class="cfz-control-toolbar hidden-print">
     <div slot="icon">
-        <div style="display: flex; justify-content: space-between; width: 4rem;">
-        <ui-icon-button
+        <div style="display: flex; justify-content: space-between;">
+        <ui-button
             color="primary"
+            class="pencil-button"
             type="secondary"
-            style="height: 1.6rem; width: 1.6rem; margin-left: .5rem;"
+            style="width: 2.5rem; font-weight: normal; min-width: 0; margin-left: .5rem;"
             @click="toggleUsingPencil()"
         ><div :style="pencilButtonStyle">A</div>
-        </ui-icon-button>
-        <ui-icon-button
+        </ui-button>
+        <ui-button
             color="primary"
             class="backspace-button"
             type="secondary"
             icon="backspace"
-            style="height: 1.6rem; width: 1.6rem; bottom: 0"
+            style="width: 2.5rem; min-width: 0; margin-left: .25rem"
             @click="eraseClueClicked()"
         >
-        </ui-icon-button>
+        </ui-button>
     </div>
     </div>
     <div slot="brand">
@@ -97,8 +98,11 @@
 
 .backspace-button .ui-icon  {
     font-size: 1.3rem !important;
+    padding-left: .25rem;
+    padding-top: .1rem;
 }
 .cfz-control-toolbar {
+    margin-left: 1px;
     height: 2rem !important;
     overflow: hidden;
     box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 20%), inset 0 0 2px rgb(0 0 0 / 12%), inset 0 2px 2px rgb(0 0 0 / 20%) !important;
@@ -134,7 +138,7 @@ export default Vue.extend({
         return {
             'font-family': fam,
             'font-size': !this.usingPencil ? '1.6rem' : '1.4rem',
-            'margin-top': !this.usingPencil ? '-0.2rem' : '0'
+            'margin-top': !this.usingPencil ? '-0.2rem' : '0.2rem'
         };
     },
     deleteText() {
