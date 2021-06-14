@@ -326,14 +326,14 @@ export default Vue.extend({
         var n = 0;
         for (var i = 0; i < words.length; i++) {
             if ((n + words[i].length - lastWrap) > this.clueWrapChars) {
-                wrappedText += '\n';
+                wrappedText += '<br>';
                 lastWrap = n;
             } else {
                 if (i > 0)
                     wrappedText += ' ';
             }
             wrappedText += words[i];
-            n += words[i].length;
+            n += words[i].length + 1;
         }
         return wrappedText;
     }
@@ -349,18 +349,18 @@ export default Vue.extend({
         Vue.nextTick(() => {
             const fallbacks = this.downSelected ? ['left', 'right'] : ['bottom'];
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
-              placement: 'top',
+              placement: this.downSelected ? 'left' : 'top',
               modifiers: [
                 {
                   name: 'flip',
                   options: {
-                    fallbackPlacements: fallbacks,
-                  },
+                    fallbackPlacements: fallbacks
+                  }
                 },
                 {
                   name: 'offset',
                   options: {
-                    offset: [0, 6],
+                    offset: [0, 6]
                   },
                 },
                 {
