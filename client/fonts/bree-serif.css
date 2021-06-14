@@ -4,5 +4,6 @@
 font-family: 'Bree Serif';
 font-style: normal;
 font-weight: normal;
+font-display: swap;
 src: local('Bree Serif'), url('BreeSerif-Regular.woff') format('woff');
 }
