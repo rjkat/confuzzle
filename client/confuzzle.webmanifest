@@ -25,6 +25,15 @@
       "url": "url"
     }
   },
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "text/plain": [".confuz", ".eno", ".txt"],
+        "application/x-crossword": ".puz"
+      }
+    }
+  ],
   "name": "Confuzzle",
   "short_name": "Confuzzle",
   "theme_color": "#333",
