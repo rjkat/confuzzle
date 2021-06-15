@@ -849,6 +849,7 @@ export default Vue.extend({
     this.handleResize();
     // this.gridSizeLocked = true;
 
+    
 
     if (localStorage.recentCrosswords) {
         const recent = JSON.parse(localStorage.recentCrosswords);
@@ -873,47 +874,25 @@ export default Vue.extend({
         }
     });
 
-    if ('launchQueue' in window) {
-      const self = this;
-      launchQueue.setConsumer((launchParams) => {
-        // Nothing to do when the queue is empty.
-        if (!launchParams.files.length) {
-          this.state.launching = true;
-          return;
-        }
 
-        launchParams.files[0].getFile().then(file => {
-            if (file.name.endsWith('.eno') || file.name.endsWith('.confuz') || file.name.endsWith('.txt')) {
-                file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
-            } else if (file.name.endsWith('.🧩')) {
-                file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
-            } else if (file.name.endsWith('.puz')) {
-                file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
-            }
-        });
-      });
+    if (this.isAnagram()) {
+      this.state.anagram = true;
+      this.state.launching = false;
+      this.updateTitle();
+    } else if (this.shouldJoin()) {
       this.firstLaunch = false;
       this.state.launching = false;
+      this.startJoining();
     } else {
-        if (this.isAnagram()) {
-          this.state.anagram = true;
-          this.state.launching = false;
-          this.updateTitle();
-        } else if (this.shouldJoin()) {
-          this.firstLaunch = false;
-          this.state.launching = false;
-          this.startJoining();
-        } else {
-          const params = new URLSearchParams(window.location.search);
-          if (params.get('puz') && params.get('puz').startsWith('http')
-             || params.get('source') && params.get('source').startsWith('http')
-             || params.get('confuz') && params.get('confuz').startsWith('http')) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('puz') && params.get('puz').startsWith('http')
+            || params.get('source') && params.get('source').startsWith('http')
+            || params.get('confuz') && params.get('confuz').startsWith('http')) {
             this.state.downloading = true;
-          }
-          const haveSource = this.initSource();
-          this.firstLaunch = !haveSource;
-          this.state.launching = !haveSource;
         }
+        const haveSource = this.initSource();
+        this.firstLaunch = !haveSource;
+        this.state.launching = !haveSource;
     }
   },
   data() {
@@ -1390,6 +1369,26 @@ export default Vue.extend({
       } else {
         haveSource = false;
       }
+
+      if ('launchQueue' in window) {
+        const self = this;
+        launchQueue.setConsumer((launchParams) => {
+            // Nothing to do when the queue is empty.
+            if (!launchParams.files.length) {
+                return;
+            }
+            launchParams.files[0].getFile().then(file => {
+                if (file.name.endsWith('.eno') || file.name.endsWith('.confuz') || file.name.endsWith('.txt')) {
+                    file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
+                } else if (file.name.endsWith('.🧩')) {
+                    file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
+                } else if (file.name.endsWith('.puz')) {
+                    file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
+                }
+            });
+        });
+      } 
+
       return haveSource;
     },
     updateLocalStorage() {
