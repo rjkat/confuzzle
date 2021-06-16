@@ -1143,7 +1143,9 @@ export default Vue.extend({
     // https://stackoverflow.com/a/11744120
     // https://stackoverflow.com/a/52008131
     handleResize() {
-        const devicePixelRatio = window.devicePixelRatio || window.screen.availWidth / document.documentElement.clientWidth;
+
+        const devicePixelRatio = (window.innerWidth / document.documentElement.clientWidth);
+
 
         if (this.devicePixelRatio && this.devicePixelRatio != devicePixelRatio) {
             // user is zooming page, don't resize

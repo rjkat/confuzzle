@@ -347,9 +347,9 @@ export default Vue.extend({
             this.popper.destroy();
 
         Vue.nextTick(() => {
-            const fallbacks = this.downSelected ? ['left', 'right'] : ['bottom'];
+            const fallbacks = this.downSelected ? ['right'] : ['bottom'];
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
-              placement: this.downSelected ? 'left' : 'top',
+              placement: 'top',
               modifiers: [
                 {
                   name: 'flip',
@@ -366,7 +366,8 @@ export default Vue.extend({
                 {
                   name: 'preventOverflow',
                   options: {
-                    boundary: this.$refs.tableCell.parentElement.parentElement
+                    boundary: this.$refs.tableCell.parentElement.parentElement,
+                    // altAxis: true
                   }
                 }
               ],

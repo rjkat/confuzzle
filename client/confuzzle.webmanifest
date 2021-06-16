@@ -5,9 +5,15 @@
   "icons": [
     {
       "src": "/any_icon.png",
-      "sizes": "180x180",
+      "sizes": "314x314",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/maskable_icon.png",
+      "sizes": "325x325",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "share_target": {
