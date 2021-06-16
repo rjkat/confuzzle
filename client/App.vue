@@ -827,6 +827,26 @@ export default Vue.extend({
     }
   },
   created() {
+    
+    if ('launchQueue' in window) {
+        const self = this;
+        launchQueue.setConsumer((launchParams) => {
+            // Nothing to do when the queue is empty.
+            if (!launchParams.files.length) {
+                return;
+            }
+            launchParams.files[0].getFile().then(file => {
+                if (file.name.endsWith('.eno') || file.name.endsWith('.confuz') || file.name.endsWith('.txt')) {
+                    file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
+                } else if (file.name.endsWith('.🧩')) {
+                    file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
+                } else if (file.name.endsWith('.puz')) {
+                    file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
+                }
+            });
+            this.sourceFromFile = true;
+        });
+    }
     if (this.shouldJoin()) {
       this.startJoining();
     }
@@ -926,6 +946,7 @@ export default Vue.extend({
       installPrompt: null,
       firstLaunch: true,
       editDebounce: null,
+      sourceFromFile: false,
       launchOption: '',
       emojiNotation: '',
       lastId: '',
@@ -1329,6 +1350,9 @@ export default Vue.extend({
         });
     },
     initSource() {
+      if (this.sourceFromFile) {
+        return true;
+      }
       const params = new URLSearchParams(window.location.search);
       const enoSource = params.get('source') || params.get('confuz');
       const puz = params.get('puz');
@@ -1372,24 +1396,7 @@ export default Vue.extend({
         haveSource = false;
       }
 
-      if ('launchQueue' in window) {
-        const self = this;
-        launchQueue.setConsumer((launchParams) => {
-            // Nothing to do when the queue is empty.
-            if (!launchParams.files.length) {
-                return;
-            }
-            launchParams.files[0].getFile().then(file => {
-                if (file.name.endsWith('.eno') || file.name.endsWith('.confuz') || file.name.endsWith('.txt')) {
-                    file.arrayBuffer().then(buf => self.enoFileUploaded(buf))
-                } else if (file.name.endsWith('.🧩')) {
-                    file.arrayBuffer().then(buf => self.emojiFileUploaded(buf))
-                } else if (file.name.endsWith('.puz')) {
-                    file.arrayBuffer().then(buf => self.puzFileUploaded(buf))
-                }
-            });
-        });
-      } 
+      
 
       return haveSource;
     },
