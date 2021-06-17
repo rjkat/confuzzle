@@ -351,6 +351,8 @@ export default Vue.extend({
 
         Vue.nextTick(() => {
             let fallbacks = this.downSelected ? ['left', 'right', 'bottom'] : ['top', 'bottom'];
+            if (!this.$refs.input || !this.$refs.tooltip)
+                return;
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
               placement: this.downSelected ? 'top' : 'left',
               modifiers: [

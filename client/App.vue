@@ -723,7 +723,7 @@ export default Vue.extend({
       if (this.firstLaunch)
         return 'Home | Confuzzle';
       if (this.joinFailed)
-        return 'Session not found: ' + this.gridid + ' | Confuzzle';
+        return 'Session not found | Confuzzle';
       if (this.state.joining)
         return 'Join session' + (this.gridid ? ': ' + this.gridid : '') + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
@@ -1723,7 +1723,9 @@ export default Vue.extend({
             this.$refs.disconnectedModal.close();
             this.reconnectFailed = false;
             this.state.reconnecting = false;
-        } 
+        } else {
+            window.history.pushState(null, '', '/' + this.gridid);
+        }
         this.updateTitle();
         this.snackbarMessage('You joined the session')
     },
@@ -1891,7 +1893,7 @@ export default Vue.extend({
         // export as emoji to clipboard
         } else if (e.key === "b" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
-            this.exportLinkClicked(this.getEmojiParams())
+            this.downloadEmojiClicked();
         // export full .puz binary to clipboard
         } else if (e.key === "u" && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
@@ -1902,9 +1904,12 @@ export default Vue.extend({
             this.exportLinkClicked(this.getEnoParams(true))
         }
     },
-   
+    downloadEmojiClicked() {
+        const blob = new Blob([this.getShareablePuz().toEmoji()], {type: "application/octet-stream"});
+        this.downloadCrossword(blob, '.🧩');
+    },
     downloadPuzClicked() {
-        const blob = new Blob([this.getShareablePuz().toBytes(false)], {type: "application/octet-stream"});
+        const blob = new Blob([this.getShareablePuz().toBytes()], {type: "application/octet-stream"});
         this.downloadCrossword(blob, '.puz');
     },
     downloadEnoClicked() {

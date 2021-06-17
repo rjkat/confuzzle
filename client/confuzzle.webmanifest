@@ -30,7 +30,8 @@
       "action": "/",
       "accept": {
         "text/plain": [".confuz", ".eno", ".txt"],
-        "application/x-crossword": ".puz"
+        "application/x-crossword": ".puz",
+        "": ".🧩"
       }
     }
   ],
