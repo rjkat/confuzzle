@@ -79,14 +79,17 @@
 
 .cell-tooltip[data-popper-placement^='bottom'] > .cell-tooltip-arrow {
   top: -4px;
+  left: -4px !important;
 }
 
 .cell-tooltip[data-popper-placement^='left'] > .cell-tooltip-arrow {
   right: -4px;
+  top: -4px !important;
 }
 
 .cell-tooltip[data-popper-placement^='right'] > .cell-tooltip-arrow {
   left: -4px;
+  top: -4px !important;
 }
 .cell-highlight-border {
     content: '';
@@ -347,9 +350,9 @@ export default Vue.extend({
             this.popper.destroy();
 
         Vue.nextTick(() => {
-            const fallbacks = this.downSelected ? ['right'] : ['bottom'];
+            let fallbacks = this.downSelected ? ['left', 'right', 'bottom'] : ['top', 'bottom'];
             this.popper = createPopper(this.$refs.input, this.$refs.tooltip, {
-              placement: 'top',
+              placement: this.downSelected ? 'top' : 'left',
               modifiers: [
                 {
                   name: 'flip',
@@ -367,7 +370,7 @@ export default Vue.extend({
                   name: 'preventOverflow',
                   options: {
                     boundary: this.$refs.tableCell.parentElement.parentElement,
-                    // altAxis: true
+                    rootBoundary: 'document'
                   }
                 }
               ],
@@ -413,7 +416,7 @@ export default Vue.extend({
     return {
       bundler: "Parcel",
       popper: null,
-      clueWrapChars: 30
+      clueWrapChars: 20
     };
   },
 });

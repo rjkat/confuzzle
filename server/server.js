@@ -9,7 +9,6 @@ const favicon = require('serve-favicon');
 const app = express()
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
-const robots = require('express-robots-txt')
 const fs = require('fs')
 const path = require('path')
 const keyFile = path.join(__dirname, 'server.key')
@@ -62,9 +61,6 @@ function queryGrid(gridid) {
     }
     return undefined;
 }
-
-
-app.use(robots({UserAgent: '*', Disallow: '/'}))
 
 
 if (env == 'dev') {
