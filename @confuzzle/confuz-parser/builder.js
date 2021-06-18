@@ -36,15 +36,11 @@ function parseAndBuild(input, compiling) {
         }
       }
       
-      let nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {
         if (clue.refIds[i] != clueid) {
           clue.refs.push(cw.clues[clue.refIds[i]]);
-        } else {
-          nextRefId = clue.refIds[i + 1];
         }
       }
-      clue.nextRef = nextRefId ? cw.clues[nextRefId] : null;
 
       // populate crossword across and down clues for convenience
       if (clue.isAcross) {
@@ -123,6 +119,23 @@ function parseAndBuild(input, compiling) {
     cw.downClues.sort((a, b) => {
         return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
+
+    for (let [i, clue_i] of cw.acrossClues.entries()) {
+        if (i == cw.acrossClues.length - 1) {
+            clue_i.nextRef = cw.downClues[0];
+        } else {
+            clue_i.nextRef = cw.acrossClues[i + 1];
+        }
+    }
+    for (let [i, clue_i] of cw.downClues.entries()) {
+        if (i == cw.downClues.length - 1) {
+            // Loop back around
+            clue_i.nextRef = cw.acrossClues[0];
+        } else {
+            clue_i.nextRef = cw.downClues[i + 1];
+        }
+    }
+    
     return cw;
 }
 
