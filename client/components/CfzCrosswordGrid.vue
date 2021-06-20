@@ -116,6 +116,7 @@ export default Vue.extend({
   },
   props: {
     crossword: Object,
+    moveToNextClueAtEnd: Boolean,
     usingPencil: Boolean,
     showScratchpad: Boolean,
     answerSlots: {
@@ -207,6 +208,24 @@ export default Vue.extend({
     },
   },
   methods: {
+    getNextClue() {
+      for (let [i, clue_i] of cw.acrossClues.entries()) {
+        if (clue_i.selected) {
+          if (i == cw.acrossClue.length - 1) {
+            return cw.downClues[0];
+          }
+          return cw.acrossClues[i + 1];
+        }
+      }
+      for (let [i, clue_i] of cw.downClues.entries()) {
+        if (clue_i.selected) {
+          if (i == cw.downClue.length - 1) {
+            return cw.acrossClues[0];
+          }
+          return cw.downClues[i + 1];
+        }
+      }
+    },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
         this.$refs.scratchpad.dropTile(fromAnswer, offset, letter, target);
@@ -323,14 +342,20 @@ export default Vue.extend({
               || cells[row][col].empty) {
               // make it so that backspace doesn't hide the input
               if (!backspace) {
-                input.blur();
-                if (this.selectedClue && this.selectedClue.nextRef) {
-                    const next = this.selectedClue.nextRef;
-                    this.inputAcross = next.isAcross;
-                    this.selectCell(next.cells[0]);
-                } else {
-                  this.deselectCell(cell);
-                }
+                  input.blur();
+                  if (moveToNextClueAtEnd) {
+                      if (this.selectedClue && this.selectedClue.nextRef) {
+                          const next = this.selectedClue.nextRef;
+                          this.inputAcross = next.isAcross;
+                          this.selectCell(next.cells[0]);
+                      } else {
+                          this.deselectCell(cell);
+                      }
+                  } else {
+                      const next = this.getNextClue();
+                      this.inputAcross = next.isAcross;
+                      this.selectCell(next.cells[0]);
+                  }
               }
               return;
           }
