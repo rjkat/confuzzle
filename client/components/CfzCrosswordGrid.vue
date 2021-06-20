@@ -335,7 +335,7 @@ export default Vue.extend({
               col = cell.col;
           }
           const backspace = direction == -1;
-          
+
           // we've run off the end or hit an empty square
           if (   row < 0 || row >= cells.length
               || col < 0 || col >= cells[row].length
@@ -348,12 +348,11 @@ export default Vue.extend({
                       this.inputAcross = next.isAcross;
                       this.selectCell(next.cells[0]);
                   } else {
+                      // only move if nextRef is set
                       if (this.selectedClue && this.selectedClue.nextRef) {
                           const next = this.selectedClue.nextRef;
                           this.inputAcross = next.isAcross;
                           this.selectCell(next.cells[0]);
-                      } else {
-                          this.deselectCell(cell);
                       }
                   }
               }
