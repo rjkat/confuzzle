@@ -208,21 +208,32 @@ export default Vue.extend({
     },
   },
   methods: {
-    getNextClue() {
-      for (let [i, clue_i] of cw.acrossClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.acrossClue.length - 1) {
-            return cw.downClues[0];
-          }
-          return cw.acrossClues[i + 1];
+    clueHasBlanks(clue) {
+      for (let cell of clue.cells) {
+        if (cell.contents == '') {
+          return true;
         }
       }
-      for (let [i, clue_i] of cw.downClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.downClue.length - 1) {
-            return cw.acrossClues[0];
-          }
-          return cw.downClues[i + 1];
+      return false;
+    },
+    getNextClue() {
+      let found_selected = false;
+      for (let clue of cw.acrossClues.concat(cw.downClues)) {
+        if (found_selected && clueHasBlanks(clue)) {
+          return clue;
+        }
+        if (clue.selected) {
+          found_selected = true;
+        }
+      }
+      // now wrap around until we hit selected again
+      for (let clue of cw.acrossClues.concat(cw.downClues)) {
+        if (clueHasBlanks(clue)) {
+          return clue;
+        }
+        if (clue.selected) {
+          // No blanks on the puzzle, so stay put
+          return clue;
         }
       }
     },
