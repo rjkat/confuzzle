@@ -229,16 +229,7 @@ export default Vue.extend({
     setClue(clue) {
         // update grid to start at the passed clue
         this.inputAcross = clue.isAcross;
-        // find first blank cell to set.
-        first_blank = 0;
-        while (first_blank < clue.cells.length && clue.cells[first_blank].contents != '') {
-            first_blank++;
-        }
-        if (first_blank == clue.cells.length) {
-            // never found; set to first character by default
-            first_blank = 0;
-        }
-        this.selectCell(clue.cells[first_blank]);
+        this.selectCell(clue.cells[0]);
     },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
