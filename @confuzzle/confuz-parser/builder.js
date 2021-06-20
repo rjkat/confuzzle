@@ -27,14 +27,14 @@ function parseAndBuild(input, compiling) {
       }
 
       clue.idText = clue.numbering.clueText;
-      clue.directionText = '';
-      if (!clue.verbatim) {
-        if (clue.refIds.length > 0 && clue.primaryId == clueid) {
-          clue.idText = clue.refIds.join(', ');
-        } else {
-          clue.directionText = clue.isAcross ? 'A' : 'D';
-        }
+      clue.numberText = clue.numbering.clueText;
+      clue.refText = '';
+      if (clue.refIds.length > 0 && clue.primaryId == clueid) {
+        clue.idText = clue.refIds.join(', ');
+        clue.refText = clue.refIds.slice(1).join(', ');
       }
+      clue.directionText = clue.isAcross ? 'A' : 'D';
+
       
       let nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {

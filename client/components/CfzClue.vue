@@ -4,8 +4,8 @@
         :data-solver-mask="solverMask"
         ref="item">
         <div class="clue-directions" @click="directionsClicked()">
-            <div class="clue-id">{{clue.idText}}<span class="hidden-print" v-if="showDirection">{{clue.directionText}}</span></div>
-            <div class="clue-text" v-html="clue.sanitizedText + ' ' + clue.sanitizedLengthText"></div>
+            <div class="clue-id" :data-ref-text="!!clue.refText">{{clue.numberText}}<span class="hidden-print">{{clue.directionText}}</span><span v-if="clue.refText">,</span></div>
+            <div class="clue-text" v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText"></div>
         </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
@@ -130,26 +130,32 @@
 
         @media print {
             display: flex;
+            align-items: baseline;
             page-break-inside: avoid;
-            justify-content: space-between;
         }
     }
 
     .clue-id {
         font-weight: bold;
         display: inline-block;
+        white-space:  nowrap;
         @media print {
             text-align: right;
-            align-self: flex-start;
+            &[data-ref-text] {
+                min-width: 1.75em;
+            }
             min-width: 1.5em;
-            margin-right: .5em;
         }
-    } 
+    }
 
     .clue-text {
         display: inline;
 
         @media print {
+            margin-left: .5em;
+            &[data-ref-text] {
+                margin-left: .25em;
+            }
             flex-grow: 1;
         }
     }
@@ -198,10 +204,6 @@ export default Vue.extend({
     isPrimaryRef: function () {
         const clue = this.clue;
         return (clue.refIds && clue.id == clue.refIds[0]);
-    },
-    showDirection: function () {
-        const clue = this.clue;
-        return (clue.numbering.clueText == clue.numbering.gridText) && !(this.isPrimaryRef);
     },
     totalLength() {
         this.clue ? this.clue.totalLength : 0;

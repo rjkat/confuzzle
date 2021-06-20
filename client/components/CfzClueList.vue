@@ -61,10 +61,10 @@
     }
 
     .crossword-clues-li {
-        line-height: 1.5em;
 
         @media screen {
             padding-bottom: .5em;
+            line-height: 1.5em;
         }
         .clue-directions {
             cursor: pointer;
