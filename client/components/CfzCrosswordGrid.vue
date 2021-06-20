@@ -344,6 +344,10 @@ export default Vue.extend({
               if (!backspace) {
                   input.blur();
                   if (moveToNextClueAtEnd) {
+                      const next = this.getNextClue();
+                      this.inputAcross = next.isAcross;
+                      this.selectCell(next.cells[0]);
+                  } else {
                       if (this.selectedClue && this.selectedClue.nextRef) {
                           const next = this.selectedClue.nextRef;
                           this.inputAcross = next.isAcross;
@@ -351,10 +355,6 @@ export default Vue.extend({
                       } else {
                           this.deselectCell(cell);
                       }
-                  } else {
-                      const next = this.getNextClue();
-                      this.inputAcross = next.isAcross;
-                      this.selectCell(next.cells[0]);
                   }
               }
               return;
