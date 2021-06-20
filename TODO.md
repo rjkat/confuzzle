@@ -1,13 +1,9 @@
 ## Future Improvements
 
-### Deployment
-- figure out how to update PWA cache
-
 ### Solving
 - screen reader/accessibility support
-- hints
 - timer
-- anagram exploder
+- rebuses
 
 ### Compiling
 - better system for laying out the grid

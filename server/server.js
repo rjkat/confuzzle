@@ -9,10 +9,6 @@ const favicon = require('serve-favicon');
 const app = express()
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
-const robots = require('express-robots-txt')
-app.use(robots({UserAgent: '*', Allow: '/'}))
-
-
 const fs = require('fs')
 const path = require('path')
 const keyFile = path.join(__dirname, 'server.key')
@@ -128,6 +124,11 @@ app.use(function (req, res, next) {
     }
     if (req.path == '/syntax') {
         res.sendFile(path.join(__dirname + '/../dist/syntax.html'));
+        return;
+    }
+    if (req.path == '/robots.txt') {
+        res.type('text/plain');
+        res.send('User-agent: *\nDisallow: ');
         return;
     }
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
