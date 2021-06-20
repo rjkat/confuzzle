@@ -226,6 +226,20 @@ export default Vue.extend({
         }
       }
     },
+    setClue(clue) {
+        // update grid to start at the passed clue
+        this.inputAcross = clue.isAcross;
+        // find first blank cell to set.
+        first_blank = 0;
+        while (first_blank < clue.cells.length && clue.cells[first_blank].contents != '') {
+            first_blank++;
+        }
+        if (first_blank == clue.cells.length) {
+            // never found; set to first character by default
+            first_blank = 0;
+        }
+        this.selectCell(clue.cells[first_blank]);
+    },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
         this.$refs.scratchpad.dropTile(fromAnswer, offset, letter, target);
@@ -344,14 +358,10 @@ export default Vue.extend({
               if (!backspace) {
                   input.blur();
                   if (this.moveToNextClueAtEnd) {
-                      const next = this.getNextClue();
-                      this.inputAcross = next.isAcross;
-                      this.selectCell(next.cells[0]);
+                      this.setClue(this.getNextClue());
                   } else {
                       if (this.selectedClue && this.selectedClue.nextRef) {
-                          const next = this.selectedClue.nextRef;
-                          this.inputAcross = next.isAcross;
-                          this.selectCell(next.cells[0]);
+                          this.setClue(this.selectedClue.nextRef);
                       } else {
                           this.deselectCell(cell);
                       }
@@ -408,6 +418,9 @@ export default Vue.extend({
                 }
                 this.moveInputCell(e.target, cell, -1);
                 e.preventDefault();
+                break;
+            case KeyCode.KEY_TAB:
+                this.setClue(this.getNextClue());
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
