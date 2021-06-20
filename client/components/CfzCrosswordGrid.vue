@@ -343,7 +343,7 @@ export default Vue.extend({
               // make it so that backspace doesn't hide the input
               if (!backspace) {
                   input.blur();
-                  if (moveToNextClueAtEnd) {
+                  if (this.moveToNextClueAtEnd) {
                       const next = this.getNextClue();
                       this.inputAcross = next.isAcross;
                       this.selectCell(next.cells[0]);
