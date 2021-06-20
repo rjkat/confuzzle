@@ -34,8 +34,6 @@ function parseAndBuild(input, compiling) {
         clue.refText = clue.refIds.slice(1).join(', ');
       }
       clue.directionText = clue.isAcross ? 'A' : 'D';
-
-      
       let nextRefId = '';
       for (let i = 0; i < clue.refIds.length; i++) {
         if (clue.refIds[i] != clueid) {
@@ -123,6 +121,7 @@ function parseAndBuild(input, compiling) {
     cw.downClues.sort((a, b) => {
         return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
+    
     return cw;
 }
 
