@@ -6,6 +6,12 @@
 
 Solve crosswords with your friends! Confuzzle is an interactive crossword editor and real-time collaboration app which also works offline in standalone mode. [See it in action here](https://confuzzle.app).
 
+## .puz file format utilities
+
+As part of building this project I have made some nodejs packages for reading, writing, and parsing the .puz file format, the main one being [@confuzzle/puz-crossword](https://www.npmjs.com/package/@confuzzle/puz-crossword).
+
+The best documentation I could find about this format was from [the libpuz wiki](https://code.google.com/archive/p/puz/wikis/FileFormat.wiki). I have converted this page to markdown at [puz.md](puz.md), since the original page has lost some of its formatting.
+
 ## Contributing
 
 This is a hobby project which is slowly becoming more polished over time. Bug reports and feature requests are absolutely welcome. Pull requests are even better!
