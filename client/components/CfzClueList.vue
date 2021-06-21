@@ -80,6 +80,7 @@
 <script>
 import Vue from "vue";
 import CfzClue from './CfzClue.vue'
+import * as KeyCode from 'keycode-js';
 
 export default Vue.extend({
   components: {

@@ -121,7 +121,18 @@ function parseAndBuild(input, compiling) {
     cw.downClues.sort((a, b) => {
         return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
-    
+
+    [cw.acrossClues, cw.downClues].forEach(clues => {
+      clues.forEach((clue, i) => {
+          const nextIndex = (i + 1) % clues.length;
+          const otherClues = (clue.isAcross ? cw.downClues : cw.acrossClues);
+          const nextClues = nextIndex == 0 ? otherClues : clues;
+          const prevClues = i == 0 ? otherClues : clues;
+          const prevIndex = i > 0 ? i - 1 : 0;
+          clue.nextNumericalClue = nextClues[nextIndex];
+          clue.prevNumericalClue = prevClues[prevIndex];
+      })
+    });
     return cw;
 }
 

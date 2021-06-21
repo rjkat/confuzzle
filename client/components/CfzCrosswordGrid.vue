@@ -185,7 +185,7 @@ export default Vue.extend({
             }
         }
         return undefined;
-    },
+    }
   },
   watch: {
     selectedClue(newVal, oldVal) {
@@ -208,28 +208,10 @@ export default Vue.extend({
     },
   },
   methods: {
-    getNextClue() {
-      for (let [i, clue_i] of cw.acrossClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.acrossClue.length - 1) {
-            return cw.downClues[0];
-          }
-          return cw.acrossClues[i + 1];
-        }
-      }
-      for (let [i, clue_i] of cw.downClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.downClue.length - 1) {
-            return cw.acrossClues[0];
-          }
-          return cw.downClues[i + 1];
-        }
-      }
-    },
-    setClue(clue) {
-        // update grid to start at the passed clue
-        this.inputAcross = clue.isAcross;
-        this.selectCell(clue.cells[0]);
+    setNextClue(clue) {
+      // update grid to start at the passed clue
+      this.inputAcross = clue.isAcross;
+      this.selectCell(clue.cells[0]);
     },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
@@ -349,10 +331,10 @@ export default Vue.extend({
               if (!backspace) {
                   input.blur();
                   if (this.moveToNextClueAtEnd) {
-                      this.setClue(this.getNextClue());
+                      this.setNextClue(this.selectedClue.nextNumericalClue);
                   } else {
                       if (this.selectedClue && this.selectedClue.nextRef) {
-                          this.setClue(this.selectedClue.nextRef);
+                          this.setNextClue(this.selectedClue.nextRef);
                       } else {
                           this.deselectCell(cell);
                       }
@@ -411,7 +393,11 @@ export default Vue.extend({
                 e.preventDefault();
                 break;
             case KeyCode.KEY_TAB:
-                this.setClue(this.getNextClue());
+                this.setNextClue(
+                  e.shiftKey ? this.selectedClue.prevNumericalClue 
+                             : this.selectedClue.nextNumericalClue
+                );
+                e.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:

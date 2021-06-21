@@ -322,6 +322,10 @@ export default Vue.extend({
                 input.blur();
                 event.preventDefault();
                 break;
+            case KeyCode.KEY_TAB:
+                this.$emit('move-to-clue', {clue: this.clue, prev: event.shiftKey});
+                event.preventDefault();
+                break;
         }
     }
   },
