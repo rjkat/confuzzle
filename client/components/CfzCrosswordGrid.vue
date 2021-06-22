@@ -186,7 +186,7 @@ export default Vue.extend({
             }
         }
         return undefined;
-    },
+    }
   },
   watch: {
     selectedClue(newVal, oldVal) {
@@ -209,23 +209,10 @@ export default Vue.extend({
     },
   },
   methods: {
-    getNextClue() {
-      for (let [i, clue_i] of cw.acrossClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.acrossClue.length - 1) {
-            return cw.downClues[0];
-          }
-          return cw.acrossClues[i + 1];
-        }
-      }
-      for (let [i, clue_i] of cw.downClues.entries()) {
-        if (clue_i.selected) {
-          if (i == cw.downClue.length - 1) {
-            return cw.acrossClues[0];
-          }
-          return cw.downClues[i + 1];
-        }
-      }
+    setNextClue(clue) {
+      // update grid to start at the passed clue
+      this.inputAcross = clue.isAcross;
+      this.selectCell(clue.cells[0]);
     },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
@@ -345,17 +332,17 @@ export default Vue.extend({
               if (!backspace) {
                   input.blur();
                   if (this.moveToNextClueAtEnd) {
-                      const next = this.getNextClue();
-                      this.inputAcross = next.isAcross;
-                      this.selectCell(next.cells[0]);
+                      this.setNextClue(this.selectedClue.nextNumericalClue);
                   } else {
                       // only move if nextRef is set
                       if (this.selectedClue && this.selectedClue.nextRef) {
-                          const next = this.selectedClue.nextRef;
-                          this.inputAcross = next.isAcross;
-                          this.selectCell(next.cells[0]);
-                      } else if (this.deselectAtEnd) {
+                        this.setNextClue(this.selectedClue.nextRef);
+                      } else {
+                        if (this.deselectAtEnd) {
                           this.deselectCell(cell);
+                        } else {
+                          this.selectCell(cell);
+                        }
                       }
                   }
               }
@@ -409,6 +396,13 @@ export default Vue.extend({
                     }
                 }
                 this.moveInputCell(e.target, cell, -1);
+                e.preventDefault();
+                break;
+            case KeyCode.KEY_TAB:
+                this.setNextClue(
+                  e.shiftKey ? this.selectedClue.prevNumericalClue 
+                             : this.selectedClue.nextNumericalClue
+                );
                 e.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:

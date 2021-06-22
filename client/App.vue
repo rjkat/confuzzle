@@ -208,6 +208,7 @@
                     :isPortrait="isPortrait"
                     :showTooltips="showTooltips"
                     :showScratchpad="showScratchpad"
+                    :deselectAtEnd="isPortrait"
                     @fill-cell="sendFillCell($event)"
                     v-if="showGrid">
                 </cfz-crossword-grid>
