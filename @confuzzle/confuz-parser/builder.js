@@ -128,7 +128,7 @@ function parseAndBuild(input, compiling) {
           const otherClues = (clue.isAcross ? cw.downClues : cw.acrossClues);
           const nextClues = nextIndex == 0 ? otherClues : clues;
           const prevClues = i == 0 ? otherClues : clues;
-          const prevIndex = i > 0 ? i - 1 : 0;
+          const prevIndex = i > 0 ? i - 1 : otherClues.length - 1;
           clue.nextNumericalClue = nextClues[nextIndex];
           clue.prevNumericalClue = prevClues[prevIndex];
       })
