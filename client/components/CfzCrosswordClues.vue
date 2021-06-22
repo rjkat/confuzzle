@@ -13,6 +13,7 @@
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
+            @move-to-clue="moveToClue($event)"
             v-model="crossword.acrossClues"
             v-on="$listeners"
             v-if="!hideAcross"
@@ -26,6 +27,7 @@
             :usingPencil="usingPencil"
             :solverid="solverid"
             @deselect-clue="clueDeselected($event)"
+            @move-to-clue="moveToClue($event)"
             v-model="crossword.downClues"
             v-on="$listeners"
             v-if="!hideDown"
@@ -179,6 +181,12 @@ export default Vue.extend({
         if (!next) {
             return;
         }
+        const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
+        nextList.selectClue(next);
+    },
+    moveToClue(event) {
+        const clue = event.clue;
+        const next = event.prev ? clue.prevNumericalClue : clue.nextNumericalClue;
         const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
         nextList.selectClue(next);
     },
