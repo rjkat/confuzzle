@@ -117,6 +117,7 @@ export default Vue.extend({
   props: {
     crossword: Object,
     moveToNextClueAtEnd: Boolean,
+    deselectAtEnd: Boolean,
     usingPencil: Boolean,
     showScratchpad: Boolean,
     answerSlots: {
@@ -353,6 +354,8 @@ export default Vue.extend({
                           const next = this.selectedClue.nextRef;
                           this.inputAcross = next.isAcross;
                           this.selectCell(next.cells[0]);
+                      } else if (this.deselectAtEnd) {
+                          this.deselectCell(cell);
                       }
                   }
               }
