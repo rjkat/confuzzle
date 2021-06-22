@@ -117,6 +117,7 @@ export default Vue.extend({
   props: {
     crossword: Object,
     moveToNextClueAtEnd: Boolean,
+    deselectAtEnd: Boolean,
     usingPencil: Boolean,
     showScratchpad: Boolean,
     answerSlots: {
@@ -322,7 +323,7 @@ export default Vue.extend({
               col = cell.col;
           }
           const backspace = direction == -1;
-          
+
           // we've run off the end or hit an empty square
           if (   row < 0 || row >= cells.length
               || col < 0 || col >= cells[row].length
@@ -333,10 +334,15 @@ export default Vue.extend({
                   if (this.moveToNextClueAtEnd) {
                       this.setNextClue(this.selectedClue.nextNumericalClue);
                   } else {
+                      // only move if nextRef is set
                       if (this.selectedClue && this.selectedClue.nextRef) {
-                          this.setNextClue(this.selectedClue.nextRef);
+                        this.setNextClue(this.selectedClue.nextRef);
                       } else {
+                        if (this.deselectAtEnd) {
                           this.deselectCell(cell);
+                        } else {
+                          this.selectCell(cell);
+                        }
                       }
                   }
               }
