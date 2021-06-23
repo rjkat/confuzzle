@@ -185,10 +185,7 @@ export default Vue.extend({
         nextList.selectClue(next);
     },
     moveToClue(event) {
-        const clue = event.clue;
-        const next = event.prev ? clue.prevNumericalClue : clue.nextNumericalClue;
-        const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
-        nextList.selectClue(next, event.at_index);
+        nextList.selectClue(event.clue, event.at_index);
     },
   },
   data() {

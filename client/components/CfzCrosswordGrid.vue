@@ -236,7 +236,7 @@ export default Vue.extend({
       this.selectCell(clue.cells[first_blank]);
 
       // propagate this event to update clue list to match
-      this.$emit('move-to-clue', {clue: this.clue, prev: event.shiftKey, at_index: index});
+      this.$emit('move-to-clue', {clue: clue, at_index: index});
     },
     findAndSetNextClue() {
       // find the next clue
