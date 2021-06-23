@@ -128,7 +128,7 @@ app.use(function (req, res, next) {
     }
     if (req.path == '/robots.txt') {
         res.type('text/plain');
-        res.send('User-agent: *\nDisallow: ');
+        res.send('User-agent: *\nAllow: /$\nAllow: /syntax$\nDisallow: /');
         return;
     }
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
