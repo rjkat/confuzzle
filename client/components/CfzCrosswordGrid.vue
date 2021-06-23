@@ -118,6 +118,7 @@ export default Vue.extend({
     crossword: Object,
     moveToNextClueAtEnd: Boolean,
     deselectAtEnd: Boolean,
+    smartTab: Boolean,  // if set, looks for the next blank
     usingPencil: Boolean,
     showScratchpad: Boolean,
     answerSlots: {
@@ -217,31 +218,59 @@ export default Vue.extend({
       }
       return false;
     },
-    getNextClue() {
-      let found_selected = false;
-      for (let clue of cw.acrossClues.concat(cw.downClues)) {
-        if (found_selected && clueHasBlanks(clue)) {
-          return clue;
-        }
-        if (clue.selected) {
-          found_selected = true;
-        }
-      }
-      // now wrap around until we hit selected again
-      for (let clue of cw.acrossClues.concat(cw.downClues)) {
-        if (clueHasBlanks(clue)) {
-          return clue;
-        }
-        if (clue.selected) {
-          // No blanks on the puzzle, so stay put
-          return clue;
-        }
-      }
-    },
-    setNextClue(clue) {
+    setClue(clue) {
       // update grid to start at the passed clue
       this.inputAcross = clue.isAcross;
-      this.selectCell(clue.cells[0]);
+
+      index = 0;
+      if (this.smartTab) {
+        // smartTab; go to the first blank in the word.
+        while (index < clue.cells.length && clue.cells[index].contents != '') {
+            index++;
+        }
+        if (index == clue.cells.length) {
+            // never found; set to first character by default
+            index = 0;
+        }
+      }
+      this.selectCell(clue.cells[first_blank]);
+
+      // propagate this event to update clue list to match
+      this.$emit('move-to-clue', {clue: this.clue, prev: event.shiftKey, at_index: index});
+    },
+    findAndSetNextClue() {
+      // find the next clue
+      if (!this.smartTab) {
+        this.setClue(this.selectedClue.nextNumericalClue);
+        return;
+      }
+
+      // smart tab is enabled, so look for next blank
+      for (let cursor = clue.nextNumericalClue; cursor != clue; cursor = cursor.nextNumericalClue) {
+        if (this.clueHasBlanks(cursor)) {
+          this.setClue(cursor);
+          return;
+        }
+      }
+
+      // board is completely full; do nothing
+    },
+    findAndSetPrevClue() {
+      // find the next clue
+      if (!this.smartTab) {
+        this.setClue(this.selectedClue.prevNumericalClue);
+        return;
+      }
+
+      // smart tab is enabled, so look for next blank
+      for (let cursor = clue.prevNumericalClue; cursor != clue; cursor = cursor.prevNumericalClue) {
+        if (this.clueHasBlanks(cursor)) {
+          this.setClue(cursor);
+          return;
+        }
+      }
+
+      // board is completely full; do nothing
     },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.scratchpad) {
@@ -361,11 +390,11 @@ export default Vue.extend({
               if (!backspace) {
                   input.blur();
                   if (this.moveToNextClueAtEnd) {
-                      this.setNextClue(this.selectedClue.nextNumericalClue);
+                      this.findAndSetNextClue();
                   } else {
                       // only move if nextRef is set
                       if (this.selectedClue && this.selectedClue.nextRef) {
-                        this.setNextClue(this.selectedClue.nextRef);
+                        this.setClue(this.selectedClue.nextRef);
                       } else {
                         if (this.deselectAtEnd) {
                           this.deselectCell(cell);
@@ -428,10 +457,11 @@ export default Vue.extend({
                 e.preventDefault();
                 break;
             case KeyCode.KEY_TAB:
-                this.setNextClue(
-                  e.shiftKey ? this.selectedClue.prevNumericalClue 
-                             : this.selectedClue.nextNumericalClue
-                );
+                if (e.shiftKey) {
+                  this.findAndSetPrevClue();
+                } else {
+                  this.findAndSetNextClue();
+                }
                 e.preventDefault();
                 break;
             case KeyCode.KEY_ESCAPE:

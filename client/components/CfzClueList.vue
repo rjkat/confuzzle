@@ -112,10 +112,14 @@ export default Vue.extend({
     }
   },
   methods: {
-    selectClue(clue) {
+    selectClue(clue, at_index) {
+        if (!at_index) {
+            // if not provided
+            at_index = 0;
+        }
         for (var i = 0; i < this.clues.length; i++) {
             if (this.clues[i].id == clue.id) {
-                this.$refs.items[i].directionsClicked(true)
+                this.$refs.items[i].directionsClicked(true, at_index);
                 break;
             }
         }

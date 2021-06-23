@@ -3,7 +3,7 @@
         :class="{highlighted: selected || highlighted}"
         :data-solver-mask="solverMask"
         ref="item">
-        <div class="clue-directions" @click="directionsClicked()">
+        <div class="clue-directions" @click="directionsClicked(false, 0)">
             <div class="clue-id" :data-ref-text="!!clue.refText">{{clue.numberText}}<span class="hidden-print">{{clue.directionText}}</span><span v-if="clue.refText">,</span></div>
             <div class="clue-text" v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText"></div>
         </div>
@@ -223,9 +223,9 @@ export default Vue.extend({
         }
         return sep;
     },
-    directionsClicked: function(forced) {
+    directionsClicked: function(forced, at_index) {
         for (let i = 0; i < this.$refs.inputs.length; i++) {
-            if (this.$refs.inputs[i].dataset.cellIndex == 0) {
+            if (this.$refs.inputs[i].dataset.cellIndex == at_index) {
                 this.$refs.inputs[i].click();
             }
         }
@@ -320,10 +320,6 @@ export default Vue.extend({
             case KeyCode.KEY_ESCAPE:
             case KeyCode.KEY_RETURN:
                 input.blur();
-                event.preventDefault();
-                break;
-            case KeyCode.KEY_TAB:
-                this.$emit('move-to-clue', {clue: this.clue, prev: event.shiftKey});
                 event.preventDefault();
                 break;
         }
