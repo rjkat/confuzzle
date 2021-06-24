@@ -124,8 +124,8 @@ export default Vue.extend({
     showGrid: true,
     showTooltips: true,
     showTooltipToggle: false,
-    showScratchpad: false,
-    showScratchpadEnabled: false,
+    showAnagramView: false,
+    showAnagramViewEnabled: false,
     usingPencil: false,
     darkModeEnabled: false
   },
@@ -154,11 +154,11 @@ export default Vue.extend({
     },
     viewOptions() {
         var options = [];
-        if (this.showScratchpad || !this.showGrid) {
+        if (this.showAnagramView || !this.showGrid) {
             options.push(this.opt.SHOW_GRID);
         }
-        if (!this.showScratchpad || !this.showGrid) {
-            options.push(this.opt.SHOW_DECRYPT);
+        if (!this.showAnagramView || !this.showGrid) {
+            options.push(this.opt.SHOW_ANAGRAM);
         }
         if (this.showGrid) {
             options.push(this.opt.SHOW_CLUES_ONLY);
@@ -195,16 +195,16 @@ export default Vue.extend({
             this.$emit('reveal-word-clicked');
         } else if (option.label == this.opt.REVEAL_ALL.label) {
             this.$emit('reveal-all-clicked');
-        } else if (option.label == this.opt.SHOW_DECRYPT.label) {
+        } else if (option.label == this.opt.SHOW_ANAGRAM.label) {
             if (!this.showGrid) {
                 this.$emit('show-grid-changed', true);
             }
-            this.$emit('show-scratchpad-changed', true);
+            this.$emit('show-anagram-changed', true);
         } else if (option.label == this.opt.SHOW_GRID.label) {
             if (!this.showGrid) {
                 this.$emit('show-grid-changed', true);
             }
-            this.$emit('show-scratchpad-changed', false);
+            this.$emit('show-anagram-changed', false);
         } else if (option.label == this.opt.SHOW_NO_TOOLTIPS.label) {
             this.$emit('show-tooltips-changed', false);
         } else if (option.label == this.opt.SHOW_TOOLTIPS.label) {
@@ -265,7 +265,7 @@ export default Vue.extend({
             label: 'Grid',
             icon: 'grid_on'
         },
-        SHOW_DECRYPT: {
+        SHOW_ANAGRAM: {
             label: 'Anagram',
             icon: 'gesture'
         },

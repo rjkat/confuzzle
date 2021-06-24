@@ -1,8 +1,8 @@
 <template>
-<div id="app-container" ref="appContainer" :class="theme" :data-show-scratchpad="showScratchpad">
-    <cfz-anagram-helper v-if="state.anagram" @close-anagram-helper="anagramHelperClosed()">
+<div id="app-container" ref="appContainer" :class="theme">
+    <cfz-anagram-app v-if="state.anagramOnly" @close-anagram-helper="anagramHelperClosed()">
 
-    </cfz-anagram-helper>
+    </cfz-anagram-app>
     <transition name="launcher">
         <cfz-launcher ref="launcher" v-if="state.launching"
             :showReturnButton="!firstLaunch"
@@ -57,7 +57,7 @@
     <cfz-header-toolbar
         id="header-toolbar"
         ref="toolbar"
-        v-if="!state.joining && !(state.launching || state.anagram)"
+        v-if="!state.joining && !(state.launching || state.anagramOnly)"
         :metadata="crossword.meta"
         :shareLoading="shareLoading"
         :shareLink="shareLink"
@@ -89,7 +89,7 @@
     </cfz-header-toolbar>
     
     <div id="app-content" ref="appContent" :data-portrait="isPortrait" :data-show-grid="showGrid"
-         v-if="!(state.launching || state.anagram)"
+         v-if="!(state.launching || state.anagramOnly)"
          @dragenter="dragEnterHandler"
          @dragover="dragOverHandler"
          @dragleave="dragLeaveHandler"
@@ -155,8 +155,8 @@
                      id="control-toolbar"
                      :showEdit="!state.colluding"
                      :showDelete="false"
-                     :showScratchpad="showScratchpad"
-                     :showTooltipToggle="!isPortrait && showGrid && !showScratchpad"
+                     :showAnagramView="showAnagramView"
+                     :showTooltipToggle="!isPortrait && showGrid && !showAnagramView"
                      :showTooltips="showTooltips"
                      :showGrid="showGrid"
                      :data-portrait="isPortrait"
@@ -170,7 +170,7 @@
                      @edit-source-clicked="editSourceClicked()"
                      @clear-all-clicked="clearAllClicked()"
                      @erase-clue-clicked="eraseClueClicked()"
-                     @show-scratchpad-changed="showScratchpadChanged($event)"
+                     @show-anagram-changed="showAnagramChanged($event)"
                      @enable-dark-mode-changed="enableDarkModeChanged($event)"
                      class="hidden-print"
                      v-responsive.class
@@ -207,9 +207,10 @@
                     :gridDisplayHeight="gridDisplayHeight"
                     :isPortrait="isPortrait"
                     :showTooltips="showTooltips"
-                    :showScratchpad="showScratchpad"
-                    :deselectAtEnd="isPortrait"
+                    :showAnagramView="showAnagramView"
+                    :deselectAtEnd="false"
                     @fill-cell="sendFillCell($event)"
+                    @anagram-submitted="anagramSubmitted($event)"
                     v-if="showGrid">
                 </cfz-crossword-grid>
             </transition>
@@ -621,7 +622,7 @@ import CfzControlToolbar from './components/CfzControlToolbar.vue'
 import CfzDisconnectedModal from './components/CfzDisconnectedModal.vue'
 import CfzLauncher from './components/CfzLauncher.vue'
 import CfzFileInput from './components/CfzFileInput.vue'
-import CfzAnagramHelper from './components/CfzAnagramHelper.vue'
+import CfzAnagramApp from './components/CfzAnagramApp.vue'
 
 const parser = require('../@confuzzle/confuz-parser/parser');
 
@@ -653,7 +654,7 @@ export default Vue.extend({
     CfzDisconnectedModal,
     CfzLauncher,
     CfzFileInput,
-    CfzAnagramHelper
+    CfzAnagramApp
   },
   props: {
     gridid: String,
@@ -673,7 +674,7 @@ export default Vue.extend({
                 compiling: false,
                 joining: false,
                 launching: false,
-                anagram: false,
+                anagramOnly: false,
                 reconnecting: false
             };
         }
@@ -719,7 +720,7 @@ export default Vue.extend({
         return !this.gridid ? "" : this.shortUrl + '/' + this.gridid;
     },
     pageTitle() {
-      if (this.state.anagram)
+      if (this.state.anagramOnly)
         return 'Anagram Helper | Confuzzle';
       if (this.firstLaunch)
         return 'Home | Confuzzle';
@@ -897,7 +898,7 @@ export default Vue.extend({
 
 
     if (this.isAnagram()) {
-      this.state.anagram = true;
+      this.state.anagramOnly = true;
       this.state.launching = false;
       this.updateTitle();
     } else if (this.shouldJoin()) {
@@ -940,7 +941,7 @@ export default Vue.extend({
       showGrid: true,
       usingPencil: false,
       showTooltips: true,
-      showScratchpad: false,
+      showAnagramView: false,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
       iOSSafari: false,
       iOSPrompt: false,
@@ -1060,7 +1061,7 @@ export default Vue.extend({
         this.returnFromLauncher();
     },
     anagramHelperClosed() {
-        this.state.anagram = false;
+        this.state.anagramOnly = false;
         this.state.launching = true;
         window.history.pushState(null, '', '/');
         this.updateTitle();
@@ -1115,8 +1116,8 @@ export default Vue.extend({
         this.themeOverride = true;
         this.darkModeEnabled = enable;
     },
-    showScratchpadChanged(show) {
-        this.showScratchpad = show;
+    showAnagramChanged(show) {
+        this.showAnagramView = show;
     },
     showGridChanged(show) {
         this.showGrid = show;
@@ -1126,10 +1127,10 @@ export default Vue.extend({
     },
     handlePopState() {
        if (this.isAnagram()) {
-           this.state.anagram = true;
+           this.state.anagramOnly = true;
            this.state.launching = false;
        } else {
-           this.state.anagram = false;
+           this.state.anagramOnly = false;
        }
 
       this.gridid = '';
@@ -1149,7 +1150,7 @@ export default Vue.extend({
       }
       if (this.shouldJoin()) {
         this.startJoining();
-      } else if (!this.state.anagram) {
+      } else if (!this.state.anagramOnly) {
         if (this.firstLaunch) {
             this.state.launching = true;
         } else {
@@ -1281,7 +1282,7 @@ export default Vue.extend({
         this.handleResize();
         // this.gridSizeLocked = true;
         this.renderLoading = false;
-        this.showScratchpad = false;
+        this.showAnagramView = false;
 
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
@@ -1677,6 +1678,9 @@ export default Vue.extend({
                 }
             }
         }
+    },
+    anagramSubmitted(event) {
+        this.showAnagramView = false;
     },
     sendFillCell(event) {
         this.sendUpdate({

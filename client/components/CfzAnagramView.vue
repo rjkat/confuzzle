@@ -1,16 +1,16 @@
 <template>
 <div>
-  <div class="cfz-scratchpad-container" ref="container" :data-portrait="isPortrait">
+  <div class="cfz-anagram-container" ref="container" :data-portrait="isPortrait">
     <template v-if="!standalone">
-      <div v-if="clue.id != 'dummy'" class="decrypt-container-label">
+      <div v-if="clue.id != 'dummy'" class="anagram-container-label">
         <span class="clue-id">{{clue.idText + clue.directionText}}</span>
         <span v-html="clue.sanitizedText"></span>
         <span class="clue-length">{{clue.lengthText}}</span>
       </div>
-      <div v-else class="decrypt-container-label">Select a clue to solve.</div>
+      <div v-else class="anagram-container-label">Select a clue to solve.</div>
     </template>
     <template v-else>
-      <div class="cfz-scratchpad-standalone-subtitle">Add letters and drag to arrange them below.</div>
+      <div class="cfz-anagram-standalone-subtitle">Add letters and drag to arrange them below.</div>
     </template>
     <div class="word-container" ref="words">
       <template v-for="(word, i) in words">
@@ -48,11 +48,11 @@
           <div class="letter-length-indicator" :data-solver-mask="solverMask"><div :style="{'text-align': 'left', 'padding-left': numAnswerLetters < 10 ? '0.5em' : 0}">{{numAnswerLetters}}</div><div :style="{'text-align': 'right', 'padding-right': answerSlots[clue.id].length < 10 ? '0.5em' : 0}">{{answerSlots[clue.id].length}}</div></div>
       </div>
     </div>
-    <div class="decrypt-button-container">
-      <ui-button raised color="red" class="decrypt-button" :disabled="!numWorkingLetters && !numAnswerLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
-      <ui-button raised class="decrypt-button" icon="shuffle" :disabled="!numWorkingLetters" @click="shuffleClicked()">Shuffle</ui-button>
-      <ui-button v-if="standalone" raised color="primary" class="decrypt-button" icon="add" @click="openCustomModal()">Letters</ui-button>
-      <ui-button v-else raised color="primary" class="decrypt-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
+    <div class="anagram-button-container">
+      <ui-button raised color="red" class="anagram-button" :disabled="!numWorkingLetters && !numAnswerLetters" icon="delete" @click="clearClicked()">Clear</ui-button>
+      <ui-button raised class="anagram-button" icon="shuffle" :disabled="!numWorkingLetters" @click="shuffleClicked()">Shuffle</ui-button>
+      <ui-button v-if="standalone" raised color="primary" class="anagram-button" icon="add" @click="openCustomModal()">Letters</ui-button>
+      <ui-button v-else raised color="primary" class="anagram-button" :disabled="submitDisabled" icon="exit_to_app" @click="submitClicked()">Submit</ui-button>
     </div>
   </div>
   <ui-modal ref="customWordModal" title="Add custom letters">
@@ -76,6 +76,7 @@
           display: flex;
           flex-direction: column;
           text-align: center;
+          pointer-events: none;
           font-family: $answerFontFamily;
     }
     .drag-source {
@@ -87,7 +88,7 @@
     .drag-mode-cut {
       visibility: hidden;
     }
-    .cfz-scratchpad-container {
+    .cfz-anagram-container {
         overflow-y: scroll;
         display: flex;
         height: 100%;
@@ -97,7 +98,7 @@
         font-size: 26px;
         text-transform: uppercase;
         -webkit-user-select: none;
-        .cfz-scratchpad-header {
+        .cfz-anagram-header {
             font-family: $clueFontFamily;
             text-transform: none;
             font-weight: bold;
@@ -111,12 +112,12 @@
           list-style-type: none;
         }
 
-        .cfz-scratchpad-standalone-title {
+        .cfz-anagram-standalone-title {
           width: 100%;
           text-align: center;
           font-family: $titleFontFamily;
         }
-        .cfz-scratchpad-standalone-subtitle {
+        .cfz-anagram-standalone-subtitle {
           width: 100%;
           padding-top: 1rem;
           text-transform: none;
@@ -125,13 +126,13 @@
           text-align: center;
         }
     }
-    .decrypt-button-container {
+    .anagram-button-container {
       display: flex;
       width: 100%;
       justify-content: center;
       text-align: center;
     }
-    .decrypt-button {
+    .anagram-button {
       margin: 8px;
     }
     .word-tile {
@@ -269,7 +270,7 @@
         }
         
     }
-    .decrypt-container-label {
+    .anagram-container-label {
       font-family: $clueFontFamily;
       color: var(--text-color);
       font-size: 14px;
@@ -578,7 +579,7 @@ export default Vue.extend({
       for (const slot of this.answerSlots[this.clue.id]) {
         text.push(slot.item ? slot.item.letter : '');
       }
-      this.$emit('submit-decrypt', {
+      this.$emit('submit-anagram', {
         text: text,
         clue: this.clue
       });

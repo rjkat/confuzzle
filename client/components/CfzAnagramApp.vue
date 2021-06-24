@@ -1,11 +1,11 @@
 <template>
-  <div class="cfz-anagram-container">
-      <cfz-scratchpad class="cfz-standalone-scratchpad" standalone>
+  <div class="cfz-anagram-app-container">
+      <cfz-anagram-view class="cfz-anagram-app-view" standalone>
         
-      </cfz-scratchpad>
+      </cfz-anagram-view>
 
-      <div class="cfz-anagram-footer">
-        <ui-button color="primary" @click="$emit('close-anagram-helper')" class="cfz-anagram-home-button">
+      <div class="cfz-anagram-app-footer">
+        <ui-button color="primary" @click="$emit('close-anagram-helper')" class="cfz-anagram-app-home-button">
             <table class="cfz-flat-logo" width="30" height="30" style="padding-right: .5rem; ">
             <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
              >C</td>
@@ -21,25 +21,24 @@
     border-color: var(--grid-bg-color);
     color: var(--text-color);
   }
-  .cfz-standalone-scratchpad {
+  .cfz-anagram-app-view {
     padding: 1rem;
     flex-grow: 1;
   }
-  .cfz-anagram-container {
+  .cfz-anagram-app-container {
     height: 100%;
     max-height: 100%;
     width: 100%;
+    max-width: 100ch;
+    margin: auto;
     display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
     flex-direction: column;
   }
-  .cfz-anagram-footer {
+  .cfz-anagram-app-footer {
     width: 100%;
     text-align: center;
   }
-  .cfz-anagram-home-button {
+  .cfz-anagram-app-home-button {
     margin-bottom: 2rem;
     min-height: calc(30px + 1rem);
   }
@@ -48,11 +47,11 @@
 <script>
 
 import Vue from 'vue';
-import CfzScratchpad from './CfzScratchpad.vue'
+import CfzAnagramView from './CfzAnagramView.vue'
 
 export default Vue.extend({
   components: {
-    CfzScratchpad
+    CfzAnagramView
   },
   props: {
     showReturnButton: Boolean,

@@ -8,7 +8,7 @@
   
   <div class="crossword-grid-container" :style="gridContainerStyle">
       <transition name="anagram">
-        <div v-if="!showScratchpad" key="grid">
+        <div v-if="!showAnagramView" key="grid">
           <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
               <tr v-for="(row, r) in crossword.grid.cells">
                   <cfz-cell v-for="cell in row" ref="inputCells"
@@ -22,8 +22,8 @@
               </tr>
           </table>
         </div>
-        <cfz-scratchpad v-else key="scratchpad" name="scratchpad" :answerSlots.sync="answerSlots" :workingLetters.sync="workingLetters" class="crossword-scratchpad" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-decrypt="submitDecrypt($event)" :solverid="solverid" :usingPencil="usingPencil" :isPortrait="isPortrait" ref="scratchpad">
-        </cfz-scratchpad>
+        <cfz-anagram-view v-else key="anagram" name="anagram" :answerSlots.sync="answerSlots" :workingLetters.sync="workingLetters" class="crossword-anagram" :clue="selectedClue && selectedClue.primary ? selectedClue.primary : selectedClue" @submit-anagram="submitAnagram($event)" :solverid="solverid" :usingPencil="usingPencil" :isPortrait="isPortrait" ref="anagram">
+        </cfz-anagram-view>
         
       </transition>
       
@@ -35,7 +35,7 @@
 <style lang="scss">
 @import '../stylesheets/themes';
 
-.crossword-scratchpad {
+.crossword-anagram {
   flex: none;
   height: 100%;
   width: 100%;
@@ -104,12 +104,12 @@
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
 import CfzCell from './CfzCell.vue'
-import CfzScratchpad from './CfzScratchpad.vue'
+import CfzAnagramView from './CfzAnagramView.vue'
 
 export default Vue.extend({
   components: {
     CfzCell,
-    CfzScratchpad
+    CfzAnagramView
   },
   model: {
     prop: 'crossword'
@@ -119,7 +119,7 @@ export default Vue.extend({
     moveToNextClueAtEnd: Boolean,
     deselectAtEnd: Boolean,
     usingPencil: Boolean,
-    showScratchpad: Boolean,
+    showAnagramView: Boolean,
     answerSlots: {
       type: Object,
       default: function () { return {} }
@@ -166,7 +166,7 @@ export default Vue.extend({
     gridContainerStyle() {
       const gridHeight = (this.gridScale * this.gridHeight) + 'px';
       const gridWidth =  (this.gridScale * this.gridWidth) + 'px';
-      if (this.showScratchpad) {
+      if (this.showAnagramView) {
          return {
           'height': this.isPortrait ? 'unset' : '100%',
           'width': this.isPortrait ? '100%' : gridWidth,
@@ -215,8 +215,8 @@ export default Vue.extend({
       this.selectCell(clue.cells[0]);
     },
     dropTile(fromAnswer, offset, letter, target) {
-      if (this.$refs.scratchpad) {
-        this.$refs.scratchpad.dropTile(fromAnswer, offset, letter, target);
+      if (this.$refs.anagram) {
+        this.$refs.anagram.dropTile(fromAnswer, offset, letter, target);
       }
     },
     showPopover(clue) {
@@ -259,7 +259,7 @@ export default Vue.extend({
         if (inputCell)
           inputCell.select();
     },
-    submitDecrypt(answer) {
+    submitAnagram(answer) {
       let i = 0;
       let clue = answer.clue;
       let j = 0;
@@ -280,6 +280,7 @@ export default Vue.extend({
           j = 0;
         }
       }
+      this.$emit('anagram-submitted');
     },
     fillCell(cell, value) {
       cell.contents = value;
