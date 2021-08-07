@@ -10,6 +10,7 @@
             v-model="filteredClues[i]"
             :usingPencil="usingPencil"
             :solverid="solverid"
+            :solvers="solvers"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
             >
@@ -90,6 +91,7 @@ export default Vue.extend({
   },
   props: {
     isAcross: Boolean,
+    solvers: Object,
     clues: {
         type: Array,
         required: true

@@ -1,10 +1,10 @@
 <template>
-    <ul v-if="items.length">
-        <li class="solvers-text">SOLVERS</li>
-        <li v-for="item in items" class="highlighted" :data-solver-mask="(1 << (item.solverid % 8))">
+    <div class="solvers-list">
+        <div class="solvers-list-item solvers-text" v-if="titleText">{{titleText}}</div>
+        <div class="solvers-list-item highlighted" v-for="item in items" :data-solver-mask="(1 << (item.solverid % 8))">
             {{item.name[0]}}<ui-tooltip class="solver-tooltip">{{item.name}}</ui-tooltip>
-        </li>
-    </ul>
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -14,24 +14,23 @@
     font-size: $gridFontSize;   
     text-transform: uppercase;     
 }
-ul {
+.solvers-list {
     vertical-align: middle;
-    list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
-    li {
+    .solvers-list-item {
         display: flex;
         align-items: center;
     }
-    li.solvers-text {
+    .solvers-list-item.solvers-text {
         font-family: $titleFontFamily;
 
         margin-left: 0.5em;
         padding-right: $displayPadding;
     }
 
-    li.highlighted {
+    .solvers-list-item.highlighted {
         font-family: $answerFontFamily;
         color: var(--text-color);
         font-size: $gridFontSize;
@@ -47,6 +46,7 @@ ul {
         border: 1px solid #000;
         margin-left: -1px;
         cursor: pointer;
+        box-sizing: content-box;
 
         @include each-solver using ($color, $lightColor, $sel) {
           .theme-light &#{$sel}, &#{$sel} {
@@ -74,16 +74,23 @@ import Vue from 'vue';
 
 export default Vue.extend({
   props: {
-    solvers: Object
+    solvers: Object,
+    titleText: String,
+    mask: {
+        type: Number,
+        default: 0xFFFFFFFF
+    }
   },
   computed: {
     items() {
         const items = [];
         for (let [k, props] of Object.entries(this.solvers)) {
-            items.push({
-                solverid: props.solverid,
-                name: props.name
-            });
+            if (this.mask & (1 << props.solverid)) {
+                items.push({
+                    solverid: props.solverid,
+                    name: props.name
+                });
+            }
         }
         return items;
     }

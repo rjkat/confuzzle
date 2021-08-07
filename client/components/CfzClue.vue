@@ -33,7 +33,9 @@
                 
                 <ui-icon v-if="clue.showCorrect">check</ui-icon>
                 <ui-icon v-if="clue.showIncorrect">close</ui-icon>
+                
             </div>
+            <cfz-solver-list class="clue-solvers" :solvers="solvers" :mask="clue.highlightMask"></cfz-solver-list>
         </div>
     </li>
 </template>
@@ -44,6 +46,16 @@
 
 .crossword-answer-container {
     cursor: default;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1em;
+}
+
+.clue-solvers {
+    display: inline-block;
+    transform: scale(0.8);
 }
 
 .clue-item {
@@ -170,10 +182,15 @@
 <script>
 import Vue from "vue";
 import * as KeyCode from 'keycode-js';
+import CfzSolverList from './CfzSolverList.vue'
 
 export default Vue.extend({
+  components: {
+    CfzSolverList
+  },
   props: {
     clue: Object,
+    solvers: Object,
     usingPencil: Boolean,
     solverid: {
         type: Number,

@@ -3,7 +3,7 @@
     <div class="copyright-text hidden-print">{{crossword.meta.copyrightText}}</div>
     <div v-if="crossword.meta.url" class="copyright-text hidden-print">Obtained from <a :href="crossword.meta.url" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">{{crossword.meta.url}}<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></div>
     <div v-if="crossword.meta.gid" class="copyright-text hidden-print">Solve at <a :href="'https://grids.confuzzle.me/' + crossword.meta.gid" target="_blank" rel="noopener" style="overflow-wrap: anywhere;">https://grids.confuzzle.me/{{crossword.meta.gid}}</a></div>
-    <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers"></cfz-solver-list>
+    <cfz-solver-list v-if="state.colluding" id="solvers" class="hidden-print" :solvers="solvers" titleText="SOLVERS"></cfz-solver-list>
     <div class="author-note" v-if="crossword.meta.note" v-html="noteHTML"></div>
     <div class="cfz-clue-list-container">
         <cfz-clue-list 
@@ -12,6 +12,7 @@
             :isAcross="true"
             :usingPencil="usingPencil"
             :solverid="solverid"
+            :solvers="solvers"
             @deselect-clue="clueDeselected($event)"
             @move-to-clue="moveToClue($event)"
             v-model="crossword.acrossClues"
@@ -26,6 +27,7 @@
             :data-portrait="isPortrait"
             :usingPencil="usingPencil"
             :solverid="solverid"
+            :solvers="solvers"
             @deselect-clue="clueDeselected($event)"
             @move-to-clue="moveToClue($event)"
             v-model="crossword.downClues"
