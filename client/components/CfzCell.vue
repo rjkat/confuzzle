@@ -1,5 +1,5 @@
 <template>
-<td :data-solver-mask="solverMask"
+<td :data-multi-solver-mask="solverMask"
     :data-number="cell.number ? cell.number : undefined"
     :data-selected=cell.selected
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"

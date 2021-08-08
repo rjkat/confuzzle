@@ -52,21 +52,24 @@ function parseAndBuild(input, compiling) {
       }
       clue.highlightMask = 0;
       clue.selected = false;
+      clue.forcedSelection = false;
       clue.showCorrect = false;
       clue.showIncorrect = false;
 
-      clue.deselect = function (solverid) {
+      clue.deselect = function (solverid, forced) {
         solverid %= 8;
         this.selected = false;
+        this.forcedSelection = forced;
         this.clearHighlight(solverid);
       };
-      clue.select = function (solverid) {
+      clue.select = function (solverid, forced) {
         solverid %= 8;
         for (const [otherid, other] of Object.entries(cw.clues)) {
           if (otherid != clueid)
-            other.deselect(solverid);
+            other.deselect(solverid, forced);
         }
         this.selected = true;
+        this.forcedSelection = forced;
         this.highlight(solverid);
       };
       clue.highlight = function(solverid, recursive) {

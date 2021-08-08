@@ -91,7 +91,7 @@ export default Vue.extend({
   },
   props: {
     isAcross: Boolean,
-    solvers: Object,
+    solvers: Array,
     clues: {
         type: Array,
         required: true

@@ -7,7 +7,7 @@
       <div class="cfz-anagram-app-footer">
         <ui-button color="primary" @click="$emit('close-anagram-helper')" class="cfz-anagram-app-home-button">
             <table class="cfz-flat-logo" width="30" height="30" style="padding-right: .5rem; ">
-            <td data-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
+            <td data-multi-solver-mask="3" data-number="?" style="height: 1em; width: 1em; z-index: 0 !important;"
              >C</td>
             </table>
             Open crossword solver

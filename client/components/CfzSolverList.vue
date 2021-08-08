@@ -1,8 +1,8 @@
 <template>
     <div class="solvers-list" :data-title-text="titleText">
-        <div class="solvers-list-item solvers-text" v-if="titleText">{{titleText}}</div>
-        <div class="solvers-list-item highlighted" v-for="item in items" :data-solver-mask="(1 << (item.solverid % 8))">
-            <div class="solver-name">{{item.name[0]}}</div><ui-tooltip class="solver-tooltip"><span class="solver-tooltip-name">{{item.name}}</span></ui-tooltip>
+        <div class="solver-info-text" v-if="titleText"></div>
+        <div class="solvers-list-item highlighted" v-for="(solver, index) in solvers.filter(s => mask & (1 << s.solverid))" :key="index" :data-multi-solver-mask="solver.syncMask" @click.prevent="solverClicked(solver)">
+            <div class="solver-name">{{solver.name[0]}}</div><ui-tooltip class="solver-tooltip"><div class="solver-tooltip-name">{{solver.name}}</div><div class="solver-following-text">{{solver.solverid == solverid ? '[you]' : (solver.syncSelection ? '[following]' : '[tap to follow]')}}</div></ui-tooltip>
         </div>
     </div>
 </template>
@@ -11,19 +11,38 @@
 @import '../stylesheets/solvers';
 .solver-tooltip {
     font-family: $clueFontFamily;
+    display: flex;
+    align-items: center;
 }
 .solver-tooltip-name {
     font-family: $answerFontFamily;
     font-size: $gridFontSize;   
-    text-transform: uppercase;     
+    text-transform: uppercase;
+}
+.solver-following-text {
+    margin-left: .5em;   
 }
 .solver-name {
     height: 100%;
     width: 100%;
     margin: auto;
     line-height: 100%;
+    user-select: none;
     text-align: center;
 }
+
+.solver-info-text {
+    font-family: $clueFontFamily;
+    margin-left: 0.5em;
+    padding-right: $displayPadding;
+    &:before {
+        content: 'SOLVERS';
+        font-family: $titleFontFamily;
+        font-size: 16px;
+        padding-right: .5em;
+    }
+}
+
 .solvers-list {
     display: inline-flex;
     vertical-align: middle;
@@ -39,14 +58,13 @@
         margin-left: 0.5em;
         padding-right: $displayPadding;
     }
+    
 
     .solvers-list-item.highlighted {
         font-family: $answerFontFamily;
         color: var(--text-color);
         font-size: $gridFontSize;
-        min-width: $gridCellSize;
-        max-width: $gridCellSize;
-        min-height: $gridCellSize;
+        width: $gridCellSize;
         height: $gridCellSize;
         max-height: $gridCellSize;
         line-height: 1ch;
@@ -54,26 +72,9 @@
         justify-content: center;
         text-transform: uppercase;
         border: 1px solid #000;
-        margin-left: -2px;
-        padding-right: 1px;
+        margin-right: -2px;
         cursor: pointer;
         box-sizing: border-box;
-
-        @include each-solver using ($color, $lightColor, $sel) {
-          .theme-light &#{$sel}, &#{$sel} {
-              background-color: $color;
-          }
-
-          @media (prefers-color-scheme: dark) {
-            &#{$sel} {
-              background-color: $lightColor;
-            }
-          }
-
-          .theme-dark &#{$sel} {
-              background-color: $lightColor;
-          }
-        }
     }
 
     
@@ -85,26 +86,17 @@ import Vue from 'vue';
 
 export default Vue.extend({
   props: {
-    solvers: Object,
-    titleText: String,
-    clickToLock: Boolean,
+    solverid: Number,
+    solvers: Array,
+    titleText: Boolean,
     mask: {
         type: Number,
         default: 0xFFFFFFFF
     }
   },
-  computed: {
-    items() {
-        const items = [];
-        for (let [k, props] of Object.entries(this.solvers)) {
-            if (this.mask & (1 << props.solverid)) {
-                items.push({
-                    solverid: props.solverid,
-                    name: props.name
-                });
-            }
-        }
-        return items;
+  methods: {
+    solverClicked(solver) {
+        this.$emit('solver-clicked', solver);
     }
   },
   data() {

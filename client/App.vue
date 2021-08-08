@@ -186,6 +186,7 @@
                         :usingPencil="usingPencil"
                         v-model="crossword" 
                         @fill-cell="sendFillCell($event)"
+                        @solver-clicked="toggleSyncSelection($event)"
                         v-responsive.class
                         >
                     </cfz-crossword-clues>
@@ -661,9 +662,9 @@ export default Vue.extend({
     gridDisplayWidth: Number,
     gridDisplayHeight: Number,
     solvers: {
-        type: Object,
+        type: Array,
         default: function() {
-            return {}
+            return [];
         }
     },
     state: {
@@ -797,7 +798,8 @@ export default Vue.extend({
                 action: 'selectionChanged',
                 clueid: oldValue.id,
                 solverid: this.solverid,
-                selected: false
+                selected: false,
+                forced: oldValue.forcedSelection
             });
         }
         if (newValue) {
@@ -805,7 +807,8 @@ export default Vue.extend({
                 action: 'selectionChanged',
                 clueid: newValue.id,
                 solverid: this.solverid,
-                selected: true
+                selected: true,
+                forced: newValue.forcedSelection
             });
         }
     },
@@ -935,6 +938,8 @@ export default Vue.extend({
       maxRecent: 5,
       recentCrosswords: [],
       solverid: 0,
+      syncedSolver: '',
+      lastSelected: {},
       devicePixelRatio: 0,
       socketid: '',
       shortLink: '',
@@ -1182,6 +1187,9 @@ export default Vue.extend({
         const w = this.windowWidth;
         const h = this.windowHeight;
         this.isPortrait = h > w;
+        if (!this.isPortrait) {
+            this.showTooltips = false;
+        }
 
         if (!this.gridSizeLocked) {
             if (this.isPortrait) {
@@ -1496,7 +1504,7 @@ export default Vue.extend({
             this.shareLoading = false;
         }
         if (this.state.colluding) {
-            this.solvers = {};
+            this.solvers = [];
         }
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
@@ -1644,13 +1652,61 @@ export default Vue.extend({
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
+            console.log(msg);
             this.crossword.clues[msg.clueid].highlight(msg.solverid);
+            this.lastSelected[msg.solverid] = msg.clueid;
+            // update synchronised selection if needed
+            if (!msg.forced) {
+                for (const s of this.solvers) {
+                    if (s.solverid == msg.solverid && s.syncSelection && (!this.selectedClue || 
+                        msg.clueid != this.selectedClue.id)) {
+                        if ("activeElement" in document)
+                            document.activeElement.blur();
+                        this.crossword.clues[msg.clueid].select(this.solverid, true);
+                    }
+                }
+            }
         } else {
+            this.lastSelected[msg.solverid] = undefined;
             this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
         }
     },
+    toggleSyncSelection(solver) {
+        if (solver.solverid == this.solverid)
+            return;
+        solver.syncSelection = !solver.syncSelection;
+        const solverMask = 1 << (solver.solverid % 8);
+        if (solver.syncSelection) {
+            this.syncedSolver = solver.guid;
+            solver.syncMask = solverMask | (1 << (this.solverid % 8));
+            if (this.lastSelected[solver.solverid]) {
+                if ("activeElement" in document)
+                    document.activeElement.blur();
+                this.crossword.clues[this.lastSelected[solver.solverid]].select(this.solverid, true);
+            }
+            for (const s of this.solvers) {
+                if (s.solverid != solver.solverid) {
+                    s.syncSelection = false;
+                    s.syncMask = 1 << (s.solverid % 8);
+                }
+            }
+        } else {
+            this.syncedSolver = '';
+            solver.syncMask = solverMask;
+        }
+    },
+    setSolvers(msg) {
+        let newSolvers = [];
+        for (const [k, solver] of Object.entries(msg.solvers)) {
+            newSolvers.push(solver);
+            solver.guid = k;
+            solver.syncMask =  1 << (solver.solverid % 8);
+            solver.syncSelection = solver.guid == this.syncedSolver;
+        }
+        this.solvers = newSolvers;
+    },
     solversChanged(msg) {
-        this.solvers = msg.solvers;
+        this.setSolvers(msg);
         if (msg.joined) {
             this.snackbarMessage(msg.joined.name + ' joined the session');
         } else if (msg.disconnected) {
@@ -1667,6 +1723,7 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
     },
     sendUpdate(event) {
+        console.log(event);
         if (this.$options.socket) {
             if (!this.$options.socket.connected) {
                 this.lostConnection();
@@ -1706,7 +1763,7 @@ export default Vue.extend({
         }
     },
     gridJoined(msg) {
-        this.solvers = msg.solvers;
+        this.setSolvers(msg);
         this.solverid = msg.solverid;
         this.gridid = msg.gridid;
 
@@ -1770,7 +1827,7 @@ export default Vue.extend({
     },
     shareSucceeded(msg) {
         this.gridid = msg.gridid;
-        this.solvers = msg.solvers;
+        this.setSolvers(msg);
         window.history.pushState(null, '', '/' + msg.gridid);
         this.state.colluding = true;
         this.joinFailed = false;

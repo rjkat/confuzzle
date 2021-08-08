@@ -37,7 +37,7 @@
                 
                 <ui-icon v-if="clue.showCorrect">check</ui-icon>
                 <ui-icon v-if="clue.showIncorrect">close</ui-icon>
-                <cfz-solver-list class="clue-solvers" :solvers="solvers" :mask="clue.highlightMask"></cfz-solver-list>
+                <cfz-solver-list v-on="$listeners" class="clue-solvers" :solvers="solvers" :solverid="solverid" :mask="clue.highlightMask"></cfz-solver-list>
             </div>
 
         </div>
@@ -59,6 +59,7 @@
 
 .clue-solvers {
     padding-left: 0.5em;
+    opacity: 0.55;
     display: inline-block;
     transform: scale(0.85);
 }
@@ -195,7 +196,7 @@ export default Vue.extend({
   },
   props: {
     clue: Object,
-    solvers: Object,
+    solvers: Array,
     usingPencil: Boolean,
     solverid: {
         type: Number,

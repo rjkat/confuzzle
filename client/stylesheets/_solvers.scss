@@ -81,7 +81,7 @@ $maxSolvers: length($solverColors);
     @for $nMask from 1 through 4 {
         $combos: combinations($solverColors, $nMask);
         @each $mask, $values in $combos {
-            .theme-light td#{"[data-solver-mask=\"#{$mask}\"]"}, td#{"[data-solver-mask=\"#{$mask}\"]"} {
+            .theme-light #{"[data-multi-solver-mask=\"#{$mask}\"]"}, #{"[data-multi-solver-mask=\"#{$mask}\"]"} {
                 background: repeating-linear-gradient(
                   45deg,
                   gradient($values, $nMask, $dark: false),
@@ -92,7 +92,7 @@ $maxSolvers: length($solverColors);
                     color: #fff;
                 }
             }
-            .theme-dark td#{"[data-solver-mask=\"#{$mask}\"]"} {
+            .theme-dark #{"[data-multi-solver-mask=\"#{$mask}\"]"} {
                 background: repeating-linear-gradient(
                   45deg,
                   gradient($values, $nMask, $dark: true),
@@ -104,7 +104,7 @@ $maxSolvers: length($solverColors);
                 }
             }
             @media (prefers-color-scheme: dark) {
-                td#{"[data-solver-mask=\"#{$mask}\"]"} {
+                #{"[data-multi-solver-mask=\"#{$mask}\"]"} {
                   background: repeating-linear-gradient(
                       45deg,
                       gradient($values, $nMask, $dark: true),
