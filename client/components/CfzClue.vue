@@ -1,11 +1,15 @@
 <template>
-    <li class=clue-item
+    <div class=clue-item
         :class="{highlighted: selected || highlighted}"
         :data-solver-mask="solverMask"
         ref="item">
         <div class="clue-directions" @click="directionsClicked()">
             <div class="clue-id" :data-ref-text="!!clue.refText">{{clue.numberText}}<span class="hidden-print">{{clue.directionText}}</span><span v-if="clue.refText">,</span></div>
-            <div class="clue-text" v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText"></div>
+            <div class="clue-text">
+                <span v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText">
+                    
+                </span>
+            </div>
         </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
@@ -33,11 +37,11 @@
                 
                 <ui-icon v-if="clue.showCorrect">check</ui-icon>
                 <ui-icon v-if="clue.showIncorrect">close</ui-icon>
-                
+                <cfz-solver-list class="clue-solvers" :solvers="solvers" :mask="clue.highlightMask"></cfz-solver-list>
             </div>
-            <cfz-solver-list class="clue-solvers" :solvers="solvers" :mask="clue.highlightMask"></cfz-solver-list>
+
         </div>
-    </li>
+    </div>
 </template>
 
 <style lang="scss">
@@ -46,16 +50,17 @@
 
 .crossword-answer-container {
     cursor: default;
-    display: flex;
+    /*display: flex;*/
     width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    padding-right: 1em;
+    /*justify-content: space-between;*/
+    /*align-items: center;*/
+    /*padding-right: 1em;*/
 }
 
 .clue-solvers {
+    padding-left: 0.5em;
     display: inline-block;
-    transform: scale(0.8);
+    transform: scale(0.85);
 }
 
 .clue-item {

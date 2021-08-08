@@ -1,8 +1,8 @@
 <template>
 <div class="crossword-clues">
     <div class="crossword-clues-label">{{isAcross ? 'ACROSS' : 'DOWN'}}</div>
-    <ul class="crossword-clues-ul">
-        <li class="crossword-clues-li"
+    <div class="crossword-clues-ul">
+        <div class="crossword-clues-li"
             is="cfz-clue"
             ref="items"
             v-for="(clue, i) in filteredClues"
@@ -14,8 +14,8 @@
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
             >
-        </li>
-    </ul>
+        </div>
+    </div>
 </div>
 </template>
 
@@ -25,16 +25,16 @@
 @media screen {
     @include each-solver using ($color, $lightColor, $sel) {
         .theme-light, * {
-            li.highlighted#{$sel} {
+            .crossword-clues-li.highlighted#{$sel} {
                 color: $lightColor;
             }
         }
         @media (prefers-color-scheme: dark) {
-            li.highlighted#{$sel} {
+            .crossword-clues-li.highlighted#{$sel} {
                 color: $color;
             }
         }
-        .theme-dark li.highlighted#{$sel} {
+        .theme-dark .crossword-clues-li.highlighted#{$sel} {
             color: $color;
         }
     }

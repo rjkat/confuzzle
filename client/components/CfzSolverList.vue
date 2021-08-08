@@ -1,8 +1,8 @@
 <template>
-    <div class="solvers-list">
+    <div class="solvers-list" :data-title-text="titleText">
         <div class="solvers-list-item solvers-text" v-if="titleText">{{titleText}}</div>
         <div class="solvers-list-item highlighted" v-for="item in items" :data-solver-mask="(1 << (item.solverid % 8))">
-            {{item.name[0]}}<ui-tooltip class="solver-tooltip">{{item.name}}</ui-tooltip>
+            <div class="solver-name">{{item.name[0]}}</div><ui-tooltip class="solver-tooltip"><span class="solver-tooltip-name">{{item.name}}</span></ui-tooltip>
         </div>
     </div>
 </template>
@@ -10,18 +10,28 @@
 <style lang="scss" scoped>
 @import '../stylesheets/solvers';
 .solver-tooltip {
+    font-family: $clueFontFamily;
+}
+.solver-tooltip-name {
     font-family: $answerFontFamily;
     font-size: $gridFontSize;   
     text-transform: uppercase;     
 }
+.solver-name {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    line-height: 100%;
+    text-align: center;
+}
 .solvers-list {
+    display: inline-flex;
     vertical-align: middle;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    .solvers-list-item {
+    align-items: center;
+    &[data-title-text] {
         display: flex;
-        align-items: center;
+        margin: 0;
+        padding: 0;
     }
     .solvers-list-item.solvers-text {
         font-family: $titleFontFamily;
@@ -44,9 +54,10 @@
         justify-content: center;
         text-transform: uppercase;
         border: 1px solid #000;
-        margin-left: -1px;
+        margin-left: -2px;
+        padding-right: 1px;
         cursor: pointer;
-        box-sizing: content-box;
+        box-sizing: border-box;
 
         @include each-solver using ($color, $lightColor, $sel) {
           .theme-light &#{$sel}, &#{$sel} {
@@ -76,6 +87,7 @@ export default Vue.extend({
   props: {
     solvers: Object,
     titleText: String,
+    clickToLock: Boolean,
     mask: {
         type: Number,
         default: 0xFFFFFFFF
