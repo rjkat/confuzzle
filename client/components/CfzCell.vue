@@ -194,7 +194,9 @@ td {
 
     &:not([data-empty]) {
         cursor: pointer;
-        background: var(--grid-blank-color);
+        &:not([data-multi-solver-mask]), &[data-multi-solver-mask="0"] {
+            background: var(--grid-blank-color);
+        }
     }
 
 

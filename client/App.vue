@@ -1652,7 +1652,6 @@ export default Vue.extend({
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
-            console.log(msg);
             this.crossword.clues[msg.clueid].highlight(msg.solverid);
             this.lastSelected[msg.solverid] = msg.clueid;
             // update synchronised selection if needed
@@ -1672,8 +1671,14 @@ export default Vue.extend({
         }
     },
     toggleSyncSelection(solver) {
-        if (solver.solverid == this.solverid)
+        if (solver.solverid == this.solverid) {
+            this.syncedSolver = '';
+            for (const s of this.solvers) {
+                s.syncSelection = false;
+                s.syncMask = 1 << (s.solverid % 8);
+            }
             return;
+        }
         solver.syncSelection = !solver.syncSelection;
         const solverMask = 1 << (solver.solverid % 8);
         if (solver.syncSelection) {
@@ -1723,7 +1728,6 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
     },
     sendUpdate(event) {
-        console.log(event);
         if (this.$options.socket) {
             if (!this.$options.socket.connected) {
                 this.lostConnection();
