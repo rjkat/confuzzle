@@ -2,19 +2,17 @@
   <div class="cfz-launcher-container">
       
       <div>
-        <cfz-crossword-grid v-model="crossword" :usingPencil="true" style="text-align: center; padding-top: 20vh; transform: scale(1.5,1.5)"></cfz-crossword-grid>
+        <cfz-crossword-grid v-model="crossword" :usingPencil="true" style="text-align: center; padding-top: 20vh; transform: scale(1.5,1.5);"></cfz-crossword-grid>
       </div>
       <div class="cfz-launcher-options-container">
         <div class="cfz-launcher-options">
           <div v-for="option in options" class="cfz-launcher-option">
-            <ui-button :raised="true" :icon="option.icon" :tooltip="option.tooltip" class="cfz-launcher-button"
+            <ui-button :raised="true" :icon="option.icon" :tooltip="option.tooltip" class="cfz-launcher-button" :color="option.color"
               @click.stop="optionClicked(option)">
               {{option.text}}
             </ui-button>
           </div>
-          
         </div>
-
       </div>
       <div class="cfz-launcher-options-container">
         <ui-fab v-if="showReturnButton"
@@ -42,15 +40,17 @@
   }
   .cfz-launcher-options-container {
     width: 100%;
+    text-align:  center;
     display: flex;
     justify-content: space-around;
-
   }
   .cfz-launcher-options {
     width: 100%;
     max-width: 800px;
+    padding-left: .5rem;
     margin-top: 20vh;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    align-items: center;
     display: flex;
   }
   .cfz-launcher-option {
@@ -189,29 +189,35 @@ export default Vue.extend({
       if (this.showLeave) {
         opt.push({
           text: "Leave",
+          color: "red",
           icon: "no_meeting_room",
           tooltip: "Leave group session"
         });
       } else {
         opt.push({
           text: "Join",
+          color: "green",
           icon: "meeting_room",
           tooltip: "Join a group session"
         });
       }
-      opt.push({
-        text: "Invite",
-        icon: "group_add",
-        tooltip: this.showLeave ? "Invite others to this session" : "Start a group session"
-      });
-
       if (!this.showLeave) {
         opt.push({
           text: "Solve",
+          color: "primary",
           icon: "extension",
           tooltip: "Open and solve puzzles"
         });
       }
+
+      opt.push({
+        text: "Invite",
+        color: "accent",
+        icon: "group_add",
+        tooltip: this.showLeave ? "Invite others to this session" : "Start a group session"
+      });
+
+
       
       return opt;
     }

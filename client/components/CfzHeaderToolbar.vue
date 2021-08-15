@@ -23,7 +23,7 @@
         </ui-icon-button>
         <ui-icon-button
             type="secondary"
-            :icon="state.colluding ? 'group_add' : 'share'"
+            icon="group_add"
             size="large"
             @click="openModal('shareModal')"
             v-if="isOnline"

@@ -102,7 +102,7 @@
                 <div v-if="!joinFailed && !shouldJoin()" style="text-align: center;">
                     <p class="join-info-text">Join a crossword using a session identifier.</p>
                     <ui-textbox ref="sessionIdBox" class="crossword-join-input crossword-sess-id-input" v-model="sessionIdText" @keydown-enter="joinClicked()" autocomplete="off">
-                            Session ID (x y z)
+                            Session ID (e.g. <span class="sess-example-text">{{exampleSessionID}}</span>)
                     </ui-textbox> 
                 </div>
                 <div v-if="!joinFailed" style="text-align: center;">
@@ -394,7 +394,7 @@ input {
 }
 
 .crossword-sess-id-input {
-    width: 20em;
+    width: 22em;
 }
 
 
@@ -425,6 +425,10 @@ input {
 }
 
 .ui-close-button__icon {
+    color: var(--widget-text-color) !important;
+}
+
+.ui-radio-group__label-text {
     color: var(--widget-text-color) !important;
 }
 
@@ -600,6 +604,10 @@ a:visited {
     width: 100%;
 }
 
+.sess-example-text {
+    font-family: $answerFontFamily;
+}
+
 </style>
 
 <script>
@@ -642,7 +650,7 @@ const {Manager} = require("socket.io-client");
 import {emojisplosions} from "emojisplosion";
 
 const gridlock = require('./js/gridlock');
-
+const {hri} = require('human-readable-ids');
 
 const defaultCrossword = builder.parseAndBuild(gridlock.gridlockCrossword(), false);
 export default Vue.extend({
@@ -926,6 +934,7 @@ export default Vue.extend({
         darkModeEnabled: false,
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
+      exampleSessionID: hri.random().replaceAll('-', ' ').toUpperCase(),
       copyMessage: 'Link copied to clipboard',
       exportMessage: 'Crossword saved to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
@@ -971,7 +980,7 @@ export default Vue.extend({
   },
   methods: {
     openPuzzleFromLauncher(mode) {
-        if (mode == 'invite' && this.state.colluding) {
+        if (mode == 'invite' && !this.firstLaunch) {
             this.state.launching = false;
             Vue.nextTick(() => {
                 this.$refs.toolbar.openShareModal();
@@ -1020,6 +1029,7 @@ export default Vue.extend({
         if (localStorage['confuzzle:solverName']) {
             this.solverName = localStorage['confuzzle:solverName'];
         }
+        this.exampleSessionID = hri.random().replaceAll('-', ' ').toUpperCase();
         Vue.nextTick(() => {
             this.$refs.joinModal.open()
         })
@@ -1984,7 +1994,7 @@ export default Vue.extend({
             eno += this.crosswordState;
         }
         const blob = new Blob([eno], {type: "text/plain"});
-        this.downloadCrossword(blob, '.confuz.txt')
+        this.downloadCrossword(blob, '.confuz')
     },
     downloadCrossword(blob, extension) {
         const link = document.createElement('a');
@@ -1993,6 +2003,8 @@ export default Vue.extend({
         const filename = basename + extension;
         link.download = filename;
         link.click();
+        window.URL.revokeObjectURL(link.href);
+        link.remove();
     },
     openLauncher() {
       this.state.launching = true;
