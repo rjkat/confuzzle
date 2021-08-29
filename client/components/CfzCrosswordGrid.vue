@@ -350,8 +350,6 @@ export default Vue.extend({
               return;
           }
 
-          if (!backspace)
-            this.deselectCell(cell);
           cell = cells[row][col];
           // if the clue can only be either across or down,
           // change to its direction

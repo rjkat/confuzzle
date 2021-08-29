@@ -57,12 +57,16 @@ function parseAndBuild(input, compiling) {
       clue.showIncorrect = false;
 
       clue.deselect = function (solverid, forced) {
+        if (!this.selected)
+          return;
         solverid %= 8;
         this.selected = false;
         this.forcedSelection = forced;
         this.clearHighlight(solverid);
       };
       clue.select = function (solverid, forced) {
+        if (this.selected)
+          return;
         solverid %= 8;
         for (const [otherid, other] of Object.entries(cw.clues)) {
           if (otherid != clueid)
