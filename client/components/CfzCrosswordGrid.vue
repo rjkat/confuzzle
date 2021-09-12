@@ -254,7 +254,8 @@ export default Vue.extend({
             this.inputAcross = Boolean(cell.clues.across);
         }
         const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
-        clue.select(this.solverid);
+        if (!clue.selected)
+          clue.select(this.solverid);
         const inputCell = this.getInputCell(cell);
         if (inputCell)
           inputCell.select();

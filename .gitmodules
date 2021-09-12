@@ -1,0 +1,3 @@
+[submodule "keen-ui"]
+	path = keen-ui
+	url = git@github.com:rjkat/Keen-UI.git

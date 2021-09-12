@@ -1,4 +1,4 @@
-const server = require('./server')
+import * as server from './server.mjs'
 
 let port;
 var env = process.argv[2] || 'dev';

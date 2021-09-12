@@ -1,24 +1,26 @@
-const express = require('express')
-const http = require('http')
-const https = require('https')
+import express from 'express'
+import http from 'http'
+import https from 'https'
 
-const secure = require('express-force-https')
-const compression = require('compression')
-const favicon = require('serve-favicon');
+import secure from 'express-force-https'
+import compression from 'compression'
+import favicon from 'serve-favicon'
 
 const app = express()
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
-const fs = require('fs')
-const path = require('path')
-const keyFile = path.join(__dirname, 'server.key')
-const certFile = path.join(__dirname, 'server.cert')
-const {hri} = require('human-readable-ids');
 
-const AWS = require('aws-sdk');
-const nanoid = require('nanoid');
-const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
+import fs from 'fs'
+import path from 'path'
+const __dirname = path.resolve();
+
+app.use(favicon(__dirname + '/server/public/images/favicon.ico'));
+
+import {hri} from 'human-readable-ids'
+
+import AWS from 'aws-sdk'
+import {nanoid} from 'nanoid'
+import bodyParser from 'body-parser'
+import fetch from 'node-fetch'
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -38,7 +40,9 @@ switch (env) {
 
 const GRID_DESTROY_TIMEOUT = 1000 * 60 * 60 * 4; // 4 hour grid destroy timeout
 
-const io = require('socket.io')(server, {
+import {Server} from "socket.io";
+
+const io = new Server(server, {
   pingTimeout: 600000,
 });
 const grids = {};
@@ -62,9 +66,9 @@ function queryGrid(gridid) {
     return undefined;
 }
 
+import * as Bundler from 'parcel-bundler';
 
 if (env == 'dev') {
-  const Bundler = require('parcel-bundler');
   const bundler = new Bundler('client/index.html', {
        sourceMaps: false
   });
