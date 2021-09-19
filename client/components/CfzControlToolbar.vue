@@ -11,8 +11,19 @@
         ><div :style="pencilButtonStyle">A</div>
         </ui-button>
         <ui-button
+            v-if="showMark"
             color="primary"
-            class="backspace-button"
+            class="clue-action-button"
+            type="secondary"
+            icon="star_half"
+            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
+            @click="markClueClicked()"
+        >
+        </ui-button>
+        <ui-button
+            v-if="showErase"
+            color="primary"
+            class="clue-action-button"
             type="secondary"
             icon="backspace"
             style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
@@ -96,7 +107,7 @@
 <style lang="scss">
 @import '../stylesheets/themes';
 
-.backspace-button .ui-icon  {
+.clue-action-button .ui-icon  {
     /*font-size: 1.3rem !important;*/
     /*height: 100%;*/
     padding-left: .25rem;
@@ -119,6 +130,8 @@ import Vue from "vue";
 
 export default Vue.extend({
   props: {
+    showMark: true,
+    showErase: true,
     showDelete: false,
     showEdit: true,
     showGrid: true,
@@ -185,6 +198,9 @@ export default Vue.extend({
     },
     eraseClueClicked() {
         this.$emit('erase-clue-clicked')
+    },
+    markClueClicked() {
+        this.$emit('mark-clue-clicked')
     },
     selectMenuOption(option) {
         if (option.label == this.opt.CHECK_WORD.label) {

@@ -178,11 +178,14 @@ function stateFromClues(clues) {
             }
         }
 
-        if (nneeded > 0 || haveSpecial) {
+        if (nneeded > 0 || haveSpecial || clue.mark) {
             if (!state) {
                 state = '\n# state\n';
             }
             state += '\n## ' + clueid + '\n';
+            if (clue.mark) {
+                state += 'mark: ' + clue.mark + '\n';
+            }
             state += 'ans: ' + ans + '\n';
             if (haveSpecial) {
                 state += 'special: ' + special + '\n';

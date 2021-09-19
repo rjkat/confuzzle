@@ -269,7 +269,7 @@ io.on('connection', function(socket) {
             socket.to(gridid).emit(name, event);
         });
     }
-    ['fillCell', 'selectionChanged'].forEach(name => makeBroadcastEventHandler(socket, name));
+    ['fillCell', 'selectionChanged', 'markClue'].forEach(name => makeBroadcastEventHandler(socket, name));
 });
 
 module.exports = server

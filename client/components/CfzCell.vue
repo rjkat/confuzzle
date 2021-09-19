@@ -5,6 +5,7 @@
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
     :data-down-separator="showDownSeparator ? cell.downSeparator : undefined"
     :data-empty="cell.empty"
+    :data-clue-mark="cell.clues && ((cell.clues.down && cell == cell.clues.down.cells[0] && !!cell.clues.down.mark) || (cell.clues.across && cell == cell.clues.across.cells[0] && !!cell.clues.across.mark))"
     :data-mark="cell.mark"
     :data-rebus="cell.rebus"
     :style="{backgroundColor: cell.shadingColor}"
@@ -152,6 +153,21 @@ td {
 
         @media print {
             background-color: transparent !important;
+        }
+        z-index: 5;
+    }
+
+    &[data-clue-mark]:after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        content: '⭐';
+        font-size: .35em;
+        line-height: 1em;
+        padding: 1px;
+
+        @media print {
+            display: none !important;
         }
         z-index: 5;
     }

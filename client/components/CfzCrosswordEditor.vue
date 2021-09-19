@@ -101,6 +101,7 @@
   }
   .edit-alert-message {
     padding: .5em;
+    color: #000;
     font-family: $answerFontFamily;
   }
   .edit-progress {

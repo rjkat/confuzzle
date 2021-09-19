@@ -155,6 +155,8 @@
                      id="control-toolbar"
                      :showEdit="!state.colluding"
                      :showDelete="false"
+                     :showMark="true"
+                     :showErase="false"
                      :showAnagramView="showAnagramView"
                      :showTooltipToggle="!isPortrait && showGrid && !showAnagramView"
                      :showTooltips="showTooltips"
@@ -169,6 +171,7 @@
                      @reveal-all-clicked="revealWordClicked(true)"
                      @edit-source-clicked="editSourceClicked()"
                      @clear-all-clicked="clearAllClicked()"
+                     @mark-clue-clicked="markClueClicked()"
                      @erase-clue-clicked="eraseClueClicked()"
                      @show-anagram-changed="showAnagramChanged($event)"
                      @enable-dark-mode-changed="enableDarkModeChanged($event)"
@@ -1256,6 +1259,7 @@ export default Vue.extend({
         this.handlers = {
             crosswordShared: 'shareSucceeded',
             fillCell: 'fillCell',
+            markClue: 'markClue',
             selectionChanged: 'selectionChanged',
             gridJoined: 'gridJoined',
             noSuchGrid: 'connectFailed',
@@ -1518,6 +1522,25 @@ export default Vue.extend({
         }
         const self = this;
         Vue.nextTick(() => self.$refs.disconnectedModal.open());
+    },
+    markClueClicked() {
+        let clue = this.selectedClue;
+        if (!clue)
+            return;
+        let m = clue.mark ? '' : 'star';
+        msg = {
+            action: 'markClue',
+            clueid: clue.id,
+            solverid: this.solverid,
+            mark: m
+        }
+        this.markClue(msg);
+        this.sendUpdate(msg);
+    },
+    markClue(msg) {
+        this.crossword.clues[msg.clueid].mark = msg.mark;
+        this.$forceUpdate();
+        this.$refs.grid.$forceUpdate();
     },
     eraseClueClicked() {
         let clue = this.selectedClue;

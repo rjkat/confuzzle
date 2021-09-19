@@ -7,8 +7,8 @@
             <div class="clue-id" :data-ref-text="!!clue.refText">{{clue.numberText}}<span class="hidden-print">{{clue.directionText}}</span><span v-if="clue.refText">,</span></div>
             <div class="clue-text">
                 <span v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText">
-                    
                 </span>
+                <div class="clue-mark"><ui-icon>{{clue.mark ? 'star' : ''}}</ui-icon></div>
             </div>
         </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
@@ -176,6 +176,11 @@
             }
             flex-grow: 1;
         }
+    }
+
+    .clue-mark {
+        display: inline-block;
+        font-size: 1.5em;
     }
 
     .clue-length {

@@ -377,8 +377,13 @@ function parseFilled(cw, filled) {
     throw "Unknown clue in state section: " + clueid;
   }
   const x = filled.toSection();
-  const ans = x.requiredField('ans').requiredStringValue();
   const clue = cw.clues[clueid];
+  const mark = x.optionalField('mark');
+  if (mark) {
+    const m = mark.requiredStringValue();
+    clue.mark = m;    
+  }
+  const ans = x.requiredField('ans').requiredStringValue();
   for (var i = 0; i < clue.cells.length; i++) {
     if (ans[i] != '-') {
       clue.cells[i].contents = ans[i];
