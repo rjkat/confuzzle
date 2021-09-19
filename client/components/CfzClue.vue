@@ -8,7 +8,7 @@
             <div class="clue-text">
                 <span v-html="'<b>' + clue.refText + '</b> ' + clue.sanitizedText + ' ' + clue.sanitizedLengthText" :data-ref-text="!!clue.refText">
                 </span>
-                <div class="clue-mark"><ui-icon>{{clue.mark ? 'star' : ''}}</ui-icon></div>
+                <span class="clue-mark">{{clue.mark ? '⭐' : ''}}</span>
             </div>
         </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
@@ -179,8 +179,7 @@
     }
 
     .clue-mark {
-        display: inline-block;
-        font-size: 1.5em;
+        display: inline;
     }
 
     .clue-length {
