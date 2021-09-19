@@ -1796,6 +1796,8 @@ export default Vue.extend({
                 // this.selectionChanged(event);
             } else if (event.action == 'fillCell') {
                 this.fillCell(event);
+            } else if (event.action == 'markClue') {
+                this.markClue(event);
             }
         }
     },
