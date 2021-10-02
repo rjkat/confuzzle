@@ -259,9 +259,8 @@ body {
 
 .grid-loader {
     position: absolute;
-    color: #f00;
-    transform: translate(-50%);
-    left: 50%;
+
+    left: calc(50% - 16px);
     top: 50%;
 }
 
