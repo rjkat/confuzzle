@@ -259,8 +259,14 @@ body {
 
 .grid-loader {
     position: absolute;
+    color: #f00;
+    transform: translate(-50%);
     left: 50%;
     top: 50%;
+}
+
+.ui-progress-circular__indeterminate-path {
+    stroke: var(--title-bg-color) !important;
 }
 
 .grid-enter-active,

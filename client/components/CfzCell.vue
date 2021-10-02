@@ -157,20 +157,7 @@ td {
         z-index: 5;
     }
 
-    &[data-clue-mark]:after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        content: '⭐';
-        font-size: .35em;
-        line-height: 1em;
-        padding: 1px;
-
-        @media print {
-            display: none !important;
-        }
-        z-index: 5;
-    }
+    
 
     &[data-flat-number]:before {
         position: absolute;
@@ -192,20 +179,38 @@ td {
 
     &[data-across-separator]:after {
         content: '';
-        height: $gridCellSize;
+        height: 100%;
         position: absolute;
         right: 0;
         top: 0;
         border-right: 3px var(--grid-bg-color) solid;
+        z-index: 5;
     }
 
     &[data-down-separator]:after {
         content: '';
-        width: $gridCellSize;
+        width: 100%;
         position: absolute;
         right: 0;
         bottom: 0;
         border-bottom: 3px var(--grid-bg-color) solid;
+        z-index: 5;
+    }
+
+    &[data-clue-mark]:after {
+        position: absolute;
+        top: 0;
+        right: 0;
+        text-align: right;
+        content: '⭐';
+        font-size: .35em;
+        line-height: 1em;
+        padding: 1px;
+
+        @media print {
+            display: none !important;
+        }
+        z-index: 4;
     }
 
     &:not([data-empty]) {
