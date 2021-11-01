@@ -67,7 +67,7 @@
   ],
   "name": "Confuzzle",
   "short_name": "Confuzzle",
-  "theme_color": "#333",
+  "theme_color": "#7ad",
   "scope": "/",
   "start_url": "/"
 }

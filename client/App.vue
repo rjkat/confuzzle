@@ -884,8 +884,15 @@ export default Vue.extend({
     const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
     const webkit = !!ua.match(/WebKit/i);
     this.iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+
+    const value = `; ${document.cookie}`;
+    const toks = value.split(`; app-platform=`);
+    let appPlatform = null;
+    if (toks.length === 2) {
+        appPlatform = toks.pop().split(';').shift();
+    }
     
-    this.standalone = window.navigator.standalone;
+    this.standalone = window.navigator.standalone || appPlatform;
     document.addEventListener('keydown', this.keyListener);
     this.handleResize();
     // this.gridSizeLocked = true;
@@ -2011,29 +2018,27 @@ export default Vue.extend({
         }
     },
     downloadEmojiClicked() {
-        const blob = new Blob([this.getShareablePuz().toEmoji()], {type: "application/octet-stream"});
-        this.downloadCrossword(blob, '.🧩');
+        const emoji = this.getShareablePuz().toEmoji();
+        this.downloadCrossword('application/octet-stream', '.🧩');
     },
     downloadPuzClicked() {
-        const blob = new Blob([this.getShareablePuz().toBytes()], {type: "application/octet-stream"});
-        this.downloadCrossword(blob, '.puz');
+        const puz = this.getShareablePuz().toBytes();
+        this.downloadCrossword('application/x-crossword', puz, '.puz');
     },
     downloadEnoClicked() {
         var eno = this.statelessSource;
         if (!this.state.compiling) {
             eno += this.crosswordState;
         }
-        const blob = new Blob([eno], {type: "text/plain"});
-        this.downloadCrossword(blob, '.confuz')
+        this.downloadCrossword('text/plain', eno, '.confuz')
     },
-    downloadCrossword(blob, extension) {
+    downloadCrossword(mimeType, rawBytes, extension) {
         const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
         const basename = this.crossword.meta.fullName;
         const filename = basename + extension;
         link.download = filename;
+        link.href = `data:${mimeType};base64,` + Buffer.from(rawBytes).toString('base64');
         link.click();
-        window.URL.revokeObjectURL(link.href);
         link.remove();
     },
     openLauncher() {
