@@ -68,6 +68,7 @@
         :state="state"
         :recentCrosswords="recentCrosswords"
         :showInstall="installPrompt || (iOSSafari && !standalone)"
+        :showDownload="!appPlatform"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @copy-clicked="copyClicked($event)"
@@ -892,6 +893,7 @@ export default Vue.extend({
         appPlatform = toks.pop().split(';').shift();
     }
     
+    this.appPlatform = appPlatform;
     this.standalone = window.navigator.standalone || appPlatform;
     document.addEventListener('keydown', this.keyListener);
     this.handleResize();
@@ -973,6 +975,7 @@ export default Vue.extend({
       showAnagramView: false,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
       iOSSafari: false,
+      appPlatform: null,
       iOSPrompt: false,
       installPrompt: null,
       firstLaunch: true,

@@ -331,6 +331,7 @@ export default Vue.extend({
     shortLink: "",
     sourceLoading: false,
     showInstall: false,
+    showDownload: true,
     emojiText: ""
   },
   computed: {
@@ -404,8 +405,10 @@ export default Vue.extend({
         if (isMobile)
             options.push(this.opt.PRINT);
 
-        options.push(this.opt.SAVE_PUZ);
-        options.push(this.opt.SAVE_ENO);
+        if (this.showDownload) {
+            options.push(this.opt.SAVE_PUZ);
+            options.push(this.opt.SAVE_ENO);
+        }
 
         if (!this.state.colluding && !isMobile) {
             options.push(this.opt.LINK_EXTERNAL);
