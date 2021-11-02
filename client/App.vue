@@ -69,6 +69,7 @@
         :recentCrosswords="recentCrosswords"
         :showInstall="installPrompt || (iOSSafari && !standalone)"
         :showDownload="!appPlatform"
+        :showDonate="!appPlatform"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @copy-clicked="copyClicked($event)"

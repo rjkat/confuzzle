@@ -117,7 +117,7 @@
                 <p class="about-text">
                     This is a hobby project by <a href="https://cv.rjk.at">Rowan</a>. Source code is available <a href="https://github.com/rjkat/confuzzle">on github</a> (MIT license).
                 </p>
-                <form action="https://www.buymeacoffee.com/rjkat" target="_blank" rel="noopener">
+                <form action="https://www.buymeacoffee.com/rjkat" target="_blank" rel="noopener" v-if="showDonate">
                     <ui-button color="primary" style="margin-top: 1em;" icon="open_in_new">Buy me a coffee</ui-button>
                 </form>
                 <ui-icon-button type="secondary" class="emoji-button" @click="emojiButtonClicked()">🧩✨</ui-button>
@@ -325,6 +325,7 @@ export default Vue.extend({
   props: {
     metadata: Object,
     state: Object,
+    showDonate: true,
     recentCrosswords: Array,
     shareLoading: false,
     shareLink: "",
