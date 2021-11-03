@@ -108,9 +108,9 @@
                     </ui-textbox> 
                 </div>
                 <div v-if="!joinFailed" style="text-align: center;">
-                    <p class="join-info-text">Choose your name to join and solve this crossword with others in real time.</p>
+                    <p class="join-info-text">Choose your display name to join and solve this crossword with others in real time.</p>
                     <ui-textbox ref="nameBox" class="crossword-join-input crossword-name-input" v-model="solverName" @keydown-enter="joinClicked()">
-                            <b>0A</b> Your name ({{solverName ? solverName.length : 0}})
+                            <b>0A</b> Your display name ({{solverName ? solverName.length : 0}})
                     </ui-textbox> 
                     <ui-button :loading="joinLoading" color="primary" :disabled="joinDisabled()" @click="joinClicked()">Join</ui-button>
                 </div>

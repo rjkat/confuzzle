@@ -126,6 +126,10 @@ app.use(function (req, res, next) {
         res.sendFile(path.join(__dirname + '/../dist/syntax.html'));
         return;
     }
+    if (req.path == '/privacy') {
+        res.sendFile(path.join(__dirname + '/../dist/privacy.html'));
+        return;
+    }
     if (req.path == '/robots.txt') {
         res.type('text/plain');
         res.send('User-agent: *\nAllow: /$\nAllow: /syntax$\nDisallow: /');
