@@ -18,9 +18,8 @@
                     </div>
                 </div>
                 <div class="crossword-link-text">{{link}}</div>
-                
-                <ui-button v-if="shareAvailable" color="primary" style="margin-top: 1em;" @click="shareLink()">Share</ui-button>
-                <ui-button v-else color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
+                <ui-button color="primary" style="margin-top: 1em;" @click="copyClicked()">Copy</ui-button>
+               <!--  <ui-button v-if="shareAvailable" color="primary" style="margin-top: 1em;" @click="shareLink()">Share</ui-button> -->
             </template>
         </div>
     </ui-modal>

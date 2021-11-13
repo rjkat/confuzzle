@@ -135,6 +135,10 @@ app.use(function (req, res, next) {
         res.send('User-agent: *\nAllow: /$\nAllow: /syntax$\nDisallow: /');
         return;
     }
+    if (req.path == '/.well-known/apple-app-site-association') {
+        res.sendFile(path.join(__dirname + '/public/.well-known/apple-app-site-association'));
+        return;
+    }
     res.sendFile(path.join(__dirname + '/../dist/index.html'));
 });
 

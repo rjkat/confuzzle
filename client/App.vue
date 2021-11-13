@@ -67,7 +67,7 @@
         class="hidden-print"
         :state="state"
         :recentCrosswords="recentCrosswords"
-        :showInstall="installPrompt || (iOSSafari && !standalone)"
+        :showInstall="installPrompt || (iOS && !standalone)"
         :showDownload="!appPlatform"
         :showDonate="!appPlatform"
         @install-clicked="installClicked()"
@@ -886,6 +886,7 @@ export default Vue.extend({
     const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
     const webkit = !!ua.match(/WebKit/i);
     this.iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+    this.iOS = iOS;
 
     const value = `; ${document.cookie}`;
     const toks = value.split(`; app-platform=`);
@@ -976,6 +977,8 @@ export default Vue.extend({
       showAnagramView: false,
       toggleOptions: [{name: 'grid', label: 'grid'}, {name: 'tooltips', label: 'tooltips'}],
       iOSSafari: false,
+      iOS: false,
+      iOSAppURL: 'https://apps.apple.com/au/app/confuzzle/id1592960680',
       appPlatform: null,
       iOSPrompt: false,
       installPrompt: null,
@@ -1133,8 +1136,11 @@ export default Vue.extend({
         return this.getShareablePuz().toEmoji(true);
     },
     installClicked() {
-        if (this.iOSSafari) {
-            this.iOSPrompt = true;
+        if (this.iOS) {
+            const a = document.createElement("a");
+            a.setAttribute('href', this.iOSAppURL);
+            a.setAttribute('target', '_blank');
+            a.click();
         } else {
             if (!this.installPrompt)
                 return

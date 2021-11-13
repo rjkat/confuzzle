@@ -47,7 +47,7 @@
     "compression": "^1.7.4",
     "copy-to-clipboard": "^3.3.1",
     "cors": "^2.8.5",
-    "emojisplosion": "^2.5.0",
+    "emojisplosion": "^2.6.1",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
     "express": "^4.17.1",
