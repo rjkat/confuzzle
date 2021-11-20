@@ -372,6 +372,7 @@
 				CODE_SIGN_ENTITLEMENTS = Confuzzle/Entitlements/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T34685KDX5;
 				INFOPLIST_FILE = Confuzzle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -398,6 +399,7 @@
 				CODE_SIGN_ENTITLEMENTS = Confuzzle/Entitlements/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T34685KDX5;
 				INFOPLIST_FILE = Confuzzle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

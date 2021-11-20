@@ -10,6 +10,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        // https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
+        // Get URL components from the incoming user activity.
+        guard let userActivity = connectionOptions.userActivities.first,
+            userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL else {
+            return
+        }
+        let handledRequest = URLRequest(url: incomingURL)
+        Confuzzle.webView.load(handledRequest)
+        return
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        // https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
+        // Get URL components from the incoming user activity.
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL else {
+            return
+        }
+        let handledRequest = URLRequest(url: incomingURL)
+        Confuzzle.webView.load(handledRequest)
+        return
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -39,7 +61,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
