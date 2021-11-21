@@ -790,7 +790,7 @@ export default Vue.extend({
       localStorage[this.crosswordId + ':state'] = newValue;
     },
     theme(newValue) {
-        if (this.themeOverride)
+        if (this.themeOverride && !this.iOS)
             localStorage["theme"] = newValue;
     },
     crosswordSource(newValue, oldValue) {
@@ -910,11 +910,14 @@ export default Vue.extend({
         this.recentCrosswords = recent;
     }
 
-    if (localStorage.theme) {
-        this.themeOverride = true;
-    }
-    if (localStorage.theme == "theme-dark") {
-        this.darkModeEnabled = true;
+    // remember stored theme if not on iOS
+    if (!this.iOS) {
+        if (localStorage.theme) {
+            this.themeOverride = true;
+        }
+        if (localStorage.theme == "theme-dark") {
+            this.darkModeEnabled = true;
+        }
     }
 
     const query = window.matchMedia('(prefers-color-scheme: dark)');
