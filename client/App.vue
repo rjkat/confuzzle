@@ -163,6 +163,7 @@
                      :showTooltipToggle="!isPortrait && showGrid && !showAnagramView"
                      :showTooltips="showTooltips"
                      :showGrid="showGrid"
+                     :showToggleDarkMode="showToggleDarkMode"
                      :data-portrait="isPortrait"
                      :darkModeEnabled="darkModeEnabled"
                      @show-grid-changed="showGridChanged($event)"
@@ -248,7 +249,7 @@
 
 body {
 
-    height: 100%;
+    height: calc(100vh - env(safe-area-inset-bottom));
     width: 100%;
     margin: 0px;
    
@@ -722,6 +723,9 @@ export default Vue.extend({
     client: Object
   },
   computed: {
+    showToggleDarkMode() {
+        return !this.iOS
+    },
     theme() {
         return this.themeOverride ? (this.darkModeEnabled ? 'theme-dark' : 'theme-light') : '';
     },

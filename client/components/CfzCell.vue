@@ -394,7 +394,7 @@ export default Vue.extend({
                 {
                   name: 'preventOverflow',
                   options: {
-                    boundary: this.$refs.tableCell.parentElement.parentElement,
+                    boundary: this.$refs.tableCell.parentElement,
                     rootBoundary: 'document'
                   }
                 }

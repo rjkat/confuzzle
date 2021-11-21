@@ -135,6 +135,7 @@ export default Vue.extend({
     showDelete: false,
     showEdit: true,
     showGrid: true,
+    showToggleDarkMode: true,
     showTooltips: true,
     showTooltipToggle: false,
     showAnagramView: false,
@@ -183,10 +184,12 @@ export default Vue.extend({
                 options.push(this.opt.SHOW_TOOLTIPS);
             }
         }
-        if (this.darkModeEnabled) {
-            options.push(this.opt.DISABLE_DARK_MODE);
-        } else {
-            options.push(this.opt.ENABLE_DARK_MODE);
+        if (this.showToggleDarkMode) {
+            if (this.darkModeEnabled) {
+                options.push(this.opt.DISABLE_DARK_MODE);
+            } else {
+                options.push(this.opt.ENABLE_DARK_MODE);
+            }
         }
         return options;
     }
