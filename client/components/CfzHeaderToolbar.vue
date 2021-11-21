@@ -1,7 +1,7 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
     <table slot="brand" class="cfz-logo">
-        <td data-multi-solver-mask="3" data-flat-number="?" style="vertical-align: middle;"
+        <td data-flat-number="?" style="vertical-align: middle;"
          @click="$emit('logo-clicked')">C</td>
     </table>
     <template v-slot="title">
@@ -169,8 +169,19 @@
     border-spacing: 0;
     width: 36px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+
+    td {
+        background: repeating-linear-gradient(45deg, #7ad 0px, #7ad 12px, #e86 12px, #e86 24px) !important;
+
+        
+    }
+
+
 }
 
+.theme-dark .cfz-logo td {
+    background: repeating-linear-gradient(45deg, #3077be 0px, #3077be 12px, #d64718 12px, #d64718 24px) !important;
+}
 
 .ui-toolbar__brand {
     min-width: 0;
