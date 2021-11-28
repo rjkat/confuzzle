@@ -54,7 +54,8 @@
     "version" : 1
   },
   "properties" : {
-    "compression-type" : "automatic",
-    "localizable" : true
+    "auto-scaling" : "auto",
+    "compression-type" : "lossless",
+    "template-rendering-intent" : "original"
   }
 }

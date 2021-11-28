@@ -18,7 +18,7 @@
 		595F23AE25CEFBFE0053416C /* Printer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A325CEFBFE0053416C /* Printer.swift */; };
 		595F23AF25CEFBFE0053416C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A425CEFBFE0053416C /* WebView.swift */; };
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
-		CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */; };
+		D0A9C66C27530EC400026EC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0A9C66A27530EC400026EC0 /* LaunchScreen.storyboard */; };
 		E1E260C850014D6B34B487B0 /* Pods_Confuzzle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE9D7FFB2FBE6EEBCA807B6A /* Pods_Confuzzle.framework */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +39,7 @@
 		BE9D7FFB2FBE6EEBCA807B6A /* Pods_Confuzzle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Confuzzle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE8E5C625AE96C07F8AADED /* Pods-Confuzzle.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Confuzzle.debug.xcconfig"; path = "Target Support Files/Pods-Confuzzle/Pods-Confuzzle.debug.xcconfig"; sourceTree = "<group>"; };
 		CDC0FE262388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Confuzzle/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		CDC0FE282388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Confuzzle/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D0A9C66B27530EC400026EC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Confuzzle/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +74,7 @@
 		CD89F880237E9D9200C436A1 = {
 			isa = PBXGroup;
 			children = (
+				D0A9C66A27530EC400026EC0 /* LaunchScreen.storyboard */,
 				595F23A225CEFBFE0053416C /* AppDelegate.swift */,
 				595F239C25CEFBFD0053416C /* Assets.xcassets */,
 				595F239B25CEFBFD0053416C /* Entitlements */,
@@ -84,7 +85,6 @@
 				595F239D25CEFBFD0053416C /* SceneDelegate.swift */,
 				595F239A25CEFBFD0053416C /* Settings.swift */,
 				595F23A125CEFBFE0053416C /* ViewController.swift */,
-				CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */,
 				CDC0FE252388222B002C8D56 /* Main.storyboard */,
 				595F23A425CEFBFE0053416C /* WebView.swift */,
 				30FCACC6A7BF53CD6D9CF6C0 /* Pods */,
@@ -156,8 +156,8 @@
 			files = (
 				595F23A625CEFBFE0053416C /* Entitlements in Resources */,
 				CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */,
-				CDC0FE2A2388222C002C8D56 /* LaunchScreen.storyboard in Resources */,
 				595F23A725CEFBFE0053416C /* Assets.xcassets in Resources */,
+				D0A9C66C27530EC400026EC0 /* LaunchScreen.storyboard in Resources */,
 				25D3517F267A48E0002E5DC0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,10 +232,10 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		CDC0FE272388222B002C8D56 /* LaunchScreen.storyboard */ = {
+		D0A9C66A27530EC400026EC0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CDC0FE282388222B002C8D56 /* Base */,
+				D0A9C66B27530EC400026EC0 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
