@@ -372,7 +372,7 @@
 				CODE_SIGN_ENTITLEMENTS = Confuzzle/Entitlements/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T34685KDX5;
 				INFOPLIST_FILE = Confuzzle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -380,7 +380,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = app.confuzzle;
 				PRODUCT_NAME = Confuzzle;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -399,7 +399,7 @@
 				CODE_SIGN_ENTITLEMENTS = Confuzzle/Entitlements/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T34685KDX5;
 				INFOPLIST_FILE = Confuzzle/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -407,7 +407,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = app.confuzzle;
 				PRODUCT_NAME = Confuzzle;
 				PROVISIONING_PROFILE_SPECIFIER = "";
