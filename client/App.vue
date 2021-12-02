@@ -883,7 +883,7 @@ export default Vue.extend({
     window.addEventListener('popstate', this.handlePopState);
     window.addEventListener('resize', this.handleResize);
     window.addEventListener('orientationchange', this.handleResize);
-    window.addEventListener('beforeinstallprompt', this.beforeInstall);
+    // window.addEventListener('beforeinstallprompt', this.beforeInstall);
 
     // https://stackoverflow.com/a/29696509
     const ua = window.navigator.userAgent;
