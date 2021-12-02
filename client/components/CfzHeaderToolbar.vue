@@ -185,6 +185,11 @@
     background: repeating-linear-gradient(45deg, #3077be 0px, #3077be 12px, #d64718 12px, #d64718 24px) !important;
 }
 
+
+.theme-light .cfz-logo td {
+    background: repeating-linear-gradient(45deg, #7ad 0px, #7ad 12px, #e86 12px, #e86 24px) !important;
+}
+
 .ui-toolbar__brand {
     min-width: 0;
 }
