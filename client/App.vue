@@ -210,6 +210,7 @@
                     :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
                     :solverid="solverid"
+                    :devicePixelRatio="devicePixelRatio"
                     :gridDisplayWidth="gridDisplayWidth"
                     :gridDisplayHeight="gridDisplayHeight"
                     :isPortrait="isPortrait"
@@ -252,6 +253,9 @@ body {
     height: calc(100vh - env(safe-area-inset-bottom));
     width: 100%;
     margin: 0px;
+    @media screen {
+        overflow: hidden;
+    }
    
 /*  
     @media print {
@@ -882,7 +886,7 @@ export default Vue.extend({
   mounted() {
     window.addEventListener('popstate', this.handlePopState);
     window.addEventListener('resize', this.handleResize);
-    window.addEventListener('orientationchange', this.handleResize);
+    // window.addEventListener('orientationchange', this.handleResize);
     // window.addEventListener('beforeinstallprompt', this.beforeInstall);
 
     // https://stackoverflow.com/a/29696509
@@ -903,8 +907,6 @@ export default Vue.extend({
     this.standalone = window.navigator.standalone || appPlatform;
     document.addEventListener('keydown', this.keyListener);
     this.handleResize();
-    // this.gridSizeLocked = true;
-
     
 
     if (localStorage.recentCrosswords) {
@@ -966,9 +968,8 @@ export default Vue.extend({
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
       toolbarHeight: 56,
-      windowWidth: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
-      windowHeight: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
-      gridSizeLocked: false,
+      windowWidth: document.documentElement.clientWidth || document.body.clientWidth,
+      windowHeight: document.documentElement.clientHeight || document.body.clientHeight,
       dragCount: 0,
       maxRecent: 5,
       recentCrosswords: [],
@@ -1213,35 +1214,32 @@ export default Vue.extend({
     // https://stackoverflow.com/a/11744120
     // https://stackoverflow.com/a/52008131
     handleResize() {
+        this.devicePixelRatio = window.devicePixelRatio;
 
-        const devicePixelRatio = (window.innerWidth / document.documentElement.clientWidth);
-
-
-        if (this.devicePixelRatio && this.devicePixelRatio != devicePixelRatio) {
-            // user is zooming page, don't resize
-            this.devicePixelRatio = devicePixelRatio;
-            return;
-        }
-        this.devicePixelRatio = devicePixelRatio;
-
-        this.windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        this.windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.windowWidth = window.screen.availWidth || window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        this.windowHeight = window.screen.availHeight || window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
         const w = this.windowWidth;
         const h = this.windowHeight;
-        this.isPortrait = h > w;
+
+        if (window.matchMedia("(orientation: portrait)").matches) {
+            this.isPortrait = true;
+        } else if (window.matchMedia("(orientation: landscape)").matches) {
+            this.isPortrait = false;
+        } else {
+            this.isPortrait = h > w;
+        }
         if (!this.isPortrait) {
             this.showTooltips = false;
         }
 
-        if (!this.gridSizeLocked) {
-            if (this.isPortrait) {
-                this.gridDisplayWidth = w;
-                this.gridDisplayHeight = 0.67*h;
-            } else {
-                this.gridDisplayWidth = 0.5*w;
-                this.gridDisplayHeight = h - this.toolbarHeight;
-            }
+        if (this.isPortrait) {
+            this.gridDisplayWidth = w;
+            this.gridDisplayHeight = 0.67*h;
+        } else {
+            this.gridDisplayWidth = 0.5*w;
+            this.gridDisplayHeight = h - this.toolbarHeight;
         }
+        this.$forceUpdate();
     },
     onJoinReveal() {
         if (!this.shouldJoin()) {
@@ -1329,9 +1327,7 @@ export default Vue.extend({
         }
         this.errorText = errorText;
         this.errorMessage = errorMessage;
-        // this.gridSizeLocked = false;
         this.handleResize();
-        // this.gridSizeLocked = true;
         this.renderLoading = false;
         this.showAnagramView = false;
 

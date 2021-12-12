@@ -128,6 +128,7 @@ export default Vue.extend({
       type: Object,
       default: function () { return {} }
     },
+    devicePixelRatio: Number,
     gridDisplayWidth: Number,
     gridDisplayHeight: Number,
     isPortrait: {
@@ -149,13 +150,10 @@ export default Vue.extend({
       return (this.cellWidth * this.crossword.grid.height - 0.5);
     },
     gridScale() {
-      let shouldScaleHeight = (this.gridHeight - this.gridDisplayHeight) >= (this.gridWidth - this.gridDisplayWidth);
-      if (!shouldScaleHeight && this.gridWidth < this.gridDisplayWidth) {
-        shouldScaleHeight = this.crossword.grid.height < this.crossword.grid.width;
-      }
+      let shouldScaleHeight = !(this.gridWidth > this.gridDisplayWidth);
       const scaleSize = shouldScaleHeight ? this.gridDisplayHeight : this.gridDisplayWidth;
       const scaleDim = shouldScaleHeight ? this.gridHeight : this.gridWidth;
-      return Math.min(1, scaleSize / scaleDim);
+      return scaleSize / scaleDim;
     },
     gridStyle() {
       return {
