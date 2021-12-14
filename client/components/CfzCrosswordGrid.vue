@@ -145,24 +145,20 @@ export default Vue.extend({
     gridHeight() {
       return (this.cellWidth * this.crossword.grid.height - 1);
     },
-    
     gridScale() {
+      let scale = 1.0;
       if (this.isPortrait) {
-        return Math.min(
+        scale = Math.min(
           0.67 * this.clientDisplayHeight / this.gridHeight,
           this.clientDisplayWidth / this.gridWidth
         );
+      } else {
+        scale = Math.min(
+          0.5 * this.clientDisplayWidth / this.gridWidth,
+          (this.clientDisplayHeight - this.toolbarHeight) / this.gridHeight
+        );
       }
-      return Math.min(
-        0.5 * this.clientDisplayWidth / this.gridWidth,
-        (this.clientDisplayHeight - this.toolbarHeight) / this.gridHeight
-      );
-      // const desiredWidth = this.isPortrait ? this.clientDisplayWidth : 0.5*this.clientDisplayWidth;
-      // const desiredHeight = this.isPortrait ? 0.67*this.clientDisplayHeight : (this.clientDisplayHeight - this.toolbarHeight);
-
-      // const widthScale = this.desiredWidth / this.gridWidth;
-      // const heightScale = this.desiredHeight / this.gridHeight;
-      // return 0.05;
+      return Math.min(scale, 1.0);
     },
     gridStyle() {
       return {
