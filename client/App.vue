@@ -210,9 +210,8 @@
                     :usingPencil="usingPencil"
                     :data-portrait="isPortrait"
                     :solverid="solverid"
-                    :devicePixelRatio="devicePixelRatio"
-                    :gridDisplayWidth="gridDisplayWidth"
-                    :gridDisplayHeight="gridDisplayHeight"
+                    :clientDisplayWidth="clientDisplayWidth"
+                    :clientDisplayHeight="clientDisplayHeight"
                     :isPortrait="isPortrait"
                     :showTooltips="showTooltips"
                     :showAnagramView="showAnagramView"
@@ -967,7 +966,6 @@ export default Vue.extend({
       exportMessage: 'Crossword saved to clipboard',
       exportEmojiMessage: '🧩✨ ➡️ 📋 ✅',
       snackbarDuration: 3000,
-      toolbarHeight: 56,
       windowWidth: document.documentElement.clientWidth || document.body.clientWidth,
       windowHeight: document.documentElement.clientHeight || document.body.clientHeight,
       dragCount: 0,
@@ -976,7 +974,6 @@ export default Vue.extend({
       solverid: 0,
       syncedSolver: '',
       lastSelected: {},
-      devicePixelRatio: 0,
       socketid: '',
       shortLink: '',
       showGrid: true,
@@ -1214,12 +1211,13 @@ export default Vue.extend({
     // https://stackoverflow.com/a/11744120
     // https://stackoverflow.com/a/52008131
     handleResize() {
-        this.devicePixelRatio = window.devicePixelRatio;
-
-        this.windowWidth = window.screen.availWidth || window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        this.windowHeight = window.screen.availHeight || window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.windowWidth = document.documentElement.clientWidth;
+        this.windowHeight = document.documentElement.clientHeight;
         const w = this.windowWidth;
         const h = this.windowHeight;
+
+        this.clientDisplayHeight = h;
+        this.clientDisplayWidth = w;
 
         if (window.matchMedia("(orientation: portrait)").matches) {
             this.isPortrait = true;
@@ -1228,18 +1226,10 @@ export default Vue.extend({
         } else {
             this.isPortrait = h > w;
         }
+       
         if (!this.isPortrait) {
             this.showTooltips = false;
         }
-
-        if (this.isPortrait) {
-            this.gridDisplayWidth = w;
-            this.gridDisplayHeight = 0.67*h;
-        } else {
-            this.gridDisplayWidth = 0.5*w;
-            this.gridDisplayHeight = h - this.toolbarHeight;
-        }
-        this.$forceUpdate();
     },
     onJoinReveal() {
         if (!this.shouldJoin()) {

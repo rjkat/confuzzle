@@ -128,13 +128,9 @@ export default Vue.extend({
       type: Object,
       default: function () { return {} }
     },
-    devicePixelRatio: Number,
-    gridDisplayWidth: Number,
-    gridDisplayHeight: Number,
-    isPortrait: {
-      type: Boolean,
-      default: false
-    },
+    clientDisplayWidth: Number,
+    clientDisplayHeight: Number,
+    isPortrait: Boolean,
     editable: {
       type: Boolean,
       default: true
@@ -144,16 +140,29 @@ export default Vue.extend({
   },
   computed: {
     gridWidth() {
-      return (this.cellWidth * this.crossword.grid.width - 0.5);
+      return (this.cellWidth * this.crossword.grid.width - 1);
     },
     gridHeight() {
-      return (this.cellWidth * this.crossword.grid.height - 0.5);
+      return (this.cellWidth * this.crossword.grid.height - 1);
     },
+    
     gridScale() {
-      let shouldScaleHeight = !(this.gridWidth > this.gridDisplayWidth);
-      const scaleSize = shouldScaleHeight ? this.gridDisplayHeight : this.gridDisplayWidth;
-      const scaleDim = shouldScaleHeight ? this.gridHeight : this.gridWidth;
-      return scaleSize / scaleDim;
+      if (this.isPortrait) {
+        return Math.min(
+          0.67 * this.clientDisplayHeight / this.gridHeight,
+          this.clientDisplayWidth / this.gridWidth
+        );
+      }
+      return Math.min(
+        0.5 * this.clientDisplayWidth / this.gridWidth,
+        (this.clientDisplayHeight - this.toolbarHeight) / this.gridHeight
+      );
+      // const desiredWidth = this.isPortrait ? this.clientDisplayWidth : 0.5*this.clientDisplayWidth;
+      // const desiredHeight = this.isPortrait ? 0.67*this.clientDisplayHeight : (this.clientDisplayHeight - this.toolbarHeight);
+
+      // const widthScale = this.desiredWidth / this.gridWidth;
+      // const heightScale = this.desiredHeight / this.gridHeight;
+      // return 0.05;
     },
     gridStyle() {
       return {
@@ -415,7 +424,8 @@ export default Vue.extend({
       bundler: "Parcel",
       inputAcross: true,
       lastClicked: undefined,
-      cellWidth: 29
+      cellWidth: 29,
+      toolbarHeight: 56
     };
   }
 });
