@@ -18,8 +18,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="redraw" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="KRd-sx-89R">
-                                <rect key="frame" x="175" y="416" width="64" height="64"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="redraw" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="LaunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="KRd-sx-89R">
+                                <rect key="frame" x="175" y="431" width="64" height="64"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </imageView>
                         </subviews>
@@ -30,8 +30,8 @@
                             <accessibilityTraits key="traits" image="YES" notEnabled="YES"/>
                         </accessibility>
                         <constraints>
-                            <constraint firstItem="KRd-sx-89R" firstAttribute="centerY" secondItem="5EZ-qb-Rvc" secondAttribute="centerY" id="fe8-qp-v22"/>
-                            <constraint firstItem="KRd-sx-89R" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="zq7-HI-i9g"/>
+                            <constraint firstItem="KRd-sx-89R" firstAttribute="centerX" secondItem="vyb-eP-6CX" secondAttribute="centerX" id="WXG-1A-qSd"/>
+                            <constraint firstItem="KRd-sx-89R" firstAttribute="centerY" secondItem="vyb-eP-6CX" secondAttribute="centerY" constant="10" id="fe8-qp-v22"/>
                         </constraints>
                     </view>
                 </viewController>

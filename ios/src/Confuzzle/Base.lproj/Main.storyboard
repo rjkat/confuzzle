@@ -14,56 +14,66 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Confuzzle" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" semanticContentAttribute="spatial" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="scaleToFill" semanticContentAttribute="spatial" translatesAutoresizingMaskIntoConstraints="NO" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" semanticContentAttribute="spatial" id="PHY-vp-dMl" userLabel="Webview View">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <view contentMode="scaleToFill" semanticContentAttribute="spatial" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PHY-vp-dMl" userLabel="Webview View">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" semanticContentAttribute="spatial" translatesAutoresizingMaskIntoConstraints="NO" id="DIO-mU-n27" userLabel="Loading View">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                    <view contentMode="scaleToFill" semanticContentAttribute="spatial" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DIO-mU-n27" userLabel="Loading View">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
                                         <subviews>
                                             <imageView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="center" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="4oa-LZ-pgs">
-                                                <rect key="frame" x="175" y="416" width="64" height="64"/>
+                                                <rect key="frame" x="175" y="377" width="64" height="64"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                                             </imageView>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="0.10000000000000001" translatesAutoresizingMaskIntoConstraints="NO" id="xSD-dq-HF9">
-                                                <rect key="frame" x="175" y="597" width="64" height="4"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.10000000000000001" translatesAutoresizingMaskIntoConstraints="NO" id="xSD-dq-HF9">
+                                                <rect key="frame" x="175" y="549" width="64" height="4"/>
                                                 <color key="backgroundColor" systemColor="tertiarySystemBackgroundColor"/>
                                                 <color key="tintColor" name="PrimaryAccent"/>
                                             </progressView>
-                                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="wifi.slash" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TpV-I7-c6z">
-                                                <rect key="frame" x="190" y="114" width="32" height="18"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wifi.slash" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TpV-I7-c6z">
+                                                <rect key="frame" x="196" y="104" width="22" height="18"/>
                                                 <color key="tintColor" systemColor="secondaryLabelColor"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <color key="tintColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="4oa-LZ-pgs" firstAttribute="centerY" secondItem="DIO-mU-n27" secondAttribute="centerY" id="Eba-Dt-cp0"/>
-                                            <constraint firstItem="4oa-LZ-pgs" firstAttribute="centerX" secondItem="DIO-mU-n27" secondAttribute="centerX" id="zCX-ha-0Gg"/>
+                                            <constraint firstItem="4oa-LZ-pgs" firstAttribute="centerX" secondItem="DIO-mU-n27" secondAttribute="centerX" id="TMh-Lb-akn"/>
+                                            <constraint firstItem="xSD-dq-HF9" firstAttribute="leading" secondItem="4oa-LZ-pgs" secondAttribute="leading" id="UkU-8c-piI"/>
+                                            <constraint firstItem="xSD-dq-HF9" firstAttribute="centerX" secondItem="DIO-mU-n27" secondAttribute="centerX" id="W3a-fw-XPd"/>
+                                            <constraint firstItem="4oa-LZ-pgs" firstAttribute="centerY" secondItem="DIO-mU-n27" secondAttribute="centerY" id="dW6-sf-RjL"/>
+                                            <constraint firstItem="TpV-I7-c6z" firstAttribute="centerX" secondItem="DIO-mU-n27" secondAttribute="centerX" id="eAB-j3-jKF"/>
+                                            <constraint firstItem="4oa-LZ-pgs" firstAttribute="bottom" secondItem="xSD-dq-HF9" secondAttribute="top" constant="-108" id="siX-sa-qBf"/>
+                                            <constraint firstItem="TpV-I7-c6z" firstAttribute="top" secondItem="DIO-mU-n27" secondAttribute="top" constant="104" id="vT0-L3-ygy"/>
                                         </constraints>
                                     </view>
                                 </subviews>
+                                <viewLayoutGuide key="safeArea" id="9jm-cm-7fE"/>
                                 <color key="backgroundColor" name="PrimaryAccent"/>
                                 <constraints>
-                                    <constraint firstItem="DIO-mU-n27" firstAttribute="leading" secondItem="PHY-vp-dMl" secondAttribute="leading" id="Nja-cF-JuT"/>
-                                    <constraint firstItem="DIO-mU-n27" firstAttribute="top" secondItem="PHY-vp-dMl" secondAttribute="top" id="RLl-uW-Izu"/>
-                                    <constraint firstItem="DIO-mU-n27" firstAttribute="centerY" secondItem="PHY-vp-dMl" secondAttribute="centerY" id="j25-Dp-ajQ"/>
-                                    <constraint firstItem="DIO-mU-n27" firstAttribute="centerX" secondItem="PHY-vp-dMl" secondAttribute="centerX" id="vxD-Xe-lEt"/>
+                                    <constraint firstItem="DIO-mU-n27" firstAttribute="top" secondItem="9jm-cm-7fE" secondAttribute="top" id="5T8-Hn-PF9"/>
+                                    <constraint firstItem="DIO-mU-n27" firstAttribute="leading" secondItem="9jm-cm-7fE" secondAttribute="leading" id="bLF-L3-0Aa"/>
+                                    <constraint firstItem="DIO-mU-n27" firstAttribute="bottom" secondItem="9jm-cm-7fE" secondAttribute="bottom" id="jIu-Be-IvG"/>
+                                    <constraint firstItem="DIO-mU-n27" firstAttribute="trailing" secondItem="9jm-cm-7fE" secondAttribute="trailing" id="pQh-li-c9W"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
                         <color key="tintColor" name="PrimaryAccent"/>
+                        <constraints>
+                            <constraint firstItem="PHY-vp-dMl" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="BFP-UT-ZVH"/>
+                            <constraint firstItem="PHY-vp-dMl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="JnT-oX-0I5"/>
+                            <constraint firstItem="PHY-vp-dMl" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="PO0-aH-c9k"/>
+                            <constraint firstItem="PHY-vp-dMl" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="gsI-zD-tye"/>
+                        </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <connections>
                         <outlet property="connectionProblemView" destination="TpV-I7-c6z" id="76F-WR-UnJ"/>
                         <outlet property="loadingView" destination="DIO-mU-n27" id="Wlk-Yd-6b1"/>
@@ -84,6 +94,9 @@
         </namedColor>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="secondarySystemBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
