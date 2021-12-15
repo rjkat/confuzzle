@@ -538,10 +538,7 @@ a:visited {
     }
     @media print {
         /*flex-direction: column;*/
-        @media (orientation: portrait) {
-            flex-wrap: wrap-reverse;
-            
-        }
+        flex-wrap: wrap-reverse;
         align-items: flex-end;
         justify-content: flex-end;
         page-break-after: auto !important;
