@@ -248,14 +248,12 @@
 <style lang="scss">
 
 body {
-
-    height: calc(100vh - env(safe-area-inset-bottom));
     width: 100%;
     margin: 0px;
     @media screen {
+        height: calc(100vh - env(safe-area-inset-bottom));
         overflow: hidden;
     }
-   
 /*  
     @media print {
         padding: 1.5cm !important;
@@ -532,20 +530,21 @@ a:visited {
     display: flex;
     flex: 1 1 50%;
     flex-direction: row-reverse;
-    &[data-portrait] {
-        flex-direction: column-reverse;
-    }
     @media screen {
         height: calc(100% - 3.5rem);
+        &[data-portrait] {
+            flex-direction: column-reverse;
+        }
     }
     @media print {
-        /*height: 100vh;*/
         /*flex-direction: column;*/
-        flex-wrap: wrap-reverse;
-
+        @media (orientation: portrait) {
+            flex-wrap: wrap-reverse;
+            
+        }
         align-items: flex-end;
         justify-content: flex-end;
-        /*page-break-after: auto !important;*/
+        page-break-after: auto !important;
     }
 }
 
