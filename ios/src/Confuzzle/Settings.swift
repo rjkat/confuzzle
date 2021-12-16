@@ -5,8 +5,6 @@ struct Cookie {
     var value: String
 }
 
-let gcmMessageIDKey = "00000000000" //pwashellz: update this with actual ID if using Firebase 
-
 // URL for first launch
 let rootUrl = URL(string: "https://confuzzle.app")!
 
@@ -20,6 +18,3 @@ let authOrigins: [String] = []
 
 let platformCookie = Cookie(name: "app-platform", value: "iOS App Store")
 
-
-//let statusBarColor = "#FFFFFF"
-//let statusBarStyle = UIStatusBarStyle.lightContent
