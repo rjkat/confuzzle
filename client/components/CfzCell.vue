@@ -218,6 +218,9 @@ td {
         &:not([data-multi-solver-mask]), &[data-multi-solver-mask="0"] {
             background: var(--grid-blank-color);
         }
+        @media print {
+            background: var(--grid-blank-color);
+        }
     }
 
 
