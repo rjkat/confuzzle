@@ -5,33 +5,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+    func openAppLink(activity: NSUserActivity?) {
+        Confuzzle.incomingURL = nil;
         // https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
-        // Get URL components from the incoming user activity.
-        guard let userActivity = connectionOptions.userActivities.first,
-              userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let incomingURL = userActivity.webpageURL else {
-                  return
-              }
-        let handledRequest = URLRequest(url: incomingURL)
-        Confuzzle.webView.load(handledRequest)
-        return
+        if (activity == nil || activity!.activityType != NSUserActivityTypeBrowsingWeb) {
+            return;
+        }
+        incomingURL = activity?.webpageURL
+        if (incomingURL == nil) {
+            return;
+        }
+        if (Confuzzle.webView == nil) {
+            Confuzzle.incomingURL = incomingURL!
+        } else {
+            Confuzzle.webView.load(URLRequest(url: incomingURL!));
+        }
+    }
+    
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        openAppLink(activity: connectionOptions.userActivities.first)
     }
     
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        // https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app
-        // Get URL components from the incoming user activity.
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-              let incomingURL = userActivity.webpageURL else {
-                  return
-              }
-        let handledRequest = URLRequest(url: incomingURL)
-        Confuzzle.webView.load(handledRequest)
-        return
+        openAppLink(activity: userActivity)
     }
 }
 

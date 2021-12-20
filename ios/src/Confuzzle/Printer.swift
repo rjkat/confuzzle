@@ -6,7 +6,7 @@ func printView(webView: WKWebView){
     
     let printInfo = UIPrintInfo(dictionary:nil)
     printInfo.outputType = UIPrintInfo.OutputType.general
-    printInfo.jobName = (webView.url?.absoluteString)!
+    printInfo.jobName = webView.title ?? allowedOrigin
     printInfo.duplex = UIPrintInfo.Duplex.none
     
     printController.printPageRenderer = UIPrintPageRenderer()
@@ -14,6 +14,5 @@ func printView(webView: WKWebView){
     printController.printPageRenderer?.addPrintFormatter(webView.viewPrintFormatter(), startingAtPageAt: 0)
     
     printController.printInfo = printInfo
-    printController.showsNumberOfCopies = true
-    printController.present(animated: true)
+    printController.present(animated: false)
 }

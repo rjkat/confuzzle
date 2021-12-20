@@ -16,7 +16,7 @@
 		595F23AF25CEFBFE0053416C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 595F23A425CEFBFE0053416C /* WebView.swift */; };
 		CDC0FE292388222C002C8D56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDC0FE252388222B002C8D56 /* Main.storyboard */; };
 		D0A9C66C27530EC400026EC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0A9C66A27530EC400026EC0 /* LaunchScreen.storyboard */; };
-		D0E07F83276B4560000AF32B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E07F82276B4560000AF32B /* AppDelegate.swift */; };
+		D0E07F8727707F36000AF32B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0E07F8627707F36000AF32B /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +31,7 @@
 		595F23A425CEFBFE0053416C /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebView.swift; path = Confuzzle/WebView.swift; sourceTree = "<group>"; };
 		CDC0FE262388222B002C8D56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Confuzzle/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D0A9C66B27530EC400026EC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Confuzzle/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		D0E07F82276B4560000AF32B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = /Users/ro/confuzzle/ios/src/AppDelegate.swift; sourceTree = "<absolute>"; };
+		D0E07F8627707F36000AF32B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Confuzzle/AppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +48,7 @@
 		CD89F880237E9D9200C436A1 = {
 			isa = PBXGroup;
 			children = (
-				D0E07F82276B4560000AF32B /* AppDelegate.swift */,
+				D0E07F8627707F36000AF32B /* AppDelegate.swift */,
 				D0A9C66A27530EC400026EC0 /* LaunchScreen.storyboard */,
 				595F239C25CEFBFD0053416C /* Assets.xcassets */,
 				595F239B25CEFBFD0053416C /* Entitlements */,
@@ -136,7 +136,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D0E07F83276B4560000AF32B /* AppDelegate.swift in Sources */,
+				D0E07F8727707F36000AF32B /* AppDelegate.swift in Sources */,
 				595F23A825CEFBFE0053416C /* SceneDelegate.swift in Sources */,
 				595F23A525CEFBFE0053416C /* Settings.swift in Sources */,
 				595F23AE25CEFBFE0053416C /* Printer.swift in Sources */,

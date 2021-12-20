@@ -17,4 +17,3 @@ let allowedOrigin = "confuzzle.app"
 let authOrigins: [String] = []
 
 let platformCookie = Cookie(name: "app-platform", value: "iOS App Store")
-

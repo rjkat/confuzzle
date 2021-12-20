@@ -3,6 +3,7 @@ import WebKit
 import AuthenticationServices
 import SafariServices
 
+var incomingURL: URL?
 
 func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNavigationDelegate, NSO: NSObject, VC: ViewController) -> WKWebView{
     

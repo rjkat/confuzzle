@@ -50,7 +50,8 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
     
     @objc func loadRootUrl() {
-        Confuzzle.webView.load(URLRequest(url: rootUrl));
+        let toLoad = incomingURL ?? rootUrl
+        Confuzzle.webView.load(URLRequest(url: toLoad));
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
