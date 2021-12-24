@@ -17,6 +17,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.loadingView.isHidden = false;
         initWebView()
         initToolbarView()
         loadRootUrl()

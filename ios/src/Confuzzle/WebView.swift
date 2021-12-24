@@ -29,13 +29,16 @@ func createWebView(container: UIView, WKSMH: WKScriptMessageHandler, WKND: WKNav
     webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     
     webView.isHidden = true;
-    
     webView.navigationDelegate = WKND;
-    
-    webView.scrollView.bounces = false;
+    webView.isMultipleTouchEnabled = false
+    webView.scrollView.bounces = false
+    webView.scrollView.bouncesZoom = false
+    webView.scrollView.isScrollEnabled = false
     webView.allowsBackForwardNavigationGestures = true
     webView.scrollView.contentInsetAdjustmentBehavior = .never
-    
+    webView.scrollView.maximumZoomScale = 1.0
+    webView.scrollView.minimumZoomScale = 1.0
+
     webView.addObserver(NSO, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: NSKeyValueObservingOptions.new, context: nil)
     
     return webView
