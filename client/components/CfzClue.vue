@@ -18,6 +18,7 @@
                            autocomplete="off"
                            autocorrect="off"
                            autocapitalize="off"
+                           type="text"
                            :spellcheck="false"
                            maxlength="1"
                            :data-cell-index="i"

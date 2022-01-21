@@ -20,6 +20,7 @@
     <template v-if="editable && !cell.empty">
         <input autocomplete="off" autocorrect="off" autocapitalize="off" :spellcheck="false"
             ref="input"
+            type="text"
             class="crossword-grid-input"
             :value="cell.contents"
             :data-is-pencil="cell.special == '?'"
