@@ -18,7 +18,7 @@
                            autocomplete="off"
                            autocorrect="off"
                            autocapitalize="off"
-                           spellcheck="false"
+                           :spellcheck="false"
                            maxlength="1"
                            :data-cell-index="i"
                            @click.prevent="select($event.target)"
