@@ -286,7 +286,7 @@
     }
     .letter-widget {
       position: relative;
-      /*flex: 1;*/
+      flex: 1;
       border: 1px dashed #000;
       border-radius: 8px;
       margin-bottom: 8px;

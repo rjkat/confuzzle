@@ -2,65 +2,44 @@
 <ui-toolbar class="cfz-control-toolbar hidden-print">
     <div slot="icon">
         <div style="display: flex; justify-content: space-between;">
-        <ui-button
-            class="pencil-button"
-            type="primary"
-            style="width: 2.25rem; font-weight: normal; min-width: 0; margin-left: .25rem;"
-            @click="toggleUsingPencil()"
-        ><div :style="pencilButtonStyle">A</div>
-        </ui-button>
-        <ui-button
-            v-if="showMark"
-            class="clue-action-button"
-            type="primary"
-            icon="star_half"
-            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
-            @click="markClueClicked()"
-        >
-        </ui-button>
-        <ui-button
-            v-if="showErase"
-            class="clue-action-button"
-            type="primary"
-            icon="backspace"
-            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
-            @click="eraseClueClicked()"
-        >
-        </ui-button>
-        <template v-for="(option, i) in viewOptions">
             <ui-button
+                class="pencil-button"
                 type="primary"
-                :icon="option.icon"
-                style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
-                @click="selectMenuOption(option)"
-                >
-                
+                style="width: 2.25rem; font-weight: normal; min-width: 0; margin-left: .25rem;"
+                @click="toggleUsingPencil()"
+            ><div :style="pencilButtonStyle">A</div>
             </ui-button>
-        </template>
-    </div>
+            <ui-button
+                v-if="showMark"
+                class="clue-action-button"
+                type="primary"
+                icon="star_half"
+                style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
+                @click="markClueClicked()"
+            >
+            </ui-button>
+            <ui-button
+                v-if="showErase"
+                class="clue-action-button"
+                type="primary"
+                icon="backspace"
+                style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
+                @click="eraseClueClicked()"
+            >
+            </ui-button>
+            <template v-for="(option, i) in viewOptions">
+                <ui-button
+                    type="primary"
+                    :icon="option.icon"
+                    style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
+                    @click="selectMenuOption(option)"
+                    >
+                    
+                </ui-button>
+            </template>
+        </div>
     </div>
     <div slot="brand">
-        <ui-button
-            icon="lightbulb"
-            type="primary"
-            ref="checkButton"
-            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
-            has-dropdown
-            dropdownPosition="bottom-end"
-            :constrainDropdownToScrollParent="false"
-        >
-        <ui-menu
-            contain-focus
-            has-icons
-            class="cfz-menu"
-            slot="dropdown"
-            :options="cheatOptions"
-            @select="selectMenuOption($event)"
-            @close="$refs.checkButton.closeDropdown()"
-            >
-        </ui-menu>
-        </ui-button>
-        
         <!-- <ui-button
             icon="dashboard"
             type="primary"
@@ -99,14 +78,36 @@
         >
         Cancel
         </ui-button>
+    </div>
+    <div slot="actions" style="padding-right: 1rem;">
+        <ui-button
+            icon="lightbulb"
+            type="primary"
+            ref="checkButton"
+            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem;"
+            has-dropdown
+            dropdownPosition="bottom-end"
+            :constrainDropdownToScrollParent="false"
+        >
+            <ui-menu
+            contain-focus
+            has-icons
+            class="cfz-menu"
+            slot="dropdown"
+            :options="cheatOptions"
+            @select="selectMenuOption($event)"
+            @close="$refs.checkButton.closeDropdown()"
+            >
+            </ui-menu>
+        </ui-button>
         <ui-button
             icon="code"
             type="primary"
             @click="$emit('edit-source-clicked', $event)"
             v-responsive.lg.xl
             v-if="showEdit"
+            style="align-self: flex-end; width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
         >
-        Edit
         </ui-button>
     </div>
 

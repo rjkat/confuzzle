@@ -27,13 +27,15 @@
             >
             Unscramble
           </ui-button>
-          <ui-button
+
+        </div>
+        <div slot="actions">
+            <ui-button
                 icon="visibility"
                 type="primary"
                 @click="$emit('preview-clicked', $event)"
             >
-            Preview
-          </ui-button>
+            </ui-button>
         </div>
     </ui-toolbar>
 

@@ -36,7 +36,6 @@
 @import '../stylesheets/themes';
 
 .crossword-anagram {
-  flex: none;
   height: 100%;
   width: 100%;
 }
@@ -169,14 +168,14 @@ export default Vue.extend({
     gridContainerStyle() {
       const gridHeight = (this.gridScale * this.gridHeight) + 'px';
       const gridWidth =  (this.gridScale * this.gridWidth) + 'px';
-      if (this.showAnagramView) {
-         return {
-          'height': this.isPortrait ? 'unset' : '100%',
-          'width': this.isPortrait ? '100%' : gridWidth,
-          'max-width': this.isPortrait ? 'unset' : gridWidth,
-          'max-height': this.isPortrait ? gridHeight : 'unset'
-        }
-      }
+      // if (this.showAnagramView) {
+      //    return {
+      //     'height': this.isPortrait ? 'unset' : '100%',
+      //     'width': this.isPortrait ? '100%' : gridWidth,
+      //     'max-width': this.isPortrait ? 'unset' : gridWidth,
+      //     'max-height': this.isPortrait ? gridHeight : 'unset'
+      //   }
+      // }
       return {
         'width': gridWidth,
         'height': gridHeight
