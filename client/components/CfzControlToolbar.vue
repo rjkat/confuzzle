@@ -4,7 +4,8 @@
         <div style="display: flex; justify-content: space-between;">
             <ui-button
                 class="pencil-button"
-                type="primary"
+                type="secondary"
+                color="primary"
                 style="width: 2.25rem; font-weight: normal; min-width: 0; margin-left: .25rem;"
                 @click="toggleUsingPencil()"
             ><div :style="pencilButtonStyle">A</div>
@@ -12,7 +13,8 @@
             <ui-button
                 v-if="showMark"
                 class="clue-action-button"
-                type="primary"
+                type="secondary"
+                color="primary"
                 icon="star_half"
                 style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
                 @click="markClueClicked()"
@@ -29,12 +31,13 @@
             </ui-button>
             <template v-for="(option, i) in viewOptions">
                 <ui-button
-                    type="primary"
+                    type="secondary"
                     :icon="option.icon"
+                    :disabled="option.highlighted"
                     style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
                     @click="selectMenuOption(option)"
                     >
-                    
+                    <div style="position: absolute; bottom: -.15rem; left: .4rem;" v-if="option.highlighted">.</div>
                 </ui-button>
             </template>
         </div>
@@ -178,15 +181,14 @@ export default Vue.extend({
     },
     viewOptions() {
         var options = [];
-        if (!this.showAnagramView || !this.showGrid) {
-            options.push(this.opt.SHOW_ANAGRAM);
-        }
-        if (this.showAnagramView || !this.showGrid) {
-            options.push(this.opt.SHOW_GRID);
-        }
-        if (this.showGrid) {
-            options.push(this.opt.SHOW_CLUES_ONLY);
-        }
+        this.opt.SHOW_ANAGRAM.highlighted = this.showAnagramView && this.showGrid;
+        this.opt.SHOW_GRID.highlighted = !this.showAnagramView && this.showGrid;
+        this.opt.SHOW_CLUES_ONLY.highlighted = !this.showGrid;
+
+        options.push(this.opt.SHOW_GRID);
+        options.push(this.opt.SHOW_CLUES_ONLY);
+        options.push(this.opt.SHOW_ANAGRAM);
+
         if (this.showTooltipToggle) {
             if (this.showTooltips) {
                 options.push(this.opt.SHOW_NO_TOOLTIPS);
