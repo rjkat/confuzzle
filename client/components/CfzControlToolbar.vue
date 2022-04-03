@@ -32,6 +32,7 @@
             <template v-for="(option, i) in viewOptions">
                 <ui-button
                     type="secondary"
+                    :color="option.modal ? 'default' : 'primary'"
                     :icon="option.icon"
                     :disabled="option.highlighted"
                     style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
@@ -184,7 +185,7 @@ export default Vue.extend({
         this.opt.SHOW_ANAGRAM.highlighted = this.showAnagramView && this.showGrid;
         this.opt.SHOW_GRID.highlighted = !this.showAnagramView && this.showGrid;
         this.opt.SHOW_CLUES_ONLY.highlighted = !this.showGrid;
-
+        
         options.push(this.opt.SHOW_GRID);
         options.push(this.opt.SHOW_CLUES_ONLY);
         options.push(this.opt.SHOW_ANAGRAM);
@@ -203,6 +204,7 @@ export default Vue.extend({
                 options.push(this.opt.ENABLE_DARK_MODE);
             }
         }
+
         return options;
     }
   },
@@ -294,31 +296,34 @@ export default Vue.extend({
         },
         SHOW_GRID: {
             label: 'Grid',
-            icon: 'grid_on'
+            icon: 'grid_on',
+            modal: true
         },
         SHOW_ANAGRAM: {
             label: 'Anagram',
-            icon: 'gesture'
+            icon: 'gesture',
+            modal: true
         },
         SHOW_TOOLTIPS: {
             label: 'Tooltips',
-            icon: 'speaker_notes'
+            icon: 'speaker_notes',
         },
         SHOW_NO_TOOLTIPS: {
             label: 'No tooltips',
-            icon: 'speaker_notes_off'
+            icon: 'speaker_notes_off',
         },
         ENABLE_DARK_MODE: {
             label: 'Dark theme',
-            icon: 'nightlight'
+            icon: 'nightlight',
         },
         DISABLE_DARK_MODE: {
             label: 'Light theme',
-            icon: 'light_mode'
+            icon: 'light_mode',
         },
         SHOW_CLUES_ONLY: {
             label: 'Clues',
-            icon: 'list'
+            icon: 'list',
+            modal: true
         },
       }
       
