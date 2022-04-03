@@ -20,7 +20,6 @@
     <template v-if="editable && !cell.empty">
         <input autocomplete="off" autocorrect="off" autocapitalize="off" :spellcheck="false"
             ref="input"
-            type="text"
             class="crossword-grid-input"
             :value="cell.contents"
             :data-is-pencil="cell.special == '?'"
@@ -233,7 +232,6 @@ td {
         left: 0;
         color: var(--text-color);
 
-        -webkit-touch-callout: none;
         -webkit-user-select: none; /* Disable selection/copy in UIWebView */
         font-family: $answerFontFamily;
         border: 0;

@@ -3,18 +3,16 @@
     <div slot="icon">
         <div style="display: flex; justify-content: space-between;">
         <ui-button
-            color="primary"
             class="pencil-button"
-            type="secondary"
+            type="primary"
             style="width: 2.25rem; font-weight: normal; min-width: 0; margin-left: .25rem;"
             @click="toggleUsingPencil()"
         ><div :style="pencilButtonStyle">A</div>
         </ui-button>
         <ui-button
             v-if="showMark"
-            color="primary"
             class="clue-action-button"
-            type="secondary"
+            type="primary"
             icon="star_half"
             style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
             @click="markClueClicked()"
@@ -22,14 +20,23 @@
         </ui-button>
         <ui-button
             v-if="showErase"
-            color="primary"
             class="clue-action-button"
-            type="secondary"
+            type="primary"
             icon="backspace"
             style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
             @click="eraseClueClicked()"
         >
         </ui-button>
+        <template v-for="(option, i) in viewOptions">
+            <ui-button
+                type="primary"
+                :icon="option.icon"
+                style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; padding-right: .25rem;"
+                @click="selectMenuOption(option)"
+                >
+                
+            </ui-button>
+        </template>
     </div>
     </div>
     <div slot="brand">
@@ -37,10 +44,11 @@
             icon="lightbulb"
             type="primary"
             ref="checkButton"
+            style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
             has-dropdown
-            dropdownPosition="bottom-start"
+            dropdownPosition="bottom-end"
             :constrainDropdownToScrollParent="false"
-        >Hints
+        >
         <ui-menu
             contain-focus
             has-icons
@@ -52,7 +60,8 @@
             >
         </ui-menu>
         </ui-button>
-        <ui-button
+        
+        <!-- <ui-button
             icon="dashboard"
             type="primary"
             ref="widgetButton"
@@ -71,7 +80,7 @@
                 @close="$refs.widgetButton.closeDropdown()"
                 >
             </ui-menu>
-        </ui-button>
+        </ui-button> -->
         <ui-button
             icon="delete"
             type="primary"
@@ -168,11 +177,11 @@ export default Vue.extend({
     },
     viewOptions() {
         var options = [];
-        if (this.showAnagramView || !this.showGrid) {
-            options.push(this.opt.SHOW_GRID);
-        }
         if (!this.showAnagramView || !this.showGrid) {
             options.push(this.opt.SHOW_ANAGRAM);
+        }
+        if (this.showAnagramView || !this.showGrid) {
+            options.push(this.opt.SHOW_GRID);
         }
         if (this.showGrid) {
             options.push(this.opt.SHOW_CLUES_ONLY);
