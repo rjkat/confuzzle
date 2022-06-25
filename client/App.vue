@@ -158,6 +158,7 @@
                      :showEdit="!state.colluding"
                      :showDelete="false"
                      :showMark="true"
+                     :markCount="markCount"
                      :showErase="false"
                      :showAnagramView="showAnagramView"
                      :showTooltipToggle="!isPortrait && showGrid && !showAnagramView"
@@ -968,6 +969,7 @@ export default Vue.extend({
       maxRecent: 5,
       recentCrosswords: [],
       solverid: 0,
+      markCount: 0,
       syncedSolver: '',
       lastSelected: {},
       socketid: '',
@@ -1550,6 +1552,13 @@ export default Vue.extend({
     },
     markClue(msg) {
         this.crossword.clues[msg.clueid].mark = msg.mark;
+        let nmark = 0;
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            if (clue.mark) {
+                nmark += 1;
+            }
+        }
+        this.markCount = nmark;
         this.$forceUpdate();
         this.$refs.grid.$forceUpdate();
     },

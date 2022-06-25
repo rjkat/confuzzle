@@ -12,10 +12,11 @@
             </ui-button>
             <ui-button
                 v-if="showMark"
-                class="clue-action-button"
+                class="clue-action-button clue-mark-button"
                 type="secondary"
                 color="primary"
                 icon="star_half"
+                :data-mark-count="markCount"
                 style="width: 2.75rem; min-width: 2.75rem; margin-left: .25rem; "
                 @click="markClueClicked()"
             >
@@ -126,6 +127,13 @@
     /*height: 100%;*/
     padding-left: .25rem;
 }
+.clue-mark-button:after {
+    min-width: 1.5em;
+    margin-left: -.5em;
+    height: 100%;
+    content: attr(data-mark-count);
+    margin-top: 1.5em;
+}
 .cfz-control-toolbar {
     margin-left: 1px;
     height: 2rem !important;
@@ -145,6 +153,7 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     showMark: true,
+    markCount: Number,
     showErase: true,
     showDelete: false,
     showEdit: true,

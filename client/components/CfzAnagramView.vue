@@ -92,7 +92,7 @@
         overflow-y: scroll;
         display: flex;
         height: 100%;
-        padding: $displayPadding;
+        padding: 1rem;
         flex-direction: column;
         font-family: $answerFontFamily;
         font-size: 26px;
@@ -317,7 +317,6 @@
     }
     .answer-widget {
       font-size: 26px;
-      padding: 0px .5rem;
       width: 100%;
       .letter-length-indicator {
         width: 31px;
