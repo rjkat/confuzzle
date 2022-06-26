@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "multiplayer crosswords",
   "engines": {
-    "node": ">=13.7.x"
+    "node": "14.x || 15.x"
   },
   "main": "server/index.js",
   "scripts": {
