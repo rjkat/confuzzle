@@ -348,6 +348,8 @@ export default Vue.extend({
                         }
                       }
                   }
+              } else {
+                input.placeholder = '';
               }
               return;
           }

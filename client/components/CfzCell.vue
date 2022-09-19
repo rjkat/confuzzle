@@ -21,7 +21,9 @@
         <input autocomplete="off" autocorrect="off" autocapitalize="off" :spellcheck="false"
             ref="input"
             class="crossword-grid-input"
-            :value="cell.contents"
+            @focus="event => event.target.value = ''"
+            @input="event => cell.contents = event.target.value"
+            @blur="event => { event.target.value = cell.contents; event.target.placeholder = ''; }"
             :data-is-pencil="cell.special == '?'"
             v-on="$listeners"
             maxlength="1"
@@ -429,15 +431,16 @@ export default Vue.extend({
         
         if (this.$refs.input && document.activeElement !== this.$refs.input) {
             if (this.cell.contents) {
-                this.$refs.input.select();
-            } else {
-                this.$refs.input.focus();
+                this.$refs.input.placeholder = this.cell.contents;
+                this.$refs.input.value = '';
             }
+            this.$refs.input.focus();
         }
     },
   },
   mounted() {
     this.refreshPopper();
+    this.$refs.input.value = this.cell.contents;
   },
   data() {
     return {

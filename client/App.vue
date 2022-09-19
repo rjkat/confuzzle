@@ -1336,6 +1336,13 @@ export default Vue.extend({
                 }
             }
         }
+        let nmark = 0;
+        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            if (clue.mark) {
+                nmark += 1;
+            }
+        }
+        this.markCount = nmark;
     },
     updateTitle() {
        document.title = this.pageTitle;
