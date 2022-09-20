@@ -22,18 +22,19 @@
                            :spellcheck="false"
                            maxlength="1"
                            :data-cell-index="i"
-                           @click.prevent="select($event.target)"
-                           @blur="focusChanged()"
-                           @focus="focusChanged()"
+                           @blur="focusChanged($event, true)"
+                           @focus="focusChanged($event, false)"
                            @keydown="handleKeydown($event, i)"
                            @input="handleInput($event, i)"
                            @mousedown.prevent
+                           @click.prevent="select($refs.inputs[i])"
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
                            :data-is-pencil="cell.special == '?'"
                            :class="{highlighted: selected || highlighted}"
-                           v-model="clue.cells[i].contents">
-                    </input><span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
+                           >
+                    </input>
+                    <span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
                 </template>
                 
                 <ui-icon v-if="clue.showCorrect">check</ui-icon>
@@ -106,6 +107,7 @@
         text-transform: uppercase;
         box-sizing: border-box;
         -webkit-user-select: none; 
+        user-select: none;
 
         &[data-is-pencil] {
             vertical-align: bottom !important;
@@ -212,14 +214,28 @@ export default Vue.extend({
     prop: 'clue'
   },
   watch: {
+    cellContents: function (val) {
+        for (let i = 0; i < val.length; i++) {
+            if (this.$refs.inputs[i].value != val[i]) {
+                this.$refs.inputs[i].value = val[i];
+            }
+        }
+    },
     selected: function(val) {
         if (val && !this.wasClicked) {
             this.scrollIntoView();     
         }
         this.wasClicked = false;
-    }
+    },
   },
   computed: {
+    cellContents() {
+        let contents = [];
+        for (let i = 0; i < this.clue.cells.length; i++) {
+            contents.push(this.clue.cells[i].contents);
+        }
+        return contents;
+    },
     highlighted() {
         return this.clue.highlightMask & this.solverMask;
     },
@@ -266,10 +282,14 @@ export default Vue.extend({
             this.wasClicked = true;
         }
     },
-    focusChanged: function() {
+    focusChanged: function(event, blur) {
         let haveFocus = false;
         for (let i = 0; i < this.$refs.inputs.length; i++) {
             haveFocus |= this.$refs.inputs[i] === document.activeElement
+        }
+        if (blur) {
+            event.target.value = this.clue.cells[event.target.dataset.cellIndex].contents;
+            event.target.placeholder = '';
         }
         this.wasClicked |= haveFocus;
         if (haveFocus) {
@@ -303,15 +323,16 @@ export default Vue.extend({
     select: function(input) {
         this.wasClicked = true;
         if (input.value) {
-            input.select();
-        } else {
-            input.focus();
+            input.placeholder = input.value;
+            input.value = '';
         }
+        input.focus();
     },
     fillCell: function(offset, value) {
         this.clue.showCorrect = false;
         this.clue.showIncorrect = false;
         const special = (this.usingPencil && value && value != ' ') ? '?' : '-';
+        this.clue.cells[offset].contents = value;
         this.clue.cells[offset].special = special;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value, special: special});
     },
@@ -327,6 +348,7 @@ export default Vue.extend({
         const input = event.target;
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
+                event.target.placeholder = '';
                 this.clue.cells[offset].contents = '';
                 this.fillCell(offset, '');
             case KeyCode.KEY_RIGHT:
@@ -336,6 +358,7 @@ export default Vue.extend({
                 break;
             case KeyCode.KEY_BACK_SPACE:
                 this.clue.cells[offset].contents = '';
+                event.target.placeholder = '';
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
                 event.preventDefault();
@@ -358,8 +381,12 @@ export default Vue.extend({
     }
   },
   mounted () {
-    if (this.selected)
+    if (this.selected) {
         this.scrollIntoView()
+    }
+    for (let i = 0; i < this.clue.cells.length; i++) {
+        this.$refs.inputs[i].value = this.clue.cells[i].contents;
+    }
   },
   data() {
     return {

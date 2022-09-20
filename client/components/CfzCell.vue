@@ -22,7 +22,6 @@
             ref="input"
             class="crossword-grid-input"
             @focus="event => event.target.value = ''"
-            @input="event => cell.contents = event.target.value"
             @blur="event => { event.target.value = cell.contents; event.target.placeholder = ''; }"
             :data-is-pencil="cell.special == '?'"
             v-on="$listeners"
@@ -235,6 +234,7 @@ td {
         color: var(--text-color);
 
         -webkit-user-select: none; /* Disable selection/copy in UIWebView */
+        pointer-events: none;
         font-family: $answerFontFamily;
         border: 0;
         border-radius: 0;
@@ -289,6 +289,9 @@ export default Vue.extend({
     }
   },
   watch: {
+    cellContents(val) {
+        this.$refs.input.value = val;
+    },
     cell(val) {
         this.refreshPopper();
     },
@@ -300,6 +303,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    cellContents() {
+        return this.cell.contents;
+    },
     showAcrossSeparator() {
         if (!this.cell || !this.cell.clues || !this.cell.clues.across)
             return false;
@@ -429,18 +435,18 @@ export default Vue.extend({
         if (!this.editable)
             return;
         
-        if (this.$refs.input && document.activeElement !== this.$refs.input) {
-            if (this.cell.contents) {
-                this.$refs.input.placeholder = this.cell.contents;
-                this.$refs.input.value = '';
-            }
-            this.$refs.input.focus();
+        if (this.cell.contents) {
+            this.$refs.input.placeholder = this.cell.contents;
+            this.$refs.input.value = '';
         }
+        this.$refs.input.focus();
     },
   },
   mounted() {
     this.refreshPopper();
-    this.$refs.input.value = this.cell.contents;
+    if (this.$refs.input) {
+        this.$refs.input.value = this.cell.contents;
+    }
   },
   data() {
     return {
