@@ -1,6 +1,7 @@
 # Confuzzle
 
-[![Node.js CI](https://github.com/rjkat/confuzzle/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/rjkat/confuzzle/actions?query=workflow%3A%22Node.js+CI%22) [![Heroku](https://pyheroku-badge.herokuapp.com/?app=confuzzle)](https://confuzzle.app)
+[![Node.js CI](https://github.com/rjkat/confuzzle/workflows/Node.js%20CI/badge.svg?branch=master)](https://github.com/rjkat/confuzzle/actions?query=workflow%3A%22Node.js+CI%22) [![Fly Deploy](https://github.com/rjkat/confuzzle/actions/workflows/fly.yml/badge.svg?branch=master)](https://confuzzle.app)
+
 
 ## About
 
