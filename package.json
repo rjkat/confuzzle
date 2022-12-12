@@ -50,7 +50,7 @@
     "emojisplosion": "^2.6.1",
     "enolib": "^0.8.2",
     "enotype": "^0.3.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-force-https": "^1.0.0",
     "https": "^1.0.0",
     "human-readable-ids": "^1.0.4",
