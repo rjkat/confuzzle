@@ -189,42 +189,30 @@ export default Vue.extend({
       if (this.showLeave) {
         opt.push({
           text: "Leave",
-          color: "red",
+          // color: "red",
           icon: "no_meeting_room",
           tooltip: "Leave group session"
         });
+        opt.push({
+          text: "Invite",
+          color: "primary",
+          icon: "group_add",
+          tooltip: "Invite others to this session"
+        });
       } else {
         opt.push({
-          text: "Join",
-          color: "green",
-          icon: "meeting_room",
-          tooltip: "Join a group session"
-        });
-      }
-      if (!this.showLeave) {
-        opt.push({
-          text: "Solve",
+          text: "Load Puzzle",
           color: "primary",
           icon: "extension",
-          tooltip: "Open and solve puzzles"
+          tooltip: "Open and solve a puzzle"
         });
       }
-
-      opt.push({
-        text: "Invite",
-        color: "accent",
-        icon: "group_add",
-        tooltip: this.showLeave ? "Invite others to this session" : "Start a group session"
-      });
-
-
-      
       return opt;
     }
   },
   methods: {
     optionClicked(option) {
-      if (option.text == 'Solve') {
+      if (option.text == 'Load Puzzle') {
         this.$emit('solve-clicked');
       } else if (option.text == 'Create') {
         this.$emit('edit-clicked');

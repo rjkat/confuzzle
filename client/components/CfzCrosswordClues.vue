@@ -138,7 +138,11 @@
 
 <script>
 import Vue from "vue";
-const sanitizeHtml = require('sanitize-html');
+import DOMPurify from 'dompurify';
+
+function sanitizeHtml(html) {
+  return DOMPurify.sanitize(html);
+}
 
 import CfzClueList from './CfzClueList.vue'
 import CfzSolverList from './CfzSolverList.vue'

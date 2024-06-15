@@ -1,9 +1,5 @@
 <template>
 <ui-toolbar type="colored" class="crossword-toolbar" :loading="sourceLoading" style="overflow: hidden;" removeNavIcon>
-    <table slot="brand" class="cfz-logo">
-        <td data-flat-number="?" style="vertical-align: middle;"
-         @click="$emit('logo-clicked')">C</td>
-    </table>
     <template v-slot="title">
         <div v-if="!sourceLoading" class="crossword-title">
             <span class="crossword-meta-name" v-responsive.class>{{metadata.name}}</span>
@@ -427,10 +423,6 @@ export default Vue.extend({
         if (this.showDownload) {
             options.push(this.opt.SAVE_PUZ);
             options.push(this.opt.SAVE_ENO);
-        }
-
-        if (!this.state.colluding && !isMobile) {
-            options.push(this.opt.LINK_EXTERNAL);
         }
         options.push(this.opt.ABOUT);
         return options;

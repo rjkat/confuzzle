@@ -44,7 +44,7 @@
                 </ul>
             </div>
         </template>
-        <p class="join-info-text">Discover publishers of .puz files at <a href="https://crosswordlinks.substack.com/about" target="_blank" rel="noopener">Daily Crossword Links<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></p>
+        <p class="join-info-text">Discover publishers of .puz files at <a href="https://dailycrosswordlinks.com/" target="_blank" rel="noopener">Daily Crossword Links<ui-icon style="font-size: 12pt;">open_in_new</ui-icon></a></p>
     </ui-modal>
     
     <cfz-disconnected-modal
@@ -1025,7 +1025,7 @@ export default Vue.extend({
         if (mode == 'invite') {
             return 'Open for sharing';
         }
-        return 'Open for solving';
+        return 'Load puzzle';
     },
     requestedPath() {
         if (window.location.pathname != "/") {

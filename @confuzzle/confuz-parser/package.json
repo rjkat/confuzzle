@@ -13,8 +13,8 @@
         "confuz-file-format"
     ],
     "dependencies": {
+        "dompurify": "^3.1.5",
         "enolib": "^0.8.2",
-        "enotype": "^0.3.0",
-        "sanitize-html": "^2.4.0"
+        "enotype": "^0.3.0"
     }
 }

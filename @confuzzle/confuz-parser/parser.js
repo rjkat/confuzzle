@@ -1,7 +1,11 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
-const sanitizeHtml = require('sanitize-html');
+import DOMPurify from 'dompurify';
+
+function sanitizeHtml(html) {
+  return DOMPurify.sanitize(html);
+}
 
 const EMOJI_DICT = require('./words_to_emoji.js').EMOJI_DICT;
 
