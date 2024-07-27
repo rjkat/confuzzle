@@ -8,7 +8,6 @@
   "main": "server/index.js",
   "scripts": {
     "test": "jest",
-    "preinstall": "npx npm-force-resolutions",
     "build": "parcel build client/index.html client/syntax.html client/privacy.html --no-source-maps --no-cache --no-content-hash",
     "postbuild": "workbox injectManifest && workbox copyLibraries dist",
     "develop": "NODE_ENV=development nodemon -e js,vue server/index.js",
