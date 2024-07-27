@@ -1,9 +1,9 @@
 {
   "name": "confuzzle",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "multiplayer crosswords",
   "engines": {
-    "node": "14.x || 15.x"
+    "node": "22.x"
   },
   "main": "server/index.js",
   "scripts": {
