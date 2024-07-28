@@ -13,7 +13,9 @@
             :usingPencil="usingPencil"
             :solverid="solverid"
             :solvers="solvers"
+            :gridCells="crossword.grid.cells"
             @deselect-clue="clueDeselected($event)"
+            @select-clue="$emit('select-clue', $event)"
             @move-to-clue="moveToClue($event)"
             v-model="crossword.acrossClues"
             v-on="$listeners"
@@ -28,7 +30,9 @@
             :usingPencil="usingPencil"
             :solverid="solverid"
             :solvers="solvers"
+            :gridCells="crossword.grid.cells"
             @deselect-clue="clueDeselected($event)"
+            @select-clue="$emit('select-clue', $event)"
             @move-to-clue="moveToClue($event)"
             v-model="crossword.downClues"
             v-on="$listeners"
@@ -188,13 +192,13 @@ export default Vue.extend({
             return;
         }
         const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
-        nextList.selectClue(next);
+        nextList.scrollToClue(next);
     },
     moveToClue(event) {
         const clue = event.clue;
         const next = event.prev ? clue.prevNumericalClue : clue.nextNumericalClue;
         const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
-        nextList.selectClue(next);
+        nextList.scrollToClue(next);
     },
   },
   data() {

@@ -124,7 +124,7 @@ function fuzRefs(clues) {
     return refs;
 }
 
-function stateFromClues(clues) {
+function stateFromClues(grid, clues) {
     var state = '';
     var written = {};
     for (let [clueid, clue] of Object.entries(clues)) {
@@ -132,8 +132,8 @@ function stateFromClues(clues) {
         var special = '';
         var nfilled = 0;
         var haveSpecial = false;
-        for (var i = 0; i < clue.cells.length; i++) {
-            const cell = clue.cells[i];
+        for (var i = 0; i < clue.cellIds.length; i++) {
+            const cell = grid.cells[clue.cellIds[i]];
             const c = cell.contents;
             const s = cell.special;
             if (s && s != '-') {
@@ -158,14 +158,15 @@ function stateFromClues(clues) {
         
         var nneeded = nfilled;
         if (!haveSpecial) {
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
+            for (var i = 0; i < clue.cellIds.length; i++) {
+                const cell = grid.cells[clue.cellIds[i]];
                 const otherClue = clue.isAcross ? cell.clues.down : cell.clues.across;
                 if (!otherClue)
                     continue;
                 var nother = 0;
-                for (var j = 0; j < otherClue.cells.length; j++) {
-                    if (otherClue.cells[j].contents) {
+                for (var j = 0; j < otherClue.cellIds.length; j++) {
+                    const otherCell = grid.cells[otherClue.cellIds[j]];
+                    if (otherCell.contents) {
                         nother++;
                     }
                 }
@@ -331,7 +332,7 @@ function fromCrossword(crossword, options) {
         eno += refs;
 
     if (!options.scramble) {
-        var state = stateFromClues(crossword.clues);
+        var state = stateFromClues(crossword.grid, crossword.clues);
         if (state)
             eno += state;
     }
@@ -359,7 +360,7 @@ function toPuz(eno) {
     for (var row = 0; row < grid.height; row++) {
         gext[row] = [];
         for (var col = 0; col < grid.width; col++) {
-            const cell = grid.cells[row][col];
+            const cell = grid.cells[`${row},${col}`];
             solution += cell.empty ? '.' : (cell.solution ? cell.solution : 'X');
             if (!cell.empty && cell.contents)
                 haveState = true;

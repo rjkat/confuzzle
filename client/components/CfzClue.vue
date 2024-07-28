@@ -13,7 +13,7 @@
         </div>
         <div class="crossword-answer-container" v-if="clue" ref="answer">
             <div class="crossword-clue-input hidden-print" :style="{backgroundColor: clue.shadingColor}">
-                <template v-for="(cell, i) in clue.cells">
+                <template v-for="(cellId, i) in clue.cellIds">
                     <input ref="inputs"
                            autocomplete="off"
                            autocorrect="off"
@@ -30,11 +30,11 @@
                            @click.prevent="select($refs.inputs[i])"
                            :style="{backgroundColor: shadingColor(i)}"
                            :data-solver-mask="solverMask"
-                           :data-is-pencil="cell.special == '?'"
+                           :data-is-pencil="gridCells[cellId].special == '?'"
                            :class="{highlighted: selected || highlighted}"
                            >
                     </input>
-                    <span v-if="separator(cell)" class="crossword-separator" v-html="separator(cell)"></span>
+                    <span v-if="separator(gridCells[cellId])" class="crossword-separator" v-html="separator(gridCells[cellId])"></span>
                 </template>
                 
                 <ui-icon v-if="clue.showCorrect">check</ui-icon>
@@ -202,6 +202,7 @@ export default Vue.extend({
     CfzSolverList
   },
   props: {
+    gridCells: Object,
     clue: Object,
     solvers: Array,
     usingPencil: Boolean,
@@ -222,7 +223,7 @@ export default Vue.extend({
                 }
             }
         }
-        this.$forceUpdate();
+        // this.$forceUpdate();
     },
     selected: function(val) {
         if (val && !this.wasClicked) {
@@ -234,8 +235,8 @@ export default Vue.extend({
   computed: {
     cellContents() {
         let contents = [];
-        for (let i = 0; i < this.clue.cells.length; i++) {
-            contents.push(this.clue.cells[i].contents);
+        for (let i = 0; i < this.clue.cellIds.length; i++) {
+            contents.push(this.gridCells[this.clue.cellIds[i]].contents);
         }
         return contents;
     },
@@ -278,7 +279,7 @@ export default Vue.extend({
         }
 
         if (forced) {
-            this.selectClue(this.clue.id, this.solverid);
+            this.$emit('select-clue', {clueid: this.clue.id, solverid: this.solverid});
             this.scrollIntoView();
         } else {
             this.wasClicked = true;
@@ -290,19 +291,19 @@ export default Vue.extend({
             haveFocus |= this.$refs.inputs[i] === document.activeElement
         }
         if (blur) {
-            event.target.value = this.clue.cells[event.target.dataset.cellIndex].contents;
+            event.target.value = this.gridCells[this.clue.cellIds[event.target.dataset.cellIndex]].contents;
             event.target.placeholder = '';
         }
         this.wasClicked |= haveFocus;
         if (haveFocus) {
-            this.selectClue(this.clue.id, this.solverid);
+            this.$emit('select-clue', {clueid: this.clue.id, solverid: this.solverid});
         }
     },
     shadingColor: function(i) {
         if (this.clue && this.clue.shadingColor)
             return this.clue.shadingColor;
-        if (this.clue.cells[i])
-            return this.clue.cells[i].shadingColor;
+        if (this.clue.cellIds[i])
+            return this.gridCells[this.clue.cellIds[i]].shadingColor;
         return '';
     },
     moveInput: function(input, pos) {
@@ -331,11 +332,7 @@ export default Vue.extend({
         input.focus();
     },
     fillCell: function(offset, value) {
-        this.clue.showCorrect = false;
-        this.clue.showIncorrect = false;
         const special = (this.usingPencil && value && value != ' ') ? '?' : '-';
-        this.clue.cells[offset].contents = value;
-        this.clue.cells[offset].special = special;
         this.$emit('fill-cell', {clueid: this.clue.id, offset: offset, value: value, special: special});
     },
     handleInput(event, offset) {
@@ -351,7 +348,6 @@ export default Vue.extend({
         switch (event.keyCode) {
             case KeyCode.KEY_SPACE:
                 event.target.placeholder = '';
-                this.clue.cells[offset].contents = '';
                 this.fillCell(offset, '');
             case KeyCode.KEY_RIGHT:
             case KeyCode.KEY_DOWN:
@@ -359,7 +355,6 @@ export default Vue.extend({
                 event.preventDefault();
                 break;
             case KeyCode.KEY_BACK_SPACE:
-                this.clue.cells[offset].contents = '';
                 event.target.placeholder = '';
                 this.fillCell(offset, '');
                 this.moveInput(input, offset - 1);
@@ -386,8 +381,8 @@ export default Vue.extend({
     if (this.selected) {
         this.scrollIntoView()
     }
-    for (let i = 0; i < this.clue.cells.length; i++) {
-        this.$refs.inputs[i].value = this.clue.cells[i].contents;
+    for (let i = 0; i < this.clue.cellIds.length; i++) {
+        this.$refs.inputs[i].value = this.gridCells[this.clue.cellIds[i]].contents;
     }
   },
   data() {

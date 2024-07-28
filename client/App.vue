@@ -192,7 +192,8 @@
                         :solverid="solverid"
                         :usingPencil="usingPencil"
                         v-model="crossword" 
-                        @fill-cell="sendFillCell($event)"
+                        @fill-cell="fillCell($event)"
+                        @select-clue="selectClue($event.clueid, $event.solverid)"
                         @solver-clicked="toggleSyncSelection($event)"
                         v-responsive.class
                         >
@@ -217,7 +218,10 @@
                     :showTooltips="showTooltips"
                     :showAnagramView="showAnagramView"
                     :deselectAtEnd="false"
-                    @fill-cell="sendFillCell($event)"
+                    :selectedClue="selectedClue"
+                    @fill-cell="fillCell($event)"
+                    @select-clue="selectClue($event.clueid, $event.solverid)"
+                    @deselect-clue="deselectClue($event.clueid, $event.solverid)"
                     @anagram-submitted="anagramSubmitted($event)"
                     v-if="showGrid">
                 </cfz-crossword-grid>
@@ -711,6 +715,7 @@ export default Vue.extend({
     solverName: "",
     errorText: "",
     errorMessage: "",
+    selectedClue: {},
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -753,22 +758,12 @@ export default Vue.extend({
         return 'Join session' + (this.gridid ? ': ' + this.gridid : '') + ' | Confuzzle';
       return (this.state.colluding ? 'Group session: ' : '') + this.crossword.meta.fullName + ' | Confuzzle';
     },
-
-    selectedClue() {
-        if (!this.crossword)
-            return undefined;
-        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            if (clue.selected) {
-                return clue;
-            }
-        }
-        return undefined;
-    },
     statelessSource() {
       return this.crosswordSource.split(/\n#\s+state\n/)[0];
     },
     crosswordState() {
-      return confuz.stateFromClues(this.crossword.clues);
+        console.log(this.crossword.grid)
+      return confuz.stateFromClues(this.crossword.grid, this.crossword.clues);
     },
     crosswordId() {
       return this.crossword.meta.id;
@@ -779,7 +774,7 @@ export default Vue.extend({
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
-                const cell = grid.cells[row][col];
+                const cell = grid.cells[`${row},${col}`];
                 if (!cell.empty &&
                     (!cell.contents || (cell.solution && cell.solution.toUpperCase() != cell.contents.toUpperCase()))) {
                     return false;
@@ -994,11 +989,7 @@ export default Vue.extend({
       lastId: '',
       sessionIdText: "",
       puzzleModalTitle: '',
-      cellContents: {},
-      cellSpecial: {},
-      clueSelected: {},
       forcedSelection: {},
-      clueHighlightMask: {},
       clueShowCorrect: {},
       clueMark: {},
       clueShowIncorrect: {},
@@ -1331,32 +1322,22 @@ export default Vue.extend({
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
-                const cell = grid.cells[row][col];
+                const cell = grid.cells[`${row},${col}`];
                 if (!cell.clues) {
                     continue;
                 }
                 if (cell.clues.across) {
-                    this.clueShowCorrect[cell.clues.across.id] = false;
-                    this.clueShowIncorrect[cell.clues.across.id] = false;
+                    cell.clues.across.showCorrect = false;
+                    cell.clues.across.showIncorrect = false;
                 }
                 if (cell.clues.down) {
-                    this.clueShowCorrect[cell.clues.down.id] = false;
-                    this.clueShowIncorrect[cell.clues.down.id] = false;
+                    cell.clues.down.showCorrect = false;
+                    cell.clues.down.showIncorrect = false;
                 }
             }
         }
         let nmark = 0;
-        this.clueSelected = {}
-        this.forcedSelection = {}
-        this.clueShowCorrect = {}
-        this.clueShowIncorrect = {}
-        this.clueHighlightMask = {}
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            this.clueSelected[clueid] = false;
-            this.forcedSelection[clueid] = false;
-            this.clueShowCorrect[clueid] = false;
-            this.clueShowIncorrect[clueid] = false;
-            this.clueHighlightMask[clueid] = 0;
             if (clue.mark) {
                 nmark += 1;
             }
@@ -1607,8 +1588,8 @@ export default Vue.extend({
         // haven't been filled in
         while (clue) {
             const direction = clue.isAcross;
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
+            for (var i = 0; i < clue.cellIds.length; i++) {
+                const cell = this.crossword.grid.cells[clue.cellIds[i]];
                 let otherClue = undefined;
                 if (clue.isAcross && cell.clues.down) {
                     otherClue = cell.clues.down;
@@ -1618,8 +1599,9 @@ export default Vue.extend({
                 let allFilled = false;
                 if (otherClue) {
                     allFilled = true;
-                    for (var j = 0; j < otherClue.cells.length; j++) {
-                        if (otherClue.cells[j].contents == '') {
+                    for (var j = 0; j < otherClue.cellIds.length; j++) {
+                        const otherCell = this.crossword.grid.cells[otherClue.cellIds[j]];
+                        if (otherCell.contents == '') {
                             allFilled = false;
                             break;
                         }
@@ -1639,14 +1621,14 @@ export default Vue.extend({
             clue = clue.nextRef;
         }
 
-        this.clueShowCorrect[clue.id] = false;
-        this.clueShowIncorrect[clue.id] = false;
+        clue.showCorrect = false;
+        clue.showIncorrect = false;
     },
     clearAllClicked() {
         const grid = this.crossword.grid;
         for (let row = 0; row < grid.height; row++) {
             for (let col = 0; col < grid.width; col++) {
-                const cell = grid.cells[row][col];
+                const cell = grid.cells[`${row},${col}`];
                 cell.contents = '';
                 cell.special = '-';
             }
@@ -1664,8 +1646,8 @@ export default Vue.extend({
         }
         const startClue = clue;
         while (clue) {
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
+            for (var i = 0; i < clue.cellIds.length; i++) {
+                const cell = this.crossword.grid.cells[clue.cellIds[i]];
                 if (cell.contents.toUpperCase() != cell.solution.toUpperCase()) {
                     correct = false;
                     break;
@@ -1674,8 +1656,8 @@ export default Vue.extend({
             clue = clue.nextRef;
         }
 
-        this.clueShowCorrect[startClue.id] = correct;
-        this.clueShowIncorrect[startClue.id] = !correct;
+        startClue.showCorrect = correct;
+        startClue.showIncorrect = !correct;
     },
     revealClue(clue) {
         if (!clue)
@@ -1685,8 +1667,8 @@ export default Vue.extend({
         }
         const startClue = clue;
         while (clue) {
-            for (var i = 0; i < clue.cells.length; i++) {
-                const cell = clue.cells[i];
+            for (var i = 0; i < clue.cellIds.length; i++) {
+                const cell = this.crossword.grid.cells[clue.cellIds[i]];
                 if (cell.solution) {
                     cell.contents = cell.solution;
                     cell.special = '-';
@@ -1699,8 +1681,8 @@ export default Vue.extend({
                     });
                 }
             }
-            this.clueShowIncorrect[clue.id] = false;
-            this.clueShowCorrect[clue.id] = false;
+            clue.showCorrect = false;
+            clue.showIncorrect = false;
             clue = clue.nextRef;
         }
     },
@@ -1806,10 +1788,11 @@ export default Vue.extend({
         }
     },
     fillCell(msg) {
-        this.clueShowIncorrect[msg.clueid] = false;
-        this.clueShowCorrect[msg.clueid] = false;
-        this.cellContents[msg.clueid + ':' + msg.offset] = msg.value;
-        this.cellSpecial[msg.clueid + ':' + msg.offset] = msg.special;
+        this.crossword.clues[msg.clueid].showIncorrect = false;
+        this.crossword.clues[msg.clueid].showCorrect = false;
+        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
+        this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
+        this.sendFillCell(msg);
     },
     sendUpdate(event) {
         if (this.$options.socket) {
@@ -1823,6 +1806,7 @@ export default Vue.extend({
                 }
             }
         }
+        console.log(event)
     },
     anagramSubmitted(event) {
         this.showAnagramView = false;
@@ -2135,31 +2119,31 @@ export default Vue.extend({
         this.snackbarMessage(this.exportMessage);
     },
     deselectClue(clueid, solverid, forced) {
-        if (!this.clueSelected[clueid])
+        if (!this.crossword.clues[clueid].selected)
             return;
         solverid %= this.maxSolvers;
-        this.clueSelected[clueid] = false;
         this.forcedSelection[clueid] = forced;
         this.clearHighlight(clueid, solverid);
     },
     selectClue(clueid, solverid, forced) {
-        if (this.clueSelected[clueid])
+        if (this.crossword.clues[clueid].selected)
           return;
         solverid %= this.maxSolvers;
-        for (const [otherid, other] of Object.entries(cw.clues)) {
+        for (const [otherid, other] of Object.entries(this.crossword.clues)) {
           if (otherid != clueid)
             this.deselectClue(otherid, solverid, forced);
         }
-        this.clueSelected[clueid] = true;
+        this.crossword.clues[clueid].selected = true;
+        this.selectedClue = this.crossword.clues[clueid];
         this.forcedSelection[clueid] = forced;
         this.highlightClue(clueid, solverid);
     },
     highlightClue(clueid, solverid, recursive) {
         solverid %= this.maxSolvers;
         const clue = this.crossword.clues[clueid];
-        this.clueHighlightMask[clueid] |= (1 << solverid);
-        for (let i = 0; i < clue.cells.length; i++) {
-          const cell = clue.cells[i];
+        clue.highlightMask[clueid] |= (1 << solverid);
+        for (let i = 0; i < clue.cellIds.length; i++) {
+          const cell = this.crossword.grid.cells[clue.cellIds[i]];
           if (clue.isAcross) {
             cell.acrossMask |= (1 << solverid);
           } else {
@@ -2180,8 +2164,8 @@ export default Vue.extend({
     clearHighlight(clueid, solverid, recursive) {
         solverid %= this.maxSolvers;
         const clue = this.crossword.clues[clueid];
-        for (let i = 0; i < clue.cells.length; i++) {
-          const cell = clue.cells[i];
+        for (let i = 0; i < clue.cellIds.length; i++) {
+          const cell = this.crossword.grid.cells[clue.cellIds[i]];
           if (clue.isAcross) {
             cell.acrossMask &= ~(1 << solverid);
           } else {
@@ -2189,7 +2173,7 @@ export default Vue.extend({
           }
           cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
-        this.clueHighlightMask[clueid] &= ~(1 << solverid);
+        clue.highlightMask &= ~(1 << solverid);
         if (!recursive) {
           if (clue.primary) {
             this.clearHighlight(clue.primary.id, solverid);

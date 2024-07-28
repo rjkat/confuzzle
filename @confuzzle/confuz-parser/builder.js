@@ -14,7 +14,8 @@ function parseAndBuild(input, compiling) {
     for (let [clueid, clue] of Object.entries(cw.clues)) {
       
       // populate cell across and down clues for convenience
-      for (let cell of clue.cells) {
+      for (let cellId of clue.cellIds) {
+        const cell = cw.grid.cells[cellId];
         if (cell.clues.acrossId)
             cell.clues.across = cw.clues[cell.clues.acrossId]
         if (cell.clues.downId)
@@ -50,6 +51,9 @@ function parseAndBuild(input, compiling) {
       } else {
           cw.downClues.push(clue);
       }
+      clue.selected = false;
+      clue.forcedSelection = false;
+      clue.highlightMask = 0;
       clue.showCorrect = false;
       clue.showIncorrect = false;
     }

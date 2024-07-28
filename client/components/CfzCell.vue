@@ -5,7 +5,7 @@
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
     :data-down-separator="showDownSeparator ? cell.downSeparator : undefined"
     :data-empty="cell.empty"
-    :data-clue-mark="cell.clues && ((cell.clues.down && cell == cell.clues.down.cells[0] && !!cell.clues.down.mark) || (cell.clues.across && cell == cell.clues.across.cells[0] && !!cell.clues.across.mark))"
+    :data-clue-mark="cell.clues && ((cell.clues.down && cell.id == cell.clues.down.cellIds[0] && !!cell.clues.down.mark) || (cell.clues.across && cell.id == cell.clues.across.cellIds[0] && !!cell.clues.across.mark))"
     :data-mark="cell.mark"
     :data-rebus="cell.rebus"
     :style="{backgroundColor: cell.shadingColor}"
@@ -13,8 +13,8 @@
     ref="tableCell"
     >
     <div v-if="!cell.empty && (
-                 (cell.clues.across && cell == cell.clues.across.cells[0] && !cell.clues.across.hidden) || 
-                 (cell.clues.down && cell == cell.clues.down.cells[0] && !cell.clues.down.hidden)
+                 (cell.clues.across && cell.id == cell.clues.across.cellIds[0] && !cell.clues.across.hidden) || 
+                 (cell.clues.down && cell.id == cell.clues.down.cellIds[0] && !cell.clues.down.hidden)
                )"
         class="cell-tooltip" ref="tooltip"><span v-html="tooltipHtml"></span><div class="cell-tooltip-arrow" data-popper-arrow></div></div>
     <template v-if="editable && !cell.empty">
@@ -309,13 +309,13 @@ export default Vue.extend({
     showAcrossSeparator() {
         if (!this.cell || !this.cell.clues || !this.cell.clues.across)
             return false;
-        const clueCells = this.cell.clues.across.cells;
+        const clueCells = this.cell.clues.across.cellIds;
         return (this.cell.offsets.across != clueCells.length - 1);
     },
     showDownSeparator() {
         if (!this.cell || !this.cell.clues || !this.cell.clues.down)
             return false;
-        const clueCells = this.cell.clues.down.cells;
+        const clueCells = this.cell.clues.down.cellIds;
         return (this.cell.offsets.down != clueCells.length - 1);
     },
     downSelected() {

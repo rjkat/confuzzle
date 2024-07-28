@@ -8,9 +8,11 @@
             v-for="(clue, i) in filteredClues"
             v-on="$listeners"
             v-model="filteredClues[i]"
+            :gridCells="gridCells"
             :usingPencil="usingPencil"
             :solverid="solverid"
             :solvers="solvers"
+            @select-clue="$emit('select-clue', $event)"
             @mouseover="$emit('draw-own-highlight', clue.id)"
             @mouseout="$emit('clear-own-highlight', clue.id)"
             >
@@ -92,6 +94,7 @@ export default Vue.extend({
   props: {
     isAcross: Boolean,
     solvers: Array,
+    gridCells: Object,
     clues: {
         type: Array,
         required: true
@@ -114,7 +117,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    selectClue(clue) {
+    scrollToClue(clue) {
         for (var i = 0; i < this.clues.length; i++) {
             if (this.clues[i].id == clue.id) {
                 this.$refs.items[i].directionsClicked(true)

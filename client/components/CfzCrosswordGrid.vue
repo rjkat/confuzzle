@@ -10,13 +10,14 @@
       <transition name="anagram">
         <div v-if="!showAnagramView" key="grid">
           <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
-              <tr v-for="(row, r) in crossword.grid.cells">
-                  <cfz-cell v-for="cell in row" ref="inputCells"
-                            :cell="crossword.grid.cells[cell.row][cell.col]"
+              <tr v-for="row in crossword.grid.height">
+                  <cfz-cell v-for="col in crossword.grid.width" ref="inputCells"
+                            :cell="crossword.grid.cells[`${row},${col}`]"
+                            :key="`${row},${col}`"
                             :solverid="solverid"
-                            @cell-clicked="cellClicked($event, cell)"
-                            @keydown="handleKeydown($event, cell)"
-                            @input="handleInput($event, cell)"
+                            @cell-clicked="cellClicked($event, crossword.grid.cells[`${row},${col}`])"
+                            @keydown="handleKeydown($event, crossword.grid.cells[`${row},${col}`])"
+                            @input="handleInput($event, crossword.grid.cells[`${row},${col}`])"
                             @mousedown.prevent>
                   </cfz-cell>
               </tr>
@@ -115,6 +116,7 @@ export default Vue.extend({
   },
   props: {
     crossword: Object,
+    selectedClue: Object,
     moveToNextClueAtEnd: Boolean,
     deselectAtEnd: Boolean,
     usingPencil: Boolean,
@@ -181,14 +183,6 @@ export default Vue.extend({
         'height': gridHeight
       }
     },
-    selectedClue() {
-        for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            if (clue.selected) {
-                return clue;
-            }
-        }
-        return undefined;
-    }
   },
   watch: {
     selectedClue(newVal, oldVal) {
@@ -214,7 +208,7 @@ export default Vue.extend({
     setNextClue(clue) {
       // update grid to start at the passed clue
       this.inputAcross = clue.isAcross;
-      this.selectCell(clue.cells[0]);
+      this.selectCell(this.crossword.grid.cells[clue.cellIds[0]]);
     },
     dropTile(fromAnswer, offset, letter, target) {
       if (this.$refs.anagram) {
@@ -224,18 +218,18 @@ export default Vue.extend({
     showPopover(clue) {
       if (!clue)
         return;
-      const inputCell = this.getInputCell(clue.cells[0]);
+      const inputCell = this.getInputCell(this.crossword.grid.cells[clue.cellIds[0]]);
       if (inputCell && (this.showTooltips || this.isPortrait)) {
           inputCell.showPopover();
       }
     },
     getInputCell(cell) {
-      return this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col];
+      return this.$refs.inputCells[cell.col*this.crossword.grid.height + cell.row];
     },
     hidePopover(clue) {
        if (!clue)
         return;
-       const cell = clue.cells[0];
+       const cell = this.crossword.grid.cells[clue.cellIds[0]];
        const inputCell = this.getInputCell(cell);
        if (inputCell) {
           inputCell.hidePopover();
@@ -244,7 +238,7 @@ export default Vue.extend({
     deselectCell(cell) {
        const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
        if (clue) {
-          clue.deselect(this.solverid);
+          this.$emit('deselect-clue', {clueid: clue.id, solverid: this.solverid});
        }
     },
     selectCell(cell) {
@@ -256,7 +250,7 @@ export default Vue.extend({
             this.inputAcross = Boolean(cell.clues.across);
         }
         const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
-        clue.select(this.solverid);
+        this.$emit('select-clue', {clueid: clue.id, solverid: this.solverid});
         const inputCell = this.getInputCell(cell);
         if (inputCell)
           inputCell.select();
@@ -267,15 +261,13 @@ export default Vue.extend({
       let j = 0;
       const special = this.usingPencil ? '?' : '-';
       while (i < answer.text.length && clue) {
-        const cell = clue.cells[j];
+        const cell = this.crossword.grid[clue.cellIds[j]];
         if (answer.text[i]) {
-          cell.contents = answer.text[i];
-          cell.special = special;
           this.$emit('fill-cell', {clueid: clue.id, offset: j, value: cell.contents, special: special});
         }
         i++;
         j++;
-        if (j >= clue.cells.length) {
+        if (j >= clue.cellIds.length) {
           clue.showCorrect = false;
           clue.showIncorrect = false;
           clue = clue.nextRef;
@@ -285,14 +277,11 @@ export default Vue.extend({
       this.$emit('anagram-submitted');
     },
     fillCell(cell, value) {
-      cell.contents = value;
-
       const clue = this.inputAcross ? cell.clues.across : cell.clues.down;
       const offset = this.inputAcross ? cell.offsets.across : cell.offsets.down;
       cell.special = (this.usingPencil && value && value != ' ') ? '?' : '-';
-      clue.showCorrect = false;
-      clue.showIncorrect = false;
-      this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: cell.contents, special: cell.special});
+      this.$emit('fill-cell', {clueid: clue.id, offset: offset, value: value, special: cell.special});
+      return value;
     },
     cellClicked(event, cell) {
         if (!this.editable) {
@@ -328,13 +317,11 @@ export default Vue.extend({
           const backspace = direction == -1;
 
           // we've run off the end or hit an empty square
-          if (   row < 0 || row >= cells.length
-              || col < 0 || col >= cells[row].length
-              || cells[row][col].empty) {
+          if (!cells[`${row},${col}`] || cells[`${row},${col}`].empty) {
               // make it so that backspace doesn't hide the input
               if (!backspace) {
                   input.blur();
-                  if (this.moveToNextClueAtEnd) {
+                  if (this.moveToNextClueAtEnd && this.selectedClue) {
                       this.setNextClue(this.selectedClue.nextNumericalClue);
                   } else {
                       // only move if nextRef is set
@@ -354,7 +341,7 @@ export default Vue.extend({
               return;
           }
 
-          cell = cells[row][col];
+          cell = cells[`${row},${col}`];
           // if the clue can only be either across or down,
           // change to its direction
           if (!(cell.clues.across && cell.clues.down)) {
@@ -364,16 +351,15 @@ export default Vue.extend({
         });
     },
     handleInput(e, cell) {
-        this.fillCell(cell, e.target.value);
-        if (cell.contents)
-        {
+        const v = this.fillCell(cell, e.target.value);
+        if (v) {
           this.moveInputCell(e.target, cell, 1);
         }
     },
     handleKeydown(e, cell) {
         switch (e.keyCode) {
             case KeyCode.KEY_SPACE:
-                cell.contents = '';
+                this.fillCell(cell, '');
                 this.moveInputCell(e.target, cell, 1);
                 e.preventDefault();
                 break;

@@ -423,6 +423,7 @@ export default Vue.extend({
   props: {
     standalone: Boolean,
     isPortrait: Boolean,
+    gridCells: Object,
     clue: {
       type: Object,
       default: function() {
@@ -476,8 +477,8 @@ export default Vue.extend({
       let clue = this.clue;
       const cells = [];
       while (clue) {
-        for (let i = 0; i < clue.cells.length; i++) {
-          cells.push(clue.cells[i]);
+        for (let i = 0; i < clue.cellIds.length; i++) {
+          cells.push(this.gridCells[clue.cellIds[i]]);
         }
         clue = clue.nextRef;
       }
@@ -532,7 +533,7 @@ export default Vue.extend({
   },
   methods: {
     createAnswerSlots() {
-      if (!this.clue || !this.clue.cells)
+      if (!this.clue || !this.clue.cellIds)
         return;
       if (this.answerSlots[this.clue.id])
         return;
@@ -540,11 +541,11 @@ export default Vue.extend({
       let ref = this.clue;
       let j = 0;
       while (ref) {
-        this.answerSlots[this.clue.id].splice(j + ref.cells.length);
-        for (let i = 0; i < ref.cells.length; i++) {
+        this.answerSlots[this.clue.id].splice(j + ref.cellIds.length);
+        for (let i = 0; i < ref.cellIds.length; i++) {
           this.$set(this.answerSlots[this.clue.id], i + j, {item: null});
         }
-        j += ref.cells.length;
+        j += ref.cellIds.length;
         ref = ref.nextRef;
       }
       this.$emit('update:answerSlots', this.answerSlots);

@@ -38,18 +38,17 @@ function forEachCell(clue, cells, cellFn) {
   let offset = 0;
   if (clue.isAcross) {
     for (let col = clue.col - 1; col < clue.col + clue.totalLength - 1; col++) {
-      let r = cells[clue.row - 1];
-      if (r && r[col]) {
-        cellFn(r[col], offset);
+      let cell = cells[`${clue.row - 1},${col}`];
+      if (cell) {
+        cellFn(cell, offset);
       }
       offset++;
     }
   } else {
     for (let row = clue.row - 1; row < clue.row + clue.totalLength - 1; row++) {
-      let r = cells[row];
-      let col = clue.col - 1;
-      if (r && r[col]) {
-        cellFn(r[col], offset);
+      let cell = cells[`${row},${clue.col - 1}`];
+      if (cell) {
+        cellFn(cell, offset);
       }
       offset++;
     }
@@ -58,11 +57,10 @@ function forEachCell(clue, cells, cellFn) {
 
 function buildCells(cw, cells, clues, compiling) {
   let errors = []
-  const state = cw.state;
   for (let [clueid, clue] of Object.entries(clues)) {
     const numCol =  clue.isAcross ? clue.col - 1 + clue.numbering.offset : clue.col - 1;
     const numRow = !clue.isAcross ? clue.row - 1 + clue.numbering.offset : clue.row - 1;
-    cells[numRow][numCol].number = clue.numbering.gridText;
+    cells[`${numRow},${numCol}`].number = clue.numbering.gridText;
     forEachCell(clue, cells, function (cell, offset) {
       if (cell.empty) {
         cell.clues = {};
@@ -78,7 +76,7 @@ function buildCells(cw, cells, clues, compiling) {
       if (clue.solution) {
         cell.solution = clue.solution[offset];
         if ((!cw.meta.scramble || cw.meta.scramble == "none") && compiling) {
-          state[cell.row][cell.col].contents = cell.solution;
+          cell.contents = cell.solution;
         }
       }
       if (clue.shadingColor) {
@@ -86,9 +84,9 @@ function buildCells(cw, cells, clues, compiling) {
       }
       cell.empty = false;
       if (offset == 0) {
-        clue.cells = [];
+        clue.cellIds = [];
       }
-      clue.cells.push(cell);
+      clue.cellIds.push(cell.id);
     });
 
     let word = 0;
@@ -97,11 +95,11 @@ function buildCells(cw, cells, clues, compiling) {
       if (wordpos == clue.lengths[word] - 1 && word < clue.separators.length) {
         const sep = clue.separators[word];
         if (clue.isAcross) {
-          clue.cells[i].acrossSeparator = sep;
-          clue.cells[i].sanitizedAcrossSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
+          cells[clue.cellIds[i]].acrossSeparator = sep;
+          cells[clue.cellIds[i]].sanitizedAcrossSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
         } else {
-          clue.cells[i].downSeparator = sep;
-          clue.cells[i].sanitizedDownSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
+          cells[clue.cellIds[i]].downSeparator = sep;
+          cells[clue.cellIds[i]].sanitizedDownSeparator = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
         }
         word++;
         wordpos = 0;
@@ -123,7 +121,7 @@ function buildCells(cw, cells, clues, compiling) {
          j += ref.lengths.length - 1; 
          const sep = clue.refSeparators[j];
          const sanitizedSep = sanitizeHtml(sep, SANITIZE_HTML_OPTIONS_KEEP_ALLOWED);
-         const cell = ref.cells[ref.cells.length - 1];
+         const cell = cells[ref.cellIds[ref.cellIds.length - 1]];
          if (ref.isAcross) {
            cell.acrossSeparator = sep;
            cell.sanitizedAcrossSeparator = sanitizedSep;
@@ -148,37 +146,35 @@ function buildCells(cw, cells, clues, compiling) {
 
 function buildGrid(cw, compiling) {
   const clues = cw.clues;
-  const state = cw.state;
   const grid = cw.grid;
   const shading = grid.shading;
   const annotations = grid.annotations;
 
-  grid.cells = []
+  grid.cells = {}
   for (let row = 1; row <= grid.height; row++) {
     let rowCells = [];
-    let rowState = [];
     for (let col = 1; col <= grid.width; col++) {
+      let cellId = `${col - 1},${row - 1}`;
       const cell = {
+        id: cellId,
         col: col - 1,
         row: row - 1,
         empty: true,
+        contents: '', 
+        special: '-',
+        acrossMask: 0,
+        downMask: 0,
+        highlightMask: 0
       };
-      const s = {
-        contents: '',
-        special: '-'
-      };
-      rowCells.push(cell);
-      rowState.push(s);
+      grid.cells[cellId] = cell;
     }
-    grid.cells.push(rowCells);
-    state.push(rowState);
   }
 
   if (shading) {
     shading.forEach(rule => {
       if (rule.rows) {
         for (let i = 0; i < rule.rows.length; i++) {
-          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].shadingColor = rule.color;
+          grid.cells[`${rule.rows[i] - 1},${rule.cols[i] - 1}`].shadingColor = rule.color;
         }
       }
     });
@@ -188,9 +184,9 @@ function buildGrid(cw, compiling) {
     annotations.forEach(rule => {
       for (let i = 0; i < rule.rows.length; i++) {
         if (rule.mark)
-          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].mark = rule.mark;
+          grid.cells[`${rule.rows[i] - 1},${rule.cols[i] - 1}`].mark = rule.mark;
         if (rule.rebus)
-          grid.cells[rule.rows[i] - 1][rule.cols[i] - 1].rebus = rule.rebus;
+          grid.cells[`${rule.rows[i] - 1},${rule.cols[i] - 1}`].rebus = rule.rebus;
       }
     });
   }
@@ -388,16 +384,15 @@ function parseFilled(cw, filled) {
   }
   const x = filled.toSection();
   const clue = cw.clues[clueid];
-  const state = cw.state;
   const mark = x.optionalField('mark');
   if (mark) {
     const m = mark.requiredStringValue();
     clue.mark = m;    
   }
   const ans = x.requiredField('ans').requiredStringValue();
-  for (var i = 0; i < clue.cells.length; i++) {
+  for (var i = 0; i < clue.cellIds.length; i++) {
     if (ans[i] != '-') {
-      state[clue.cells[i].row][clue.cells[i].col].contents = ans[i];
+      cells[clue.cellIds[i]].contents = ans[i];
     }
   }
 
@@ -405,8 +400,8 @@ function parseFilled(cw, filled) {
   if (special) {
     const s = special.requiredStringValue();
     const clue = cw.clues[clueid];
-    for (var i = 0; i < clue.cells.length; i++) {
-      state[clue.cells[i].row][clue.cells[i].col].special = s[i];
+    for (var i = 0; i < clue.cellIds.length; i++) {
+      cells[clue.cellIds[i]].special = s[i];
     }
   }
 }
@@ -418,7 +413,6 @@ function parse(input, compiling, options) {
       copyright: ''
     },
     grid: {},
-    state: [],
     clues: {}
   };
   const doc = enolib.parse(input, options);
