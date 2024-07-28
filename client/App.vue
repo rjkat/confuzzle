@@ -1729,6 +1729,7 @@ export default Vue.extend({
             this.lastSelected[msg.solverid] = undefined;
             this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
         }
+        this.$forceUpdate();
     },
     toggleSyncSelection(solver) {
         if (solver.solverid == this.solverid) {
