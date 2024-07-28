@@ -1566,6 +1566,10 @@ export default Vue.extend({
             }
         }
         this.markCount = nmark;
+        this.forceUpdateUI();
+    },
+    forceUpdateUI() {
+        // TODO: actually manage cell contents/highlight state properly
         this.$forceUpdate();
         this.$refs.grid.$forceUpdate();
     },
@@ -1729,7 +1733,7 @@ export default Vue.extend({
             this.lastSelected[msg.solverid] = undefined;
             this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
         }
-        this.$forceUpdate();
+        this.forceUpdateUI();
     },
     toggleSyncSelection(solver) {
         if (solver.solverid == this.solverid) {
@@ -1787,6 +1791,7 @@ export default Vue.extend({
         this.crossword.clues[msg.clueid].showCorrect = false;
         this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
         this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
+        this.forceUpdateUI();
     },
     sendUpdate(event) {
         if (this.$options.socket) {
