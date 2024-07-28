@@ -156,12 +156,6 @@ clues:
 `, true
 );
 
-for (const clue of ['1A', '2A', '3A']) {
-  for (const solver of [0, 1]) {
-    defaultCrossword.clues[clue].highlight(solver);
-  }
-}
-
 export default Vue.extend({
   components: {
     CfzCrosswordGrid

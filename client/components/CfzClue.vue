@@ -216,10 +216,13 @@ export default Vue.extend({
   watch: {
     cellContents: function (val) {
         for (let i = 0; i < val.length; i++) {
-            if (this.$refs.inputs[i].value != val[i]) {
-                this.$refs.inputs[i].value = val[i];
+            if (this.$refs.inputs && this.$refs.inputs[i]) {
+                if (this.$refs.inputs[i].value != val[i]) {
+                    this.$refs.inputs[i].value = val[i];
+                }
             }
         }
+        this.$forceUpdate();
     },
     selected: function(val) {
         if (val && !this.wasClicked) {
@@ -275,8 +278,7 @@ export default Vue.extend({
         }
 
         if (forced) {
-            this.clue.select(this.solverid);
-
+            this.selectClue(this.clue.id, this.solverid);
             this.scrollIntoView();
         } else {
             this.wasClicked = true;
@@ -293,7 +295,7 @@ export default Vue.extend({
         }
         this.wasClicked |= haveFocus;
         if (haveFocus) {
-            this.clue.select(this.solverid);
+            this.selectClue(this.clue.id, this.solverid);
         }
     },
     shadingColor: function(i) {

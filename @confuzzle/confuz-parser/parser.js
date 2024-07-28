@@ -58,6 +58,7 @@ function forEachCell(clue, cells, cellFn) {
 
 function buildCells(cw, cells, clues, compiling) {
   let errors = []
+  const state = cw.state;
   for (let [clueid, clue] of Object.entries(clues)) {
     const numCol =  clue.isAcross ? clue.col - 1 + clue.numbering.offset : clue.col - 1;
     const numRow = !clue.isAcross ? clue.row - 1 + clue.numbering.offset : clue.row - 1;
@@ -77,7 +78,7 @@ function buildCells(cw, cells, clues, compiling) {
       if (clue.solution) {
         cell.solution = clue.solution[offset];
         if ((!cw.meta.scramble || cw.meta.scramble == "none") && compiling) {
-          cell.contents = cell.solution;
+          state[cell.row][cell.col].contents = cell.solution;
         }
       }
       if (clue.shadingColor) {
@@ -147,6 +148,7 @@ function buildCells(cw, cells, clues, compiling) {
 
 function buildGrid(cw, compiling) {
   const clues = cw.clues;
+  const state = cw.state;
   const grid = cw.grid;
   const shading = grid.shading;
   const annotations = grid.annotations;
@@ -154,21 +156,22 @@ function buildGrid(cw, compiling) {
   grid.cells = []
   for (let row = 1; row <= grid.height; row++) {
     let rowCells = [];
+    let rowState = [];
     for (let col = 1; col <= grid.width; col++) {
       const cell = {
         col: col - 1,
         row: row - 1,
         empty: true,
-        contents: '',
-        special: '-',
-        acrossMask: 0,
-        downMask: 0,
-        highlightMask: 0
       };
-      
+      const s = {
+        contents: '',
+        special: '-'
+      };
       rowCells.push(cell);
+      rowState.push(s);
     }
     grid.cells.push(rowCells);
+    state.push(rowState);
   }
 
   if (shading) {
@@ -385,6 +388,7 @@ function parseFilled(cw, filled) {
   }
   const x = filled.toSection();
   const clue = cw.clues[clueid];
+  const state = cw.state;
   const mark = x.optionalField('mark');
   if (mark) {
     const m = mark.requiredStringValue();
@@ -393,7 +397,7 @@ function parseFilled(cw, filled) {
   const ans = x.requiredField('ans').requiredStringValue();
   for (var i = 0; i < clue.cells.length; i++) {
     if (ans[i] != '-') {
-      clue.cells[i].contents = ans[i];
+      state[clue.cells[i].row][clue.cells[i].col].contents = ans[i];
     }
   }
 
@@ -402,7 +406,7 @@ function parseFilled(cw, filled) {
     const s = special.requiredStringValue();
     const clue = cw.clues[clueid];
     for (var i = 0; i < clue.cells.length; i++) {
-       clue.cells[i].special = s[i];
+      state[clue.cells[i].row][clue.cells[i].col].special = s[i];
     }
   }
 }
@@ -414,6 +418,7 @@ function parse(input, compiling, options) {
       copyright: ''
     },
     grid: {},
+    state: [],
     clues: {}
   };
   const doc = enolib.parse(input, options);

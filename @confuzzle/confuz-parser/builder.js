@@ -50,76 +50,8 @@ function parseAndBuild(input, compiling) {
       } else {
           cw.downClues.push(clue);
       }
-      clue.highlightMask = 0;
-      clue.selected = false;
-      clue.forcedSelection = false;
       clue.showCorrect = false;
       clue.showIncorrect = false;
-
-      clue.deselect = function (solverid, forced) {
-        if (!this.selected)
-          return;
-        solverid %= 8;
-        this.selected = false;
-        this.forcedSelection = forced;
-        this.clearHighlight(solverid);
-      };
-      clue.select = function (solverid, forced) {
-        if (this.selected)
-          return;
-        solverid %= 8;
-        for (const [otherid, other] of Object.entries(cw.clues)) {
-          if (otherid != clueid)
-            other.deselect(solverid, forced);
-        }
-        this.selected = true;
-        this.forcedSelection = forced;
-        this.highlight(solverid);
-      };
-      clue.highlight = function(solverid, recursive) {
-        solverid %= 8;
-        this.highlightMask |= (1 << solverid);
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask |= (1 << solverid);
-          } else {
-            cell.downMask |= (1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.highlight(solverid);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-              this.refs[j].highlight(solverid, true);
-            }
-          }
-        }
-      };
-      clue.clearHighlight = function(solverid, recursive) {
-        solverid %= 8;
-        for (let i = 0; i < this.cells.length; i++) {
-          const cell = this.cells[i];
-          if (this.isAcross) {
-            cell.acrossMask &= ~(1 << solverid);
-          } else {
-            cell.downMask &= ~(1 << solverid);
-          }
-          cell.highlightMask = (cell.acrossMask | cell.downMask);
-        }
-        this.highlightMask &= ~(1 << solverid);
-        if (!recursive) {
-          if (this.primary) {
-            this.primary.clearHighlight(solverid);
-          } else {
-            for (let j = 0; j < this.refs.length; j++) {
-                this.refs[j].clearHighlight(solverid, true);
-            }
-          }
-        }
-      };
     }
 
     cw.acrossClues.sort((a, b) => {

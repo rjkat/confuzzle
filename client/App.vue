@@ -969,6 +969,7 @@ export default Vue.extend({
       maxRecent: 5,
       recentCrosswords: [],
       solverid: 0,
+      maxSolvers: 8,
       markCount: 0,
       syncedSolver: '',
       lastSelected: {},
@@ -993,6 +994,14 @@ export default Vue.extend({
       lastId: '',
       sessionIdText: "",
       puzzleModalTitle: '',
+      cellContents: {},
+      cellSpecial: {},
+      clueSelected: {},
+      forcedSelection: {},
+      clueHighlightMask: {},
+      clueShowCorrect: {},
+      clueMark: {},
+      clueShowIncorrect: {},
       answerSlots: {
         type: Object,
         default: function () { return {} }
@@ -1327,17 +1336,27 @@ export default Vue.extend({
                     continue;
                 }
                 if (cell.clues.across) {
-                    cell.clues.across.showCorrect = false;
-                    cell.clues.across.showIncorrect = false;
+                    this.clueShowCorrect[cell.clues.across.id] = false;
+                    this.clueShowIncorrect[cell.clues.across.id] = false;
                 }
                 if (cell.clues.down) {
-                    cell.clues.down.showCorrect = false;
-                    cell.clues.down.showIncorrect = false;
+                    this.clueShowCorrect[cell.clues.down.id] = false;
+                    this.clueShowIncorrect[cell.clues.down.id] = false;
                 }
             }
         }
         let nmark = 0;
+        this.clueSelected = {}
+        this.forcedSelection = {}
+        this.clueShowCorrect = {}
+        this.clueShowIncorrect = {}
+        this.clueHighlightMask = {}
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
+            this.clueSelected[clueid] = false;
+            this.forcedSelection[clueid] = false;
+            this.clueShowCorrect[clueid] = false;
+            this.clueShowIncorrect[clueid] = false;
+            this.clueHighlightMask[clueid] = 0;
             if (clue.mark) {
                 nmark += 1;
             }
@@ -1558,7 +1577,7 @@ export default Vue.extend({
         this.sendUpdate(msg);
     },
     markClue(msg) {
-        this.crossword.clues[msg.clueid].mark = msg.mark;
+        this.clueMark[msg.clueid] = msg.mark;
         let nmark = 0;
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             if (clue.mark) {
@@ -1566,12 +1585,13 @@ export default Vue.extend({
             }
         }
         this.markCount = nmark;
-        this.forceUpdateUI();
     },
     forceUpdateUI() {
         // TODO: actually manage cell contents/highlight state properly
         this.$forceUpdate();
-        this.$refs.grid.$forceUpdate();
+        if (this.$refs.grid) {
+            this.$refs.grid.$forceUpdate();
+        }
     },
     eraseClueClicked() {
         let clue = this.selectedClue;
@@ -1619,8 +1639,8 @@ export default Vue.extend({
             clue = clue.nextRef;
         }
 
-        startClue.showCorrect = false;
-        startClue.showIncorrect = false;
+        this.clueShowCorrect[clue.id] = false;
+        this.clueShowIncorrect[clue.id] = false;
     },
     clearAllClicked() {
         const grid = this.crossword.grid;
@@ -1654,8 +1674,8 @@ export default Vue.extend({
             clue = clue.nextRef;
         }
 
-        startClue.showCorrect = correct;
-        startClue.showIncorrect = !correct;
+        this.clueShowCorrect[startClue.id] = correct;
+        this.clueShowIncorrect[startClue.id] = !correct;
     },
     revealClue(clue) {
         if (!clue)
@@ -1679,8 +1699,8 @@ export default Vue.extend({
                     });
                 }
             }
-            clue.showIncorrect = false;
-            clue.showCorrect = false;
+            this.clueShowIncorrect[clue.id] = false;
+            this.clueShowCorrect[clue.id] = false;
             clue = clue.nextRef;
         }
     },
@@ -1708,15 +1728,15 @@ export default Vue.extend({
     },
     clearAllHighlighted() {
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-            for (var i = 0; i < 8; i++) {
-                clue.clearHighlight(i);
+            for (var i = 0; i < this.maxSolvers; i++) {
+                this.clearHighlight(clueid, i);
             }
         }
     },
     // remote solver has changed their selection
     selectionChanged(msg) {
         if (msg.selected) {
-            this.crossword.clues[msg.clueid].highlight(msg.solverid);
+            this.highlightClue(msg.clueid, msg.solverid);
             this.lastSelected[msg.solverid] = msg.clueid;
             // update synchronised selection if needed
             if (!msg.forced) {
@@ -1725,39 +1745,38 @@ export default Vue.extend({
                         msg.clueid != this.selectedClue.id)) {
                         if ("activeElement" in document)
                             document.activeElement.blur();
-                        this.crossword.clues[msg.clueid].select(this.solverid, true);
+                        this.selectClue(msg.clueid, this.solverid, true);
                     }
                 }
             }
         } else {
             this.lastSelected[msg.solverid] = undefined;
-            this.crossword.clues[msg.clueid].clearHighlight(msg.solverid);
+            this.clearHighlight(msg.clueid, msg.solverid);
         }
-        this.forceUpdateUI();
     },
     toggleSyncSelection(solver) {
         if (solver.solverid == this.solverid) {
             this.syncedSolver = '';
             for (const s of this.solvers) {
                 s.syncSelection = false;
-                s.syncMask = 1 << (s.solverid % 8);
+                s.syncMask = 1 << (s.solverid % this.maxSolvers);
             }
             return;
         }
         solver.syncSelection = !solver.syncSelection;
-        const solverMask = 1 << (solver.solverid % 8);
+        const solverMask = 1 << (solver.solverid % this.maxSolvers);
         if (solver.syncSelection) {
             this.syncedSolver = solver.guid;
-            solver.syncMask = solverMask | (1 << (this.solverid % 8));
+            solver.syncMask = solverMask | (1 << (this.solverid % this.maxSolvers));
             if (this.lastSelected[solver.solverid]) {
                 if ("activeElement" in document)
                     document.activeElement.blur();
-                this.crossword.clues[this.lastSelected[solver.solverid]].select(this.solverid, true);
+                this.selectClue(this.crossword.clues[this.lastSelected[solver.solverid]], this.solverid, true);
             }
             for (const s of this.solvers) {
                 if (s.solverid != solver.solverid) {
                     s.syncSelection = false;
-                    s.syncMask = 1 << (s.solverid % 8);
+                    s.syncMask = 1 << (s.solverid % this.maxSolvers);
                 }
             }
         } else {
@@ -1770,7 +1789,7 @@ export default Vue.extend({
         for (const [k, solver] of Object.entries(msg.solvers)) {
             newSolvers.push(solver);
             solver.guid = k;
-            solver.syncMask =  1 << (solver.solverid % 8);
+            solver.syncMask =  1 << (solver.solverid % this.maxSolvers);
             solver.syncSelection = solver.guid == this.syncedSolver;
         }
         this.solvers = newSolvers;
@@ -1781,17 +1800,16 @@ export default Vue.extend({
             this.snackbarMessage(msg.joined.name + ' joined the session');
         } else if (msg.disconnected) {
             for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
-                clue.clearHighlight(msg.disconnected.solverid);
+                this.clearHighlight(clueid, msg.disconnected.solverid);
             }
             this.snackbarMessage(msg.disconnected.name + ' left the session');
         }
     },
     fillCell(msg) {
-        this.crossword.clues[msg.clueid].showIncorrect = false;
-        this.crossword.clues[msg.clueid].showCorrect = false;
-        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
-        this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
-        this.forceUpdateUI();
+        this.clueShowIncorrect[msg.clueid] = false;
+        this.clueShowCorrect[msg.clueid] = false;
+        this.cellContents[msg.clueid + ':' + msg.offset] = msg.value;
+        this.cellSpecial[msg.clueid + ':' + msg.offset] = msg.special;
     },
     sendUpdate(event) {
         if (this.$options.socket) {
@@ -2115,6 +2133,72 @@ export default Vue.extend({
         const link = window.location.origin.replace(/\/$/, "") + params;
         copy(link);
         this.snackbarMessage(this.exportMessage);
+    },
+    deselectClue(clueid, solverid, forced) {
+        if (!this.clueSelected[clueid])
+            return;
+        solverid %= this.maxSolvers;
+        this.clueSelected[clueid] = false;
+        this.forcedSelection[clueid] = forced;
+        this.clearHighlight(clueid, solverid);
+    },
+    selectClue(clueid, solverid, forced) {
+        if (this.clueSelected[clueid])
+          return;
+        solverid %= this.maxSolvers;
+        for (const [otherid, other] of Object.entries(cw.clues)) {
+          if (otherid != clueid)
+            this.deselectClue(otherid, solverid, forced);
+        }
+        this.clueSelected[clueid] = true;
+        this.forcedSelection[clueid] = forced;
+        this.highlightClue(clueid, solverid);
+    },
+    highlightClue(clueid, solverid, recursive) {
+        solverid %= this.maxSolvers;
+        const clue = this.crossword.clues[clueid];
+        this.clueHighlightMask[clueid] |= (1 << solverid);
+        for (let i = 0; i < clue.cells.length; i++) {
+          const cell = clue.cells[i];
+          if (clue.isAcross) {
+            cell.acrossMask |= (1 << solverid);
+          } else {
+            cell.downMask |= (1 << solverid);
+          }
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
+        }
+        if (!recursive) {
+          if (clue.primary) {
+            this.highlightClue(clue.primary.id, solverid);
+          } else {
+            for (let j = 0; j < clue.refs.length; j++) {
+              this.highlightClue(clue.refs[j].id, solverid, true); 
+            }
+          }
+        }
+    },
+    clearHighlight(clueid, solverid, recursive) {
+        solverid %= this.maxSolvers;
+        const clue = this.crossword.clues[clueid];
+        for (let i = 0; i < clue.cells.length; i++) {
+          const cell = clue.cells[i];
+          if (clue.isAcross) {
+            cell.acrossMask &= ~(1 << solverid);
+          } else {
+            cell.downMask &= ~(1 << solverid);
+          }
+          cell.highlightMask = (cell.acrossMask | cell.downMask);
+        }
+        this.clueHighlightMask[clueid] &= ~(1 << solverid);
+        if (!recursive) {
+          if (clue.primary) {
+            this.clearHighlight(clue.primary.id, solverid);
+          } else {
+            for (let j = 0; j < clue.refs.length; j++) {
+                this.clearHighlight(clue.refs[j].id, solverid, true);
+            }
+          }
+        }
     }
   }
 });
