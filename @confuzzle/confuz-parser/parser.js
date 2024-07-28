@@ -1,7 +1,10 @@
 const enolib = require('enolib');
 const enotype = require('enotype');
 const sample = require('./sample_crossword');
-import DOMPurify from 'dompurify';
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 function sanitizeHtml(html) {
   return DOMPurify.sanitize(html);

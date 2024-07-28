@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const ShareablePuz = require('../@confuzzle/puz-sharing').ShareablePuz;
+const ShareablePuz = require('../@confuzzle/puz-sharing/shareable-puz').ShareablePuz;
 const confuz = require('../@confuzzle/confuz-crossword/confuz');
 
 const TEST_PUZ_FILE = path.join(__dirname, 'puzfiles', 'nyt_weekday_with_notes.puz')
 const TEST_PUZ = ShareablePuz.from(fs.readFileSync(TEST_PUZ_FILE));
 
-const bwt = require('../@confuzzle/burrows-wheeler');
-const mtf = require('../@confuzzle/move-to-front');
+const bwt = require('../@confuzzle/burrows-wheeler/bwt');
+const mtf = require('../@confuzzle/move-to-front/mtf');
 
 const ecoji = require('@confuzzle/ecoji-buffers');
 const rc = require('@thi.ng/range-coder');

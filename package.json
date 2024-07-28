@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/rjkat/confuzzle#readme",
   "dependencies": {
+    "@babel/preset-typescript": "^7.24.7",
     "@babel/runtime": "^7.17.12",
     "@confuzzle/burrows-wheeler": "file:@confuzzle/burrows-wheeler",
     "@confuzzle/confuz-crossword": "file:@confuzzle/confuz-crossword",
@@ -79,9 +80,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.12",
+    "@babel/types": "^7.17.12",
     "@vue/component-compiler-utils": "^3.2.0",
     "babel-jest": "^29.7.0",
-    "@babel/types": "^7.17.12",
     "jest": "^29.7.0",
     "nodemon": "^2.0.6",
     "parcel": "^1.12.3",
