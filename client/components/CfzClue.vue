@@ -29,6 +29,7 @@
                            @mousedown.prevent
                            @click.prevent="select($refs.inputs[i])"
                            :style="{backgroundColor: shadingColor(i)}"
+                           :value="gridCells[cellId].contents"
                            :data-solver-mask="solverMask"
                            :data-is-pencil="gridCells[cellId].special == '?'"
                            :class="{highlighted: selected || highlighted}"
@@ -279,7 +280,7 @@ export default Vue.extend({
         }
 
         if (forced) {
-            this.$emit('select-clue', {clueid: this.clue.id, solverid: this.solverid});
+            this.$emit('select-clue', {clueid: this.clue.id, solverid: this.solverid, forced: forced});
             this.scrollIntoView();
         } else {
             this.wasClicked = true;
@@ -329,6 +330,7 @@ export default Vue.extend({
             input.placeholder = input.value;
             input.value = '';
         }
+        this.$emit('select-clue', {clueid: this.clue.id, solverid: this.solverid});
         input.focus();
     },
     fillCell: function(offset, value) {
@@ -338,8 +340,7 @@ export default Vue.extend({
     handleInput(event, offset) {
         const input = event.target;
         this.fillCell(offset, input.value);
-        if (input.value)
-        {
+        if (input.value) {
           this.moveInput(input, offset + 1);
         }
     },
@@ -380,9 +381,6 @@ export default Vue.extend({
   mounted () {
     if (this.selected) {
         this.scrollIntoView()
-    }
-    for (let i = 0; i < this.clue.cellIds.length; i++) {
-        this.$refs.inputs[i].value = this.gridCells[this.clue.cellIds[i]].contents;
     }
   },
   data() {

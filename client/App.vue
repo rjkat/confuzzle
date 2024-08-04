@@ -193,7 +193,7 @@
                         :usingPencil="usingPencil"
                         v-model="crossword" 
                         @fill-cell="fillCell($event)"
-                        @select-clue="selectClue($event.clueid, $event.solverid)"
+                        @select-clue="selectClue($event.clueid, $event.solverid, $event.forced)"
                         @solver-clicked="toggleSyncSelection($event)"
                         v-responsive.class
                         >
@@ -220,8 +220,8 @@
                     :deselectAtEnd="false"
                     :selectedClue="selectedClue"
                     @fill-cell="fillCell($event)"
-                    @select-clue="selectClue($event.clueid, $event.solverid)"
-                    @deselect-clue="deselectClue($event.clueid, $event.solverid)"
+                    @select-clue="selectClue($event.clueid, $event.solverid, $event.forced)"
+                    @deselect-clue="deselectClue($event.clueid, $event.solverid, $event.forced)"
                     @anagram-submitted="anagramSubmitted($event)"
                     v-if="showGrid">
                 </cfz-crossword-grid>
@@ -715,7 +715,6 @@ export default Vue.extend({
     solverName: "",
     errorText: "",
     errorMessage: "",
-    selectedClue: {},
     crossword: {
         type: Object,
         default: function () { return defaultCrossword; }
@@ -989,10 +988,8 @@ export default Vue.extend({
       lastId: '',
       sessionIdText: "",
       puzzleModalTitle: '',
-      forcedSelection: {},
-      clueShowCorrect: {},
+      selectedClue: undefined,
       clueMark: {},
-      clueShowIncorrect: {},
       answerSlots: {
         type: Object,
         default: function () { return {} }
@@ -1558,7 +1555,7 @@ export default Vue.extend({
         this.sendUpdate(msg);
     },
     markClue(msg) {
-        this.clueMark[msg.clueid] = msg.mark;
+        this.crossword.clues[msg.clueid].mark = msg.mark;
         let nmark = 0;
         for (let [clueid, clue] of Object.entries(this.crossword.clues)) {
             if (clue.mark) {
@@ -1795,6 +1792,7 @@ export default Vue.extend({
         cell.contents = msg.value;
         cell.special = msg.special;
         this.sendFillCell(msg);
+        this.forceUpdateUI();
     },
     sendUpdate(event) {
         if (this.$options.socket) {
@@ -2121,10 +2119,13 @@ export default Vue.extend({
         this.snackbarMessage(this.exportMessage);
     },
     deselectClue(clueid, solverid, forced) {
+        console.log(`deselect clue ${clueid}`)
         if (!this.crossword.clues[clueid].selected)
             return;
         solverid %= this.maxSolvers;
-        this.forcedSelection[clueid] = forced;
+        this.crossword.clues[clueid].forcedSelection = forced;
+        this.crossword.clues[clueid].selected = false;
+        this.selectedClue = undefined;
         this.clearHighlight(clueid, solverid);
     },
     selectClue(clueid, solverid, forced) {
@@ -2135,15 +2136,16 @@ export default Vue.extend({
           if (otherid != clueid)
             this.deselectClue(otherid, solverid, forced);
         }
+        this.crossword.clues[clueid].forcedSelection = forced;
         this.crossword.clues[clueid].selected = true;
         this.selectedClue = this.crossword.clues[clueid];
-        this.forcedSelection[clueid] = forced;
         this.highlightClue(clueid, solverid);
     },
     highlightClue(clueid, solverid, recursive) {
         solverid %= this.maxSolvers;
         const clue = this.crossword.clues[clueid];
-        clue.highlightMask[clueid] |= (1 << solverid);
+        clue.highlightMask |= (1 << solverid);
+        console.log(`${clue.id}.highlightMask = ${clue.highlightMask}`)
         for (let i = 0; i < clue.cellIds.length; i++) {
           const cell = this.crossword.grid.cells[clue.cellIds[i]];
           if (clue.isAcross) {
@@ -2176,6 +2178,7 @@ export default Vue.extend({
           cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
         clue.highlightMask &= ~(1 << solverid);
+        console.log(`${clue.id}.highlightMask = ${clue.highlightMask}`)
         if (!recursive) {
           if (clue.primary) {
             this.clearHighlight(clue.primary.id, solverid);

@@ -23,6 +23,7 @@
             class="crossword-grid-input"
             @focus="event => event.target.value = ''"
             @blur="event => { event.target.value = cell.contents; event.target.placeholder = ''; }"
+            :value="cell.contents"
             :data-is-pencil="cell.special == '?'"
             v-on="$listeners"
             maxlength="1"
@@ -281,6 +282,7 @@ function nBitsSet(v) {
 export default Vue.extend({
   props: {
     cell: Object,
+    selectedClue: Object,
     isEndRow: Boolean,
     isEndCol: Boolean,
     editable: {
@@ -319,10 +321,10 @@ export default Vue.extend({
         return (this.cell.offsets.down != clueCells.length - 1);
     },
     downSelected() {
-        return this.cell && this.cell.clues && this.cell.clues.down && this.cell.clues.down.selected;
+        return this.cell && this.cell.clues && this.cell.clues.down && this.selectedClue && (this.cell.clues.down.id == this.selectedClue.id)
     },
     acrossSelected() {
-        return this.cell && this.cell.clues && this.cell.clues.across && this.cell.clues.across.selected;
+        return this.cell && this.cell.clues && this.cell.clues.across && this.selectedClue && (this.cell.clues.across.id == this.selectedClue.id);
     },
     solverMask() {
         let v = (this.cell.acrossMask | this.cell.downMask);
@@ -342,7 +344,7 @@ export default Vue.extend({
         if (acrossClue) {
             clue = acrossClue;
         }
-        if (downClue && (!acrossClue || downClue.selected)) {
+        if (downClue && (!acrossClue || this.downSelected)) {
             clue = downClue;
         }
         if (clue.hidden)

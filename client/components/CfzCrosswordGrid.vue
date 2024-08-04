@@ -15,6 +15,7 @@
                             :cell="crossword.grid.cells[`${row-1},${col-1}`]"
                             :key="`${row-1},${col-1}`"
                             :solverid="solverid"
+                            :selectedClue="selectedClue"
                             @cell-clicked="cellClicked($event, crossword.grid.cells[`${row-1},${col-1}`])"
                             @keydown="handleKeydown($event, crossword.grid.cells[`${row-1},${col-1}`])"
                             @input="handleInput($event, crossword.grid.cells[`${row-1},${col-1}`])"
