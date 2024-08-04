@@ -151,14 +151,13 @@ function buildGrid(cw, compiling) {
   const annotations = grid.annotations;
 
   grid.cells = {}
-  for (let row = 1; row <= grid.height; row++) {
-    let rowCells = [];
-    for (let col = 1; col <= grid.width; col++) {
-      let cellId = `${col - 1},${row - 1}`;
+  for (let row = 0; row < grid.height; row++) {
+    for (let col = 0; col < grid.width; col++) {
+      let cellId = `${row},${col}`;
       const cell = {
         id: cellId,
-        col: col - 1,
-        row: row - 1,
+        col: col,
+        row: row,
         empty: true,
         contents: '', 
         special: '-',

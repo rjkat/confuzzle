@@ -1790,8 +1790,10 @@ export default Vue.extend({
     fillCell(msg) {
         this.crossword.clues[msg.clueid].showIncorrect = false;
         this.crossword.clues[msg.clueid].showCorrect = false;
-        this.crossword.clues[msg.clueid].cells[msg.offset].contents = msg.value;
-        this.crossword.clues[msg.clueid].cells[msg.offset].special = msg.special;
+        const cellId = this.crossword.clues[msg.clueid].cellIds[msg.offset];
+        const cell = this.crossword.grid.cells[cellId];
+        cell.contents = msg.value;
+        cell.special = msg.special;
         this.sendFillCell(msg);
     },
     sendUpdate(event) {

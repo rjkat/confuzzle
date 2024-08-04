@@ -12,12 +12,12 @@
           <table class="crossword-grid" cell-spacing="0" :style="gridStyle">
               <tr v-for="row in crossword.grid.height">
                   <cfz-cell v-for="col in crossword.grid.width" ref="inputCells"
-                            :cell="crossword.grid.cells[`${row},${col}`]"
-                            :key="`${row},${col}`"
+                            :cell="crossword.grid.cells[`${row-1},${col-1}`]"
+                            :key="`${row-1},${col-1}`"
                             :solverid="solverid"
-                            @cell-clicked="cellClicked($event, crossword.grid.cells[`${row},${col}`])"
-                            @keydown="handleKeydown($event, crossword.grid.cells[`${row},${col}`])"
-                            @input="handleInput($event, crossword.grid.cells[`${row},${col}`])"
+                            @cell-clicked="cellClicked($event, crossword.grid.cells[`${row-1},${col-1}`])"
+                            @keydown="handleKeydown($event, crossword.grid.cells[`${row-1},${col-1}`])"
+                            @input="handleInput($event, crossword.grid.cells[`${row-1},${col-1}`])"
                             @mousedown.prevent>
                   </cfz-cell>
               </tr>
@@ -224,7 +224,7 @@ export default Vue.extend({
       }
     },
     getInputCell(cell) {
-      return this.$refs.inputCells[cell.col*this.crossword.grid.height + cell.row];
+      return this.$refs.inputCells[cell.row*this.crossword.grid.width + cell.col];
     },
     hidePopover(clue) {
        if (!clue)
@@ -315,7 +315,6 @@ export default Vue.extend({
               col = cell.col;
           }
           const backspace = direction == -1;
-
           // we've run off the end or hit an empty square
           if (!cells[`${row},${col}`] || cells[`${row},${col}`].empty) {
               // make it so that backspace doesn't hide the input
@@ -340,7 +339,6 @@ export default Vue.extend({
               }
               return;
           }
-
           cell = cells[`${row},${col}`];
           // if the clue can only be either across or down,
           // change to its direction
