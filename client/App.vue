@@ -2137,6 +2137,7 @@ export default Vue.extend({
         this.crossword.clues[clueid].selected = true;
         this.selectedClue = this.crossword.clues[clueid];
         this.highlightClue(clueid, solverid);
+        this.$refs.clues.scrollToClue(this.crossword.clues[clueid]);
     },
     highlightClue(clueid, solverid, recursive) {
         solverid %= this.maxSolvers;

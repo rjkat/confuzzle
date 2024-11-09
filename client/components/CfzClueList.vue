@@ -5,9 +5,10 @@
         <div class="crossword-clues-li"
             is="cfz-clue"
             ref="items"
-            v-for="(clue, i) in filteredClues"
+            v-for="(clue, i) in clues"
+            v-if="clue.isAcross == isAcross"
             v-on="$listeners"
-            v-model="filteredClues[i]"
+            v-model="clues[i]"
             :gridCells="gridCells"
             :usingPencil="usingPencil"
             :solverid="solverid"
@@ -27,16 +28,16 @@
 @media screen {
     @include each-solver using ($color, $lightColor, $sel) {
         .theme-light, * {
-            .crossword-clues-li.highlighted#{$sel} {
+            .crossword-clues-li[data-highlighted]#{$sel} {
                 color: $lightColor;
             }
         }
         @media (prefers-color-scheme: dark) {
-            .crossword-clues-li.highlighted#{$sel} {
+            .crossword-clues-li[data-highlighted]#{$sel} {
                 color: $color;
             }
         }
-        .theme-dark .crossword-clues-li.highlighted#{$sel} {
+        .theme-dark .crossword-clues-li[data-highlighted]#{$sel} {
             color: $color;
         }
     }
@@ -96,7 +97,7 @@ export default Vue.extend({
     solvers: Array,
     gridCells: Object,
     clues: {
-        type: Array,
+        type: Object,
         required: true
     },
     solverid: {
@@ -118,10 +119,10 @@ export default Vue.extend({
   },
   methods: {
     scrollToClue(clue) {
-        for (var i = 0; i < this.clues.length; i++) {
-            if (this.clues[i].id == clue.id) {
+
+        for (let i = 0; i < this.$refs.items.length; i++) {
+            if (this.$refs.items[i].clue.id == clue.id) {
                 this.$refs.items[i].directionsClicked(true)
-                break;
             }
         }
     }

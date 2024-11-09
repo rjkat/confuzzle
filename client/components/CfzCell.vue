@@ -441,14 +441,16 @@ export default Vue.extend({
             this.popper.update();
     },
     select() {
-        if (!this.editable)
-            return;
-        
-        if (this.cell.contents) {
-            this.$refs.input.placeholder = this.cell.contents;
-            this.$refs.input.value = '';
-        }
-        this.$refs.input.focus();
+        Vue.nextTick(() => {
+            if (!this.editable)
+                return;
+            
+            if (this.cell.contents) {
+                this.$refs.input.placeholder = this.cell.contents;
+                this.$refs.input.value = '';
+            }
+            this.$refs.input.focus();
+        });
     },
   },
   mounted() {

@@ -17,7 +17,7 @@
             @deselect-clue="clueDeselected($event)"
             @select-clue="$emit('select-clue', $event)"
             @move-to-clue="moveToClue($event)"
-            v-model="crossword.acrossClues"
+            v-model="crossword.clues"
             v-on="$listeners"
             v-if="!hideAcross"
         >
@@ -34,7 +34,7 @@
             @deselect-clue="clueDeselected($event)"
             @select-clue="$emit('select-clue', $event)"
             @move-to-clue="moveToClue($event)"
-            v-model="crossword.downClues"
+            v-model="crossword.clues"
             v-on="$listeners"
             v-if="!hideDown"
         >
@@ -200,6 +200,10 @@ export default Vue.extend({
         const nextList = next.isAcross ? this.$refs.acrossList : this.$refs.downList;
         nextList.scrollToClue(next);
     },
+    scrollToClue(clue) {
+        const list = clue.isAcross ? this.$refs.acrossList : this.$refs.downList;
+        list.scrollToClue(clue);
+    }
   },
   data() {
     return {

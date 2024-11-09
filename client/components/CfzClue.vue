@@ -1,6 +1,6 @@
 <template>
     <div class=clue-item
-        :class="{highlighted: selected || highlighted}"
+        :data-highlighted="clue.selected || ((clue.highlightMask & solverMask) > 0)"
         :data-solver-mask="solverMask"
         ref="item">
         <div class="clue-directions" @click="directionsClicked()">
@@ -32,7 +32,7 @@
                            :value="gridCells[cellId].contents"
                            :data-solver-mask="solverMask"
                            :data-is-pencil="gridCells[cellId].special == '?'"
-                           :data-highlighted="selected || highlighted"
+                           :data-highlighted="clue.selected || ((clue.highlightMask & solverMask) > 0)"
                            >
                     </input>
                     <span v-if="separator(gridCells[cellId])" class="crossword-separator" v-html="separator(gridCells[cellId])"></span>
@@ -242,7 +242,7 @@ export default Vue.extend({
         return contents;
     },
     highlighted() {
-        return !!(this.clue.highlightMask & this.solverMask);
+        return (this.clue.highlightMask & this.solverMask) > 0;
     },
     selected() {
         return this.clue.selected;

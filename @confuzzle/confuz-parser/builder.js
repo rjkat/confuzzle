@@ -9,8 +9,9 @@ function parseAndBuild(input, compiling) {
     } else if (cw.meta.copyright) {
       cw.meta.copyrightText = '© ' + cw.meta.copyright;
     }
-    cw.acrossClues = [];
-    cw.downClues = [];
+    cw.acrossClueIds = [];
+    cw.downClueIds = [];
+    let i = 0;
     for (let [clueid, clue] of Object.entries(cw.clues)) {
       
       // populate cell across and down clues for convenience
@@ -26,7 +27,6 @@ function parseAndBuild(input, compiling) {
       if (clue.primaryId && clue.primaryId != clueid) {
         clue.primary = cw.clues[clue.primaryId];
       }
-
       clue.idText = clue.numbering.clueText;
       clue.numberText = clue.numbering.clueText;
       clue.refText = '';
@@ -47,35 +47,45 @@ function parseAndBuild(input, compiling) {
 
       // populate crossword across and down clues for convenience
       if (clue.isAcross) {
-          cw.acrossClues.push(clue);
+          cw.acrossClueIds.push(clueid);
       } else {
-          cw.downClues.push(clue);
+          cw.downClueIds.push(clueid);
       }
       clue.selected = false;
       clue.forcedSelection = false;
       clue.highlightMask = 0;
       clue.showCorrect = false;
       clue.showIncorrect = false;
+      clue.index = i;
+      i += 1
     }
+    const numClues = i;
 
-    cw.acrossClues.sort((a, b) => {
-        return a.row != b.row ? a.row - b.row : a.col - b.col;
+    cw.acrossClueIds.sort((aid, bid) => {
+       const a = cw.clues[aid] ;
+       const b = cw.clues[bid] ;
+       return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
-    cw.downClues.sort((a, b) => {
-        return a.row != b.row ? a.row - b.row : a.col - b.col;
+    cw.downClueIds.sort((aid, bid) => {
+       const a = cw.clues[aid] ;
+       const b = cw.clues[bid] ;
+       return a.row != b.row ? a.row - b.row : a.col - b.col;
     });
-
-    [cw.acrossClues, cw.downClues].forEach(clues => {
-      clues.forEach((clue, i) => {
-          const nextIndex = (i + 1) % clues.length;
-          const otherClues = (clue.isAcross ? cw.downClues : cw.acrossClues);
-          const nextClues = nextIndex == 0 ? otherClues : clues;
-          const prevClues = i == 0 ? otherClues : clues;
-          const prevIndex = i > 0 ? i - 1 : otherClues.length - 1;
-          clue.nextNumericalClue = nextClues[nextIndex];
-          clue.prevNumericalClue = prevClues[prevIndex];
-      })
-    });
+    
+    let clueIds = [];
+    for (const clueid of Object.keys(cw.clues)) {
+      clueIds.push(clueid)
+    }
+    for (let [clueid, clue] of Object.entries(cw.clues)) {
+        let i = clue.index;
+        const nextIndex = (i + 1) % numClues;
+        const otherClueIds = (clue.isAcross ? cw.downClueIds : cw.acrossClueIds);
+        const nextClueId = nextIndex == 0 ? otherClueIds : clueIds;
+        const prevClues = clue.index == 0 ? otherClueIds : clueIds;
+        const prevIndex = i > 0 ? i - 1 : otherClueIds.length - 1;
+        clue.nextNumericalClue = nextClueId[nextIndex];
+        clue.prevNumericalClue = prevClues[prevIndex];
+    }
     return cw;
 }
 
