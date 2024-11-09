@@ -167,7 +167,19 @@ export default Vue.extend({
     showLeave: Boolean,
     crossword: {
         type: Object,
-        default: function () { return defaultCrossword; }
+        default: function () { 
+          const grid = defaultCrossword.grid;
+          for (let solverid = 0; solverid < 2; solverid++) {
+            for (let row = 0; row < grid.height; row++) {
+              for (let col = 0; col < grid.width; col++) {
+                const cell = grid.cells[`${row},${col}`];
+                cell.acrossMask |= (1 << solverid);
+                cell.downMask |= (1 << solverid);
+              }
+            }
+          }
+          return defaultCrossword;
+        }
     },
   },
   computed: {
