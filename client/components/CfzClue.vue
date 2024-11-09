@@ -32,7 +32,7 @@
                            :value="gridCells[cellId].contents"
                            :data-solver-mask="solverMask"
                            :data-is-pencil="gridCells[cellId].special == '?'"
-                           :class="{highlighted: selected || highlighted}"
+                           :data-highlighted="selected || highlighted"
                            >
                     </input>
                     <span v-if="separator(gridCells[cellId])" class="crossword-separator" v-html="separator(gridCells[cellId])"></span>
@@ -132,7 +132,7 @@
 
 
     @include each-solver using ($color, $lightColor, $sel) {
-        input.highlighted#{$sel} {
+        input[data-highlighted]#{$sel} {
             padding-bottom: 0px;
             border-bottom: 2px solid $color;
         }
@@ -242,7 +242,7 @@ export default Vue.extend({
         return contents;
     },
     highlighted() {
-        return this.clue.highlightMask & this.solverMask;
+        return !!(this.clue.highlightMask & this.solverMask);
     },
     selected() {
         return this.clue.selected;
