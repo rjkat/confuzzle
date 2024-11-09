@@ -389,6 +389,7 @@ function parseFilled(cw, filled) {
     clue.mark = m;    
   }
   const ans = x.requiredField('ans').requiredStringValue();
+  const cells = cw.grid.cells;
   for (var i = 0; i < clue.cellIds.length; i++) {
     if (ans[i] != '-') {
       cells[clue.cellIds[i]].contents = ans[i];
