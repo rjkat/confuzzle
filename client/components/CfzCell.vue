@@ -1,5 +1,5 @@
 <template>
-<td :data-multi-solver-mask="solverMask"
+<td :data-multi-solver-mask="solverMask(this.cell)"
     :data-number="cell.number ? cell.number : undefined"
     :data-selected=cell.selected
     :data-across-separator="showAcrossSeparator ? cell.acrossSeparator : undefined"
@@ -8,7 +8,7 @@
     :data-clue-mark="cell.clues && ((cell.clues.down && cell.id == cell.clues.down.cellIds[0] && !!cell.clues.down.mark) || (cell.clues.across && cell.id == cell.clues.across.cellIds[0] && !!cell.clues.across.mark))"
     :data-mark="cell.mark"
     :data-rebus="cell.rebus"
-    :style="{backgroundColor: cell.shadingColor}"
+    :data-cell-shading-color="cell.shadingColor"
     @click.prevent="onClick($event)"
     ref="tableCell"
     >
@@ -33,7 +33,7 @@
     <template v-else>
         <div>{{cell.contents}}</div>
     </template>
-    <div class="cell-highlight-border" v-if="cell.highlightMask" :style="{borderColor: cell.shadingColor || 'transparent', borderWidth: (cell.shadingColor ? '0.15ch' : '0')}"></div>
+    <div class="cell-highlight-border" :data-cell-highlight-mask="cell.highlightMask" :data-cell-shading-color="cell.shadingColor"></div>
 </td>
 </template>
 
@@ -107,6 +107,11 @@
     border-width: 0;
     border-style: solid;
     border-color: transparent;
+
+    &[data-cell-highlight-mask] {
+        border-color: attr(data-shading-color);
+        border-width: '0.15ch';
+    }
 }
 
 td {
@@ -124,6 +129,7 @@ td {
     vertical-align: baseline;
     border: $gridBorderWidth solid var(--grid-bg-color);
     border-collapse: collapse; 
+    background-color: attr(data-cell-shading-color);
 
     &[data-mark="circle"]:after {
       content: '';
@@ -279,6 +285,7 @@ function nBitsSet(v) {
     return n;
 }
 
+
 export default Vue.extend({
   props: {
     cell: Object,
@@ -326,14 +333,6 @@ export default Vue.extend({
     acrossSelected() {
         return this.cell && this.cell.clues && this.cell.clues.across && this.selectedClue && (this.cell.clues.across.id == this.selectedClue.id);
     },
-    solverMask() {
-        let v = (this.cell.acrossMask | this.cell.downMask);
-        // can only show 4 overlapping solvers...
-        while (nBitsSet(v) > 4) {
-            v &= v - 1; // clear the least significant bit set
-        }
-        return v;
-    },
     tooltipHtml() {
         var text = '';
         if (!this.cell.clues)
@@ -377,6 +376,14 @@ export default Vue.extend({
     }
   },
   methods: {
+    solverMask(cell) {
+        let v = (cell.acrossMask | cell.downMask);
+        // can only show 4 overlapping solvers...
+        while (nBitsSet(v) > 4) {
+            v &= v - 1; // clear the least significant bit set
+        }
+        return v;
+    },
     refreshPopper() {
         if (!this.$refs.tooltip || !this.$refs.input)
             return;

@@ -761,7 +761,6 @@ export default Vue.extend({
       return this.crosswordSource.split(/\n#\s+state\n/)[0];
     },
     crosswordState() {
-        console.log(this.crossword.grid)
       return confuz.stateFromClues(this.crossword.grid, this.crossword.clues);
     },
     crosswordId() {
@@ -1806,7 +1805,6 @@ export default Vue.extend({
                 }
             }
         }
-        console.log(event)
     },
     anagramSubmitted(event) {
         this.showAnagramView = false;
@@ -2119,7 +2117,6 @@ export default Vue.extend({
         this.snackbarMessage(this.exportMessage);
     },
     deselectClue(clueid, solverid, forced) {
-        console.log(`deselect clue ${clueid}`)
         if (!this.crossword.clues[clueid].selected)
             return;
         solverid %= this.maxSolvers;
@@ -2145,7 +2142,6 @@ export default Vue.extend({
         solverid %= this.maxSolvers;
         const clue = this.crossword.clues[clueid];
         clue.highlightMask |= (1 << solverid);
-        console.log(`${clue.id}.highlightMask = ${clue.highlightMask}`)
         for (let i = 0; i < clue.cellIds.length; i++) {
           const cell = this.crossword.grid.cells[clue.cellIds[i]];
           if (clue.isAcross) {
@@ -2178,7 +2174,6 @@ export default Vue.extend({
           cell.highlightMask = (cell.acrossMask | cell.downMask);
         }
         clue.highlightMask &= ~(1 << solverid);
-        console.log(`${clue.id}.highlightMask = ${clue.highlightMask}`)
         if (!recursive) {
           if (clue.primary) {
             this.clearHighlight(clue.primary.id, solverid);
