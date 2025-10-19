@@ -185,7 +185,7 @@ td {
     }
 
 
-    &[data-across-separator]:after {
+    &[data-across-separator]:before {
         content: '';
         height: 100%;
         position: absolute;
@@ -195,7 +195,7 @@ td {
         z-index: 5;
     }
 
-    &[data-down-separator]:after {
+    &[data-down-separator]:before {
         content: '';
         width: 100%;
         position: absolute;
