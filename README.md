@@ -1,11 +1,19 @@
 # Confuzzle
 
-[![Node.js CI](https://github.com/rjkat/confuzzle/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/rjkat/confuzzle/actions/workflows/node.js.yml) [![Fly Deploy](https://github.com/rjkat/confuzzle/actions/workflows/fly.yml/badge.svg?branch=master)](https://confuzzle.app)
+[![Node.js CI](https://github.com/rjkat/confuzzle/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/rjkat/confuzzle/actions/workflows/node.js.yml) [![GitHub Pages](https://github.com/rjkat/confuzzle/actions/workflows/pages.yml/badge.svg?branch=master)](https://confuzzle.app)
 
 
 ## About
 
 Solve crosswords with your friends! Confuzzle is an interactive crossword editor and real-time collaboration app which also works offline in standalone mode. [See it in action here](https://confuzzle.app).
+
+## Hosting and multiplayer
+
+The site is built with `yarn build` and deployed to GitHub Pages as static files (see `.github/workflows/pages.yml`).
+
+Multiplayer (real-time group solving) needs the node server in `server/`, so it is disabled by default. To enable it, build with `CONFUZZLE_MULTIPLAYER=1` and serve with `yarn start`. `yarn develop` runs the server locally with multiplayer enabled.
+
+Without the server, crosswords linked by URL (`?puz=https://...` or `?confuz=https://...`) are fetched directly by the browser, so the host must allow cross-origin requests.
 
 ## .puz file format utilities
 

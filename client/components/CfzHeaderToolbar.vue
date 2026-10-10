@@ -22,7 +22,7 @@
             icon="group_add"
             size="large"
             @click="openModal('shareModal')"
-            v-if="isOnline"
+            v-if="isOnline && multiplayerEnabled"
         >
         </ui-icon-button>
         <cfz-share-modal
@@ -340,6 +340,7 @@ export default Vue.extend({
     metadata: Object,
     state: Object,
     showDonate: true,
+    multiplayerEnabled: Boolean,
     recentCrosswords: Array,
     shareLoading: false,
     shareLink: "",

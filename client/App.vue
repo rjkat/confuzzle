@@ -70,6 +70,7 @@
         :showInstall="installPrompt || (iOS && !standalone)"
         :showDownload="!appPlatform"
         :showDonate="!appPlatform"
+        :multiplayerEnabled="multiplayerEnabled"
         @install-clicked="installClicked()"
         @share-clicked="shareClicked($event)"
         @copy-clicked="copyClicked($event)"
@@ -951,6 +952,8 @@ export default Vue.extend({
         darkModeEnabled: false,
       shortUrl: window.location.hostname == 'confuzzle.app' ? 'https://confuzzle.me' : window.location.origin,
       bundler: "Parcel",
+      // multiplayer needs the node server (server/server.js); enable at build time with CONFUZZLE_MULTIPLAYER=1
+      multiplayerEnabled: process.env.CONFUZZLE_MULTIPLAYER === '1',
       exampleSessionID: hri.random().replaceAll('-', ' ').toUpperCase(),
       copyMessage: 'Link copied to clipboard',
       exportMessage: 'Crossword saved to clipboard',
@@ -1033,6 +1036,9 @@ export default Vue.extend({
         return '';
     },
     shouldJoin() {
+      if (!this.multiplayerEnabled) {
+        return false;
+      }
       const path = this.requestedPath();
       const should = path != '' && path != 'anagram';
       if (should) {
@@ -1233,6 +1239,9 @@ export default Vue.extend({
         }
     },
     createSocket() {
+        if (!this.multiplayerEnabled) {
+            return;
+        }
         const self = this;
         this.$options.manager = new Manager(window.location.origin, {
             autoConnect: false
@@ -1358,9 +1367,13 @@ export default Vue.extend({
     clearShortLink() {
         this.shortLink = '';
     },
+    externalUrl(url) {
+        // without the server there's no proxy, so the host must allow CORS
+        return this.multiplayerEnabled ? '/external?uri=' + url : url;
+    },
     fetchPuz(url, gid) {
         this.state.downloading = true;
-        fetch('/external?uri=' + url).then(res => { 
+        fetch(this.externalUrl(url)).then(res => { 
           res.arrayBuffer().then(puz => {
             this.state.downloading = false;
             let eno = confuz.fromPuz(ShareablePuz.from(Buffer.from(puz)));
@@ -1376,7 +1389,7 @@ export default Vue.extend({
     },
     fetchConfuz(url, gid) {
         this.state.downloading = true;
-        fetch('/external?uri=' + url).then(res => { 
+        fetch(this.externalUrl(url)).then(res => { 
           res.text().then(eno => {
             this.state.downloading = false;
             const cw = parser.parse(eno);
@@ -1870,7 +1883,7 @@ export default Vue.extend({
         this.$refs.fileInput.openFile();
     },
     joinClicked() {
-        if (this.joinDisabled())
+        if (!this.multiplayerEnabled || this.joinDisabled())
             return;
         if (this.solverName)
             localStorage['confuzzle:solverName'] = this.solverName;
@@ -1881,6 +1894,9 @@ export default Vue.extend({
         this.createSocket();
     },
     shareClicked(name) {
+        if (!this.multiplayerEnabled) {
+            return;
+        }
         const self = this;
         if (this.state.compiling) {
             this.endCompiling();
